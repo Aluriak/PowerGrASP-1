@@ -1,0 +1,5 @@
+# Name ?
+- Answer Set Programming Efficient & Recursive Graph Edition (asperge)
+- Answer Set Programming Efficient & Recursive Graph Compression (aspergc)
+- Answer Set Programming Recursive Graph Compression (asprgc) [CURRENT]
+- Answer Set Programming Efficient & Compression T? (aspect, already taked)

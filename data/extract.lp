@@ -1,0 +1,75 @@
+%*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Rewritting of powercomp4.lp by Lucas Bourneuf,
+without special treatment of bipartite case.
+
+Extract the connected components of the graph
+Input:
+  	- edge(X,Y): there exists an edge between X and Y in the graph.
+Output:
+        - connectedpath(X,Y): there exists a path from X to Y, X<Y.
+        - newcc(CC): CC is the minimal element of a connected component.
+        - newccedge(CC,X,Y): there exists an edge between X and Y in CC.
+        - node(X): a node exists
+        - onode(X): a node exists
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*%
+#program extract.
+
+%In nodes and Out nodes
+node(1,X):- edge(X,_).
+node(2,Y):- edge(_,Y).
+
+%All nodes 
+node(X):- node(1..2,X).
+
+%Symetric graph
+inter(X,Y):- edge(X,Y).
+inter(X,Y):- edge(Y,X).
+
+%Oriented graph
+% an oriented edge go from smaller to bigger :
+% oedge(3, 5) is true, oedge(5, 3) is false.
+onode(1..2,X):- node(X).
+oedge(X,Y)   :- edge(X,Y); X<Y.
+oedge(X,Y)   :- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
+
+%Connected paths starting with minimal element X
+% connected(Minimum element, 
+%           Element connected to the minimum
+%          )
+connectedpath(X,Y):- oedge(X,Y).
+connectedpath(X,Z):- connectedpath(X,Y); oedge(Y,Z); X<Z.
+%xxx: should X<Z be set as a constraint ?
+%:- connectedpath(X,Y) ; X>=Y.
+
+connected(Y):- connectedpath(_,Y).
+
+%Connected component of minimum element X
+newmembercc(X,Y):- connectedpath(X,Y); not connected(X).
+newmembercc(X,X):- connectedpath(X,_); not connected(X).
+newcc(CC):- newmembercc(CC,_).
+
+nb(nodes,               N):- N=#count{ node(X):node(X)}.
+nb(connectednodes,      N):- N=#count{newcc(X):node(X)}.
+nb(connectedcomponents, N):- N=#count{newcc(X):node(X), not connected(X)}.
+
+%edges of the connected components
+newccedge(CC,X,Y):- newmembercc(CC,Y);  edge(X,Y).
+
+%countable(nodes;connectednodes;connectedcomponents).
+countable(connectedcomponents).
+amount(0..10000).
+
+%:- nb(X,Y) ; countable(X) ; amount(Y) ; Y=0. 
+%{nb(X,Y): nb(X,Y)}.
+
+#show newcc/1.
+#show newccedge/3.
+%#show nb(nodes,N): nb(nodes,N).
+%#show nb(connectednodes,N): nb(connectednodes,N).
+%#show nb(connectedcomponents, N): nb(connectedcomponents, N).
+#show newmembercc/2.
+%#show onode(X,Y): onode(X,Y) ; node(X) ; node(Y).
+%#show connectedpath(CC,Y): newcc(CC) ; connectedpath(CC,Y).
+#show nb(X,Y): nb(X,Y) ; countable(X) ; amount(Y).
