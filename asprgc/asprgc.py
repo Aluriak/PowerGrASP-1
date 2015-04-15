@@ -19,12 +19,10 @@ def asprgc(graph, extract, findcc):
     extractor = ASPSolver().use(graph).use(extract)
     graph_atom = extractor.first_solution()
     # graph data is an ASP code that describes graph and connected components.
-    print('ATOMS:', graph_atom)
     graph_data = '.\n'.join(str(graph_atom).replace('new', '').split(' ')) + '.'
     logger.info('graph: ' + graph_data)
     # graph data:
     # atom_ccs  = (('cc', a.args()) 
-    exit(0)
     atom_ccs  = (a.args() 
                  for a in graph_atom.atoms() 
                  if a.name() == 'newcc'

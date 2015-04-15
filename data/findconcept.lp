@@ -10,6 +10,7 @@ Input:
                           subgraph corresponding to connected component cc
         - connectedpath(CC,Y): there exists a path in CC to Y
                                (Y belongs to CC)
+        - membercc(cc,Y): Y is a member of cc, but not its root.
 Output:
         - ?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,9 +28,7 @@ onode(cc,1,X):- membercc(cc,X). % X belongs to CC
 onode(cc,2,X):- ccedge(cc,X,_). % X is not a terminal node
 oedge(cc,X,Y):- ccedge(cc,X,Y); X<Y. % oedge(5,3) become oedge(3,5)
 oedge(cc,Y,X):- ccedge(cc,X,Y); Y<X.
-node(cc,X):- ccedge(cc,X,_).
-node(cc,X):- ccedge(cc,_,X).
-node(X):- node(cc,X).
+node(X):- onode(_,_,X).
 
 % N1 elements in set1 and N2 elements in set2 
 nbelements(cc,N1,N2):- N1={membercc(cc,X)}; N2={onode(cc,2,Y)}.
@@ -75,4 +74,3 @@ newedgecoverb(cc,N1*N2):- N1={newconcept(cc,1,X):node(X)}; N2={newconcept(cc,2,X
 #show ccedge(X,Y,Z):ccedge(X,Y,Z).
 #show oedge/3.
 #show newedgecoverb/2.
-%#show nb(X,Y): nb(X,Y).

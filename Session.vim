@@ -66,7 +66,7 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 27
-normal! 017|
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/asprgc.py
 set splitbelow splitright
@@ -84,11 +84,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 25 - ((24 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+25
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/commons.py
@@ -183,7 +183,7 @@ normal! zt
 75
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabnext 3
+tabnext 6
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
