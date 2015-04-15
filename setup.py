@@ -33,10 +33,13 @@ setup(
     url = "https://github.com/Aluriak/asprgc",
 
     classifiers = [
+        "Development Status :: 2 - Pre-Alpha",
+        "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License (GPL)",
         "Natural Language :: English",
         "Operating System :: Unix",
         "Programming Language :: Python :: 2",
+        "Programming Language :: ASP",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ]
 )
