@@ -9,6 +9,8 @@ options:
     --graph-data=FILE   filepath to ASP graph definition       [default: data/diamond.lp]
     --extract=FILE      filepath to ASP extraction program     [default: data/extract.lp]
     --findconcept=FILE  filepath to ASP concept finder program [default: data/findconcept.lp]
+    --findcliques=FILE  filepath to ASP cliques finder program [default: data/findcliques.lp]
+    --firstmodel=FILE   filepath to ASP first model program    [default: data/firstmodel.lp]
 
 """
 
@@ -16,7 +18,6 @@ from __future__ import print_function, absolute_import
 from docopt     import docopt
 from asprgc     import asprgc 
 from info       import __version__
-
      
 
 
@@ -28,6 +29,8 @@ if __name__ == '__main__':
         graph   = options['--graph-data'],
         extract = options['--extract'],
         findcc  = options['--findconcept'],
+        findcl  = options['--findcliques'],
+        firstmodel = options['--firstmodel'],
     ))
 
 

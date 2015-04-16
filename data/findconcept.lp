@@ -15,35 +15,32 @@ Output:
         - ?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *%
-#program findconcepts(cc).
-
-% X belongs to CC if there exists a path from CC to Y
-membercc(CC,X):- connectedpath(CC,X).
+#program findconcept(cc).
 
 % If N node in cc, cc!=Y will be true "N-1 times"
 nonsingletoncc(cc):- membercc(cc,Y); cc!=Y.
 
 % Sorted with respect to the smallest set 
 onode(cc,1,X):- membercc(cc,X). % X belongs to CC
-onode(cc,2,X):- ccedge(cc,X,_). % X is not a terminal node
+onode(cc,2,X):- ccedge(cc,X,U). % X is not a terminal node
 oedge(cc,X,Y):- ccedge(cc,X,Y); X<Y. % oedge(5,3) become oedge(3,5)
 oedge(cc,Y,X):- ccedge(cc,X,Y); Y<X.
-node(X):- onode(_,_,X).
+node(X):- onode(U,U,X).
 
 % N1 elements in set1 and N2 elements in set2 
-nbelements(cc,N1,N2):- N1={membercc(cc,X)}; N2={onode(cc,2,Y)}.
+nbelements(cc,N1,N2):- N1=#count{membercc(cc,X):node(X)}; 
+                       N2=#count{onode(cc,2,Y):node(Y)}.
 
 
 % Choice of a non empty concept
 
 % Choice of the minimum of the concept
 1{minobj(cc,X):membercc(cc,X)}1.
-
-minobj(X):- minobj(_,X).
+minobj(X):- minobj(U,X).
  
  
 %Choice of elements in part 1
- newconcept(cc,1,X):- minobj(cc,X).
+newconcept(cc,1,X):- minobj(cc,X).
 { newconcept(cc,1,X): membercc(cc,X),X>Min }:- minobj(cc,Min).
 %Choice of elements in part 2
 1 { newconcept(cc,2,Y):oedge(cc,Min,Y) } :- minobj(cc,Min).
@@ -64,13 +61,14 @@ imp(cc,1,X) :- membercc(cc,X); onode(cc, 1,X); newconcept(cc,2,Y); not oedge(cc,
 :- not imp(cc,I,X); not newconcept(cc,I,X);  I=1..2; onode(cc,I,X).
 
 % Biclique (Concept) edge cover
-newedgecoverb(cc,N1*N2):- N1={newconcept(cc,1,X):node(X)}; N2={newconcept(cc,2,X):node(X)}.
+newedgecoverb(cc,N1*N2):- N1=#count{newconcept(cc,1,X):node(X)}; N2=#count{newconcept(cc,2,X):node(X)}.
 
 
-#show newconcept(X,Y,Z): newconcept(X,Y,Z).
-%#show nbelements/1. #show nbelements/2.
-#show imp(X,Y,Z): imp(X,Y,Z). 
-#show minobj/2. 
-#show ccedge(X,Y,Z):ccedge(X,Y,Z).
+#show newconcept/3.
+%#show nbelements/1. 
+%#show nbelements/2.
+%#show imp/3.
+#show minobj/2.
+%#show ccedge/3.
 #show oedge/3.
 #show newedgecoverb/2.

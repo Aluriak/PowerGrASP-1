@@ -24,7 +24,7 @@ node(2,Y):- edge(T,Y).
 node(X):- node(1..2,X).
 
 %Symetric graph
-inter(X,Y):- edge(X,Y).
+inter(X,Y):- edge(X,Y). %xxx: used later
 inter(X,Y):- edge(Y,X).
 
 %Oriented graph
@@ -63,6 +63,7 @@ newccedge(CC,X,Y):- newmembercc(CC,Y);  edge(X,Y).
 #show newcc/1.
 #show newccedge/3.
 #show newmembercc/2.
-%#show nb/2.
-%#show node/1.
+#show nb/2.
+#show node/1.
+#show inter/2.
 #show connectedpath(CC,Y): newcc(CC) ; connectedpath(CC,Y).
