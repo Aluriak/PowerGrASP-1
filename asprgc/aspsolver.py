@@ -49,7 +49,7 @@ class ASPSolver():
          file in the current directory (default is ./, 
          can be changed through in_dir method.
         """
-        assert(isinstance(args, list))
+        assert(iter(args))
         self._prg.load(self._directory+program)
         program_name = os.path.splitext(
             os.path.basename(self._directory+program)
@@ -92,8 +92,11 @@ class ASPSolver():
         return self._last_solutions
 
     def first_solution(self):
-        """Compute solutions and returned the first"""
-        return next(self.solutions(1))
+        """Compute solutions and returned the first, or None"""
+        try:
+            return next(self.solutions(1))
+        except StopIteration:
+            return None
 
     def next_solution(self):
         """Return the next solution or None"""
@@ -106,6 +109,11 @@ class ASPSolver():
         """Not implemented"""
         raise NotImplementedError  # TODO
 
+    def assign_external(self, name, args=[], truth=None):
+        return self._prg.assign_external(gringo.Fun(name, args), truth)
+
+    def release_external(self, name, args=[]):
+        return self._prg.release_external(gringo.Fun(name, args))
 
 
 

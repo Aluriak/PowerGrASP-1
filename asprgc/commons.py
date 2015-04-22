@@ -15,7 +15,14 @@ ASP_SRC_EXTRACT = DIR_ASP_SRC + 'extract' + ASP_FILE_EXT
 ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
 
 # VALUES
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL         = logging.DEBUG
+ITERATION_COUNT   = 10
+RESULTS_PREDICATS = (
+    'clique',
+    'concept',
+    'cardinal',
+)
+
 
 
 # FUNCTIONS
