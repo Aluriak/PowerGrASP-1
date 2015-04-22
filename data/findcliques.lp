@@ -9,9 +9,11 @@ Input:
 	- edge(X,Y):  there exists an edge between X and Y in the graph (all edges are symmetric).
 	- inter(X,Y): there exists an edge between X and Y in the graph (all edges are symmetric).
 	- oedge(X,Y): there exists an edge between X and Y in the graph and edge is oriented X<Y.
+        - membercc(cc,X): X belongs to cc
 Output:
-        - newedgecoverc(cc,N): ?
-        - ?
+        - newedgecoverc(cc,N): edge covering by the clique cc
+        - newclique(cc,X): X belongs to clique cc
+        - clique3(X): cc is a clique of 3 elements
 *%	
 	
 #program findcliques(cc).

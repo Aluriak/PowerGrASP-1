@@ -19,6 +19,13 @@ concept(a,2,2,c). concept(a,2,1,d).
 
 edge(1,2..3).
 edge(2,3..4).
-edge(a,b).
-edge(b,c).
-edge(c,d).
+edge(3,4).
+%edge(a,b).
+%edge(b,c).
+%edge(c,d).
+%edge(a,b..c).
+%edge(b,c..d).
+%edge(c,d).
+%edge(m,n).
+%edge(n,o).
+%edge(o,p).

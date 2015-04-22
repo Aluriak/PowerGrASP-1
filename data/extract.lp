@@ -8,8 +8,8 @@ Input:
   	- edge(X,Y): there exists an edge between X and Y in the graph.
 Output:
         - connectedpath(X,Y): there exists a path from X to Y, X<Y.
-        - newcc(CC): CC is the minimal element of a connected component.
-        - newccedge(CC,X,Y): there exists an edge between X and Y in CC.
+        - cc(CC): CC is the minimal element of a connected component.
+        - ccedge(CC,X,Y): there exists an edge between X and Y in CC.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *%
 #program extract.
@@ -46,24 +46,23 @@ connectedpath(X,Z):- connectedpath(X,Y); oedge(Y,Z); X<Z.
 connected(Y):- connectedpath(T,Y).
 
 %Connected component of minimum element X
-newmembercc(X,Y):- connectedpath(X,Y); not connected(X).
-newmembercc(X,X):- connectedpath(X,T); not connected(X).
-newcc(CC):- newmembercc(CC,T).
+membercc(X,Y):- connectedpath(X,Y); not connected(X).
+membercc(X,X):- connectedpath(X,T); not connected(X).
+cc(CC):- membercc(CC,T).
 
-nb(nodes,               N):- N=#count{ node(X):node(X)}.
-nb(connectednodes,      N):- N=#count{newcc(X):node(X)}.
-nb(connectedcomponents, N):- N=#count{newcc(X):node(X), not connected(X)}.
+nb(nodes,               N):- N=#count{node(X):node(X)}.
+nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 
 %edges of the connected components
-newccedge(CC,X,Y):- newmembercc(CC,Y);  edge(X,Y).
+ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 
 %:- nb(X,Y) ; countable(X) ; amount(Y) ; Y=0. 
 %{nb(X,Y): nb(X,Y)}.
 
-#show newcc/1.
-#show newccedge/3.
-#show newmembercc/2.
+#show cc/1.
+#show ccedge/3.
+#show membercc/2.
 #show nb/2.
 #show node/1.
 #show inter/2.
-#show connectedpath(CC,Y): newcc(CC) ; connectedpath(CC,Y).
+#show connectedpath/2.
