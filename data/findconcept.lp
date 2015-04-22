@@ -63,19 +63,21 @@ imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,I,Y); not ccedge(cc,X,Y); not cced
 
 % Biclique (Concept) edge cover
 newedgecoverb(cc,N1*N2):- N1={newconcept(cc,1,X)} ; N2={newconcept(cc,2,Y)}.
-nb(concept1,N):- N={newconcept(cc,1,X)}.
-nb(concept2,N):- N={newconcept(cc,2,X)}.
-nb_explicit(concept1,N):- N=#count{1,X:newconcept(cc,1,X)}.
-nb_explicit(concept2,N):- N=#count{1,X:newconcept(cc,2,X)}.
+
+%nb(concept1,N):- N={newconcept(cc,1,X)}.
+%nb(concept2,N):- N={newconcept(cc,2,X)}.
+% are equivalent to:
+nb(concept1,N):- N=#count{1,X:newconcept(cc,1,X)}.
+nb(concept2,N):- N=#count{1,X:newconcept(cc,2,X)}.
 
 
-cardinal(cc,T,N1):- N1={newconcept(cc,T,X)} ; T=1..2.
+%cardinal(cc,T,N1):- N1={newconcept(cc,T,X)} ; T=1..2.
 % maximize cardinal values
-#maximize{N1*N2@1,N1,N2:cardinal(cc,1,N1),cardinal(cc,2,N2)}.
+#maximize{N1*N2@1,N1,N2: nb(concept1,N1), nb(concept2,N2)}.
 
 
 
-#show cardinal/3.
+%#show cardinal/3.
 #show newconcept/3.
 %#show nbelements/1.
 %#show nbelements/2.
@@ -84,5 +86,4 @@ cardinal(cc,T,N1):- N1={newconcept(cc,T,X)} ; T=1..2.
 %#show ccedge/3.
 #show oedge/3.
 #show nb/2.
-#show nb_explicit/2.
 #show newedgecoverb/2.
