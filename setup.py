@@ -19,12 +19,12 @@ setup(
     name = __name__,
     version = __version__,
     py_modules = ['info'],
-    packages = find_packages(exclude=['asprgc/']), 
+    packages = find_packages(exclude=['asprgc/']),
     package_data = {
         __name__ : ['README.mkd', 'LICENSE.txt']
     },
     include_package_data = True,
-
+   
     author = "lucas bourneuf",
     author_email = "lucas.bourneuf@openmailbox.org",
     description = "Graph compression by recursive approach with Answer Set Programming",
