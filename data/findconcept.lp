@@ -12,7 +12,11 @@ Input:
                                (Y belongs to CC)
         - membercc(cc,Y): Y is a member of cc, but not its root.
 Output:
-        - ?
+        - newconcept(cc,1..2,X): element X of cc is in set 1 
+                                 or 2 of concept (biclique).
+        - nb(set1,N): set 1 contains N elements.
+        - nb(set2,N): set 2 contains N elements.
+        - newedgecoverb(cc,N1*N2): N1*N2 is the score of cc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *%
 #program findconcept(cc).
@@ -67,13 +71,13 @@ newedgecoverb(cc,N1*N2):- N1={newconcept(cc,1,X)} ; N2={newconcept(cc,2,Y)}.
 %nb(concept1,N):- N={newconcept(cc,1,X)}.
 %nb(concept2,N):- N={newconcept(cc,2,X)}.
 % are equivalent to:
-nb(concept1,N):- N=#count{1,X:newconcept(cc,1,X)}.
-nb(concept2,N):- N=#count{1,X:newconcept(cc,2,X)}.
+nb(set1,N):- N=#count{1,X:newconcept(cc,1,X)}.
+nb(set2,N):- N=#count{1,X:newconcept(cc,2,X)}.
 
 
 %cardinal(cc,T,N1):- N1={newconcept(cc,T,X)} ; T=1..2.
 % maximize cardinal values
-#maximize{N1*N2@1,N1,N2: nb(concept1,N1), nb(concept2,N2)}.
+#maximize{N1*N2@1,N1,N2: nb(set1,N1), nb(set2,N2)}.
 
 
 
@@ -81,8 +85,8 @@ nb(concept2,N):- N=#count{1,X:newconcept(cc,2,X)}.
 #show newconcept/3.
 %#show nbelements/1.
 %#show nbelements/2.
-#show imp/3.
-#show minobj/2.
+%#show imp/3.
+%#show minobj/2.
 %#show ccedge/3.
 #show oedge/3.
 #show nb/2.
