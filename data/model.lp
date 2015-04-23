@@ -1,5 +1,22 @@
-#program model(cc).
-#external step(k).
+%*
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Compile concepts and cliques
+
+Input:
+        - clique(cc,X): X is the member of the clique cc.
+        - newconcept(cc,T,X): X is the member of the set T of the biclique cc.
+        - edgecover(cc,1,b(model_number),N): N edges covered by biclique cc at step 1.
+        - edgecoverc(cc,N): score N of the clique cc.
+Output:
+        - clique(cc,1,model_number,X): X belongs to clique cc at step 1.
+        - concept(cc,1,model_number,T,X): X belongs to biclique cc in set T at step 1.
+        - edgecover(cc,1,b(model_number),N): N edges covered by biclique cc at step 1.
+        - edgecover(cc,1,c(model_number),N): N edges covered by clique   cc at step 1.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*%
+
+#program model(cc,k).
+step(k).
 concomp(cc).
 
 
