@@ -28,7 +28,7 @@ def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextm
     logger.info('#################')
     logger.info('#### EXTRACT ####')
     logger.info('#################')
-    extractor = ASPSolver().use(graph).use(extract)
+    extractor = ASPSolver().use(graph, program_name='base').use(extract)
     extracted_atoms = extractor.first_solution().atoms()
     # graph data is an ASP code that describes graph and connected components.
     atoms.update(all_atoms, extracted_atoms)

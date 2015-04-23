@@ -44,16 +44,18 @@ class ASPSolver():
         self._directory = ''
         return self
 
-    def use(self, program, args=[]):
+    def use(self, program, args=[], program_name=None):
         """Wait for a program name, defined in a program.lp 
          file in the current directory (default is ./, 
          can be changed through in_dir method.
+         if not given, program_name will be equal to file basename.
         """
         assert(iter(args))
         self._prg.load(self._directory+program)
-        program_name = os.path.splitext(
-            os.path.basename(self._directory+program)
-        )[0]
+        if program_name is None:
+            program_name = os.path.splitext(
+                os.path.basename(self._directory+program)
+            )[0]
         self.ground(program_name, args)
         return self
 

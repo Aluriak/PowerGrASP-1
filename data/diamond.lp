@@ -15,11 +15,18 @@ concept(a,1,2,b). concept(a,1,1,c). concept(a,1,1,a).
 concept(a,2,2,c). concept(a,2,1,d).
 
 *%
-#program diamond.
 
 edge(1,2..3).
 edge(2,3..4).
 edge(3,4).
+
+%edge(4,5).
+
+%edge(5,6..8).
+%edge(9,6..8).
+%edge(7,5..6).
+%edge(7,8..9).
+
 %edge(a,b).
 %edge(b,c).
 %edge(c,d).
