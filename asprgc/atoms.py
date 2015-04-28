@@ -2,13 +2,9 @@
 """
 TOWRITE
 """
-# from future.utils import itervalues, iteritems
 from future.utils import iteritems
-# from collections  import defaultdict
-# from aspsolver    import ASPSolver
-# from commons      import RESULTS_PREDICATS
-# import itertools
-# import commons
+from commons      import RESULTS_PREDICATS
+import gringo
 
 
 
@@ -31,21 +27,37 @@ def update(atoms_dict, atoms, avoid='new'):
     
     transform atoms by replace avoid value 
     by nothing in the final string."""
-    if avoid is None or len(avoid) == 0:
-       tuple(atoms_dict[atom.name()].add(tuple(atom.args())) for atom in atoms)
-    else:
-       tuple(atoms_dict[atom.name().replace(avoid, '')].add(tuple(atom.args())) for atom in atoms)
+    # full generator generation
+    tuple( 
+        atoms_dict[
+            atom.name()
+            if avoid is None or len(avoid) == 0 else
+            atom.name().replace(avoid, '') 
+        ].add(tuple((
+                ('"'+arg+'"') 
+                if isinstance(arg, str) 
+                else str(arg)
+            ) for arg in atom.args()
+        ))
+        for atom in atoms
+        if atom.__class__ is gringo.Fun
+    )
 
 
 
 
-def from_dict(atoms_dict, atoms, joiner=None):
+def from_dict(atoms_dict, atoms, joiner='.'):
     """Return an ASP code generator that generate 
     requested atoms of given atoms_dict,
-    as string if joiner is given
+    as string if joiner is given,
+    as generator if joiner is None.
     """
     ret = (
-        name+'('+','.join(str(_) for _ in args)+')'
+        # name+'('+','.join(args)+')'
+        # name+'('+','.join((('"'+_+'"') if isinstance(_, str) else str(_)) for _ in args)+')'
+        # name+'('+','.join(str(_) for _ in args)+')'
+        # name+'('+','.join(('"'+str(_)+'"') for _ in args)+')'
+        name+'('+','.join((str(_)) for _ in args)+')'
         for name in atoms for args in atoms_dict[name]
     )
     if joiner is None:
@@ -98,6 +110,7 @@ def prettified(atoms_dict, names=None, sizes=None,
     
     return joiner.join(
         name+'('+','.join(str(_) for _ in arg)+').'
+        # name+'('+','.join((('"'+str(_)+'"') if isinstance(_, str) else str(_)) for _ in arg)+').'
         for name, set_args in source for arg in set_args
     )
 
