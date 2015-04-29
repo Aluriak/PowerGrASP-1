@@ -110,7 +110,6 @@ def prettified(atoms_dict, names=None, sizes=None,
     
     return joiner.join(
         name+'('+','.join(str(_) for _ in arg)+').'
-        # name+'('+','.join((('"'+str(_)+'"') if isinstance(_, str) else str(_)) for _ in arg)+').'
         for name, set_args in source for arg in set_args
     )
 

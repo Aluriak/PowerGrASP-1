@@ -5,17 +5,17 @@ in the incidence matrix of a simple non oriented graph
   initial version:  09/12/2014   J. Nicolas 
 
 Input:
-	- node(X): X is a graph node;
-	- edge(X,Y):  there exists an edge between X and Y in the graph (all edges are symmetric).
-	- inter(X,Y): there exists an edge between X and Y in the graph (all edges are symmetric).
-	- oedge(X,Y): there exists an edge between X and Y in the graph and edge is oriented X<Y.
+        - node(X): X is a graph node;
+        - edge(X,Y):  there exists an edge between X and Y in the graph (all edges are symmetric).
+        - inter(X,Y): there exists an edge between X and Y in the graph (all edges are symmetric).
+        - oedge(X,Y): there exists an edge between X and Y in the graph and edge is oriented X<Y.
         - membercc(cc,X): X belongs to cc
 Output:
-        - newedgecoverc(cc,N): edge covering by the clique cc
+        - newedgecoverc(cc,N): score (edge covering) by the clique cc
         - newclique(cc,X): X belongs to clique cc
         - clique3(X): cc is a clique of 3 elements
-*%	
-	
+*%
+
 #program findcliques(cc).
 
 

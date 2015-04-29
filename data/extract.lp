@@ -17,8 +17,8 @@ Output:
 %In nodes and Out nodes
 %node(1,X):- edge(X,_). % anonymous variable generates bugs…
 %node(2,Y):- edge(_,Y).
-node(1,X):- edge(X,T).
-node(2,Y):- edge(T,Y).
+node(1,X):- edge(X,Anonymous).
+node(2,Y):- edge(Anonymous,Y).
 
 %All nodes 
 node(X):- node(1..2,X).
@@ -39,7 +39,7 @@ oedge(X,Y)   :- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
 %           Element connected to the minimum
 %          )
 connectedpath(X,Y):- oedge(X,Y).
-connectedpath(X,Z):- connectedpath(X,Y); oedge(Y,Z); X<Z.
+connectedpath(X,Z):- connectedpath(X,Y); inter(Y,Z); X<Z.
 %xxx: should X<Z be set as a constraint ?
 %:- connectedpath(X,Y) ; X>=Y.
 
@@ -56,8 +56,6 @@ nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 %edges of the connected components
 ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 
-%:- nb(X,Y) ; countable(X) ; amount(Y) ; Y=0. 
-%{nb(X,Y): nb(X,Y)}.
 
 #show cc/1.
 #show ccedge/3.
@@ -66,3 +64,5 @@ ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 #show node/1.
 #show inter/2.
 #show connectedpath/2.
+%#show edge/2.
+#show oedge/2.

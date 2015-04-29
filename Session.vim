@@ -23,34 +23,13 @@ badd +1 data/firstmodel.lp
 badd +1 data/findcliques.lp
 badd +1 ~/ASP/test/powercomp4.lp
 badd +23 data/diamond.lp
-badd +0 data/update.lp
+badd +1 data/update.lp
+badd +0 data/model.lp
+badd +0 asprgc/atoms.py
 argglobal
 silent! argdel *
 set stal=2
 edit setup.py
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winheight=1 winwidth=1
-argglobal
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 30 - ((29 * winheight(0) + 25) / 50)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-30
-normal! 068|
-lcd ~/ASP/test/rewritting/asprgc
-tabedit ~/ASP/test/rewritting/asprgc/asprgc/__main__.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -71,7 +50,30 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 27
-normal! 0
+normal! 02|
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/asprgc/__main__.py
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 15 - ((14 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+15
+normal! 079|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/asprgc.py
 set splitbelow splitright
@@ -89,14 +91,37 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 97 - ((35 * winheight(0) + 25) / 50)
+let s:l = 36 - ((21 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-97
+36
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/commons.py
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+1
+normal! 03|
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/asprgc/atoms.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -158,14 +183,60 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 68 - ((49 * winheight(0) + 25) / 50)
+let s:l = 31 - ((30 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-68
-normal! 011|
+31
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/data/findconcept.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+1
+normal! 0
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/data/findcliques.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 33 - ((32 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+33
+normal! 025|
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/data/firstmodel.lp
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -188,7 +259,7 @@ normal! zt
 2
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabedit ~/ASP/test/rewritting/asprgc/data/findcliques.lp
+tabedit ~/ASP/test/rewritting/asprgc/data/model.lp
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -204,35 +275,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 35 - ((34 * winheight(0) + 25) / 50)
+let s:l = 28 - ((27 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-35
+28
 normal! 0
-lcd ~/ASP/test/rewritting/asprgc
-tabedit ~/ASP/test/rewritting/asprgc/data/firstmodel.lp
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winheight=1 winwidth=1
-argglobal
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let s:l = 14 - ((13 * winheight(0) + 25) / 50)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-14
-normal! 051|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/data/update.lp
 set splitbelow splitright
@@ -250,14 +298,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 89 - ((21 * winheight(0) + 25) / 50)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-89
+1
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabnext 8
+tabnext 5
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
