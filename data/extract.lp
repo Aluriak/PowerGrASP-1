@@ -5,7 +5,7 @@ without special treatment of bipartite case.
 
 Extract the connected components of the graph
 Input:
-  	- edge(X,Y): there exists an edge between X and Y in the graph.
+        - edge(X,Y): there exists an edge between X and Y in the graph.
 Output:
         - connectedpath(X,Y): there exists a path from X to Y, X<Y.
         - cc(CC): CC is the minimal element of a connected component.
@@ -20,7 +20,7 @@ Output:
 node(1,X):- edge(X,Anonymous).
 node(2,Y):- edge(Anonymous,Y).
 
-%All nodes 
+%All nodes
 node(X):- node(1..2,X).
 
 %Symetric graph
@@ -35,7 +35,7 @@ oedge(X,Y)   :- edge(X,Y); X<Y.
 oedge(X,Y)   :- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
 
 %Connected paths starting with minimal element X
-% connected(Minimum element, 
+% connected(Minimum element,
 %           Element connected to the minimum
 %          )
 connectedpath(X,Y):- oedge(X,Y).
@@ -57,12 +57,17 @@ nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 
 
+bcovered(-1,-1,-1,-1).
+ covered(-1,-1).
+#show bcovered/4.
+#show  covered/2.
+
 #show cc/1.
 #show ccedge/3.
 #show membercc/2.
-#show nb/2.
-#show node/1.
-#show inter/2.
+%#show nb/2.
+%#show node/1.
+%#show inter/2.
 #show connectedpath/2.
 %#show edge/2.
-#show oedge/2.
+%#show oedge/2.

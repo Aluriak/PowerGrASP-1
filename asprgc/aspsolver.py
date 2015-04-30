@@ -17,7 +17,7 @@ class ASPSolver():
     CAREFUL: low level linking.
      For avoid segmentation fault of gringo when solutions are
      manipulated after destruction of Control instance, client code
-     needs to keep references to ASPSolver instance while using 
+     needs to keep references to ASPSolver instance while using
      solutions.
 
      Example of non-valid code:
@@ -35,7 +35,7 @@ class ASPSolver():
         print(solver.first_solution())
     """
 
-    def __init__(self): 
+    def __init__(self):
         self.clear()
 
     def clear(self):
@@ -45,8 +45,8 @@ class ASPSolver():
         return self
 
     def use(self, program, args=[], program_name=None):
-        """Wait for a program name, defined in a program.lp 
-         file in the current directory (default is ./, 
+        """Wait for a program name, defined in a program.lp
+         file in the current directory (default is ./,
          can be changed through in_dir method.
          if not given, program_name will be equal to file basename.
         """

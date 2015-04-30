@@ -39,11 +39,17 @@ concept(a,2,2,c). concept(a,2,1,d).
 
 %% translation of default case with letters
 %% NB: letters can't be adressed like a..z !
-edge(a,b).
-edge(a,c).
-edge(b,c).
-edge(b,d).
-edge(c,d).
+%edge(a,b).
+%edge(a,c).
+%edge(b,c).
+%edge(b,d).
+%edge(c,d).
+
+edge(i,f).
+edge(i,g).
+edge(f,g).
+edge(f,h).
+edge(g,h).
 
 %edge(z,b).
 %edge(z,c).

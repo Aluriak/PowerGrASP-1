@@ -1,8 +1,8 @@
 %*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Find maximal cliques 
-in the incidence matrix of a simple non oriented graph 
-  initial version:  09/12/2014   J. Nicolas 
+Find maximal cliques
+in the incidence matrix of a simple non oriented graph
+  initial version:  09/12/2014   J. Nicolas
 
 Input:
         - node(X): X is a graph node;
@@ -23,7 +23,7 @@ clique3(cc):- oedge(cc,X,Y); oedge(cc,Y,Z); oedge(cc,X,Z).
 
 %Choice of a  clique of at least 3 elements
 3{newclique(cc,X): membercc(cc,X)}:- clique3(cc).
- 
+
 %consistency of the clique
 :- newclique(cc,X); newclique(cc,Y); X<Y; not oedge(cc,X,Y).
 

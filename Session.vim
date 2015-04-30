@@ -24,8 +24,10 @@ badd +1 data/findcliques.lp
 badd +1 ~/ASP/test/powercomp4.lp
 badd +23 data/diamond.lp
 badd +1 data/update.lp
-badd +0 data/model.lp
-badd +0 asprgc/atoms.py
+badd +1 data/model.lp
+badd +1 asprgc/atoms.py
+badd +0 data/findbestconcept.lp
+badd +0 data/edgeupdate.lp
 argglobal
 silent! argdel *
 set stal=2
@@ -190,6 +192,52 @@ normal! zt
 31
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/data/findbestconcept.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 42 - ((24 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+42
+normal! 0
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/data/edgeupdate.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 37 - ((33 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+37
+normal! 0
+lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/data/findconcept.lp
 set splitbelow splitright
 set nosplitbelow
@@ -305,7 +353,7 @@ normal! zt
 1
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabnext 5
+tabnext 9
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

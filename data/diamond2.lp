@@ -3,7 +3,7 @@
 % One on (1,2,3,4), one on (a,b,c,d)
 % Cliques are (1,2,3) and (2,3,4)
 % Concepts are (1,4)X(2,3),  (2)X(1,3,4), (3)X(1,2,4),  (b)X(a,c) and (c)X(b,d)
-% Solution cover : 1) (1,4)X(2,3)  2) (2,3)  3) (a,c)X(b)  4) 
+% Solution cover : 1) (1,4)X(2,3)  2) (2,3)  3) (a,c)X(b)  4)
  update(1)...
 concept(1,1,2,2). concept(1,1,2,3). concept(1,1,1,1). concept(1,1,1,4).
  update(2)...
@@ -24,8 +24,8 @@ edge(b,d).
 edge(c,d).
 
 % second biclique
-edge(e,f).
-edge(e,g).
+edge(i,f).
+edge(i,g).
 edge(f,g).
 edge(f,h).
 edge(g,h).
@@ -37,9 +37,9 @@ edge(a,k).
 edge(d,k).
 
 % l is linked to second biclique
-edge(e,l).
-edge(f,l).
-edge(g,l).
+edge(i,l).
+%edge(f,l).
+%edge(g,l).
 edge(h,l).
 
 % link between l and k

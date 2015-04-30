@@ -3,11 +3,11 @@
 Choose a clique or biclique of maximal edgecover (power node/edge)
 and update the set of remaining cliques and bicliques
 in order to exclude all edges covered by the chosen power edge
-  initial version:  09/12/2014   J. Nicolas 
+  initial version:  09/12/2014   J. Nicolas
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *%
- 
+
 #program update(cc,k,next_k).
 
 % Uses program parameters
@@ -46,14 +46,14 @@ cpowernode(cc,k):- powernode(cc,k,c(I)).
 #show bpowernode/2.
 #show cpowernode/2.
 
-% (Oriented) Edges of the best concept at step k 
+% (Oriented) Edges of the best concept at step k
 bestedge(cc,k,X,Y):- powernode(cc,k,b(I)); oedgeb(cc,k,I,X,Y).
 bestedge(cc,k,X,Y):- powernode(cc,k,c(I)); oedgec(cc,k,I,X,Y).
 #show bestedge/4.
 
 % an edge is covered if in bestedge of cc
-coverededge(cc,k,X,Y):- bestedge(cc,k,X,Y).
-#show coverededge/4.
+coverededge(X,Y):- bestedge(cc,k,X,Y).
+#show coverededge/2.
 
 %%Concepts and cliques to be updated if they have an edge in common with the best concept
 %tobeupdated(cc,k,b(J)):- oedgeb(cc,k,J,X,Y); bestedge(cc,k,X,Y); not powernode(cc,k,b(J)); step(k).
@@ -64,11 +64,11 @@ coverededge(cc,k,X,Y):- bestedge(cc,k,X,Y).
 
 %%At most two concepts (one for each axis)  may derive from the difference between a concept and the powernode
 %%Moreover, all concepts included in a clique are discarded
-%newconcept(cc,next_k,b(I,T),T,X):- tobeupdated(cc,k,b(I)); concept(cc,k,I,T,X); 
-        %not bestedge(cc,k,X,Y):concept(cc,k,I,3-T,Y),X<Y; not bestedge(cc,k,Y,X):concept(cc,k,I,3-T,Y),Y<X; 
+%newconcept(cc,next_k,b(I,T),T,X):- tobeupdated(cc,k,b(I)); concept(cc,k,I,T,X);
+        %not bestedge(cc,k,X,Y):concept(cc,k,I,3-T,Y),X<Y; not bestedge(cc,k,Y,X):concept(cc,k,I,3-T,Y),Y<X;
         %concept(cc,k,I,3-T,B);not oedgec2(cc,k,X,B); T=1..2;  concomp(cc) ; next_step(next_k).
-%newconcept(cc,next_k,b(I,T),3-T,Y):- tobeupdated(cc,k,b(I)); concept(cc,k,I,3-T,Y); 
-                                  %newconcept(cc,next_k,b(I,T),T,X); not oedgec2(cc,k,X,Y); 
+%newconcept(cc,next_k,b(I,T),3-T,Y):- tobeupdated(cc,k,b(I)); concept(cc,k,I,3-T,Y);
+                                  %newconcept(cc,next_k,b(I,T),T,X); not oedgec2(cc,k,X,Y);
                                   %concomp(cc) ; next_step(next_k).
 %%Concepts that remain from one step to the next one
 %newconcept(cc,next_k,b(I,1),T,X):- concept(cc,k,I,T,X); remain(cc,k,b(I)); concomp(cc) ; next_step(next_k).
@@ -76,13 +76,13 @@ coverededge(cc,k,X,Y):- bestedge(cc,k,X,Y).
 
 
 %% Biclique (Concept) edge cover
-%newedgecover(cc,next_k,b(I,T),N1*N2):- N1={newconcept(cc,next_k,b(I,T),1,X):membercc(cc,X)}; 
-                                    %N2={newconcept(cc,next_k,b(I,T),2,X):membercc(cc,X)}; 
+%newedgecover(cc,next_k,b(I,T),N1*N2):- N1={newconcept(cc,next_k,b(I,T),1,X):membercc(cc,X)};
+                                    %N2={newconcept(cc,next_k,b(I,T),2,X):membercc(cc,X)};
                                     %tobeupdated(cc,k,b(I)); N1>0; N2>0; T=1..2; concomp(cc) ; next_step(next_k).
 %newedgecover(cc,next_k,b(I,1),N):- remain(cc,k,b(I)); edgecover(cc,k,b(I),N); concomp(cc) ; next_step(next_k).
 %%#show newedgecover/4.
 
-%% Split of elements of a clique in two possibly overlapping cliques with respect to a biclique chosen as a powernode 
+%% Split of elements of a clique in two possibly overlapping cliques with respect to a biclique chosen as a powernode
 %% Either the element is not in a powernode and it must be kept or the element is in a same set of the poweredge
 %bestnodeb(cc,k,T,X):- powernode(cc,k,b(J)); concept(cc,k,J,T,X).
 %notbestnodeb(cc,k,X):- powernode(cc,k,b(J)); node(X); not concept(cc,k,J,1,X); not concept(cc,k,J,2,X).
@@ -107,8 +107,8 @@ coverededge(cc,k,X,Y):- bestedge(cc,k,X,Y).
 %newconcept(cc,next_k,b(c(I),1),1,X):- cpowernode(cc,k); tobeupdated(cc,k,c(I)); clique(cc,k,I,X); not bestnodec(cc,k,X); step(k); concomp(cc) ; next_step(next_k).
 %is_newconcept(cc,next_k,b(c(I))):- cpowernode(cc,k); newconcept(cc,next_k,b(c(I),1),1,X) ; next_step(next_k).
 %newconcept(cc,next_k,b(c(I),1),2,X):- is_newconcept(cc,next_k,b(c(I))); clique(cc,k,I,X); bestnodec(cc,k,X); step(k); concomp(cc) ; next_step(next_k).
-%newedgecover(cc,next_k,b(c(I),1), N1*N2):- N1={newconcept(cc,next_k,b(c(I),1),1,X):node(X)}; 
-                                        %N2={newconcept(cc,next_k,b(c(I),1),2,X):node(X)}; 
+%newedgecover(cc,next_k,b(c(I),1), N1*N2):- N1={newconcept(cc,next_k,b(c(I),1),1,X):node(X)};
+                                        %N2={newconcept(cc,next_k,b(c(I),1),2,X):node(X)};
                                         %is_newconcept(cc,next_k,b(c(I))); concomp(cc) ; next_step(next_k).
 
 %%At most two new cliques (one for each axis)  may derive from the difference between a clique and the powernode
@@ -119,7 +119,7 @@ coverededge(cc,k,X,Y):- bestedge(cc,k,X,Y).
 %newclique(cc,next_k,c(I,1),X):- remain(cc,k,c(I)); clique(cc,k,I,X); step(k); concomp(cc) ; next_step(next_k).
 
 %% Clique edge cover
-%newedgecover(cc,next_k,c(I,T),(N*(N-1))/2):- N={newclique(cc,next_k,c(I,T),X):node(X)};  
+%newedgecover(cc,next_k,c(I,T),(N*(N-1))/2):- N={newclique(cc,next_k,c(I,T),X):node(X)};
                                           %tobeupdated(cc,k,c(I)); T=1..2; N>1; concomp(cc) ; next_step(next_k).
 %newedgecover(cc,next_k,c(I,1),N):- remain(cc,k,c(I)); edgecover(cc,k,c(I),N); concomp(cc) ; next_step(next_k).
 
@@ -137,7 +137,7 @@ coverededge(cc,k,X,Y):- bestedge(cc,k,X,Y).
 %%#show concept(cc,k,I,T,X): concept(cc,k,I,T,X);  step(k). %; k=7..9.
 %%#show oedgec2(cc,k,X,Y): oedgec2(cc,k,X,Y);  step(k). %; k=7..9.
 %%#show remain(cc,k,X): remain(cc,k,X); step(k). %; k=7..9.
-%%#show newconcept(cc,next_k,Y,Z,T): newconcept(cc,next_k,Y,Z,T); step(k); concomp(cc) ; next_step(next_k). %; k=7..9. 
+%%#show newconcept(cc,next_k,Y,Z,T): newconcept(cc,next_k,Y,Z,T); step(k); concomp(cc) ; next_step(next_k). %; k=7..9.
 %%#show newclique/4.
 %%#show powernode(cc,k,I): powernode(cc,k,c(I)), step(k). %; k=7..9.
 %%#show bpowernode/2.

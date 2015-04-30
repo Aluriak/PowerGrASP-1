@@ -14,7 +14,7 @@ ASP_SRC_GRAPH   = DIR_ASP_SRC + 'diamond' + ASP_FILE_EXT
 ASP_SRC_EXTRACT = DIR_ASP_SRC + 'extract' + ASP_FILE_EXT
 ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
 
-# VALUES
+# VALUES
 LOG_LEVEL         = logging.DEBUG
 RESULTS_PREDICATS = (
     'clique',
@@ -27,7 +27,7 @@ RESULTS_PREDICATS = (
 # FUNCTIONS
 def logger(name='asprgc', logfilename=None):
     """Return logger of given name, without initialize it.
-    
+
     Equivalent of logging.getLogger() call.
     """
     return logging.getLogger(name)
@@ -42,7 +42,7 @@ formatter    = logging.Formatter(
     '%(asctime)s :: %(levelname)s :: %(message)s'
 )
 file_handler = RotatingFileHandler(
-    DIR_LOGS + LOGGER_NAME + '.log', 
+    DIR_LOGS + LOGGER_NAME + '.log',
     'a', 1000000, 1
 )
 file_handler.setLevel(LOG_LEVEL)

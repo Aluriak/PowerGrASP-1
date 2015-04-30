@@ -19,14 +19,14 @@ options:
 
 from __future__ import print_function, absolute_import
 from docopt     import docopt
-from asprgc     import asprgc 
+from asprgc     import asprgc
 from info       import __version__
-     
+
 
 
 
 if __name__ == '__main__':
-    # read options 
+    # read options
     options = docopt(__doc__, version=__version__)
 
     # parse them

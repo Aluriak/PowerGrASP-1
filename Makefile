@@ -1,6 +1,5 @@
 PYTHON=python2
 
-
 diam:
 	$(PYTHON) asprgc/__main__.py --graph-data="data/diamond.lp" --iterations=10
 ddia:
