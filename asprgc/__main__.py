@@ -7,7 +7,7 @@ options:
     --help, -h
     --version, -v
     --iterations=NUMBER number of iterations performed, or None if no maximum
-    --graph-data=FILE   filepath to ASP graph definition       [default: data/diamond.lp]
+    --graph-data=FILE   filepath to ASP graph definition       [default: tests/double_biclique.lp]
     --extract=FILE      filepath to ASP extraction program     [default: data/extract.lp]
     --findconcept=FILE  filepath to ASP concept finder program [default: data/findconcept.lp]
     --findcliques=FILE  filepath to ASP cliques finder program [default: data/findcliques.lp]

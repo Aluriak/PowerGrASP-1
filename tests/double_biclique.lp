@@ -42,6 +42,6 @@ edge(i,l).
 %edge(g,l).
 edge(h,l).
 
-% link between l and k
-edge(k,l).
-%edge(l,k).
+% link between l and k through m
+edge(k,m).
+edge(l,m).
