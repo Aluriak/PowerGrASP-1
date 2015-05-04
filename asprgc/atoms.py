@@ -42,6 +42,7 @@ def update(atoms_dict, atoms, avoid='new'):
         for atom in atoms
         if atom.__class__ is gringo.Fun
     )
+    return atoms_dict
 
 
 
@@ -114,4 +115,14 @@ def prettified(atoms_dict, names=None, sizes=None,
     )
 
 
+def count(atoms_dict, names=None):
+    """Return a string that describes how many atoms given atoms_dict have.
 
+    if names is None, all atoms will be returned.
+    if names is an iterable of atoms names,
+     only founded atoms will be returned.
+    """
+    if names is None:
+        return {name:len(args) for name, args in atoms_dict.iteritems()}
+    else:
+        return {name:len(atoms_dict[name]) for name in names},

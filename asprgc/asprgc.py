@@ -53,13 +53,14 @@ def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextm
             k += 1
 
             print("\n#### FIND BEST CONCEPT", k, '####')
+            input_atoms_names = ('node', 'ccedge', 'covered', 'membercc')
             input_atoms = atoms.from_dict(
                 all_atoms,
-                ('ccedge', 'covered', 'membercc'),
+                input_atoms_names,
                 '.\n\t'
             )
             print('INPUT:\n\t', input_atoms,
-                  {name:len(args) for name, args in all_atoms.iteritems()}, 
+                  atoms.count(all_atoms, input_atoms_names),
                   sep=''
             )
 
@@ -77,7 +78,8 @@ def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextm
             atoms.update(all_atoms, model.atoms())
             print('OUTPUT:\n\t',
                   '.\n\t'.join(str(model).split(' ')), '\n',
-                  {name:len(args) for name, args in all_atoms.iteritems()}, sep=''
+                  atoms.count(atoms.update(defaultdict(set), model.atoms())), 
+                  sep=''
             )
 
             print("\n#### UPDATE", k, '####')
@@ -105,7 +107,7 @@ def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextm
                 names=('bcovered', 'concept', 'powernode'),
                 joiner='\n\t'
             ))
-            # raw_input('Next ?')
+            # raw_input('Next ?')  # my name is spam
 
 
     # print all
