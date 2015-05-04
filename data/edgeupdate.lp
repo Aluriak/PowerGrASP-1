@@ -26,7 +26,7 @@ any_step(0..k).
 %#show id/3.
 %#show concept/5.
 
-%oedgb are (oriented) edges of the concepts
+% oedgb are (oriented) edges of the concepts that links two nodes of different sets
 oedgeb(cc,k,X,Y):- concept(cc,k,T,X),concept(cc,k,3-T,Y), X<Y; T=1..2 ; step(k).
 #show oedgeb/4.
 

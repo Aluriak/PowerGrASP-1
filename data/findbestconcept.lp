@@ -33,7 +33,7 @@ Output:
 % Uses program parameters
 concomp(cc).
 step(k).
-any_step(0..k).
+%any_step(0..k). % unused
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% BICLIQUES %%%%%%%%%%%
@@ -42,19 +42,30 @@ any_step(0..k).
 nonsingletoncc(cc):- membercc(cc,Y); cc!=Y.
 #show nonsingletoncc/1.
 
-% Sorted with respect to the smallest set
+% Node is a paart of things.
 onode(cc,1,X):- membercc(cc,X). % X belongs to CC
-onode(cc,2,X):- ccedge(cc,X,A). % X is not a terminal node
-oedgeb(C,X,Y):- ccedge(C,X,Y) ; X<Y ; not covered(X,Y).
+onode(cc,2,X):- ccedge(cc,X,A). % X is a non-terminal node
+%oedgeb(C,X,Y):- ccedge(C,X,Y) ; X<Y ; not covered(X,Y).
 node(X):- onode(Anonymous1,Anonymous2,X).
 
+% edgeb is a non-oriented and non-covered edge
+covered(X,Y):- covered(Y,X).
+edgeb(C,X,Y):- ccedge(C,X,Y) ; not covered(X,Y).
+edgeb(C,X,Y):- ccedge(C,Y,X) ; not covered(X,Y).
+%:- node(X) ; node(Y) ; concomp(C) ; edgeb(C,X,Y) ; covered(X,Y).
+%:- edgeb(C,X,Y) ; covered(Y,X).
 
+%#show node/1.
 % N1 elements in set1 and N2 elements in set2
-nbelements(cc,k,N1,N2):- N1=#count{membercc(cc,X):node(X)};
-                         N2=#count{ onode(cc,2,Y):node(Y)}.
+%nbelements(cc,k,N1,N2):- N1=#count{membercc(cc,X):node(X)};
+                         %N2=#count{ onode(cc,2,Y):node(Y)}.
 
 
-#show oedgeb/3.
+%#show oedgeb/3.
+%#show covered/2.
+#show edgeb/3.
+#show node/1.
+%#show nbelements/4.
 % Choice of a non empty concept
 
 % Choice of the minimum of the concept
@@ -65,19 +76,19 @@ minobj(X):- minobj(A1,A2,X).
 %Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
 { newconcept(cc,k,1,X): membercc(cc,X),X>Min }:- minobj(cc,k,Min).
-:- newconcept(cc,k,1,X) ; Min>X ; minobj(cc,k,Min).  % useless assertion
+%:- newconcept(cc,k,1,X) ; Min>X ; minobj(cc,k,Min).  % useless assertion
 %Choice of elements in part 2
-1 { newconcept(cc,k,2,Y):oedgeb(cc,Min,Y) } :- minobj(cc,k,Min).
+1 { newconcept(cc,k,2,Y):edgeb(cc,Min,Y) } :- minobj(cc,k,Min).
 
 %Check that the concepts of simple graphs are not included in a clique of size 3:
 %There must exist two elements in a same part that are not related or the concept covers exactly one edge.
-nonclique(cc):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; X<Y ; not oedgeb(cc,X,Y).
+nonclique(cc):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; X<Y ; not edgeb(cc,X,Y).
 nonclique(cc):- 2{newconcept(cc,k,T,X)}2.
 :- not nonclique(cc).
 
 %impossible element in a concept
 % a node is impossible if not linked to all nodes of other part
-imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y); not ccedge(cc,X,Y); not ccedge(cc,Y,X).
+imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y); not edgeb(cc,X,Y); not edgeb(cc,Y,X).
 %imp(cc,3-I,X):- membercc(cc,X); membercc(cc,Y); not ccedge(cc,X,Y); not ccedge(cc,Y,X).
 
 %% consistency ; no impossible element can  be added to the concept
@@ -86,8 +97,6 @@ imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y); not ccedge(cc,X,Y); not cc
 %% maximality  ; all possible elements have to be added to the concept
 :- not imp(cc,I,X); not newconcept(cc,k,I,X); I=1..2; onode(cc,I,X).
 
-%% Biclique (Concept) edge cover
-newedgecoverb(cc,k,N1*N2):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
 
 %nb(concept1,N):- N={newconcept(cc,1,X)}.
 %nb(concept2,N):- N={newconcept(cc,2,X)}.
@@ -97,11 +106,16 @@ nb(set2,N):- N=#count{1,X:newconcept(cc,k,2,X)}.
 
 
 % maximize cardinal values
-%cardinal(cc,k,T,N1):- N1={newconcept(cc,k,T,X)} ; T=1..2. % unused
-#maximize{N1*N2@1,N1,N2: nb(set1,N1), nb(set2,N2)}.
+cardinal(cc,k,T,N):- N={newconcept(cc,k,T,X)} ; T=1..2.
+#maximize{N1*N2@1,N1,N2: cardinal(cc,k,1,N1), cardinal(cc,k,2,N2)}.
+%#maximize{N1*N2@1,N1,N2: nb(set1,N1), nb(set2,N2)}.
 
-#maximize{N@1,N:newedgecoverb(cc,k,N)}.
+%#maximize{N@1,N:newedgecoverb(cc,k,N)}.
+
+%% Biclique (Concept) edge cover
 %newedgecoverb(cc,k,N1*N2):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
+newedgecoverb(cc,k,N1*N2):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
+%newedgecoverb(cc,k,N1*N2):- nb(set1,N1), nb(set2,N2).
 
 
 %#show cardinal/3.
@@ -143,7 +157,7 @@ nb(set2,N):- N=#count{1,X:newconcept(cc,k,2,X)}.
 
 #show newconcept/4.
 #show nb/2.
-#show newedgecoverb/3.
+%#show newedgecoverb/3.
 #show newedgecover(cc,k,N): newedgecoverb(cc,k,N).
 %#show oedge/3.
 %#show clique3/1.
