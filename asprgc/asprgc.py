@@ -64,7 +64,7 @@ def asprgc(iterations, graph, extract, findcc, update,
             k += 1
 
             print("\n#### FIND BEST CONCEPT", k, '####')
-            input_atoms_names = ('node', 'inter', 'ccedge', 'covered', 'membercc')
+            input_atoms_names = ('inter', 'ccedge', 'covered', 'membercc')
             input_atoms = atoms.from_dict(
                 all_atoms,
                 input_atoms_names,
