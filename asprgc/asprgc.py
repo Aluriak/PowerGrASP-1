@@ -16,7 +16,18 @@ logger = commons.logger()
 
 
 
-def asprgc(iterations, graph, extract, findcc, update):
+def asprgc(iterations, graph, extract, findcc, update, 
+           output_format, interactive=False):
+    """Performs the graph compression with data found in graph file.
+
+    Use ASP source code found in extract, findcc and update files
+     for perform the computations.
+
+    Output format must be valid. TOCOMPLETE.
+
+    If interactive is True, an input will be expected 
+     from the user after each step.
+    """
     # all atoms are contained as:
     #   atom.name:{atom.args}
     all_atoms = defaultdict(set)
