@@ -9,11 +9,8 @@ options:
     --iterations=NUMBER number of iterations performed, or None if no maximum
     --graph-data=FILE   filepath to ASP graph definition       [default: tests/double_biclique.lp]
     --extract=FILE      filepath to ASP extraction program     [default: data/extract.lp]
-    --findconcept=FILE  filepath to ASP concept finder program [default: data/findconcept.lp]
-    --findcliques=FILE  filepath to ASP cliques finder program [default: data/findcliques.lp]
-    --firstmodel=FILE   filepath to ASP first model program    [default: data/firstmodel.lp]
-    --nextmodel=FILE    filepath to ASP next  model program    [default: data/model.lp]
-    --update=FILE       filepath to ASP updating program       [default: data/update.lp]
+    --findconcept=FILE  filepath to ASP concept finder program [default: data/findbestconcept.lp]
+    --update=FILE       filepath to ASP updating program       [default: data/edgeupdate.lp]
 
 """
 
@@ -39,10 +36,7 @@ if __name__ == '__main__':
         graph      = options['--graph-data' ],
         extract    = options['--extract'    ],
         findcc     = options['--findconcept'],
-        findcl     = options['--findcliques'],
-        firstmodel = options['--firstmodel' ],
         update     = options['--update'     ],
-        nextmodel  = options['--nextmodel'  ],
 
     ))
 

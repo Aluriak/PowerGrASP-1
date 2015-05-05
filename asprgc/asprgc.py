@@ -16,7 +16,7 @@ logger = commons.logger()
 
 
 
-def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextmodel):
+def asprgc(iterations, graph, extract, findcc, update):
     # all atoms are contained as:
     #   atom.name:{atom.args}
     all_atoms = defaultdict(set)
@@ -66,7 +66,7 @@ def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextm
 
             bcfinder = ASPSolver()
             bcfinder.read(input_atoms)
-            bcfinder.use('data/findbestconcept.lp', [cc, k])
+            bcfinder.use(findcc, [cc, k])
 
             model = bcfinder.first_solution()
             if model is None:
@@ -88,11 +88,15 @@ def asprgc(iterations, graph, extract, findcc, findcl, firstmodel, update, nextm
                 ('concept', 'clique', 'edgecover', 'covered', 'bcovered', 'node', 'membercc'),
                 '.\n\t'
             )
+            print('INPUT:\n\t', input_atoms,
+                  atoms.count(all_atoms, input_atoms_names),
+                  sep=''
+            )
 
             # Update edges
             updater = ASPSolver()
             updater.read(input_atoms)
-            updater.use('data/edgeupdate.lp', [cc, k])
+            updater.use(update, [cc, k])
 
             updater_atoms = updater.first_solution().atoms()
             atoms.update(all_atoms, updater_atoms)
