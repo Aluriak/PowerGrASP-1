@@ -70,7 +70,7 @@ def from_dict(atoms_dict, atoms, joiner='.'):
 
 
 def prettified(atoms_dict, names=None, sizes=None,
-               joiner='\n', results_only=False):
+               joiner='\n', results_only=False, sort=False):
     """Return a human readable string version or
       string generator of given atoms.
 
@@ -79,6 +79,9 @@ def prettified(atoms_dict, names=None, sizes=None,
       (defined by commons.RESULTS_PREDICATS)
     if sizes is provided, atoms with args number not in sizes
       will not be printed.
+
+    if sort is True, a non-lazy treatment will be applied to all data,
+      and the atoms will be returned in sorted order.
 
     atoms_dict must be a dictionnary like:
         {atom.name() : {atom.args()}}
@@ -108,11 +111,16 @@ def prettified(atoms_dict, names=None, sizes=None,
             )
             for name, argset in source
         )
-
-    return joiner.join(
+    # get final text generator
+    source = (
         name+'('+','.join(str(_) for _ in arg)+').'
         for name, set_args in source for arg in set_args
     )
+    # sorting
+    if sort:
+        source = sorted(tuple(source))
+    # joining if possible
+    return source if joiner is None else joiner.join(source)
 
 
 def count(atoms_dict, names=None):
