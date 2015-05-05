@@ -53,7 +53,7 @@ def asprgc(iterations, graph, extract, findcc, update):
             k += 1
 
             print("\n#### FIND BEST CONCEPT", k, '####')
-            input_atoms_names = ('node', 'ccedge', 'covered', 'membercc')
+            input_atoms_names = ('node', 'inter', 'ccedge', 'covered', 'membercc')
             input_atoms = atoms.from_dict(
                 all_atoms,
                 input_atoms_names,
@@ -77,8 +77,8 @@ def asprgc(iterations, graph, extract, findcc, update):
                 break
             atoms.update(all_atoms, model.atoms())
             print('OUTPUT:\n\t',
-                  '.\n\t'.join(str(model).split(' ')), '\n',
-                  atoms.count(atoms.update(defaultdict(set), model.atoms())), 
+                  '.\n\t'.join(str(model).split(' ')), '.\n',
+                  atoms.count(atoms.update(defaultdict(set), model.atoms())),
                   sep=''
             )
 
@@ -106,29 +106,32 @@ def asprgc(iterations, graph, extract, findcc, update):
             # ))
 
 
-            logger.info('\n\t' + atoms.prettified(
+            logger.info('COVERING:\n\t' + atoms.prettified(
                 all_atoms,
-                names=('bcovered', 'concept', 'powernode'),
+                # names=('bcovered', 'concept'),
+                names=('bcovered'),
                 joiner='\n\t'
             ))
-            # raw_input('Next ?')  # my name is spam
+            # logger.info('POWERNODES:\n\t' + atoms.prettified(
+            logger.info('POWERNODES:\n\t' + atoms.prettified(
+                all_atoms,
+                names=('powernode',),
+                joiner='\n\t',
+                sort=True
+            ))
+            raw_input('Next ?')  # my name is spam
 
 
     # print all
     logger.info('#################')
     logger.info('#### RESULTS ####')
     logger.info('#################')
+    results_names = ('powernode',)
     logger.info('\n\t' + atoms.prettified(all_atoms,
-                                          names=(
-                                                 # 'id', 'concept', 'step',
-                                                 # 'clique', 'edgecover',
-                                                 'powernode', 'bcovered',
-                                                 # 'bestedge', 'tobeupdated',
-                                                 # 'cpowernode', 'bpowernode',
-                                                 # 'powernode', 'notbestnodeb',
-                                                 # 'bestnodeb', 'splitcliqueb',
-                                                 # 'admcliqueb', 'bestnodec', 'splitcliquec',
-                                                ), joiner='\n\t'))
+                                          names=results_names,
+                                          joiner='\n\t',
+                                          sort=True)
+    )
     for to_find in ('powernode', 'edgecover'):
         logger.info(to_find + ' found: \t' + str(to_find in str(all_atoms)))
     # logger.info('\n\t' + atoms.prettified(all_atoms, joiner='\n\t', sizes=(4,5), results_only=True))
