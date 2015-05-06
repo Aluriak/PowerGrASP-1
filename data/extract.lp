@@ -56,24 +56,8 @@ nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 %edges of the connected components
 ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 
-
-% used by best concept search before update creat them.
-% for avoid undefined error, there is atoms with sensless values.
-bcovered(-1,-1,-1,-1).
- covered(-1,-1).
-clique(-1,-1,-1).
-concept(-1,-1,-1,-1).
-#show bcovered/4.
-#show  covered/2.
-#show clique/3.
-#show concept/4.
-
 #show cc/1.
 #show ccedge/3.
 #show membercc/2.
-%#show nb/2.
-%#show node/1.
 #show inter/2.
 #show connectedpath/2.
-%#show edge/2.
-%#show oedge/2.
