@@ -3,6 +3,7 @@
 TOWRITE
 """
 from __future__   import print_function, absolute_import
+from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
@@ -130,7 +131,7 @@ def asprgc(iterations, graph, extract, findcc, update,
                 joiner='\n\t',
                 sort=True
             ))
-            raw_input('Next ?')  # my name is spam
+            input('Next ?')  # my name is spam
 
 
     # print all
