@@ -13,6 +13,7 @@ Input:
         - membercc(cc,Y): Y is a member of cc, but not its root.
         for cliques only:
         - inter(X,Y): there exists an edge between X and Y in the graph (all edges are symmetric).
+        - covered(X,Y): edge(X,Y) is already covered.
 Output:
         if biclique found:
         - nb(set1,N): set 1 contains N elements. [DEBUG]
@@ -24,7 +25,7 @@ Output:
         - newclique(cc,k,X): X belongs to clique cc
         - clique3(X): cc is a clique of 3 elements
         in all cases:
-        - newedgecover(cc,N): score of the (bi)clique cc.
+        - edgecover(cc,N): score of the (bi)clique cc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *%
 #program findbestconcept(cc,k).
@@ -32,19 +33,17 @@ Output:
 % Uses program parameters
 concomp(cc).
 step(k).
-%any_step(0..k). % unused
+
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% BICLIQUES %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% If N node in cc, cc!=Y will be true "N-1 times"
-nonsingletoncc(cc):- membercc(cc,Y); cc!=Y.
-%#show nonsingletoncc/1.
-
-% Node is a paart of things.
+% Node is a part of things.
 onode(cc,1,X):- membercc(cc,X). % X belongs to CC
 onode(cc,2,X):- ccedge(cc,X,A). % X is a non-terminal node
-node(X):- onode(Anonymous1,Anonymous2,X).
 
 % oedge is a non-oriented and non-covered edge
 covered(X,Y):- covered(Y,X).
@@ -52,16 +51,11 @@ oedge(C,X,Y):- ccedge(C,X,Y) ; not covered(X,Y).
 oedge(C,X,Y):- ccedge(C,Y,X) ; not covered(X,Y).
 
 
-%#show covered/2.
-%#show oedge/3.
-#show node/1.
-%#show nbelements/4.
 % Choice of a non empty concept
 
 % Choice of the minimum of the concept
 1{minobj(cc,k,X):membercc(cc,X)}1.
 minobj(X):- minobj(A1,A2,X).
-
 
 %Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
@@ -70,11 +64,6 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 %Choice of elements in part 2
 1 { newconcept(cc,k,2,Y):oedge(cc,Min,Y) } :- minobj(cc,k,Min).
 
-%Check that the concepts of simple graphs are not included in a clique of size 3:
-%There must exist two elements in a same part that are not related or the concept covers exactly one edge.
-nonclique(cc):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; X<Y ; not oedge(cc,X,Y).
-nonclique(cc):- 2{newconcept(cc,k,T,X)}2.
-:- not nonclique(cc).
 
 %impossible element in a concept
 % a node is impossible if not linked to all nodes of other part
@@ -103,18 +92,8 @@ newedgecoverb(cc,k,N1*N2):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)
 
 
 % Maximize cardinal values
-%cardinal(cc,k,T,N):- N={newconcept(cc,k,T,X)} ; T=1..2. % unused
-%#maximize{N1*N2@1,N1,N2: cardinal(cc,k,1,N1), cardinal(cc,k,2,N2)}.
-#maximize{N@1,N:newedgecoverb(cc,k,N)}.
+#maximize{N@1,N:edgecover(cc,k,N)}.
 
-%#show cardinal/3.
-%#show imp/3.
-%#show minobj/2.
-%#show ccedge/3.
-%#show onode/3.
-%#show node/1.
-%#show oedge/3.
-%#show ccedge/3.
 
 
 
@@ -150,9 +129,4 @@ newedgecover(cc,k,c(N1)):- newedgecoverc(CC,k,N1) ; not newedgecoverb(CC,k,_).
 #show clique(cc,k,X): newclique(cc,k,X) , newedgecover(cc,k,c(N)).
 %#show newclique/3.
 #show nb/2.
-#show newedgecover/3.
-%#show newedgecover(cc,k,N): newedgecoverb(cc,k,N).
-%#show oedge/3.
-%#show clique3/1.
-%#show newclique/2.
-%#show newedgecoverc/2.
+#show edgecover/3.
