@@ -1,21 +1,19 @@
-%*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Choose a clique or biclique of maximal edgecover (power node/edge)
-and update the set of remaining cliques and bicliques
-in order to exclude all edges covered by the chosen power edge
-initial version:  09/12/2014   J. Nicolas
-
-Input:
-        - concept(cc,k,T,X):- X belongs to set T of cc at step k.
-        - clique(cc,k,X):- X belongs to clique cc at step k.
-        - edgecover(cc,k,N):- concept cc at step k has a score of N.
-Output:
-        - powernode(cc,k,N):- powernode cc at step k has a score of N.
-        - bcovered(cc,k,X,Y):- edge X to Y is covered by powernode cc at step k.
-        - covered(X,Y):- edge X to Y was covered.
+% Update the set of edges contained by the concept of current step,
+%  in order to exclude all edges covered by the chosen powernode
+%
+% initial version:  09/12/2014   J. Nicolas
+% revised version:  29/04/2014   L. Bourneuf
+%
+% Input:
+%       - concept(cc,k,T,X):- X belongs to set T of cc at step k.
+%       - clique(cc,k,X):- X belongs to clique cc at step k.
+%       - edgecover(cc,k,N):- concept cc at step k has a score of N.
+% Output:
+%       - powernode(cc,k,N):- powernode cc at step k has a score of N.
+%       - bcovered(cc,k,X,Y):- edge X to Y is covered by powernode cc at step k.
+%       - covered(X,Y):- edge X to Y was covered.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*%
-
 #program edgeupdate(cc,k).
 
 % Uses program parameters

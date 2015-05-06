@@ -1,33 +1,24 @@
-%*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Rewritting of powercomp4.lp by Lucas Bourneuf,
-without special treatment of bipartite case.
-
-Find best concept in the incidence matrix of a simple non oriented graph
-A concept can be a biclique or a clique.
-
-Input:
-        %- oedge(X,Y): there exists an edge between X and Y in the graph and edge is oriented X<Y.
-        - ccedge(cc,X,Y): there exists an edge between X and Y in the
-                          subgraph corresponding to connected component cc
-        - membercc(cc,Y): Y is a member of cc, but not its root.
-        for cliques only:
-        - inter(X,Y): there exists an edge between X and Y in the graph (all edges are symmetric).
-        - covered(X,Y): edge(X,Y) is already covered.
-Output:
-        if biclique found:
-        - nb(set1,N): set 1 contains N elements. [DEBUG]
-        - nb(set2,N): set 2 contains N elements. [DEBUG]
-        - newedgecoverb(cc,N): cc have a score (edge covering) of N.
-        - newconcept(cc,T,X): X is the member of the set T of the biclique cc.
-        if clique found:
-        - newedgecoverc(cc,N): score (edge covering) by the clique cc
-        - newclique(cc,k,X): X belongs to clique cc
-        - clique3(X): cc is a clique of 3 elements
-        in all cases:
-        - edgecover(cc,N): score of the (bi)clique cc.
+% Find best concept in the incidence matrix of a simple non oriented graph
+% A concept can be a biclique or a clique.
+%
+% initial version:  09/12/2014   J. Nicolas
+% revised version:  29/04/2014   L. Bourneuf
+%
+% Input:
+%       - ccedge(cc,X,Y): there exists an edge between X and Y in the
+%                         subgraph corresponding to connected component cc
+%       - membercc(cc,Y): Y is a member of cc, but not its root.
+%       for cliques only:
+%       - covered(X,Y): edge(X,Y) is already covered.
+% Output:
+%       - nb(set1,N): set 1 contains N elements. [DEBUG]
+%       - nb(set2,N): set 2 contains N elements. [DEBUG]
+%       - concept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
+%       - edgecover(cc,k,N): score of the concept cc at step k.
+%       - score(cc,k,b(S)): concept cc at step k is a biclique of score S.
+%       - score(cc,k,c(S)): concept cc at step k is a   clique of score S.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*%
 #program findbestconcept(cc,k).
 
 % Uses program parameters

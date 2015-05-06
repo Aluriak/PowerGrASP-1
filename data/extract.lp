@@ -59,5 +59,5 @@ ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 #show cc/1.
 #show ccedge/3.
 #show membercc/2.
-#show inter/2.
+%#show inter/2.
 #show connectedpath/2.
