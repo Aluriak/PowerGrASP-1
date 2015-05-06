@@ -10,18 +10,6 @@ import gringo
 
 
 
-
-# def atoms_to_string(atoms, avoid='new'):
-    # """convert given atoms in a ASP-valid string"""
-    # string = '.\n'.join(str(a) for a in atoms) + '.'
-    # if avoid is None:
-        # return string
-    # else:
-        # return string.replace(avoid, '')
-
-
-
-
 def update(atoms_dict, atoms, avoid='new'):
     """Update given dict with given gringo atoms
 
