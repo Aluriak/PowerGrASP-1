@@ -113,21 +113,15 @@ def asprgc(iterations, graph, extract, findcc, update,
             updater_atoms = updater.first_solution().atoms()
             atoms.update(all_atoms, updater_atoms)
             model_count += 1
-            # print('UDEBUG:\n', atoms.from_dict(
-                # all_atoms, ('cc', 'concept', 'coverededge')
-            # ))
-
 
             logger.info('COVERING:\n\t' + atoms.prettified(
                 all_atoms,
-                # names=('bcovered', 'concept'),
-                names=('bcovered'),
+                names=('bcovered',),
                 joiner='\n\t'
             ))
-            # logger.info('POWERNODES:\n\t' + atoms.prettified(
             logger.info('POWERNODES:\n\t' + atoms.prettified(
                 all_atoms,
-                names=('powernode',),
+                names=('powernode', 'score'),
                 joiner='\n\t',
                 sort=True
             ))
@@ -140,13 +134,12 @@ def asprgc(iterations, graph, extract, findcc, update,
     logger.info('#################')
     results_names = ('powernode',)
     logger.info('\n\t' + atoms.prettified(all_atoms,
-                                          names=results_names,
+                                          results_only=True,
                                           joiner='\n\t',
                                           sort=True)
     )
     for to_find in ('powernode', 'edgecover'):
         logger.info(to_find + ' found: \t' + str(to_find in str(all_atoms)))
-    # logger.info('\n\t' + atoms.prettified(all_atoms, joiner='\n\t', sizes=(4,5), results_only=True))
 
 
     # return str(graph)
