@@ -17,9 +17,8 @@ ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
 # VALUES
 LOG_LEVEL         = logging.DEBUG
 RESULTS_PREDICATS = (
-    'clique',
-    'concept',
-    'cardinal',
+    'powernode',
+    'score',
 )
 
 

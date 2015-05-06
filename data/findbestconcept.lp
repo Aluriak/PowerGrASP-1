@@ -38,20 +38,18 @@ step(k).
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%% BICLIQUES %%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Node is a part of things.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Node is a paart of things.
 onode(cc,1,X):- membercc(cc,X). % X belongs to CC
 onode(cc,2,X):- ccedge(cc,X,A). % X is a non-terminal node
 
 % oedge is a non-oriented and non-covered edge
 covered(X,Y):- covered(Y,X).
-oedge(C,X,Y):- ccedge(C,X,Y) ; not covered(X,Y).
-oedge(C,X,Y):- ccedge(C,Y,X) ; not covered(X,Y).
-
-
-% Choice of a non empty concept
+oedge(cc,X,Y):- ccedge(cc,X,Y) ; not covered(X,Y).
+oedge(cc,X,Y):- ccedge(cc,Y,X) ; not covered(X,Y).
+oedge(cc,X,X):- membercc(cc,X). % necessity for clique cases
 
 % Choice of the minimum of the concept
 1{minobj(cc,k,X):membercc(cc,X)}1.
@@ -59,23 +57,25 @@ minobj(X):- minobj(A1,A2,X).
 
 %Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
-{ newconcept(cc,k,1,X): membercc(cc,X),X>Min }:- minobj(cc,k,Min).
-%:- newconcept(cc,k,1,X) ; Min>X ; minobj(cc,k,Min).  % useless assertion
+{ newconcept(cc,k,1,X): membercc(cc,X), X>Min }:- minobj(cc,k,Min).
 %Choice of elements in part 2
-1 { newconcept(cc,k,2,Y):oedge(cc,Min,Y) } :- minobj(cc,k,Min).
-
+1 { newconcept(cc,k,2,Min); newconcept(cc,k,2,Y):oedge(cc,Min,Y), Y>Min } :- minobj(cc,k,Min).
 
 %impossible element in a concept
 % a node is impossible if not linked to all nodes of other part
 imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y); not oedge(cc,X,Y); not oedge(cc,Y,X).
-%imp(cc,3-I,X):- membercc(cc,X); membercc(cc,Y); not ccedge(cc,X,Y); not ccedge(cc,Y,X).
 
-%% consistency ; no impossible element can  be added to the concept
+% Consistency ; no impossible element can  be added to the concept
 :- imp(cc,I,Y); newconcept(cc,k,I,Y).
 
-%% maximality  ; all possible elements have to be added to the concept
+% Maximality  ; all possible elements have to be added to the concept
 :- not imp(cc,I,X); not newconcept(cc,k,I,X); I=1..2; onode(cc,I,X).
 
+
+% Set 1 and Set 2 of concept are equal (clique) or have an empty intersection (biclique)
+nonclique(cc,k):-     newconcept(cc,k,1,X); not newconcept(cc,k,2,X).
+nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
+:- newconcept(cc,k,1,X) ; newconcept(cc,k,2,X) ; nonclique(cc,k).
 
 % Count element in each set of the concept
 %nb(concept1,N):- N={newconcept(cc,1,X)}.
@@ -84,49 +84,23 @@ imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y); not oedge(cc,X,Y); not oed
 nb(set1,N):- N=#count{1,X:newconcept(cc,k,1,X)}.
 nb(set2,N):- N=#count{1,X:newconcept(cc,k,2,X)}.
 
+% Concept edge cover (score)
+newedgecover(cc,k,   N1*N2   ):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k).
+newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k).
 
-%% Biclique (Concept) edge cover
-%newedgecoverb(cc,k,N1*N2):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-newedgecoverb(cc,k,N1*N2):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-%newedgecoverb(cc,k,N1*N2):- nb(set1,N1), nb(set2,N2).
+% Maximize score
+#maximize{S@1,S:newedgecover(cc,k,S)}.
 
-
-% Maximize cardinal values
-#maximize{N@1,N:edgecover(cc,k,N)}.
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%% CLIQUES %%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clique3(cc):- oedge(cc,X,Y); oedge(cc,Y,Z); oedge(cc,X,Z).
-
-%Choice of a  clique of at least 3 elements
-3{newclique(cc,k,X): membercc(cc,X)}:- clique3(cc).
-
-%consistency of the clique
-:- newclique(cc,k,X); newclique(cc,k,Y) ; X<Y ; not oedge(cc,X,Y).
-
-%maximality of the clique
-:-  membercc(cc,X) ; not newclique(cc,k,X) ; inter(X,Y):newclique(cc,k,Y) ; clique3(cc).
-
-newedgecoverc(cc,k,(N*(N-1))/2):- N={newclique(cc,k,X):membercc(cc,X)}; clique3(cc).
-#maximize{(N*(N-1))/2@1,N: newedgecoverc(cc,k,N)}.
+% Exclusion of concept with two nodes
+:- newedgecover(cc,k,S) ; S<=1 ; not nonclique(cc,k).
+:- newedgecover(cc,k,S) ; S<=1 ;     nonclique(cc,k).
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-newedgecover(cc,k,b(N1)):- newedgecoverb(CC,k,N1) ;     newedgecoverc(CC,k,N2) ; N1>N2.
-newedgecover(cc,k,b(N1)):- newedgecoverb(CC,k,N1) ; not newedgecoverc(CC,k,_).
-newedgecover(cc,k,c(N1)):- newedgecoverc(CC,k,N1) ;     newedgecoverb(CC,k,N2) ; N1>N2.
-newedgecover(cc,k,c(N1)):- newedgecoverc(CC,k,N1) ; not newedgecoverb(CC,k,_).
-
-#show concept(cc,k,T,X): newconcept(cc,k,T,X) , newedgecover(cc,k,b(N)).
-#show clique(cc,k,X): newclique(cc,k,X) , newedgecover(cc,k,c(N)).
-%#show newclique/3.
+#show concept(cc,k,T,X): newconcept(cc,k,T,X).
 #show nb/2.
-#show edgecover/3.
+#show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
+#show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).

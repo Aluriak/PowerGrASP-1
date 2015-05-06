@@ -24,24 +24,15 @@ step(k).
 %any_step(0..k). % unused
 
 
-% oedgeb are (oriented) edges of the concepts that links two nodes of different sets.
-% oedgeb are also the edges covered by the better concept.
-oedgeb(cc,k,X,Y):- concept(cc,k,T,X) ; concept(cc,k,3-T,Y), X<Y; T=1..2 ; step(k) ; concomp(cc).
-%#show oedgeb/4.
-% oedgec are (oriented) edges of the clique that links two nodes.
-oedgec(cc,k,X,Y):- clique(cc,k,X) ; clique(cc,k,Y) ; X<Y ; step(k) ; concomp(cc).
+% Are covered all edges of concept that link two nodes of different set.
+bcovered(cc,k,X,Y):- concept(cc,k,T,X) ; concept(cc,k,3-T,Y), X<=Y; T=1..2 ; step(k) ; concomp(cc).
+:- bcovered(A1,A2,X,Y) ; X>Y.
 
 % Concept with maximal edgecover and smallest id at step k
-powernode(cc,k,N):- edgecover(cc,k,N); concomp(cc).
-#show  powernode/3.
+#show powernode(cc,k,T,X): concept(cc,k,T,X).
 
-% (Oriented) Edges of the best concept at step k
-bestedge(cc,k,X,Y):- powernode(cc,k,N) ; oedgeb(cc,k,X,Y).
-bestedge(cc,k,X,Y):- powernode(cc,k,N) ; oedgec(cc,k,X,Y).
-%bestedge(cc,X,Y):- powernode(cc,N); oedgec(cc,X,Y).
-bcovered(cc,k,X,Y):- bestedge(cc,k,X,Y).
- covered(     X,Y):- bestedge(cc,k,X,Y).
-:- bcovered(A1,A2,X,Y) ; X>Y.
+% New edges covered by powernode
+covered(     X,Y):- bcovered(cc,k,X,Y).
 
 #show bcovered/4.
 #show  covered/2.
