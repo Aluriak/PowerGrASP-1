@@ -8,10 +8,10 @@ options:
     --version, -v
     --iterations=NUMBER  number of iterations performed, or None if no maximum
     --graph-data=FILE    filepath to ASP graph definition       [default: tests/double_biclique.lp]
-    --extract=FILE       filepath to ASP extraction program     [default: data/extract.lp]
-    --findconcept=FILE   filepath to ASP concept finder program [default: data/findbestconcept.lp]
-    --update=FILE        filepath to ASP updating program       [default: data/edgeupdate.lp]
-    --remain=FILE        filepath to ASP remain finder program  [default: data/remains.lp]
+    --extract=FILE       filepath to ASP extraction program     [default: asprgc/ASPsources/extract.lp]
+    --findconcept=FILE   filepath to ASP concept finder program [default: asprgc/ASPsources/findbestconcept.lp]
+    --update=FILE        filepath to ASP updating program       [default: asprgc/ASPsources/edgeupdate.lp]
+    --remain=FILE        filepath to ASP remain finder program  [default: asprgc/ASPsources/remains.lp]
     --output-file=NAME   output file                            [default: data/output.nnf]
     --output-format=NAME output format                          [default: nnf]
     --interactive=BOOL   if true, program ask user for next step[default: True]
