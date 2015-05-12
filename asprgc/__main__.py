@@ -11,7 +11,9 @@ options:
     --extract=FILE       filepath to ASP extraction program     [default: data/extract.lp]
     --findconcept=FILE   filepath to ASP concept finder program [default: data/findbestconcept.lp]
     --update=FILE        filepath to ASP updating program       [default: data/edgeupdate.lp]
-    --output-format=NAME output format                          [default: human]
+    --remain=FILE        filepath to ASP remain finder program  [default: data/remains.lp]
+    --output-file=NAME   output file                            [default: data/output.nnf]
+    --output-format=NAME output format                          [default: nnf]
     --interactive=BOOL   if true, program ask user for next step[default: True]
 
 output formats:
@@ -24,6 +26,7 @@ from __future__ import print_function, absolute_import
 from docopt     import docopt
 from asprgc     import asprgc
 from info       import __version__
+from atoms      import OUTPUT_FORMATS
 
 
 
@@ -33,8 +36,9 @@ if __name__ == '__main__':
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    try:    iterations = int(options['--iterations' ])
+    try:    iterations = int(options['--iterations'])
     except: iterations = None
+    assert(options['--output-format'] in OUTPUT_FORMATS)
 
     # launch compression
     (asprgc(
@@ -43,6 +47,8 @@ if __name__ == '__main__':
         extract       = options['--extract'      ],
         findcc        = options['--findconcept'  ],
         update        = options['--update'       ],
+        remain        = options['--remain'       ],
+        output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
         interactive   = options['--interactive'  ],
 

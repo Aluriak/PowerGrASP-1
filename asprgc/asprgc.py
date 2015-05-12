@@ -17,8 +17,8 @@ logger = commons.logger()
 
 
 
-def asprgc(iterations, graph, extract, findcc, update, 
-           output_format, interactive=False):
+def asprgc(iterations, graph, extract, findcc, update, remain,
+           output_file, output_format, interactive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -26,12 +26,14 @@ def asprgc(iterations, graph, extract, findcc, update,
 
     Output format must be valid. TOCOMPLETE.
 
-    If interactive is True, an input will be expected 
+    If interactive is True, an input will be expected
      from the user after each step.
     """
     # all atoms are contained as:
     #   atom.name:{atom.args}
     all_atoms = defaultdict(set)
+    output = open(output_file, 'w')
+    convert_output = atoms.converter_for(output_format)
 
     # Extract graph data
     logger.info('#################')
@@ -95,9 +97,10 @@ def asprgc(iterations, graph, extract, findcc, update,
             )
 
             print("\n#### UPDATE", k, '####')
+            input_atoms_names = ('concept', 'covered', 'bcovered')
             input_atoms = atoms.from_dict(
                 all_atoms,
-                ('concept', 'clique', 'edgecover', 'covered', 'bcovered', 'node', 'membercc'),
+                input_atoms_names,
                 '.\n\t'
             )
             print('INPUT:\n\t', input_atoms,
@@ -125,14 +128,38 @@ def asprgc(iterations, graph, extract, findcc, update,
                 joiner='\n\t',
                 sort=True
             ))
-            input('Next ?')  # my name is spam
+            nnf = convert_output(updater_atoms)
+            logger.debug(output_format.upper() + ':\n' + nnf)
+            output.write(nnf)
+            if interactive: input('Next ?')  # my name is spam
 
 
-    # print all
+    logger.info('#################')
+    logger.info('## REMAIN DATA ##')
+    logger.info('#################')
+    input_atoms_names = ('ccedge', 'covered')
+    input_atoms = atoms.from_dict(
+        all_atoms,
+        input_atoms_names,
+        '.\n\t'
+    )
+
+    print(input_atoms, atoms.count(all_atoms, input_atoms_names))
+    remain_collector = ASPSolver().read(input_atoms).use(remain)
+    remain_edges = remain_collector.first_solution()
+    if remain_edges is None:
+        logger.info('No remain edge')
+    else:
+        # output.write(convert_output(remain_edges))
+        logger.info(remain_edges)
+
+
+    # deinit and print all results
+    output.close()
     logger.info('#################')
     logger.info('#### RESULTS ####')
     logger.info('#################')
-    results_names = ('powernode',)
+    results_names = ('powernode')
     logger.info('\n\t' + atoms.prettified(all_atoms,
                                           results_only=True,
                                           joiner='\n\t',
@@ -143,7 +170,6 @@ def asprgc(iterations, graph, extract, findcc, update,
 
 
     # return str(graph)
-
 
 
 

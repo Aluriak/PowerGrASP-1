@@ -1,17 +1,17 @@
-%*
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Rewritting of powercomp4.lp by Lucas Bourneuf,
-without special treatment of bipartite case.
-
-Extract the connected components of the graph
-Input:
-        - edge(X,Y): there exists an edge between X and Y in the graph.
-Output:
-        - connectedpath(X,Y): there exists a path from X to Y, X<Y.
-        - cc(CC): CC is the minimal element of a connected component.
-        - ccedge(CC,X,Y): there exists an edge between X and Y in CC.
+% Extraction of graph data from edge information.
+%
+% initial version:  09/12/2014   J. Nicolas
+% revised version:  29/04/2014   L. Bourneuf
+%
+% Extract the connected components of the graph
+% Input:
+%       - edge(X,Y): there exists an edge between X and Y in the graph.
+% Output:
+%       - connectedpath(X,Y): there exists a path from X to Y, X<Y.
+%       - cc(CC): CC is the minimal element of a connected component.
+%       - ccedge(CC,X,Y): there exists an edge between X and Y in CC.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-*%
 #program extract.
 
 %In nodes and Out nodes
