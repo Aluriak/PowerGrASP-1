@@ -28,6 +28,10 @@ badd +1 data/model.lp
 badd +1 asprgc/atoms.py
 badd +1 data/findbestconcept.lp
 badd +1 data/edgeupdate.lp
+badd +1 debug/findbestconcept.lp
+badd +1 debug/threenode.lp
+badd +1 remains.lp
+badd +1 data/remains.lp
 argglobal
 silent! argdel *
 set stal=2
@@ -75,7 +79,7 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 15
-normal! 079|
+normal! 077|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/asprgc.py
 set splitbelow splitright
@@ -98,7 +102,7 @@ if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 66
-normal! 013|
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/commons.py
 set splitbelow splitright
@@ -139,11 +143,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 164 - ((41 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+164
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/aspsolver.py
@@ -185,11 +189,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 31 - ((30 * winheight(0) + 25) / 50)
+let s:l = 8 - ((7 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-31
+8
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/data/findbestconcept.lp
@@ -208,12 +212,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 42 - ((24 * winheight(0) + 25) / 50)
+let s:l = 29 - ((20 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-42
-normal! 0
+29
+normal! 034|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/data/edgeupdate.lp
 set splitbelow splitright
@@ -231,12 +235,35 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 36 - ((32 * winheight(0) + 25) / 50)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-36
-normal! 033|
+1
+normal! 0
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/data/remains.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+1
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabnext 3
 set stal=1
