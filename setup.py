@@ -27,7 +27,7 @@ setup(
 
     author = "lucas bourneuf",
     author_email = "lucas.bourneuf@openmailbox.org",
-    description = "Graph compression by recursive approach with Answer Set Programming",
+    description = "Graph compression with Answer Set Programming",
     long_description = open('README.mkd').read(),
     keywords = "graph",
     url = "https://github.com/Aluriak/asprgc",
