@@ -4,3 +4,5 @@
 .*.swo
 *.pyc
 __pycache__/
+debug/
+*.nnf
