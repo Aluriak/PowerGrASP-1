@@ -1,10 +1,10 @@
 PYTHON=python2
-CYTOSCAPE=~/bin/Cytoscape_v3.2.1/cytoscape.sh
+CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 
 TARGET=asprgc/__main__.py
-INTERACTIVE=--interactive=True
+#INTERACTIVE=--interactive=True
 ITERATIONS=--iterations=10
-OUTPUT=--output-format="nnf"
+OUTPUT=--output-format="bbl"
 
 ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
@@ -29,6 +29,10 @@ tar:
 	cd .. && tar acf tarball.tar.gz asprgc/
 zip:
 	cd .. && zip -r tarball.zip asprgc/
+tarasp:
+	tar acvf ASPsources.tar.gz asprgc/ASPsources/
 
+cytoscape:
+	$(CYTOSCAPE)
 show:
 	$(CYTOSCAPE) -N data/output.nnf
