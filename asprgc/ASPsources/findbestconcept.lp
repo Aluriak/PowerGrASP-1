@@ -29,7 +29,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Node as cc member and non-terminal entities.
 onode(cc,1,X):- membercc(cc,X). % X belongs to CC
-onode(cc,2,X):- ccedge(cc,X,A). % X is a non-terminal node
+onode(cc,2,X):- ccedge(cc,X,_). % X is a non-terminal node
 
 % oedge are oriented and non-covered
 oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; not covered(X,Y).
@@ -38,7 +38,7 @@ oedge(X,X):- membercc(cc,X) ; not nonclique(cc,k). % necessity for clique cases
 
 % Choice of the minimum of the concept
 1{minobj(cc,k,X):membercc(cc,X)}1.
-minobj(X):- minobj(A1,A2,X).
+minobj(X):- minobj(_,_,X).
 
 % Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
@@ -77,7 +77,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #maximize{S@1,S:newedgecover(cc,k,S)}.
 
 % Exclusion of concept with two nodes
-:- newedgecover(cc,k,S) ; S<=1. % 1*1 == 1 and 2*1/2 == 1
+:- newedgecover(cc,k,S) ; S<=0. % 1*1 == 1 and 2*1/2 == 1
 
 
 

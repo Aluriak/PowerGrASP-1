@@ -21,7 +21,7 @@ step(k).
 
 % Are covered all edges of concept that link two nodes of different set.
 bcovered(cc,k,X,Y):- concept(cc,k,T,X) ; concept(cc,k,3-T,Y), X<=Y; T=1..2 ; step(k) ; concomp(cc).
-:- bcovered(A1,A2,X,Y) ; X>Y.
+:- bcovered(_,_,X,Y) ; X>Y.
 
 % Powernode are composed of points
 #show powernode(cc,k,T,X): concept(cc,k,T,X).

@@ -15,16 +15,14 @@
 #program extract.
 
 %In nodes and Out nodes
-%node(1,X):- edge(X,_). % anonymous variable generates bugs…
-%node(2,Y):- edge(_,Y).
-node(1,X):- edge(X,Anonymous).
-node(2,Y):- edge(Anonymous,Y).
+node(1,X):- edge(X,_).
+node(2,Y):- edge(_,Y).
 
 %All nodes
 node(X):- node(1..2,X).
 
 %Symetric graph
-inter(X,Y):- edge(X,Y). %xxx: used later
+inter(X,Y):- edge(X,Y). 
 inter(X,Y):- edge(Y,X).
 
 %Oriented graph
@@ -43,11 +41,11 @@ connectedpath(X,Z):- connectedpath(X,Y); inter(Y,Z); X<Z.
 %xxx: should X<Z be set as a constraint ?
 %:- connectedpath(X,Y) ; X>=Y.
 
-connected(Y):- connectedpath(T,Y).
+connected(Y):- connectedpath(_,Y).
 
 %Connected component of minimum element X
 membercc(X,Y):- connectedpath(X,Y); not connected(X).
-membercc(X,X):- connectedpath(X,T); not connected(X).
+membercc(X,X):- connectedpath(X,_); not connected(X).
 cc(CC):- membercc(CC,T).
 
 nb(nodes,               N):- N=#count{node(X):node(X)}.

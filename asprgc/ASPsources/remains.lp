@@ -3,7 +3,7 @@
 %  in order to exclude all edges covered by the chosen powernode
 %
 % initial version:  09/12/2014   J. Nicolas
-% revised version:  29/04/2014   L. Bourneuf
+% revised version:  06/05/2014   L. Bourneuf
 %
 % Input:
 %       - covered(X,Y):- edge X to Y was covered.
@@ -14,7 +14,7 @@
 #program remains.
 
 covered(X,Y):- covered(Y,X).
-remain(X,Y):- ccedge(C,X,Y) ; not covered(X,Y).
+remain(X,Y):- ccedge(_,X,Y) ; not covered(X,Y).
 
 #show remain/2.
 
