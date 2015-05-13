@@ -7,6 +7,7 @@ from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
+from converter    import converter
 import commons
 import atoms
 
@@ -32,8 +33,8 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
     # all atoms are contained as:
     #   atom.name:{atom.args}
     all_atoms = defaultdict(set)
-    output = open(output_file, 'w')
-    convert_output = atoms.converter_for(output_format)
+    output = open(output_file + '.' + output_format, 'w')
+    convert_output = converter.converter_for(output_format)
 
     # Extract graph data
     logger.info('#################')
@@ -128,10 +129,10 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
                 joiner='\n\t',
                 sort=True
             ))
-            nnf = convert_output(updater_atoms)
-            logger.debug(output_format.upper() + ':\n' + nnf)
-            output.write(nnf)
-            if interactive: input('Next ?')  # my name is spam
+            convert_output.convert(updater_atoms)
+            print('INTERACTIVE =', interactive)
+            if interactive:
+                input('Next ?')  # my name is spam
 
 
     logger.info('#################')
@@ -154,11 +155,14 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
         logger.info(remain_edges)
 
 
-    # deinit and print all results
-    output.close()
     logger.info('#################')
     logger.info('#### RESULTS ####')
     logger.info('#################')
+    # write output in file
+    output.write(convert_output.finalized())
+    output.close()
+
+    # print results
     results_names = ('powernode')
     logger.info('\n\t' + atoms.prettified(all_atoms,
                                           results_only=True,
