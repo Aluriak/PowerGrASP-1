@@ -8,7 +8,7 @@ import os
 
 logger = commons.logger()
 
-class ASPSolver():
+class ASPSolver(object):
     """Functionnal gringo abstraction with builder pattern.
 
     Builder pattern.
