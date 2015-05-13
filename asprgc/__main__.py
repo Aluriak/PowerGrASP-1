@@ -12,8 +12,8 @@ options:
     --findconcept=FILE   filepath to ASP concept finder program [default: asprgc/ASPsources/findbestconcept.lp]
     --update=FILE        filepath to ASP updating program       [default: asprgc/ASPsources/edgeupdate.lp]
     --remain=FILE        filepath to ASP remain finder program  [default: asprgc/ASPsources/remains.lp]
-    --output-file=NAME   output file                            [default: data/output.nnf]
-    --output-format=NAME output format                          [default: nnf]
+    --output-file=NAME   output file (without extension)        [default: data/output]
+    --output-format=NAME output format                          [default: bbl]
     --interactive=BOOL   if true, program ask user for next step[default: True]
 
 output formats:
