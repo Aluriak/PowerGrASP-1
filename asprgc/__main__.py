@@ -14,7 +14,7 @@ options:
     --remain=FILE        filepath to ASP remain finder program  [default: asprgc/ASPsources/remains.lp]
     --output-file=NAME   output file (without extension)        [default: data/output]
     --output-format=NAME output format                          [default: bbl]
-    --interactive=BOOL   if true, program ask user for next step[default: True]
+    --interactive=BOOL   if true, program ask user for next step[default: 0]
 
 output formats:
     human                something like (almost) human readable
@@ -36,8 +36,10 @@ if __name__ == '__main__':
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    try:    iterations = int(options['--iterations'])
-    except: iterations = None
+    try:    iterations  = int(options['--iterations'])
+    except: iterations  = None
+    try:    interactive = options['--interactive'] in ('1', 'True', 'true')
+    except: iterations  = False
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
     # launch compression
@@ -50,7 +52,7 @@ if __name__ == '__main__':
         remain        = options['--remain'       ],
         output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
-        interactive   = options['--interactive'  ],
+        interactive   = interactive,
 
     ))
 
