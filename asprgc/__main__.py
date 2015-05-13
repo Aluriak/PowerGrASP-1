@@ -22,11 +22,11 @@ output formats:
     NNF                  usable by Cytoscape and others NNF readers
 """
 
-from __future__ import print_function, absolute_import
-from docopt     import docopt
-from asprgc     import asprgc
-from info       import __version__
-from atoms      import OUTPUT_FORMATS
+from __future__          import print_function, absolute_import
+from docopt              import docopt
+from asprgc              import asprgc
+from info                import __version__
+from converter.converter import OUTPUT_FORMATS
 
 
 
