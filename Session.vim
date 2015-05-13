@@ -32,10 +32,11 @@ badd +1 debug/findbestconcept.lp
 badd +1 debug/threenode.lp
 badd +1 remains.lp
 badd +1 data/remains.lp
-badd +0 asprgc/ASPsources/extract.lp
-badd +0 asprgc/ASPsources/findbestconcept.lp
-badd +0 asprgc/ASPsources/edgeupdate.lp
-badd +0 asprgc/ASPsources/remains.lp
+badd +1 asprgc/ASPsources/extract.lp
+badd +1 asprgc/ASPsources/findbestconcept.lp
+badd +1 asprgc/ASPsources/edgeupdate.lp
+badd +1 asprgc/ASPsources/remains.lp
+badd +0 asprgc/converter/converter.py
 argglobal
 silent! argdel *
 set stal=2
@@ -78,12 +79,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 15 - ((14 * winheight(0) + 25) / 50)
+let s:l = 16 - ((15 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-15
-normal! 077|
+16
+normal! 078|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/asprgc.py
 set splitbelow splitright
@@ -101,12 +102,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 65 - ((28 * winheight(0) + 25) / 50)
+let s:l = 35 - ((11 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-65
-normal! 013|
+35
+normal! 051|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/commons.py
 set splitbelow splitright
@@ -147,11 +148,34 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 164 - ((41 * winheight(0) + 25) / 50)
+let s:l = 167 - ((18 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-164
+167
+normal! 012|
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/asprgc/converter/converter.py
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal nofen
+silent! normal! zE
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+1
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/aspsolver.py
@@ -170,12 +194,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 49 - ((39 * winheight(0) + 25) / 50)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-49
-normal! 032|
+1
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/extract.lp
 set splitbelow splitright
@@ -269,7 +293,7 @@ normal! zt
 1
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabnext 3
+tabnext 6
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
