@@ -6,3 +6,4 @@
 __pycache__/
 debug/
 *.nnf
+cyoog.cfg
