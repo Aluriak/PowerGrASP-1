@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-TOWRITE
+Definitions of many utils functions about gringo atoms manipulation.
+Provides converters, access and storage of atoms.
+
 """
-from future.utils import iteritems
+
+from future.utils import iteritems, itervalues
+from collections  import defaultdict
 from commons      import RESULTS_PREDICATS
 import itertools
 import gringo
