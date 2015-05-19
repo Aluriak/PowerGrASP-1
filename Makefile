@@ -21,6 +21,8 @@ clique:
 	$(COMMAND) --graph-data="tests/cliques.lp"
 single:
 	$(COMMAND) --graph-data="tests/singlenode.lp"
+bip:
+	$(COMMAND) --graph-data="tests/bipartite.lp"
 
 clear:
 	rm */*.pyc
