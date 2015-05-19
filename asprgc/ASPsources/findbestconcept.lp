@@ -84,7 +84,13 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A powernode is trivial if it contain only one node
+trivial(cc,k,T):- 1 {newconcept(cc,k,T,X) : newconcept(cc,k,T,X)} 1 ; T=1..2.
+
+% output
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X).
+#show clique(cc,k): not nonclique(cc,k).
+#show trivial/3.
 #show nb/2.
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).

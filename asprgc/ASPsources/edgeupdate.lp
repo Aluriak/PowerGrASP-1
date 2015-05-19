@@ -36,8 +36,8 @@ inter(X,Y):- ccedge(cc,Y,X) ; not covered(X,Y).
 
 % New edges, that links existing nodes and new powernode
 %  there is a link iff the X node is linked to all nodes of powernode
-ccedge(cc,X,p(cc,k,T)):- inter(X,Y) ; not powernode(cc,k,T,X) ; powernode(cc,k,T,Y) ; not trivial(cc,k,T).
-:- ccedge(cc,X,c(cc,k,T)) ; not inter(X,Y) ; powernode(cc,k,T,Y) ; covered(X,Y).
+%ccedge(cc,X,p(cc,k,T)):- inter(X,Y) ; not powernode(cc,k,T,X) ; powernode(cc,k,T,Y) ; not trivial(cc,k,T).
+%:- ccedge(cc,X,c(cc,k,T)) ; not inter(X,Y) ; powernode(cc,k,T,Y) ; covered(X,Y).
 
 
 #show bcovered/4.

@@ -1,9 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Update the set of edges contained by the concept of current step,
-%  in order to exclude all edges covered by the chosen powernode
+% Find all edges that are not covered,
+%  and produce them as remaining edges.
 %
-% initial version:  09/12/2014   J. Nicolas
-% revised version:  06/05/2014   L. Bourneuf
+% initial version:  10/05/2014   L. Bourneuf
 %
 % Input:
 %       - covered(X,Y):- edge X to Y was covered.

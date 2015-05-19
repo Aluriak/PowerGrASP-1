@@ -16,10 +16,16 @@ from future.utils import iteritems, iterkeys, itervalues
 from collections  import defaultdict
 from collections  import Counter
 import itertools
+import commons
 import re
 
 
+logger = commons.logger()
+
+
 REGEX_PWRNS    = re.compile(r"^powernode\(([^,]+),([^,]+),([^,]+),(.+)\)$")
+REGEX_TRIVIAL  = re.compile(r"^trivial\(([^,]+),([^,]+),([^,]+)\)$")
+REGEX_CLIQUE   = re.compile(r"^clique\(([^,]+),([^,]+)\)$")
 REGEX_EDGES    = re.compile(r"^edge\(([^,]+),([^\)]+)\)$")
 REGEX_SUBPOWER = re.compile(r"^p\(([^,]+),([^,]+),(.+)\)$")
 
@@ -44,6 +50,30 @@ def subpowernode_to_powernode(subpowernode):
     """
     return powernode(*REGEX_SUBPOWER.match(subpowernode).groups())
 
+def multiple_matched_splits(atoms, separator, regexs):
+    """Return one generator of values finds by each regex on
+     each substring of given string splitted by given separator.
+    """
+    atoms = (a for a in str(atoms).split(separator))
+    # atoms = tuple(atoms)
+    # print('ATOMS:', atoms)
+    matchs = itertools.tee(atoms, len(regexs))
+    # for regex, match in zip(regexs, matchs):
+        # print(regex, match)
+        # for a in match:
+            # print(a, regex.match(a))
+
+    matchs = ((regex.match(a)
+                for a in match
+              )
+              for regex, match in zip(regexs, matchs)
+             )
+    matchs = tuple(tuple(a) for a in matchs)
+    print('MATCHS:', matchs)
+    return ((a.groups() for a in match if a is not None)
+            for match in matchs
+           )
+
 def matched_splits(atoms, separator, regex):
     """Return generator of values finds by given regex on
      each substring of given string splitted by given separator.
@@ -59,7 +89,7 @@ class NeutralConverter(object):
     Converters take string that describes ASP atoms, and,
      when finalizing, generate all graph description
 
-    NeutralConverter is unusable as is : 
+    NeutralConverter is unusable as is :
      it generates a sensless output.
 
     """
@@ -73,9 +103,12 @@ class NeutralConverter(object):
             powernode(a,1,1,a).
 
         """
+        expected_atoms = [REGEX_PWRNS, REGEX_CLIQUE, REGEX_TRIVIAL]
+        splits = tuple(multiple_matched_splits(atoms, separator, expected_atoms))
+        print('DEBUG', splits)
         self.converted = itertools.chain(
             self.converted,
-            self._convert(matched_splits(atoms, separator, REGEX_PWRNS))
+            self._convert(*splits)
         )
 
     def convert_edge(self, atoms):
@@ -90,8 +123,12 @@ class NeutralConverter(object):
             self._convert_edge(matched_splits(atoms, '.', REGEX_EDGES))
         )
 
-    def _convert(self, atoms):
-        """Perform the convertion and return its results"""
+    def _convert(self, atoms, cliques=[], trivial=[]):
+        """Perform the convertion and return its results
+
+        Wait for atoms data (cc,k,num_set,X),
+        for cliques data (cc,k),
+        and trivial data (cc,k)."""
         return atoms
 
     def _convert_edge(self, atoms):
@@ -164,6 +201,10 @@ class BBLConverter(NeutralConverter):
         self.contains   = dict()
         # belongs is a dict of contained:container
         self.belongs    = dict()
+        # a powernode is trivial iff contains only one node
+        self.trivials   = set()
+        # a powernode that is a clique is contained in self.cliques
+        self.cliques    = set()
         # count number of nodes in powernodes
         self.containers_size = Counter()
         # linking between powernodes
@@ -172,8 +213,27 @@ class BBLConverter(NeutralConverter):
         # linking between nodes
         self.edges      = defaultdict(set)
 
-    def _convert(self, atoms):
-        for cc, step, num_set, node in atoms:
+    def _convert(self, powernodes, cliques=[], trivial=[]):
+        # cliques cc, step (a powernode is a clique)
+        for cc, step in cliques:
+            assert(int(step) > 0)
+            pwrn      = powernode(cc,step,'1')
+            self.edges[pwrn].add(pwrn)
+            self.cliques.add(pwrn)
+            logger.debug('CLIQUE:' + cc + step)
+
+        # trivial cc, step, num_set (a powernode contains only one node)
+        for cc, step, num_set in trivial:
+            assert(int(step) > 0)
+            assert(num_set in ('1', '2'))
+            self.trivials.add(powernode(cc,step,num_set))
+            logger.debug('TRIVIAL:' + cc + step + num_set)
+
+        # powernodes cc, step, num_set, node
+        for cc, step, num_set, node in powernodes:
+            assert(int(step) > 0)
+            assert(num_set in ('1', '2'))
+            print('POWERNODES:', cc, step, num_set)
             node = node.strip('"')
             pwrn      = powernode(cc,step,num_set)
             pwrn_comp = powernode(cc,step,str(3-int(num_set)))
@@ -186,12 +246,19 @@ class BBLConverter(NeutralConverter):
             self.containers_size[pwrn]  += 1
             self.contains[pwrn]          = node
 
-            self.pwnds.add(pwrn)
-            if num_set == '1':
-                self.linked1to2[pwrn].add(pwrn_comp)
-            else:
-                assert(num_set == '2')
-                self.linked2to1[pwrn].add(pwrn_comp)
+            if pwrn not in self.cliques and pwrn_comp not in self.cliques:
+                self.pwnds.add(pwrn)
+                if num_set == '1':
+                    self.linked1to2[pwrn].add(pwrn_comp)
+                else:
+                    assert(num_set == '2')
+                    self.linked2to1[pwrn].add(pwrn_comp)
+
+        # integrity tests
+        assert(all(node in self.trivials
+                   for node in self.pwnds
+                   if self.containers_size[node] == 1
+        ))
 
     def _convert_edge(self, atoms):
         atoms = tuple(atoms)
@@ -210,40 +277,57 @@ class BBLConverter(NeutralConverter):
     def finalized(self):
         # define NODEs, SETs, INs and EDGEs relations, and return them
         return '\n'.join(itertools.chain(
-            # Header
+        # Header
             ('#BBL-1.0\n#' + BBLConverter.META_DATA + '\n#',),
-            # NODEs
+        # NODEs
             ('NODE\t' + node for node in self.nodes),
-            # SETs
+        # SETs
+            # defines the Graph as the biggest powernode that contain all the graph
             ('SET\tGraph\t1.0',),
+            # defines all powernodes of set 1
             ('SET\t' + pwnd + '\t1.0'
              for pwnd in iterkeys(self.linked1to2)
             ),
+            # defines all powernodes of set 2
             ('SET\t' + pwnd + '\t1.0'
              for pwnd in iterkeys(self.linked2to1)
             ),
-            # INs
+            # defines all cliques
+            ('SET\t' + pwnd + '\t1.0'
+             for pwnd in self.cliques
+            ),
+        # INs
+            # include in Graph all nodes that are not contained in another one
             ('IN\t' + node + '\tGraph'
              for node in self.nodes
-             if  self.containers_size[self.belongs[node]] == 1
+             if self.containers_size[self.belongs[node]] == 1
             ),
+            # include in Graph all nodes that ????
             ('IN\t' + node + '\tGraph'
              for node in self.pwnds
              if  node not in iterkeys(self.belongs)
              and self.containers_size[node] > 1
             ),
-            ('IN\t' + contained + '\t' + container
+            # include in container all nodes contained
+            ('IN\t'
+             + (contained if contained not in self.trivials
+                else self.contains[contained]
+               )
+             + '\t'
+             + container
              for contained, container in iteritems(self.belongs)
-             if self.containers_size[container] > 1
+             if container not in self.trivials
             ),
-            # EDGEs
+        # EDGEs
+            # create link between powernodes of set 1 to set 2
             ('EDGE\t'
-             + (pwnd if self.containers_size[pwnd] > 1 else self.contains[pwnd])
-             + '\t' + (target if self.containers_size[target] > 1 else self.contains[target])
+             + (pwnd if pwnd not in self.trivials else self.contains[pwnd])
+             + '\t' + (target if target not in self.trivials else self.contains[target])
              + '\t1.0'
              for pwnd, targets in iteritems(self.linked1to2)
              for target in targets
             ),
+            # create link between remaining nodes
             ('EDGE\t' + node + '\t' + target + '\t1.0'
              for node, targets in iteritems(self.edges)
              for target in targets
