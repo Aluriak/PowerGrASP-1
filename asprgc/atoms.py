@@ -17,8 +17,12 @@ import re
 def update(atoms_dict, atoms, avoid='new'):
     """Update given dict with given gringo atoms
 
-    transform atoms by replace avoid value
-    by nothing in the final string."""
+    if given atoms dict is None,
+     a new and empty dict will be used and returned
+    Transform atoms by replace avoid value
+     by nothing in the final string."""
+    if atoms_dict is None:
+        atoms_dict = defaultdict(set)
     # full generator generation
     tuple(
         atoms_dict[
@@ -45,11 +49,9 @@ def from_dict(atoms_dict, atoms, joiner='.'):
     as string if joiner is given,
     as generator if joiner is None.
     """
+    if atoms.__class__ is str:
+        atoms = [atoms]
     ret = (
-        # name+'('+','.join(args)+')'
-        # name+'('+','.join((('"'+_+'"') if isinstance(_, str) else str(_)) for _ in args)+')'
-        # name+'('+','.join(str(_) for _ in args)+')'
-        # name+'('+','.join(('"'+str(_)+'"') for _ in args)+')'
         name+'('+','.join((str(_)) for _ in args)+')'
         for name in atoms for args in atoms_dict[name]
     )

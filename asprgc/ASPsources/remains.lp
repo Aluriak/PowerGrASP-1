@@ -14,7 +14,7 @@
 #program remains.
 
 covered(X,Y):- covered(Y,X).
-remain(X,Y):- ccedge(_,X,Y) ; not covered(X,Y).
+edge(X,Y):- ccedge(C,X,Y) ; not covered(X,Y).
 
-#show remain/2.
+#show edge/2.
 

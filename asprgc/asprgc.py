@@ -7,7 +7,7 @@ from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
-from converter    import converter
+from converter    import converter as Converter
 import commons
 import atoms
 
@@ -34,7 +34,7 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
     #   atom.name:{atom.args}
     all_atoms = defaultdict(set)
     output = open(output_file + '.' + output_format, 'w')
-    convert_output = converter.converter_for(output_format)
+    converter = Converter.converter_for(output_format)
 
     # Extract graph data
     logger.info('#################')
@@ -90,15 +90,16 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
                     # all_atoms, ('cc', 'coverededge', 'ccedge', 'membercc', 'connectedpath'), '.\n'
                 # ), '====\n', sep='')
                 break
-            atoms.update(all_atoms, model.atoms())
+            bcfinder_atoms = model.atoms()
+            atoms.update(all_atoms, bcfinder_atoms)
             print('OUTPUT:\n\t',
                   '.\n\t'.join(str(model).split(' ')), '.\n',
-                  atoms.count(atoms.update(defaultdict(set), model.atoms())),
+                  atoms.count(atoms.update(None, bcfinder_atoms)),
                   sep=''
             )
 
             print("\n#### UPDATE", k, '####')
-            input_atoms_names = ('concept', 'covered', 'bcovered')
+            input_atoms_names = ('ccedge', 'powernode', 'covered', 'bcovered')
             input_atoms = atoms.from_dict(
                 all_atoms,
                 input_atoms_names,
@@ -115,9 +116,17 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
             updater.use(update, [cc, k])
 
             updater_atoms = updater.first_solution().atoms()
+            if len(updater_atoms) == 0:
+                logger.error('No update performed by updater. '
+                             + 'This situation must never be encountered.'
+                            )
             atoms.update(all_atoms, updater_atoms)
             model_count += 1
 
+            logger.info('ALL:\n\t' + atoms.prettified(
+                all_atoms,
+                joiner='\n\t'
+            ))
             logger.info('COVERING:\n\t' + atoms.prettified(
                 all_atoms,
                 names=('bcovered',),
@@ -129,8 +138,10 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
                 joiner='\n\t',
                 sort=True
             ))
-            convert_output.convert(updater_atoms)
-            print('INTERACTIVE =', interactive)
+
+            # give new powernodes to converter
+            converter.convert(str(bcfinder_atoms).strip('[ ]'), separator=', ')
+
             if interactive:
                 input('Next ?')  # my name is spam
 
@@ -141,25 +152,22 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
     input_atoms_names = ('ccedge', 'covered')
     input_atoms = atoms.from_dict(
         all_atoms,
-        input_atoms_names,
-        '.\n\t'
+        input_atoms_names
     )
 
-    print(input_atoms, atoms.count(all_atoms, input_atoms_names))
     remain_collector = ASPSolver().read(input_atoms).use(remain)
     remain_edges = remain_collector.first_solution()
-    if remain_edges is None:
-        logger.info('No remain edge')
+    if remain_edges is None or len(remain_edges.atoms()) == 0:
+        logger.info('No remaining edge')
     else:
-        # output.write(convert_output(remain_edges))
-        logger.info(remain_edges)
+        converter.convert_edge(remain_edges)
 
 
     logger.info('#################')
     logger.info('#### RESULTS ####')
     logger.info('#################')
     # write output in file
-    output.write(convert_output.finalized())
+    output.write(converter.finalized())
     output.close()
 
     # print results

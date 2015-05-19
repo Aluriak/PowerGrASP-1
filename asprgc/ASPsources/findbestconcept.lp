@@ -77,14 +77,14 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #maximize{S@1,S:newedgecover(cc,k,S)}.
 
 % Exclusion of concept with two nodes
-:- newedgecover(cc,k,S) ; S<=0. % 1*1 == 1 and 2*1/2 == 1
+:- newedgecover(cc,k,S) ; S<=1. % 1*1 == 1 and 2*1/2 == 1
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#show concept(cc,k,T,X): newconcept(cc,k,T,X).
+#show powernode(cc,k,T,X): newconcept(cc,k,T,X).
 #show nb/2.
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).

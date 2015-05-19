@@ -11,23 +11,45 @@ Supported formats :
 - bbl: bubble format, used by Powergraph for printings;
 
 """
+from __future__ import print_function
 from future.utils import iteritems, iterkeys, itervalues
 from collections  import defaultdict
+from collections  import Counter
 import itertools
 import re
 
 
-REGEX_ATOMS = re.compile(r"powernode\(([^\)]+),([^\)]+),([^\)]+),([^\)]+)\)")
+REGEX_PWRNS    = re.compile(r"^powernode\(([^,]+),([^,]+),([^,]+),(.+)\)$")
+REGEX_EDGES    = re.compile(r"^edge\(([^,]+),([^\)]+)\)$")
+REGEX_SUBPOWER = re.compile(r"^p\(([^,]+),([^,]+),(.+)\)$")
 
 
-def atoms_data(atoms, separator=' '):
-    """Return generator of atom data
-    Each generated element is something like :
-        (cc, step, num_set, node)
+def powernode(cc, step, num_set):
+    """Return string representation of powernode of given
+
+    this string representation is not ASP valid,
+     but can be used as name in most file formats :
+
+        PWRN-<cc>-<step>-<num_set>
 
     """
-    data = (REGEX_ATOMS.match(a) for a in str(atoms).split(separator))
-    return (a.groups() for a in data if a is not None)
+    return 'PWRN-' + '-'.join((cc, step, num_set))
+
+def subpowernode_to_powernode(subpowernode):
+    """Convert ASP representation of powernode reference (p/3)
+     in powernode representation.
+
+    Equivalent to a call to powernode(3) on the three values
+     returned by REGEX_SUBPOWER.match(subpowernode).
+    """
+    return powernode(*REGEX_SUBPOWER.match(subpowernode).groups())
+
+def matched_splits(atoms, separator, regex):
+    """Return generator of values finds by given regex on
+     each substring of given string splitted by given separator.
+    """
+    matchs = (regex.match(a) for a in str(atoms).split(separator))
+    return (a.groups() for a in matchs if a is not None)
 
 
 
@@ -37,19 +59,42 @@ class NeutralConverter(object):
     Converters take string that describes ASP atoms, and,
      when finalizing, generate all graph description
 
-    NeutralConverter do nothing : it generates ASP from ASP.
+    NeutralConverter is unusable as is : 
+     it generates a sensless output.
 
     """
     def __init__(self):
         self.converted = tuple()
 
-    def convert(self, atoms, separator=' '):
-        """Operate convertion on given atoms"""
+    def convert(self, atoms, separator='.'):
+        """Operate convertion on given atoms.
+
+        Atoms are expecting to be powernodes like:
+            powernode(a,1,1,a).
+
+        """
         self.converted = itertools.chain(
-            self.converted, self._convert(atoms_data(atoms, separator))
+            self.converted,
+            self._convert(matched_splits(atoms, separator, REGEX_PWRNS))
+        )
+
+    def convert_edge(self, atoms):
+        """Operate convertion on given atoms.
+
+        Atoms are expecting to be edges between nodes like:
+            edge(a,b).
+
+        """
+        self.converted = itertools.chain(
+            self.converted,
+            self._convert_edge(matched_splits(atoms, '.', REGEX_EDGES))
         )
 
     def _convert(self, atoms):
+        """Perform the convertion and return its results"""
+        return atoms
+
+    def _convert_edge(self, atoms):
         """Perform the convertion and return its results"""
         return atoms
 
@@ -79,6 +124,16 @@ class NNFConverter(NeutralConverter):
             ('{0}_cc\t{1}_{2}'.format(cc,cc,k),),
         )
 
+    def _convert_edge(self, atoms):
+        """Perform the convertion and return its results"""
+        # get first item for obtain global data
+        cc, k, s = next(atoms)
+        atoms = itertools.chain( ((cc,k,s),), atoms )
+
+        # generate lines
+        nnf = ('{0}\tpp\t{2}'.format(*g) for g in atoms)
+        return nnf
+
 
 
 class BBLConverter(NeutralConverter):
@@ -101,25 +156,56 @@ class BBLConverter(NeutralConverter):
             super().__init__()
         except TypeError: # python 2
             super(BBLConverter, self).__init__()
-        self.nodes    = set()
-        self.pwnds    = set()
-        self.belongs  = defaultdict(set)
-        self.linked   = defaultdict(set)
+        self.nodes      = set()
+        self.pwnds      = set()
+        # contains is a dict of container:contained
+        #  it keep only one node, and its used only
+        #  for powernodes with only one node inside
+        self.contains   = dict()
+        # belongs is a dict of contained:container
+        self.belongs    = dict()
+        # count number of nodes in powernodes
+        self.containers_size = Counter()
+        # linking between powernodes
+        self.linked1to2 = defaultdict(set)
+        self.linked2to1 = defaultdict(set)
+        # linking between nodes
+        self.edges      = defaultdict(set)
 
     def _convert(self, atoms):
-
-        def create_pwnd(cc, step, num_set):
-            return 'PWRN-' + '-'.join((cc, step, num_set))
-
         for cc, step, num_set, node in atoms:
-            powernode      = create_pwnd(cc,step,num_set)
-            powernode_comp = create_pwnd(cc,step,str(3-int(num_set)))
-            self.nodes.add(node)
-            self.pwnds.add(powernode)
-            # self.pwnds.add(powernode_comp)
-            self.belongs[node].add(powernode)
+            node = node.strip('"')
+            pwrn      = powernode(cc,step,num_set)
+            pwrn_comp = powernode(cc,step,str(3-int(num_set)))
+            reg_res = REGEX_SUBPOWER.match(node)
+            if reg_res is None:
+                self.nodes.add(node)
+            else: # node match the pattern
+                node = subpowernode_to_powernode(node)
+            self.belongs[node]           = pwrn
+            self.containers_size[pwrn]  += 1
+            self.contains[pwrn]          = node
+
+            self.pwnds.add(pwrn)
             if num_set == '1':
-                self.linked[powernode].add(powernode_comp)
+                self.linked1to2[pwrn].add(pwrn_comp)
+            else:
+                assert(num_set == '2')
+                self.linked2to1[pwrn].add(pwrn_comp)
+
+    def _convert_edge(self, atoms):
+        atoms = tuple(atoms)
+        for a, b in atoms:
+            # replace powernodes by their string equivalent
+            reg_res_a = REGEX_SUBPOWER.match(a)
+            reg_res_b = REGEX_SUBPOWER.match(b)
+            if reg_res_a is not None: # a is a powernode
+                a = subpowernode_to_powernode(a)
+            if reg_res_b is not None: # b is a powernode
+                b = subpowernode_to_powernode(b)
+            # create the links between nodes
+            self.edges[a].add(b)
+
 
     def finalized(self):
         # define NODEs, SETs, INs and EDGEs relations, and return them
@@ -131,20 +217,35 @@ class BBLConverter(NeutralConverter):
             # SETs
             ('SET\tGraph\t1.0',),
             ('SET\t' + pwnd + '\t1.0'
-             for pwnd in iterkeys(self.linked)
+             for pwnd in iterkeys(self.linked1to2)
+            ),
+            ('SET\t' + pwnd + '\t1.0'
+             for pwnd in iterkeys(self.linked2to1)
             ),
             # INs
             ('IN\t' + node + '\tGraph'
-             for node in self.pwnds
-             if node not in iterkeys(self.belongs)
+             for node in self.nodes
+             if  self.containers_size[self.belongs[node]] == 1
             ),
-            ('IN\t' + node + '\t' + pwnd
-             for node, pwnds in iteritems(self.belongs)
-             for pwnd in pwnds
+            ('IN\t' + node + '\tGraph'
+             for node in self.pwnds
+             if  node not in iterkeys(self.belongs)
+             and self.containers_size[node] > 1
+            ),
+            ('IN\t' + contained + '\t' + container
+             for contained, container in iteritems(self.belongs)
+             if self.containers_size[container] > 1
             ),
             # EDGEs
-            ('EDGE\t' + pwnd + '\t' + target + '\t1.0'
-             for pwnd, targets in iteritems(self.linked)
+            ('EDGE\t'
+             + (pwnd if self.containers_size[pwnd] > 1 else self.contains[pwnd])
+             + '\t' + (target if self.containers_size[target] > 1 else self.contains[target])
+             + '\t1.0'
+             for pwnd, targets in iteritems(self.linked1to2)
+             for target in targets
+            ),
+            ('EDGE\t' + node + '\t' + target + '\t1.0'
+             for node, targets in iteritems(self.edges)
              for target in targets
             ),
         ))

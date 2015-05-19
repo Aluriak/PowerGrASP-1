@@ -38,8 +38,6 @@ oedge(X,Y)   :- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
 %          )
 connectedpath(X,Y):- oedge(X,Y).
 connectedpath(X,Z):- connectedpath(X,Y); inter(Y,Z); X<Z.
-%xxx: should X<Z be set as a constraint ?
-%:- connectedpath(X,Y) ; X>=Y.
 
 connected(Y):- connectedpath(_,Y).
 

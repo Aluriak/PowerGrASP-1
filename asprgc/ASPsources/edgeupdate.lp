@@ -6,11 +6,12 @@
 % revised version:  29/04/2014   L. Bourneuf
 %
 % Input:
-%       - concept(cc,k,T,X):- X belongs to set T of cc at step k.
+%       - powernode(cc,k,T,X):- X belongs to set T of cc at step k.
 % Output:
-%       - powernode(cc,k,N):- powernode cc at step k has a score of N.
 %       - bcovered(cc,k,X,Y):- edge X to Y is covered by powernode cc at step k.
 %       - covered(X,Y):- edge X to Y was covered.
+%       - ccedge(cc,X,Y): there exists an edge between X and Y in the
+%                         subgraph corresponding to connected component cc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program edgeupdate(cc,k).
 
@@ -18,16 +19,28 @@
 concomp(cc).
 step(k).
 
+% A powernode is trivial iff composed of only one node
+trivial(cc,k,T):- 1 {powernode(cc,k,T,X):powernode(cc,k,T,X)} 1 ; T=1..2.
 
 % Are covered all edges of concept that link two nodes of different set.
-bcovered(cc,k,X,Y):- concept(cc,k,T,X) ; concept(cc,k,3-T,Y), X<=Y; T=1..2 ; step(k) ; concomp(cc).
+bcovered(cc,k,X,Y):- powernode(cc,k,T,X) ; powernode(cc,k,3-T,Y), X<=Y; T=1..2 ; step(k) ; concomp(cc).
 :- bcovered(_,_,X,Y) ; X>Y.
 
-% Powernode are composed of points
-#show powernode(cc,k,T,X): concept(cc,k,T,X).
-
 % New edges covered by powernode
-covered(     X,Y):- bcovered(cc,k,X,Y).
+covered(X,Y):- bcovered(cc,k,X,Y).
+covered(Y,X):- bcovered(cc,k,X,Y).
+
+% All edges not covered
+inter(X,Y):- ccedge(cc,X,Y) ; not covered(X,Y).
+inter(X,Y):- ccedge(cc,Y,X) ; not covered(X,Y).
+
+% New edges, that links existing nodes and new powernode
+%  there is a link iff the X node is linked to all nodes of powernode
+ccedge(cc,X,p(cc,k,T)):- inter(X,Y) ; not powernode(cc,k,T,X) ; powernode(cc,k,T,Y) ; not trivial(cc,k,T).
+:- ccedge(cc,X,c(cc,k,T)) ; not inter(X,Y) ; powernode(cc,k,T,Y) ; covered(X,Y).
+
 
 #show bcovered/4.
 #show  covered/2.
+#show  ccedge/3.
+#show  trivial/3.
