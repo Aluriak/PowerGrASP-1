@@ -7,7 +7,7 @@ from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
-from converter    import converter as Converter
+import converter  as converter_module
 import commons
 import atoms
 
