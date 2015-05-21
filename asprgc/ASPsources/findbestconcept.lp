@@ -42,19 +42,19 @@ oedge(X,X):- membercc(cc,X) ; not nonclique(cc,k). % necessity for clique cases
 minobj(X):- minobj(_,_,X).
 
 % Choice of elements in part 1
-%newconcept(cc,k,1,X):- minobj(cc,k,X).
-%{ newconcept(cc,k,1,X): membercc(cc,X), Min<X                 }:- minobj(cc,k,Min).
-%{ newconcept(cc,k,1,X): membercc(cc,X), Min<=X, block(k-1,P,X) }:- minobj(cc,k,Min) ; block(k-1,P,_).
-%{ newconcept(cc,k,1,X): membercc(cc,X), block(k-1,P,X) }:- block(k-1,P,_).
-{ newconcept(cc,k,1,X): membercc(cc,X) }.
+newconcept(cc,k,1,X):- minobj(cc,k,X).
+{ newconcept(cc,k,1,X): membercc(cc,X), Min<X }:- minobj(cc,k,Min).
+% or (that need a test)
+%{ newconcept(cc,k,1,X): membercc(cc,X), Min<X, block(k-1,P,X) }:- minobj(cc,k,Min) ; block(k-1,P,Min).
+
 % Choice of elements in part 2
-%1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y                 } :- minobj(cc,k,Min).
-%1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<Y, block(k-1,P,Y) } :- minobj(cc,k,Min) ; block(k-1,P,_).
-1 { newconcept(cc,k,2,Y): oedge(Min,Y) }.
+1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<Y } :- minobj(cc,k,Min).
 
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
 imp(cc,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
+%  a node is impossible if in a block different from another element in the same set
+imp(cc,T,X):- membercc(cc,X) ; newconcept(cc,k,T,Y) ; block(k-1,P,Y) ; not block(k-1,P,X).
 
 % Consistency ; no impossible element can be added to the concept
 :- imp(cc,T,Y); newconcept(cc,k,T,Y).
@@ -62,21 +62,10 @@ imp(cc,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedg
 % Maximality  ; all possible elements have to be added to the concept
 :- not imp(cc,T,X); not newconcept(cc,k,T,X); T=1..2; membercc(cc,X).
 
-% Xenophobia  ; all elements of a set belongs to the same block
-%share_block(K,X,Y):- block(K,P,X) ; block(K,P,Y).
-%:- newconcept(CC,K,T,Y) ; newconcept(CC,K,T,X) ; T=1..2 ; not share_block(K-1,X,Y).
-
 % Set 1 and Set 2 of concept are equal (clique) or have an empty intersection (biclique)
 nonclique(cc,k):-     newconcept(cc,k,1,X); not newconcept(cc,k,2,X).
 nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 :- newconcept(cc,k,1,X) ; newconcept(cc,k,2,X) ; nonclique(cc,k).
-
-% Count element in each set of the concept
-%nb(set1,N):- N={newconcept(cc,1,X)}.
-%nb(set2,N):- N={newconcept(cc,2,X)}.
-% are equivalent to:
-nb(set1,N):- N=#count{1,X:newconcept(cc,k,1,X)}.
-nb(set2,N):- N=#count{1,X:newconcept(cc,k,2,X)}.
 
 
 
@@ -86,11 +75,11 @@ nb(set2,N):- N=#count{1,X:newconcept(cc,k,2,X)}.
 % at initial step all nodes belongs to block 0,0 (step 0, powernode 0).
 block(0,0,X):- membercc(cc,X).
 
-% keep nodes not covered by new concept in their block
-block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,_,X) ; block(K-1,P,X) ; step(K).
+% nodes covered by a powernode are set in the associated block
+block(K,p(cc,K,T),X):- newconcept(cc,K,T,X) ; step(K).
 
-% nodes covered by a powernode are set in a new block
-block(k,p(cc,k,T),X):- newconcept(cc,k,T,X) ; block(K-1,P,X) ; step(K).
+% keep nodes not covered by new concept in their block
+block(K,P,X):- membercc(cc,X) ; not newconcept(cc,K,_,X) ; block(K-1,P,X) ; step(K).
 
 
 
