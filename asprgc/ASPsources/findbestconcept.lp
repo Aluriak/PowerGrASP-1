@@ -42,10 +42,15 @@ oedge(X,X):- membercc(cc,X) ; not nonclique(cc,k). % necessity for clique cases
 minobj(X):- minobj(_,_,X).
 
 % Choice of elements in part 1
-newconcept(cc,k,1,X):- minobj(cc,k,X).
-{ newconcept(cc,k,1,X): membercc(cc,X), Min<X }:- minobj(cc,k,Min).
+%newconcept(cc,k,1,X):- minobj(cc,k,X).
+%{ newconcept(cc,k,1,X): membercc(cc,X), Min<X                 }:- minobj(cc,k,Min).
+%{ newconcept(cc,k,1,X): membercc(cc,X), Min<=X, block(k-1,P,X) }:- minobj(cc,k,Min) ; block(k-1,P,_).
+%{ newconcept(cc,k,1,X): membercc(cc,X), block(k-1,P,X) }:- block(k-1,P,_).
+{ newconcept(cc,k,1,X): membercc(cc,X) }.
 % Choice of elements in part 2
-1 { newconcept(cc,k,2,Min); newconcept(cc,k,2,Y): oedge(Min,Y), Min<Y } :- minobj(cc,k,Min).
+%1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y                 } :- minobj(cc,k,Min).
+%1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<Y, block(k-1,P,Y) } :- minobj(cc,k,Min) ; block(k-1,P,_).
+1 { newconcept(cc,k,2,Y): oedge(Min,Y) }.
 
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
@@ -57,6 +62,9 @@ imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y) ; not oedge(X,Y) ; not oedg
 % Maximality  ; all possible elements have to be added to the concept
 :- not imp(cc,I,X); not newconcept(cc,k,I,X); I=1..2; membercc(cc,X).
 
+% Xenophobia  ; all elements of a set belongs to the same block
+%share_block(K,X,Y):- block(K,P,X) ; block(K,P,Y).
+%:- newconcept(CC,K,T,Y) ; newconcept(CC,K,T,X) ; T=1..2 ; not share_block(K-1,X,Y).
 
 % Set 1 and Set 2 of concept are equal (clique) or have an empty intersection (biclique)
 nonclique(cc,k):-     newconcept(cc,k,1,X); not newconcept(cc,k,2,X).
