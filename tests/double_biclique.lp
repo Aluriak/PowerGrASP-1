@@ -1,14 +1,17 @@
 %*
-Two obvious bicliques ((a,d) x (b,c,k)) and ((i,h) x (f,g,l)).
-Linked by m, that create another biclique (m x (k,l)).
+Two obvious bicliques ((a,d) x (b,c,k,e)) and ((i,h) x (f,g,l)).
+Linked by m, that create another biclique (m x (k,e)).
+And clique (m,l).
 *%
 
 % first biclique
 edge(a,b).
 edge(a,c).
+edge(a,e).
 edge(b,c).
 edge(b,d).
 edge(c,d).
+edge(d,e).
 
 % second biclique
 edge(i,f).
@@ -27,4 +30,5 @@ edge(h,l).
 
 % link between l and k through m
 edge(k,m).
+edge(e,m).
 edge(l,m).
