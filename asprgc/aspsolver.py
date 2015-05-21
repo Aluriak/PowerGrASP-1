@@ -77,8 +77,13 @@ class ASPSolver(object):
     def ground(self, program, args):
         """Proxy to gringo.Control.ground method"""
         # logger.debug('ASPSolver grounds ' + program + ' with ' + str(args))
+        self._last_grounded = program
         self._prg.ground([(program, args)])
         return self
+
+    def reground(self, args=[]):
+        """Ground again last program grounded"""
+        self.ground(self._last_grounded, args)
 
     def in_dir(self, directory):
         """Change used directory"""
