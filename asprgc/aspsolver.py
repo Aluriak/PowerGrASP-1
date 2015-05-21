@@ -122,11 +122,39 @@ class ASPSolver(object):
         """Not implemented"""
         raise NotImplementedError  # TODO
 
-    def assign_external(self, name, args=[], truth=None):
-        return self._prg.assign_external(gringo.Fun(name, args), truth)
+    def assign_external(self, name='', args=[], truth=True, fun=None):
+        """Assign an external value to the grounded code.
 
-    def release_external(self, name, args=[]):
-        return self._prg.release_external(gringo.Fun(name, args))
+            name  -- the Function name
+            args  -- the Function args
+            truth -- thruth value (default is True) in (True, False, None)
+            fun   -- replacement of name and args, that allow client
+                      to directly provides a Fun object
+        """
+        # integrity tests
+        assert((len(name) == 0) != (fun is None)) # name xor fun must be given
+        assert((len(args) == 0) != (fun is None)) # args xor fun must be given
+        assert(truth in (True, False, None))
+        # return the same thing returned by assign_external
+        if fun is None:
+            return self._prg.assign_external(gringo.Fun(name, args), truth)
+        else:
+            return self._prg.assign_external(fun, truth)
+
+    def release_external(self, name='', args=[], fun=None):
+        """Release an external value to the grounded code.
+
+            name -- the Function name
+            args -- the Function args
+            fun   -- replacement of name and args, that allow client
+                      to directly provides a Fun object
+        """
+        name = str(name)
+        assert((len(name) == 0) != (fun is None))
+        if fun is None:
+            return self._prg.release_external(gringo.Fun(name, args))
+        else:
+            return self._prg.release_external(fun)
 
 
 
