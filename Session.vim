@@ -36,7 +36,9 @@ badd +1 asprgc/ASPsources/extract.lp
 badd +1 asprgc/ASPsources/findbestconcept.lp
 badd +1 asprgc/ASPsources/edgeupdate.lp
 badd +1 asprgc/ASPsources/remains.lp
-badd +0 asprgc/converter/converter.py
+badd +1 asprgc/converter/converter.py
+badd +22 asprgc/ASPsources/inclusion.lp
+badd +30 debug/inclusion.lp
 argglobal
 silent! argdel *
 set stal=2
@@ -102,12 +104,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 35 - ((11 * winheight(0) + 25) / 50)
+let s:l = 146 - ((32 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-35
-normal! 051|
+146
+normal! 05|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/commons.py
 set splitbelow splitright
@@ -125,11 +127,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 9 - ((8 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+9
 normal! 03|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/atoms.py
@@ -148,12 +150,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 167 - ((18 * winheight(0) + 25) / 50)
+let s:l = 20 - ((19 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-167
-normal! 012|
+20
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/converter/converter.py
 set splitbelow splitright
@@ -171,12 +173,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 108 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+108
+normal! 017|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/aspsolver.py
 set splitbelow splitright
@@ -217,11 +219,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 47 - ((37 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+47
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/findbestconcept.lp
@@ -240,11 +242,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 59 - ((24 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+59
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/edgeupdate.lp
@@ -263,11 +265,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+let s:l = 36 - ((35 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
+36
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/remains.lp
@@ -293,7 +295,53 @@ normal! zt
 1
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabnext 6
+tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/inclusion.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal nofen
+silent! normal! zE
+let s:l = 14 - ((13 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+14
+normal! 0
+lcd ~/ASP/test/rewritting/asprgc
+tabedit ~/ASP/test/rewritting/asprgc/debug/inclusion.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal nofen
+silent! normal! zE
+let s:l = 52 - ((49 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+52
+normal! 017|
+lcd ~/ASP/test/rewritting/asprgc
+tabnext 9
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
