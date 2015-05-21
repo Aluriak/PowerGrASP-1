@@ -5,63 +5,12 @@ Provides converters, access and storage of atoms.
 
 """
 
+from __future__   import absolute_import, print_function
 from future.utils import iteritems, itervalues
-from collections  import defaultdict
+from collections  import defaultdict, Counter
 from commons      import RESULTS_PREDICATS
 import itertools
 import gringo
-import re
-
-
-
-def update(atoms_dict, atoms, avoid='new'):
-    """Update given dict with given gringo atoms
-
-    if given atoms dict is None,
-     a new and empty dict will be used and returned
-    Transform atoms by replace avoid value
-     by nothing in the final string."""
-    if atoms_dict is None:
-        atoms_dict = defaultdict(set)
-    # full generator generation
-    tuple(
-        atoms_dict[
-            atom.name()
-            if avoid is None or len(avoid) == 0 else
-            atom.name().replace(avoid, '')
-        ].add(tuple((
-                ('"'+arg+'"')
-                if isinstance(arg, str)
-                else str(arg)
-            ) for arg in atom.args()
-        ))
-        for atom in atoms
-        if atom.__class__ is gringo.Fun
-    )
-    return atoms_dict
-
-
-
-
-def from_dict(atoms_dict, atoms, joiner='.'):
-    """Return an ASP code generator that generate
-    requested atoms of given atoms_dict,
-    as string if joiner is given,
-    as generator if joiner is None.
-    """
-    if atoms.__class__ is str:
-        atoms = [atoms]
-    ret = (
-        name+'('+','.join((str(_)) for _ in args)+')'
-        for name in atoms for args in atoms_dict[name]
-    )
-    if joiner is None:
-        return ret
-    else:
-        return joiner.join(ret) + joiner
-
-
-
 
 def prettified(atoms_dict, names=None, sizes=None,
                joiner='\n', results_only=False, sort=False):
@@ -81,34 +30,32 @@ def prettified(atoms_dict, names=None, sizes=None,
         {atom.name() : {atom.args()}}
         key is string, value is a set of list/tuple of args
     """
+    atoms = ((a.name(), a.args()) for a in atoms)
     # filter results
     if results_only:
         source = ((n,a)
-                  for n,a in iteritems(atoms_dict)
+                  for n,a in atoms
                   if n in RESULTS_PREDICATS
                  )
     else:
-        source = (_ for _ in iteritems(atoms_dict))
+        source = (_ for _ in atoms)
     # filter names
     if names is not None:
-        source = ((name,argset)
-                  for name,argset in source
+        source = ((name,args)
+                  for name,args in source
                   if name in names
                  )
     # filter sizes
     if sizes is not None:
         source = (
-            ( name, (args
-                     for args in argset
-                     if len(args) in sizes
-                    )
-            )
-            for name, argset in source
-        )
+                  (name,args)
+                  for name, argset in source
+                  if len(args) in sizes
+                 )
     # get final text generator
     source = (
-        name+'('+','.join(str(_) for _ in arg)+').'
-        for name, set_args in source for arg in set_args
+        name+'('+','.join(str(_) for _ in args)+').'
+        for name, args in source
     )
     # sorting
     if sort:
@@ -117,17 +64,41 @@ def prettified(atoms_dict, names=None, sizes=None,
     return source if joiner is None else joiner.join(source)
 
 
-def count(atoms_dict, names=None):
+def count(atoms, names=None):
     """Return a string that describes how many atoms given atoms_dict have.
 
     if names is None, all atoms will be returned.
     if names is an iterable of atoms names,
      only founded atoms will be returned.
     """
+    counts = iteritems(Counter(a.name() for a in atoms))
     if names is None:
-        return {name:len(args) for name, args in atoms_dict.iteritems()}
+        return {n:c for n, c in counts}
     else:
-        return {name:len(atoms_dict[name]) for name in names},
+        return {n:c for n, c in counts if a.name() in names}
 
 
+def to_str(atoms, names=None, separator='.'):
+    """Return string that is equivalent and ASP-valid from 
+    given atoms.
+
+    If names is provided, only atoms with given names will be returned.
+     names can be a single name or a container of names.
+    separator is the string that will be added between each 
+     and at the end of the atoms.
+
+    """
+    if names is None:
+        atoms = (str(a) for a in atoms)
+    else: # names is provided
+        # cast in tuple for allow usage of 'in' keyword
+        if names.__class__ is str:
+            names = (names,)
+        # get only atoms that are requested
+        atoms = (str(a) for a in atoms if a.name() in names)
+    # output construction
+    output = separator.join(atoms)
+    if len(output) > 0:
+        output += separator
+    return output
 
