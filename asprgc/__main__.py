@@ -45,15 +45,14 @@ if __name__ == '__main__':
     # launch compression
     (asprgc(
         iterations    = iterations,
-        graph         = options['--graph-data'   ],
-        extract       = options['--extract'      ],
-        findcc        = options['--findconcept'  ],
-        update        = options['--update'       ],
-        remain        = options['--remain'       ],
+        graph_data    = options['--graph-data'   ],
+        extracting    = options['--extract'      ],
+        ccfinding     = options['--findconcept'  ],
+        updating      = options['--update'       ],
+        remaining     = options['--remain'       ],
         output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
         interactive   = interactive,
-
     ))
 
 

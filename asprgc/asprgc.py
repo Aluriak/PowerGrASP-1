@@ -18,7 +18,7 @@ logger = commons.logger()
 
 
 
-def asprgc(iterations, graph, extract, findcc, update, remain,
+def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
            output_file, output_format, interactive=False):
     """Performs the graph compression with data found in graph file.
 
