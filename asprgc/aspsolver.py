@@ -35,12 +35,13 @@ class ASPSolver(object):
         print(solver.first_solution())
     """
 
-    def __init__(self):
+    def __init__(self, args=[]):
+        self.args = args
         self.clear()
 
     def clear(self):
         """Reset instance to default ground"""
-        self._prg       = gringo.Control()
+        self._prg       = gringo.Control(self.args)
         self._directory = ''
         return self
 
