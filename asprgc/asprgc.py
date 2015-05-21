@@ -30,72 +30,58 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
     If interactive is True, an input will be expected
      from the user after each step.
     """
-    # all atoms are contained as:
-    #   atom.name:{atom.args}
-    all_atoms = defaultdict(set)
-    output = open(output_file + '.' + output_format, 'w')
-    converter = Converter.converter_for(output_format)
+    # Initialize descriptors
+    output    = open(output_file + '.' + output_format, 'w')
+    converter = converter_module.converter_for(output_format)
+    model     = None
 
     # Extract graph data
     logger.info('#################')
     logger.info('#### EXTRACT ####')
     logger.info('#################')
+    # creat a solver that get all information about the graph
     extractor = ASPSolver().use(graph, program_name='base').use(extract)
-    extracted_atoms = extractor.first_solution().atoms()
-    # graph data is an ASP code that describes graph and connected components.
-    atoms.update(all_atoms, extracted_atoms)
-    # logger.debug('graph:\n' + str(all_atoms))
-    logger.debug('graph:\n\t' + atoms.prettified(all_atoms, joiner='\n\t'))
-
+    graph_atoms = extractor.first_solution().atoms()
     # get all CC, one by one
-    atom_ccs = (cc.args()[0]
-                for cc in extracted_atoms
+    atom_ccs = (cc.args()[0]  # args is a list of only one element (cc/1)
+                for cc in graph_atoms
                 if cc.name() == 'cc'
                )
+    # save atoms as ASP-readable string
+    graph_atoms = atoms.to_str(graph_atoms)
 
     # Find connected components
-    logger.info('\n\t' + atoms.prettified(all_atoms, joiner='\n\t'))
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
-    model_count = 0
+    # model_count = 0
     # for cc in :
     for cc in atom_ccs:
-        print('#### CC:', str(cc), cc.__class__)
+        # Solver creation
+        logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
+        solver = ASPSolver()
+        solver.use(findcc, [cc])  # find best concept
+        solver.read(graph_atoms)  # read all basical data
+        # printings
+        logger.debug('INPUT: ' + graph_atoms)
 
+        # main loop
         k = 0
         while True:
             k += 1
+            # release previous k and assign new one
+            solver.assign_external( name='step', args=[k  ])
+            # solver.release_external(name='step', args=[k-1]            )
 
-            print("\n#### FIND BEST CONCEPT", k, '####')
-            input_atoms_names = ('ccedge', 'covered', 'membercc')
-            input_atoms = atoms.from_dict(
-                all_atoms,
-                input_atoms_names,
-                '.\n\t'
-            )
-            print('INPUT:\n\t', input_atoms,
-                  atoms.count(all_atoms, input_atoms_names),
-                  sep=''
-            )
-
-            bcfinder = ASPSolver()
-            bcfinder.read(input_atoms)
-            bcfinder.use(findcc, [cc, k])
-
-            model = bcfinder.first_solution()
+            # solving
+            model = solver.first_solution()
             if model is None:
                 print('No model found by bcfinder')
-                # print('DEBUG_NOMODEL:\n', atoms.from_dict(
-                    # all_atoms, ('cc', 'coverededge', 'ccedge', 'membercc', 'connectedpath'), '.\n'
-                # ), '====\n', sep='')
                 break
-            bcfinder_atoms = model.atoms()
-            atoms.update(all_atoms, bcfinder_atoms)
             print('OUTPUT:\n\t',
-                  '.\n\t'.join(str(model).split(' ')), '.\n',
-                  atoms.count(atoms.update(None, bcfinder_atoms)),
-                  sep=''
+                atoms.to_str(model.atoms(), separator='\t\n'),
+                atoms.count(model.atoms()),
+                sep=''
             )
 
             print("\n#### UPDATE", k, '####')
@@ -106,8 +92,8 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
                 '.\n\t'
             )
             print('INPUT:\n\t', input_atoms,
-                  atoms.count(all_atoms, input_atoms_names),
-                  sep=''
+                atoms.count(all_atoms, input_atoms_names),
+                sep=''
             )
 
             # Update edges
@@ -140,27 +126,34 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
             ))
 
             # give new powernodes to converter
-            converter.convert(str(bcfinder_atoms).strip('[ ]'), separator=', ')
+            converter.convert(bcfinder_atoms, separator=', ')
 
             if interactive:
                 input('Next ?')  # my name is spam
+
+        # release cc value
+        solver.release_external(fun=cc)
+
 
 
     logger.info('#################')
     logger.info('## REMAIN DATA ##')
     logger.info('#################')
+    # get atoms necessary for remaining edges solving
     input_atoms_names = ('ccedge', 'covered')
-    input_atoms = atoms.from_dict(
-        all_atoms,
-        input_atoms_names
-    )
+    input_atoms = [a for a in model.atoms() if a.name() in input_atoms_names]
 
-    remain_collector = ASPSolver().read(input_atoms).use(remain)
+    # Creat solver and collect remaining edges
+    remain_collector = ASPSolver().use(remain)
+    remain_collector.read(atoms.to_str(input_atoms))
     remain_edges = remain_collector.first_solution()
+
+    # Output
     if remain_edges is None or len(remain_edges.atoms()) == 0:
         logger.info('No remaining edge')
     else:
-        converter.convert_edge(remain_edges)
+        converter.convert(remain_edges.atoms())
+
 
 
     logger.info('#################')
@@ -169,6 +162,7 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
     # write output in file
     output.write(converter.finalized())
     output.close()
+    logger.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
 
     # print results
     results_names = ('powernode')
