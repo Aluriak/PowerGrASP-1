@@ -4,6 +4,7 @@
 from __future__   import absolute_import, print_function
 import logging
 from   logging.handlers import RotatingFileHandler
+import os
 
 
 # DIRECTORIES, FILENAMES
@@ -14,6 +15,7 @@ ASP_FILE_EXT    = '.lp'
 ASP_SRC_GRAPH   = DIR_ASP_SRC + 'diamond' + ASP_FILE_EXT
 ASP_SRC_EXTRACT = DIR_ASP_SRC + 'extract' + ASP_FILE_EXT
 ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
+ASP_OPTIONS     = ['--update-domains']
 
 # VALUES
 LOG_LEVEL         = logging.DEBUG
@@ -25,6 +27,16 @@ RESULTS_PREDICATS = (
 
 
 # FUNCTIONS
+def basename(filepath):
+    """Return the basename of given filepath.
+
+    >>> import os
+    >>> basename('~/ASP/serious/business/fly.lp')
+    fly
+
+    """
+    return os.path.splitext(os.path.basename(filepath))[0]
+
 def logger(name='asprgc', logfilename=None):
     """Return logger of given name, without initialize it.
 
