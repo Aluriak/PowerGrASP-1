@@ -17,6 +17,7 @@
 %       - edgecover(cc,k,N): score of the concept cc at step k.
 %       - score(cc,k,b(S)): concept cc at step k is a biclique of score S.
 %       - score(cc,k,c(S)): concept cc at step k is a   clique of score S.
+%       - block(k,P,X): node X is in powernode P at step k.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program findbestconcept(cc,k).
 
@@ -69,6 +70,26 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 nb(set1,N):- N=#count{1,X:newconcept(cc,k,1,X)}.
 nb(set2,N):- N=#count{1,X:newconcept(cc,k,2,X)}.
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% at initial step all nodes belongs to block 0,0 (step 0, powernode 0).
+block(0,0,X):- membercc(cc,X).
+
+% keep nodes not covered by new concept in their block
+block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,_,X) ; block(K-1,P,X) ; step(K).
+
+% nodes covered by a powernode are set in a new block
+block(k,p(cc,k,T),X):- newconcept(cc,k,T,X) ; block(K-1,P,X) ; step(K).
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% EDGE COVER %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Concept edge cover (score)
 newedgecover(cc,k,   N1*N2   ):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k).
 newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k).
@@ -94,3 +115,4 @@ trivial(cc,k,T):- 1 {newconcept(cc,k,T,X) : newconcept(cc,k,T,X)} 1 ; T=1..2.
 #show nb/2.
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
+#show block/3.
