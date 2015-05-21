@@ -12,8 +12,8 @@ from commons      import RESULTS_PREDICATS
 import itertools
 import gringo
 
-def prettified(atoms_dict, names=None, sizes=None,
-               joiner='\n', results_only=False, sort=False):
+def prettified(atoms, names=None, sizes=None,
+               joiner='\n', results_only=False, sort=False, hashs=False):
     """Return a human readable string version or
       string generator of given atoms.
 
@@ -26,10 +26,15 @@ def prettified(atoms_dict, names=None, sizes=None,
     if sort is True, a non-lazy treatment will be applied to all data,
       and the atoms will be returned in sorted order.
 
+    if hash is True, each atom will be printed with its hash.
+
     atoms must be an iterable of gringo.Fun instances.
 
     """
+    atoms, hashs_values = itertools.tee(atoms)
     atoms = ((a.name(), a.args()) for a in atoms)
+    if hashs:
+        hashs_values = (a.__hash__() for a in hashs_values)
     # filter results
     if results_only:
         source = ((n,a)
@@ -56,6 +61,12 @@ def prettified(atoms_dict, names=None, sizes=None,
         name+'('+','.join(str(_) for _ in args)+').'
         for name, args in source
     )
+    # hashs
+    if hashs:
+        source = (
+            str(hash) + ' ' + name
+            for name, hash in zip(source, hashs_values)
+        )
     # sorting
     if sort:
         source = sorted(tuple(source))
