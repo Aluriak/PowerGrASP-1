@@ -10,8 +10,6 @@
 % Output:
 %       - bcovered(cc,k,X,Y):- edge X to Y is covered by powernode cc at step k.
 %       - covered(X,Y):- edge X to Y was covered.
-%       - ccedge(cc,X,Y): there exists an edge between X and Y in the
-%                         subgraph corresponding to connected component cc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program edgeupdate(cc,k).
 
@@ -33,4 +31,3 @@ inter(X,Y):- ccedge(cc,Y,X) ; not covered(X,Y).
 
 #show bcovered/4.
 #show  covered/2.
-#show  ccedge/3.
