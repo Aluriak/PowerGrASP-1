@@ -94,10 +94,20 @@ class ASPSolver(object):
         self._last_solutions = solutions
         return self._last_solutions
 
-    def first_solution(self):
-        """Compute solutions and returned the first, or None"""
+    def first_solution(self, asp_readable=False):
+        """Compute solutions and returned the first, or None
+
+        if asp_readable is True, returned solution, if exists,
+        will be cast in string and modified for being readable
+        by the grounder.
+        """
         try:
-            return next(self.solutions(1))
+            model = next(self.solutions(1))
+            if asp_readable:
+                assert(False) # asp_readable flag unused while that never append
+                return str(model.atoms()).replace(', ', '.')
+            else:
+                return model
         except StopIteration:
             return None
 
