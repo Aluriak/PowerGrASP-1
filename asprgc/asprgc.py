@@ -49,6 +49,8 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
                )
     # save atoms as ASP-readable string
     graph_atoms = atoms.to_str(graph_atoms)
+    # printings
+    logger.debug('EXTRACTED: ' + graph_atoms + '\n')
 
     # Find connected components
     logger.info('#################')
@@ -62,8 +64,6 @@ def asprgc(iterations, graph, extract, findcc, update, remain,
         solver = ASPSolver()
         solver.use(findcc, [cc])  # find best concept
         solver.read(graph_atoms)  # read all basical data
-        # printings
-        logger.debug('INPUT: ' + graph_atoms)
 
         # main loop
         k = 0
