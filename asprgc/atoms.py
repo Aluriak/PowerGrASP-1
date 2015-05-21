@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Definitions of many utils functions about gringo atoms manipulation.
-Provides converters, access and storage of atoms.
+Provides converters, access and printings of atoms.
 
 """
 
@@ -26,9 +26,8 @@ def prettified(atoms_dict, names=None, sizes=None,
     if sort is True, a non-lazy treatment will be applied to all data,
       and the atoms will be returned in sorted order.
 
-    atoms_dict must be a dictionnary like:
-        {atom.name() : {atom.args()}}
-        key is string, value is a set of list/tuple of args
+    atoms must be an iterable of gringo.Fun instances.
+
     """
     atoms = ((a.name(), a.args()) for a in atoms)
     # filter results
@@ -60,6 +59,7 @@ def prettified(atoms_dict, names=None, sizes=None,
     # sorting
     if sort:
         source = sorted(tuple(source))
+
     # joining if possible
     return source if joiner is None else joiner.join(source)
 
@@ -79,12 +79,12 @@ def count(atoms, names=None):
 
 
 def to_str(atoms, names=None, separator='.'):
-    """Return string that is equivalent and ASP-valid from 
+    """Return string that is equivalent and ASP-valid from
     given atoms.
 
     If names is provided, only atoms with given names will be returned.
      names can be a single name or a container of names.
-    separator is the string that will be added between each 
+    separator is the string that will be added between each
      and at the end of the atoms.
 
     """
