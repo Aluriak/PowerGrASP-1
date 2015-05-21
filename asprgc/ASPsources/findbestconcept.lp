@@ -11,17 +11,14 @@
 %       - membercc(cc,Y): Y is a member of cc, but not its root.
 %       - covered(X,Y): edge(X,Y) is already covered.
 % Output:
-%       - nb(set1,N): set 1 contains N elements. [DEBUG]
-%       - nb(set2,N): set 2 contains N elements. [DEBUG]
-%       - concept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
-%       - edgecover(cc,k,N): score of the concept cc at step k.
-%       - score(cc,k,b(S)): concept cc at step k is a biclique of score S.
-%       - score(cc,k,c(S)): concept cc at step k is a   clique of score S.
-%       - block(k,P,X): node X is in powernode P at step k.
+%       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
+%       - clique(cc,k): concept cc at step k is a clique.
+%       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
+%       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program findbestconcept(cc,k).
-
-
+#external step(k). % true only for k == current step
+previous_step(0..k-1).
 
 
 
@@ -32,9 +29,9 @@
 onode(cc,1,X):- membercc(cc,X). % X belongs to CC
 onode(cc,2,X):- ccedge(cc,X,_). % X is a non-terminal node
 
-% oedge are oriented and non-covered
-oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; not covered(X,Y).
-oedge(X,Y):- ccedge(cc,Y,X) ; X<Y ; not covered(X,Y).
+% oedge are oriented and non-covered by previous steps
+oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; previous_step(S) ; not covered(cc,S,X,Y).
+oedge(X,Y):- ccedge(cc,Y,X) ; X<Y ; previous_step(S) ; not covered(cc,S,X,Y).
 oedge(X,X):- membercc(cc,X) ; not nonclique(cc,k). % necessity for clique cases
 
 % Choice of the minimum of the concept
@@ -73,7 +70,7 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % at initial step all nodes belongs to block 0,0 (step 0, powernode 0).
-block(0,0,X):- membercc(cc,X).
+%block(0,0,X):- membercc(cc,X).
 
 % nodes covered by a powernode are set in the associated block
 block(K,p(cc,K,T),X):- newconcept(cc,K,T,X) ; step(K).
@@ -87,6 +84,9 @@ block(K,P,X):- membercc(cc,X) ; not newconcept(cc,K,_,X) ; block(K-1,P,X) ; step
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% EDGE COVER %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Are covered all edges of concept that link two nodes of different sets.
+covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y; T=1..2.
+
 % Concept edge cover (score)
 newedgecover(cc,k,   N1*N2   ):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k).
 newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k).
@@ -95,7 +95,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #maximize{S@1,S:newedgecover(cc,k,S)}.
 
 % Exclusion of concept with two nodes
-:- newedgecover(cc,k,S) ; S<=1. % 1*1 == 1 and 2*1/2 == 1
+:- newedgecover(cc,k,S) ; S<=0. % 1*1 == 1 and 2*1/2 == 1
 
 
 
@@ -103,8 +103,12 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % output
-#show powernode(cc,k,T,X): newconcept(cc,k,T,X).
-#show clique(cc,k): not nonclique(cc,k).
-#show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
-#show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
-#show block/3.
+%#show powernode(cc,k,T,X): newconcept(cc,k,T,X).
+%#show clique(cc,k): not nonclique(cc,k).
+%#show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
+%#show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
+%#show covered/4.
+%#show block/3.
+%#show previous_step/1.
+%#show step/1.
+
