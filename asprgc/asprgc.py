@@ -7,6 +7,7 @@ from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
+from commons      import basename
 import converter  as converter_module
 import commons
 import atoms
@@ -56,77 +57,40 @@ def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
-    # model_count = 0
-    # for cc in :
     for cc in atom_ccs:
         # Solver creation
         logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
-        solver = ASPSolver()
-        solver.use(findcc, [cc])  # find best concept
-        solver.read(graph_atoms)  # read all basical data
+        solver = ASPSolver(commons.ASP_OPTIONS)
+        solver.read(graph_atoms)       # read all basical data
+        solver._prg.load(ccfinding)
 
         # main loop
         k = 0
         while True:
+            # FIND BEST CONCEPT
+            # release previous k, ground program and assign new k
+            solver.assign_external(name='step', args=[k], truth=False)
             k += 1
-            # release previous k and assign new one
-            solver.assign_external( name='step', args=[k  ])
-            # solver.release_external(name='step', args=[k-1]            )
+            solver.ground(basename(ccfinding), [cc,k])
+            solver.assign_external(name='step', args=[k], truth=True)
 
             # solving
             model = solver.first_solution()
             if model is None:
                 print('No model found by bcfinder')
                 break
-            print('OUTPUT:\n\t',
-                atoms.to_str(model.atoms(), separator='\t\n'),
-                atoms.count(model.atoms()),
-                sep=''
-            )
+            logger.info('\tOUTPUT: ' + str(atoms.to_str(model.atoms(), separator='.\n\t')))
+            logger.info('\tOUTPUT: ' + str(atoms.count(model.atoms())))
 
-            print("\n#### UPDATE", k, '####')
-            input_atoms_names = ('ccedge', 'powernode', 'covered', 'bcovered')
-            input_atoms = atoms.from_dict(
-                all_atoms,
-                input_atoms_names,
-                '.\n\t'
-            )
-            print('INPUT:\n\t', input_atoms,
-                atoms.count(all_atoms, input_atoms_names),
-                sep=''
-            )
-
-            # Update edges
-            updater = ASPSolver()
-            updater.read(input_atoms)
-            updater.use(update, [cc, k])
-
-            updater_atoms = updater.first_solution().atoms()
-            if len(updater_atoms) == 0:
-                logger.error('No update performed by updater. '
-                             + 'This situation must never be encountered.'
-                            )
-            atoms.update(all_atoms, updater_atoms)
-            model_count += 1
-
-            logger.info('ALL:\n\t' + atoms.prettified(
-                all_atoms,
-                joiner='\n\t'
-            ))
-            logger.info('COVERING:\n\t' + atoms.prettified(
-                all_atoms,
-                names=('bcovered',),
-                joiner='\n\t'
-            ))
             logger.info('POWERNODES:\n\t' + atoms.prettified(
-                all_atoms,
+                model.atoms(),
                 names=('powernode', 'score'),
                 joiner='\n\t',
                 sort=True
             ))
 
             # give new powernodes to converter
-            converter.convert(bcfinder_atoms, separator=', ')
+            converter.convert(model.atoms(), separator=', ')
 
             if interactive:
                 input('Next ?')  # my name is spam
