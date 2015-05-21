@@ -19,9 +19,6 @@
 concomp(cc).
 step(k).
 
-% A powernode is trivial iff composed of only one node
-trivial(cc,k,T):- 1 {powernode(cc,k,T,X):powernode(cc,k,T,X)} 1 ; T=1..2.
-
 % Are covered all edges of concept that link two nodes of different set.
 bcovered(cc,k,X,Y):- powernode(cc,k,T,X) ; powernode(cc,k,3-T,Y), X<=Y; T=1..2 ; step(k) ; concomp(cc).
 :- bcovered(_,_,X,Y) ; X>Y.
@@ -34,13 +31,6 @@ covered(Y,X):- bcovered(cc,k,X,Y).
 inter(X,Y):- ccedge(cc,X,Y) ; not covered(X,Y).
 inter(X,Y):- ccedge(cc,Y,X) ; not covered(X,Y).
 
-% New edges, that links existing nodes and new powernode
-%  there is a link iff the X node is linked to all nodes of powernode
-%ccedge(cc,X,p(cc,k,T)):- inter(X,Y) ; not powernode(cc,k,T,X) ; powernode(cc,k,T,Y) ; not trivial(cc,k,T).
-%:- ccedge(cc,X,c(cc,k,T)) ; not inter(X,Y) ; powernode(cc,k,T,Y) ; covered(X,Y).
-
-
 #show bcovered/4.
 #show  covered/2.
 #show  ccedge/3.
-#show  trivial/3.
