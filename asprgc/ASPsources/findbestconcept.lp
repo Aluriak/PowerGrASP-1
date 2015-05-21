@@ -54,13 +54,13 @@ minobj(X):- minobj(_,_,X).
 
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
-imp(cc,3-I,X):- membercc(cc,X); newconcept(cc,k,I,Y) ; not oedge(X,Y) ; not oedge(Y,X).
+imp(cc,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 
 % Consistency ; no impossible element can be added to the concept
-:- imp(cc,I,Y); newconcept(cc,k,I,Y).
+:- imp(cc,T,Y); newconcept(cc,k,T,Y).
 
 % Maximality  ; all possible elements have to be added to the concept
-:- not imp(cc,I,X); not newconcept(cc,k,I,X); I=1..2; membercc(cc,X).
+:- not imp(cc,T,X); not newconcept(cc,k,T,X); T=1..2; membercc(cc,X).
 
 % Xenophobia  ; all elements of a set belongs to the same block
 %share_block(K,X,Y):- block(K,P,X) ; block(K,P,Y).
