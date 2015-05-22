@@ -25,10 +25,6 @@ previous_step(0..k-1).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Node as cc member and non-terminal entities.
-onode(cc,1,X):- membercc(cc,X). % X belongs to CC
-onode(cc,2,X):- ccedge(cc,X,_). % X is a non-terminal node
-
 % oedge are oriented and non-covered by previous steps
 oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; previous_step(S) ; not covered(cc,S,X,Y).
 oedge(X,Y):- ccedge(cc,Y,X) ; X<Y ; previous_step(S) ; not covered(cc,S,X,Y).
@@ -36,7 +32,6 @@ oedge(X,X):- membercc(cc,X) ; not nonclique(cc,k). % necessity for clique cases
 
 % Choice of the minimum of the concept
 1{minobj(cc,k,X):membercc(cc,X)}1.
-minobj(X):- minobj(_,_,X).
 
 % Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
@@ -69,9 +64,6 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% at initial step all nodes belongs to block 0,0 (step 0, powernode 0).
-%block(0,0,X):- membercc(cc,X).
-
 % nodes covered by a powernode are set in the associated block
 block(K,p(cc,K,T),X):- newconcept(cc,K,T,X) ; step(K).
 
@@ -103,7 +95,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % output
-%#show powernode(cc,k,T,X): newconcept(cc,k,T,X).
+#show powernode(cc,k,T,X): newconcept(cc,k,T,X).
 %#show clique(cc,k): not nonclique(cc,k).
 %#show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 %#show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
