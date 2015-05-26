@@ -27,6 +27,20 @@ RESULTS_PREDICATS = (
 
 
 # FUNCTIONS
+def first_solution(solver):
+    """Return the first model found by given gringo.Control instance.
+    If no model is find, None will be return instead."""
+    model = None
+    with solver.solve_iter() as it:
+        # take the first model, or None
+        models = tuple(_ for _ in it)
+        try:
+            model = next(iter(models))
+        except StopIteration:
+            model = None
+    return model
+
+
 def basename(filepath):
     """Return the basename of given filepath.
 
