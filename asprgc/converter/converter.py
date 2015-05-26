@@ -90,14 +90,15 @@ class NeutralConverter(object):
             self._convert(powernodes, cliques, edges)
         )
 
-    def _convert(self, powernodes, cliques):
+    def _convert(self, powernodes, cliques, edges):
         """Perform the convertion and return its results
 
         Wait for atoms powernode(cc,k,num_set,X)
-         and for clique(cc,k).
+         and for clique(cc,k)
+         or  for edges(X,Y).
 
         """
-        return str(atoms)
+        return str(itertools.chain(powernodes, cliques, edges))
 
     def finalized(self):
         """Return converted data"""
