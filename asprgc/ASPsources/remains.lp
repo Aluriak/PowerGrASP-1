@@ -12,8 +12,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program remains.
 
-covered(X,Y):- covered(Y,X).
-edge(X,Y):- ccedge(C,X,Y) ; not covered(X,Y).
+oedge(X,Y):- ccedge(_,X,Y) ; X<Y.
+oedge(X,Y):- ccedge(_,Y,X) ; X<Y.
+edge(X,Y):- oedge(X,Y) ; not covered(X,Y).
 
 #show edge/2.
+%#show ccedge/3.
+%#show oedge/2.
+%#show covered/2.
 

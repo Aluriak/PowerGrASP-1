@@ -12,21 +12,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program inclusion.
 
-% a powernode contain another iff have contains all nodes in it.
-include_pwrn(p(CC1,K1,T1),p(CC2,K2,T2)):- powernode(CC2,K2,T2,_) ; powernode(CC1,K1,T1,X) ; not powernode(CC2,K2,T2,X).
+node(X):- powernode(_,_,_,X).
+
+% a powernode include another iff contains at least one node of it.
+include(p(CC1,K1,T1),p(CC2,K2,T2)):- powernode(CC1,K1,T1,X) ; powernode(CC2,K2,T2,X) ; K1<K2.
 % a powernode includes its nodes.
-include_node(p(CC,K,T),X):- powernode(CC,K,T,X).
+include(p(CC,K,T),X):- powernode(CC,K,T,X).
 
 % direct inclusion.
-direct_include_pwrn(A,B):- include_pwrn(A,B) ; not { include_pwrn(A,Z) ; include_pwrn(Z,B) }.
-direct_include_node(A,B):- include_node(A,B) ; not { include_node(A,Z) ; include_node(Z,B) }.
+direct_include(A,B):- include(A,B) ; not { include(A,Z) ; include(Z,B) }.
 
 % A powernode is trivial if it contain only one node
-trivial(cc,k,T):- 1 {node(cc,k,T,X) : powernode(cc,k,T,X)} 1 ; T=1..2.
+trivial(CC,K,T):- powernode(CC,K,T,_) ; 1 {node(X)} 1.
+
+% a {power,node} is on the top if not contains by any powernode
+top(CC,K,T):- not direct_include(_,p(CC,K,T)) ; powernode(CC,K,T,_).
+top(A):- node(A) ; not include(_,A).
 
 % output
-#show include_pwrn(A,B): direct_include_pwrn(A,B).
-#show include_node(A,B): direct_include_node(A,B).
-#show top(A): not direct_include_node(_,A) ; powernode(_,_,_,A).
-#show top(p(CC,K,T)): not direct_include_node(_,p(CC,K,T)) ; powernode(CC,K,T,_).
+#show include_pwrn(C,K,T,D,L,R): direct_include(p(C,K,T),p(D,L,R)).
+#show include_node(C,K,T,X): direct_include(p(C,K,T),X) , node(X).
+#show top(CC,K,T): top(CC,K,T).
+#show topnode(A): top(A).
 #show trivial/3.

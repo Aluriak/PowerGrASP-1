@@ -39,7 +39,7 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 %{ newconcept(cc,k,1,X): membercc(cc,X), Min<X, block(k-1,P,X) }:- minobj(cc,k,Min) ; block(k-1,P,Min).
 
 % Choice of elements in part 2
-1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<Y } :- minobj(cc,k,Min).
+1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y } :- minobj(cc,k,Min).
 
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
@@ -63,11 +63,14 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% initial state of blocks : each node is in its cc
+block(0,cc,X):- membercc(cc,X).
+
 % nodes covered by a powernode are set in the associated block
-block(k,p(cc,k,T),X):- newconcept(cc,k,T,X) ; step(k).
+block(k,p(cc,k,T),X):- newconcept(cc,k,T,X).
 
 % keep nodes not covered by new concept in their block
-block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,_,X) ; block(k-1,P,X) ; step(k).
+block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
 
 
 
