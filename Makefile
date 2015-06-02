@@ -13,10 +13,16 @@ diam:
 	$(COMMAND) --graph-data="tests/diamond.lp"
 ddiam:
 	$(COMMAND) --graph-data="tests/double_biclique.lp"
+cdiam:
+	$(COMMAND) --graph-data="tests/double_biclique_and_clique.lp"
 three:
 	$(COMMAND) --graph-data="tests/threenode.lp"
+blo:
+	$(COMMAND) --graph-data="tests/testblocks.lp"
 prot:
 	$(COMMAND) --graph-data="tests/proteome_yeast_1.lp"
+triv:
+	$(COMMAND) --graph-data="tests/trivial.lp"
 clique:
 	$(COMMAND) --graph-data="tests/cliques.lp"
 single:
