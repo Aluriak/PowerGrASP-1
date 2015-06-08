@@ -45,13 +45,14 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 %  a node is impossible if in a block different from another element in the same set
-imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; block(k-1,P,Y) ; not block(k-1,P,X).
+imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; topblock(k,B,P) ; include_block(k,B,b(k,P)) ; not block(K,P,X) ; block(K,P,Y).
+%imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; not block(k-1,P,X) ; block(k-1,P,Y).
 
 % Consistency ; no impossible element can be added to the concept
 :- imp(k,T,Y); newconcept(cc,k,T,Y).
 
 % Maximality  ; all possible elements have to be added to the concept
-:- not imp(k,T,X); not newconcept(cc,k,T,X); T=1..2; membercc(cc,X).
+%:- not imp(k,T,X); not newconcept(cc,k,T,X) ; T=1..2; membercc(cc,X).
 
 % Set 1 and Set 2 of concept are equal (clique) or have an empty intersection (biclique)
 nonclique(cc,k):-     newconcept(cc,k,1,X); not newconcept(cc,k,2,X).
@@ -63,6 +64,44 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% top block is the smaller block B that contain a newconcept P at step k
+%   the top block is not the block created by newconcept P.
+topblock(1,b(0,cc),p(cc,k,T)):- k=1 ; T=1..2.
+topblock(k,B,P):- include_block(k-1,B,C) ; C=b(k-1,P) ; P=p(cc,K,T) ;
+                  not { include_block(k-1,B,Z) ; include_block(k-1,Z,C) }.
+
+% block inclusion : keep trace of block hierarchy
+%  algorithmic for the block P of the new concept, and its topblock B:
+%    if all nodes of B are in P (<=> P == B): done
+%    else: (<=> P is included in B)
+%      create include_block(k,B,P)
+%      for each block C in B:
+%        assert(C is included in P OR C inter P = {0})
+%        if C included in P:
+%          don't create include_block(k,B,C)
+%          create include_block(k,P,C)
+%        else: (C inter P = {0})
+%          do nothing else
+%
+%  in a more logical way:
+%    - P is included in B
+include_block(k,B,b(k,P)):- topblock(k,B,P).
+%    - all blocks included in B that are in P are included in P instead of B
+include_block(k,b(k,P),C):- topblock(k,B,P) ;
+                            C=b(k-1,p(cc,L,T)) ; newconcept(cc,L,T,E) ;
+                            P=p(cc,k,U) ; newconcept(cc,k,U,E) ;
+                            include_block(k-1,B,C).
+%    - all blocks that aren't in P are kept «as is» for next step
+include_block(k,B,C):-  not include_block(K,b(k,P),C): K=(k-1)..k ;
+                        C=b(k-1,p(cc,L,T)) ; block(k-1,p(cc,L,T),_) ;
+                        P=p(cc,k,U) ; newconcept(cc,k,U,_) ;
+                        include_block(k-1,B,C).
+
+#show topblock/3.
+#show include_block/3.
+
+
+
 % initial state of blocks : each node is in its cc
 block(0,cc,X):- membercc(cc,X).
 
@@ -97,11 +136,13 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % output
-#show powernode(cc,k,T,X): newconcept(cc,k,T,X).
+#show powernode(cc,k,T,X): newconcept(cc,k,T,X) ;     nonclique(cc,k).
+#show powernode(cc,k,1,X): newconcept(cc,k,_,X) ; not nonclique(cc,k).
 #show clique(cc,k): not nonclique(cc,k).
+#show covered(X,Y): covered(cc,k,X,Y).
+#show block(k,P,X): block(k,P,X).
+% debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
-#show covered(X,Y): covered(cc,k,X,Y).
-#show block/3.
-%#show previous_step/1.
+%#show imp/3.
 %#show step/1.
