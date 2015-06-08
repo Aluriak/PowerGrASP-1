@@ -1,6 +1,29 @@
 # -*- coding: utf-8 -*-
 """
 definition of the bubble format converter.
+A bubble format file (version 1), is structured in four parts:
+    - list of nodes
+    - list of powernodes
+    - containers and contained
+    - edges
+
+There is a grammar that can be associated:
+S     ::= LINE . S + FF
+LINE  ::= NODES + SETS + INS + EDGES
+NODES ::= 'NODE\t' . node_name      . '\n'
+SETS  ::= 'SET\t'  . powernode_name . '\t' . coefficient . '\n'
+INS   ::= 'IN\t'   . contained      . '\t' . container   . '\n'
+EDGES ::= 'EDGE\t' . elementA       . '\t' . elementB    . '\t' . coefficient . '\n'
+
+Coefficient are currently set to 1.0, and no tests have been performed,
+so we don't know what is the purpose of it.
+For contained and container, only the direct inclusion must be provided.
+The order of the parts/lines can be changed.
+Comments are marked by '#' character.
+
+The Cytoscape plugin CyOoG is able to read and print that format.
+
+
 """
 from __future__          import absolute_import, print_function
 from future.utils        import iteritems, iterkeys, itervalues
@@ -14,7 +37,7 @@ import atoms
 
 logger        = commons.logger()
 ASP_INCLUSION = 'asprgc/ASPsources/inclusion.lp'
-# ASP_OPTIONS   = ['--warn=no-atom-undefined']
+ASP_OPTIONS   = ['--warn=no-atom-undefined']
 ASP_OPTIONS   = []
 
 
