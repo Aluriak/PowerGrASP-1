@@ -8,7 +8,7 @@
 # IMPORTS               #
 #########################
 from setuptools  import setup, find_packages
-from asprgc.info import __version__, __name__
+from powergrasp.info import __version__, __name__
 
 
 
@@ -19,7 +19,7 @@ setup(
     name = __name__,
     version = __version__,
     py_modules = ['info'],
-    packages = find_packages(exclude=['asprgc/']),
+    packages = find_packages(exclude=['powergrasp/']),
     package_data = {
         __name__ : ['README.mkd', 'LICENSE.txt']
     },
@@ -30,7 +30,7 @@ setup(
     description = "Graph compression with Answer Set Programming",
     long_description = open('README.mkd').read(),
     keywords = "graph",
-    url = "https://github.com/Aluriak/asprgc",
+    url = "https://github.com/Aluriak/powergrasp",
 
     classifiers = [
         "Development Status :: 2 - Pre-Alpha",
