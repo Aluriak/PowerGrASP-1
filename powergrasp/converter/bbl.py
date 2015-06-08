@@ -36,7 +36,7 @@ import gringo
 import atoms
 
 logger        = commons.logger()
-ASP_INCLUSION = 'asprgc/ASPsources/inclusion.lp'
+ASP_INCLUSION = 'powergrasp/ASPsources/inclusion.lp'
 ASP_OPTIONS   = ['--warn=no-atom-undefined']
 ASP_OPTIONS   = []
 
