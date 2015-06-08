@@ -39,7 +39,7 @@ badd +1 asprgc/ASPsources/remains.lp
 badd +1 asprgc/converter/converter.py
 badd +22 asprgc/ASPsources/inclusion.lp
 badd +30 debug/inclusion.lp
-badd +0 asprgc/converter/bbl.py
+badd +1 asprgc/converter/bbl.py
 argglobal
 silent! argdel *
 set stal=2
@@ -105,12 +105,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 108 - ((31 * winheight(0) + 25) / 50)
+let s:l = 151 - ((49 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-108
-normal! 05|
+151
+normal! 01|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/commons.py
 set splitbelow splitright
@@ -128,12 +128,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 30 - ((29 * winheight(0) + 25) / 50)
+let s:l = 37 - ((36 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-30
-normal! 027|
+37
+normal! 011|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/atoms.py
 set splitbelow splitright
@@ -151,12 +151,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 110 - ((43 * winheight(0) + 25) / 50)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-110
-normal! 031|
+1
+normal! 03|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/converter/converter.py
 set splitbelow splitright
@@ -174,12 +174,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 108 - ((49 * winheight(0) + 25) / 50)
+let s:l = 69 - ((10 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-108
-normal! 0
+69
+normal! 018|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/converter/bbl.py
 set splitbelow splitright
@@ -197,12 +197,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 2 - ((1 * winheight(0) + 25) / 50)
+let s:l = 158 - ((19 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-2
-normal! 0
+158
+normal! 01|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/extract.lp
 set splitbelow splitright
@@ -243,12 +243,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 101 - ((46 * winheight(0) + 25) / 50)
+let s:l = 49 - ((17 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-101
-normal! 0
+49
+normal! 052|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/remains.lp
 set splitbelow splitright
@@ -266,11 +266,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 6 - ((5 * winheight(0) + 25) / 50)
+let s:l = 9 - ((8 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-6
+9
 normal! 0
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/asprgc/ASPsources/inclusion.lp
@@ -289,12 +289,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 14 - ((13 * winheight(0) + 25) / 50)
+let s:l = 55 - ((48 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-14
-normal! 0
+55
+normal! 013|
 lcd ~/ASP/test/rewritting/asprgc
 tabedit ~/ASP/test/rewritting/asprgc/debug/inclusion.lp
 set splitbelow splitright
@@ -312,14 +312,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 52 - ((49 * winheight(0) + 25) / 50)
+let s:l = 47 - ((39 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-52
-normal! 017|
+47
+normal! 0
 lcd ~/ASP/test/rewritting/asprgc
-tabnext 7
+tabnext 9
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
