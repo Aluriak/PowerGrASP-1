@@ -1,7 +1,7 @@
 PYTHON=python2
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 
-TARGET=asprgc/__main__.py
+TARGET=powergrasp/__main__.py
 #INTERACTIVE=--interactive=True
 ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"

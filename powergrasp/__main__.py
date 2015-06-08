@@ -8,23 +8,21 @@ options:
     --version, -v
     --iterations=NUMBER  number of iterations performed, or None if no maximum
     --graph-data=FILE    filepath to ASP graph definition       [default: tests/double_biclique.lp]
-    --extract=FILE       filepath to ASP extraction program     [default: asprgc/ASPsources/extract.lp]
-    --findconcept=FILE   filepath to ASP concept finder program [default: asprgc/ASPsources/findbestconcept.lp]
-    --update=FILE        filepath to ASP updating program       [default: asprgc/ASPsources/edgeupdate.lp]
-    --remain=FILE        filepath to ASP remain finder program  [default: asprgc/ASPsources/remains.lp]
+    --extract=FILE       filepath to ASP extraction program     [default: powergrasp/ASPsources/extract.lp]
+    --findconcept=FILE   filepath to ASP concept finder program [default: powergrasp/ASPsources/findbestconcept.lp]
+    --update=FILE        filepath to ASP updating program       [default: powergrasp/ASPsources/edgeupdate.lp]
+    --remain=FILE        filepath to ASP remain finder program  [default: powergrasp/ASPsources/remains.lp]
     --output-file=NAME   output file (without extension)        [default: data/output]
     --output-format=NAME output format                          [default: bbl]
     --interactive=BOOL   if true, program ask user for next step[default: 0]
 
 output formats:
-    human                something like (almost) human readable
-    ASP                  ASP atoms, ready to be grounded
-    NNF                  usable by Cytoscape and others NNF readers
+    BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
 """
 
 from __future__ import absolute_import, print_function
 from docopt     import docopt
-from asprgc     import asprgc
+from powergrasp import compress
 from info       import __version__
 from converter  import OUTPUT_FORMATS
 
@@ -43,7 +41,7 @@ if __name__ == '__main__':
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
     # launch compression
-    (asprgc(
+    (compress(
         iterations    = iterations,
         graph_data    = options['--graph-data'   ],
         extracting    = options['--extract'      ],
