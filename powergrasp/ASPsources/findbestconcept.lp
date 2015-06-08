@@ -41,6 +41,15 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 % Choice of elements in part 2
 1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y } :- minobj(cc,k,Min).
 
+% a newconcept is trivial iff it contains only one node or newconcept
+trivial(cc,k,T):- newconcept(cc,k,T,_) ; 1 { newconcept(cc,k,T,X) } 1.
+trivial(cc,k,T):- newconcept(cc,k,T,_) ; 0 { newconcept(cc,k,T,X) } 0 ;
+                  1 { include_block(k,b(k,p(cc,k,T)),b(k,X)) } 1.
+
+% a star is a biclique with one powernode composed of only one node
+star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
+%:- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
+
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
@@ -117,6 +126,13 @@ block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% EDGE COVER %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% clique: create an edge to powernode itself / don't need to create two powernodes
+poweredge(p(cc,k,1),p(cc,k,1)):- not nonclique(cc,k).
+% star: link directly the alone node to the second powernode
+poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
+% in all other cases: create a poweredge between the two newconcepts
+poweredge(p(cc,k,1),p(cc,k,2)):- nonclique(cc,k) ; not star(cc,k,T): T=1..2.
+
 % Are covered all edges of concept that link two nodes of different sets.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
@@ -138,9 +154,15 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 % output
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ;     nonclique(cc,k).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ; not nonclique(cc,k).
+#show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
+#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X).
+#show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
+% undesirable output
 #show clique(cc,k): not nonclique(cc,k).
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
+#show trivial/3.
+#show include_block(k,B,C): include_block(k,B,C).
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
