@@ -80,7 +80,7 @@ def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
             k += 1
             # FIND BEST CONCEPT
             # create new solver and ground all data
-            logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if '(2,' in _))
+            logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if '(3,' in _))
             logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if 'ed(' in _))
             logger.info('\tINPUT: ' + previous_coverage)
             solver = gringo.Control(commons.ASP_OPTIONS)
@@ -98,6 +98,9 @@ def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
             logger.info('\tOUTPUT: ' + atoms.to_str(
                 model.atoms(), separator='.\n\t'
             ))
+            logger.info('\tOUTPUT: ' + '\n'.join(_ for _ in atoms.to_str(
+                model.atoms(), separator='.\n\t'
+            ).split('\n') if '(3,' in _))
             logger.info('\tOUTPUT: ' + str(atoms.count(model.atoms())))
 
             logger.info('POWERNODES:\n\t' + atoms.prettified(
