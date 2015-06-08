@@ -106,7 +106,7 @@ def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
                 joiner='\n\t',
                 sort=True
             ))
-            previous_coverage += atoms.to_str(model.atoms(), names=('covered', 'block'))
+            previous_coverage += atoms.to_str(model.atoms(), names=('covered', 'block', 'include_block'))
 
             # give new powernodes to converter
             converter.convert(model.atoms(), separator=', ')
