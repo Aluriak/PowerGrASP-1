@@ -16,6 +16,7 @@ ASP_SRC_GRAPH   = DIR_ASP_SRC + 'diamond' + ASP_FILE_EXT
 ASP_SRC_EXTRACT = DIR_ASP_SRC + 'extract' + ASP_FILE_EXT
 ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
 ASP_OPTIONS     = ['--update-domains']
+ASP_OPTIONS     = []
 
 # VALUES
 LOG_LEVEL         = logging.DEBUG
