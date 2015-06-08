@@ -66,9 +66,9 @@ class NeutralConverter(object):
     """
     def __init__(self):
         # for the first convertion, self.converted must be iterable
-        self.converted = tuple()
+        self.atoms = tuple()
 
-    def convert(self, atoms, separator=', '):
+    def convert(self, atoms):
         """Operate convertion on given atoms.
 
         Atoms are expecting to be powernodes like:
@@ -82,15 +82,12 @@ class NeutralConverter(object):
          in the finalize method.
 
         """
-        powernodes = (a for a in atoms if a.name() == 'powernode')
-        cliques    = (a for a in atoms if a.name() == 'clique')
-        edges      = (a for a in atoms if a.name() == 'edge')
-        self.converted = itertools.chain(
-            self.converted,
-            self._convert(powernodes, cliques, edges)
+        self.atoms = itertools.chain(
+            self.atoms,
+            self._convert(atoms)
         )
 
-    def _convert(self, powernodes, cliques, edges):
+    def _convert(self, atoms):
         """Perform the convertion and return its results
 
         Wait for atoms powernode(cc,k,num_set,X)
@@ -98,7 +95,7 @@ class NeutralConverter(object):
          or  for edges(X,Y).
 
         """
-        return str(itertools.chain(powernodes, cliques, edges))
+        return str(atoms)
 
     def finalized(self):
         """Return converted data"""
