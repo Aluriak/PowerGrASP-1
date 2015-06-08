@@ -26,6 +26,7 @@ node(X):- powernode(_,_,_,X).
 
 % a powernode include another iff contains at least one node of it.
 include(p(CC1,K1,T1),p(CC2,K2,T2)):- powernode(CC1,K1,T1,X) ; powernode(CC2,K2,T2,X) ; K1<K2.
+%include(p(CC1,K1,T1),p(CC2,K2,T2)):- include_block(_,b(_,p(CC1,K1,T1)),b(_,p(CC2,K2,T2))).
 % a powernode includes its nodes.
 include(p(CC,K,T),X):- powernode(CC,K,T,X).
 
