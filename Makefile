@@ -17,6 +17,8 @@ cdiam:
 	$(COMMAND) --graph-data="tests/double_biclique_and_clique.lp"
 three:
 	$(COMMAND) --graph-data="tests/threenode.lp"
+pfc:
+	$(COMMAND) --graph-data="tests/perfectfit.lp"
 blo:
 	$(COMMAND) --graph-data="tests/testblocks.lp"
 prot:
