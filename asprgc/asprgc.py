@@ -148,7 +148,6 @@ def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
         logger.info('#################')
         # write output in file
         output.write(converter.finalized())
-        output.close()
         logger.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
 
         # print results
@@ -163,6 +162,7 @@ def asprgc(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
     logger.info("All cc has been performed")
 
+    output.close()
     # return str(graph)
 
 
