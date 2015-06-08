@@ -76,7 +76,8 @@ def prettified(atoms, names=None, sizes=None,
 
 
 def count(atoms, names=None):
-    """Return a string that describes how many atoms given atoms_dict have.
+    """Return a dict atom:count that describes
+    how many atoms given atoms_dict have.
 
     if names is None, all atoms will be returned.
     if names is an iterable of atoms names,
