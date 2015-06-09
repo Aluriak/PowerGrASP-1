@@ -69,12 +69,12 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
-    all_atoms = tuple()
     for cc in atom_ccs:
-        # Solver creation
-        logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
-
+        # contains interesting atoms and the non covered edges at last step
+        result_atoms = tuple()
+        remain_edges = None
         # main loop
+        logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
         previous_coverage = ''
         model = None
@@ -85,6 +85,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if '(3,' in _))
             logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if 'ed(' in _))
             logger.info('\tINPUT: ' + previous_coverage)
+            # Solver creation
             solver = gringo.Control(commons.ASP_OPTIONS)
             solver.add('base', [], graph_atoms + previous_coverage)
             solver.ground([('base', [])])
@@ -115,13 +116,15 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
             # give new powernodes to converter
             converter.convert((a for a in model.atoms() if a.name() in (
-                'powernode', 'clique', 'edge', 'poweredge'
+                'powernode', 'clique', 'poweredge'
             )))
-            all_atoms = itertools.chain(
-                all_atoms,
+            # save interesting atoms
+            result_atoms = itertools.chain(
+                result_atoms,
                 (a for a in model.atoms() if a.name() in ('powernode', 'poweredge'))
             )
-
+            remain_edges = tuple(a for a in model.atoms() if a.name() == 'edge')
+            # interactive mode
             if interactive:
                 input('Next ?')  # my name is spam
 
@@ -132,23 +135,14 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
         logger.info('## REMAIN DATA ##')
         logger.info('#################')
         # Creat solver and collect remaining edges
-        # logger.debug("INPUT REMAIN: " + all_edges + previous_coverage)
-        remain_collector = gringo.Control()
-        remain_collector.load(remaining)
-        remain_collector.add('base', [], all_edges + previous_coverage)
-        remain_collector.ground([
-            (basename(remaining), []),
-            ('base', []),
-        ])
-        remain_edges = commons.first_solution(remain_collector)
-        # logger.debug("OUTPUT REMAIN: " + str(remain_edges))
+        # logger.debug("INPUT REMAIN: " + str(remain_edges) + str(inclusion_tree))
 
         # Output
-        if remain_edges is None or len(remain_edges.atoms()) == 0:
+        if remain_edges is None or len(remain_edges) == 0:
             logger.info('No remaining edge')
         else:
-            logger.info(str(len(remain_edges.atoms())) + ' remaining edge(s)')
-            converter.convert(remain_edges.atoms())
+            logger.info(str(len(remain_edges)) + ' remaining edge(s)')
+            converter.convert(remain_edges)
 
 
 
@@ -161,7 +155,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
         # print results
         # results_names = ('powernode',)
-        logger.info('\n\t' + atoms.prettified(all_atoms,
+        logger.info('\n\t' + atoms.prettified(result_atoms,
                                               joiner='\n\t',
                                               sort=True)
         )
