@@ -105,7 +105,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
             logger.info('POWERNODES:\n\t' + atoms.prettified(
                 model.atoms(),
-                names=('powernode', 'score'),
+                names=('powernode', 'poweredge', 'score'),
                 joiner='\n\t',
                 sort=True
             ))
@@ -113,7 +113,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
             # give new powernodes to converter
             converter.convert((a for a in model.atoms() if a.name() in (
-                'powernode', 'clique', 'edge'
+                'powernode', 'clique', 'edge', 'poweredge'
             )))
 
             if interactive:
