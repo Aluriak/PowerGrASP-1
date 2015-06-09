@@ -156,7 +156,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ;     nonclique(cc,k).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ; not nonclique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
-#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X).
+#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(_,_,_,X).
 #show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
 % undesirable output
 #show clique(cc,k): not nonclique(cc,k).
