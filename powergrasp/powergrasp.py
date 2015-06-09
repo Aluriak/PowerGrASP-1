@@ -101,9 +101,6 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             logger.info('\tOUTPUT: ' + atoms.to_str(
                 model.atoms(), separator='.\n\t'
             ))
-            logger.info('\tOUTPUT: ' + '\n'.join(_ for _ in atoms.to_str(
-                model.atoms(), separator='.\n\t'
-            ).split('\n') if '(3,' in _))
             logger.info('\tOUTPUT: ' + str(atoms.count(model.atoms())))
 
             logger.info('POWERNODES:\n\t' + atoms.prettified(
