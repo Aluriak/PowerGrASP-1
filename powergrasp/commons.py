@@ -22,6 +22,7 @@ ASP_OPTIONS     = []
 LOG_LEVEL         = logging.DEBUG
 RESULTS_PREDICATS = (
     'powernode',
+    'poweredge',
     'score',
 )
 

@@ -8,6 +8,7 @@ from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
 from commons      import basename
+import itertools
 import converter  as converter_module
 import commons
 import gringo
@@ -68,6 +69,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
+    all_atoms = tuple()
     for cc in atom_ccs:
         # Solver creation
         logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
@@ -115,6 +117,10 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             converter.convert((a for a in model.atoms() if a.name() in (
                 'powernode', 'clique', 'edge', 'poweredge'
             )))
+            all_atoms = itertools.chain(
+                all_atoms,
+                (a for a in model.atoms() if a.name() in ('powernode', 'poweredge'))
+            )
 
             if interactive:
                 input('Next ?')  # my name is spam
@@ -155,11 +161,10 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
         # print results
         # results_names = ('powernode',)
-        # logger.info('\n\t' + atoms.prettified(all_atoms,
-                                              # results_only=True,
-                                              # joiner='\n\t',
-                                              # sort=True)
-        # )
+        logger.info('\n\t' + atoms.prettified(all_atoms,
+                                              joiner='\n\t',
+                                              sort=True)
+        )
         # for to_find in ('powernode', 'edgecover'):
             # logger.info(to_find + ' found: \t' + str(to_find in str(all_atoms)))
 
