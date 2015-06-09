@@ -184,7 +184,12 @@ class BBLConverter(NeutralConverter):
             assert(num_set1 in ('1', '2') and num_set2 in ('1', '2'))
             pwrn1 = powernode(cc1, step1, num_set1)
             pwrn2 = powernode(cc2, step2, num_set2)
-            assert(pwrn2 not in self.belongs)
+            if not (pwrn2 not in self.belongs):
+                logger.error("ABNORMAL SITUTATION: assert(pwrn2 not in self.belongs) FAILED. WITH:")
+                logger.error('PWRN1:' + pwrn1)
+                logger.error('PWRN2:' + pwrn2)
+                logger.error('BELONGS:' + str(self.belongs))
+                # assert(pwrn2 not in self.belongs)
             self.belongs[pwrn2] = pwrn1
             logger.debug('INC_PWRN:' + pwrn1 + " contains " + pwrn2)
             self.contains[pwrn1].add(pwrn2)
@@ -197,6 +202,7 @@ class BBLConverter(NeutralConverter):
             assert(num_set in ('1', '2'))
             assert(node not in contained) # False iff cliques are not properly managed
             contained.add(node)
+            self.nodes.add(node)
             pwrn = powernode(cc, step, num_set)
             assert(node not in self.belongs)
             self.belongs[node] = pwrn
@@ -204,7 +210,8 @@ class BBLConverter(NeutralConverter):
             logger.debug('INC_NODE:' + pwrn + ' contains ' + node)
 
         # powernodes cc, step, num_set, node
-        for cc, step, num_set, node in powernodes:
+        # for cc, step, num_set, node in powernodes:
+        for cc, step, num_set, node in tuple():
             assert(int(step) > 0)
             assert(num_set in ('1', '2'))
             node = node.strip('"')
