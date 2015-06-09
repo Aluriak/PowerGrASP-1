@@ -21,8 +21,16 @@ pfc:
 	$(COMMAND) --graph-data="tests/perfectfit.lp"
 blo:
 	$(COMMAND) --graph-data="tests/testblocks.lp"
+prot2:
+	$(COMMAND) --graph-data="tests/proteome_yeast_2.lp"
 prot:
 	$(COMMAND) --graph-data="tests/proteome_yeast_1.lp"
+prol:
+	$(COMMAND) --graph-data="tests/proteome_yeast_1_letters.lp"
+phos:
+	$(COMMAND) --graph-data="tests/phosphatase.lp"
+sbind:
+	$(COMMAND) --graph-data="tests/structural_binding.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 clique:
