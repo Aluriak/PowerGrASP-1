@@ -48,7 +48,7 @@ trivial(cc,k,T):- newconcept(cc,k,T,_) ; 0 { newconcept(cc,k,T,X) } 0 ;
 
 % a star is a biclique with one powernode composed of only one node
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
-%:- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
+:- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
 
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
@@ -144,6 +144,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #maximize{S@1,S:newedgecover(cc,k,S)}.
 
 % Exclusion of concept with two nodes
+%  score of 1 is a double star configuration: this is avoided above in star definition.
 :- newedgecover(cc,k,S) ; S<=1. % 1*1 == 1 and 2*1/2 == 1
 
 
@@ -166,5 +167,6 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
+#show star/3.
 %#show imp/3.
 %#show step/1.
