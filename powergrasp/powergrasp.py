@@ -112,7 +112,10 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
                 joiner='\n\t',
                 sort=True
             ))
-            previous_coverage += atoms.to_str(model.atoms(), names=('covered', 'block', 'include_block'))
+            # atoms to be given to the next step
+            previous_coverage += atoms.to_str(
+                model.atoms(), names=('covered', 'block', 'include_block')
+            )
 
             # give new powernodes to converter
             converter.convert((a for a in model.atoms() if a.name() in (
