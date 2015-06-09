@@ -54,7 +54,7 @@ star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 %  a node is impossible if in a block different from another element in the same set
-imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; topblock(k,B,P) ; include_block(k,B,b(k,P)) ; not block(K,P,X) ; block(K,P,Y).
+imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,P) ; include_block(k,B,b(k,P)) ; not block(K,P,X) ; block(K,P,Y).
 %imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; not block(k-1,P,X) ; block(k-1,P,Y).
 
 % Consistency ; no impossible element can be added to the concept
@@ -73,14 +73,15 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% top block is the smaller block B that contain a newconcept P at step k
+% parent block is the smaller block B that contain a newconcept P at step k
 %   the top block is not the block created by newconcept P.
-topblock(1,b(0,cc),p(cc,k,T)):- k=1 ; T=1..2.
-topblock(k,B,P):- include_block(k-1,B,C) ; C=b(k-1,P) ; P=p(cc,K,T) ;
-                  not { include_block(k-1,B,Z) ; include_block(k-1,Z,C) }.
+parent_block(1,b(1,cc),p(cc,1,T)):- T=1..2 ; k=1. % initial condition
+parent_block(k,B,P):- include_block(k-1,B,C) ; C=b(k-1,P) ; P=p(cc,K,T) ;
+                      not { include_block(k-1,B,Z) ; include_block(k-1,Z,C) }.
+
 
 % block inclusion : keep trace of block hierarchy
-%  algorithmic for the block P of the new concept, and its topblock B:
+%  algorithmic for the block P of the new concept, and its parent_block B:
 %    if all nodes of B are in P (<=> P == B): done
 %    else: (<=> P is included in B)
 %      create include_block(k,B,P)
@@ -94,9 +95,9 @@ topblock(k,B,P):- include_block(k-1,B,C) ; C=b(k-1,P) ; P=p(cc,K,T) ;
 %
 %  in a more logical way:
 %    - P is included in B
-include_block(k,B,b(k,P)):- topblock(k,B,P).
+include_block(k,B,b(k,P)):- parent_block(k,B,P).
 %    - all blocks included in B that are in P are included in P instead of B
-include_block(k,b(k,P),C):- topblock(k,B,P) ;
+include_block(k,b(k,P),C):- parent_block(k,B,P) ;
                             C=b(k-1,p(cc,L,T)) ; newconcept(cc,L,T,E) ;
                             P=p(cc,k,U) ; newconcept(cc,k,U,E) ;
                             include_block(k-1,B,C).
@@ -106,7 +107,7 @@ include_block(k,B,C):-  not include_block(K,b(k,P),C): K=(k-1)..k ;
                         P=p(cc,k,U) ; newconcept(cc,k,U,_) ;
                         include_block(k-1,B,C).
 
-#show topblock/3.
+#show parent_block/3.
 #show include_block/3.
 
 
