@@ -43,6 +43,8 @@ top(A):- node(A) ; not include(_,A).
 % output
 #show powernode(C,K,T,X): powernode(C,K,T,X) ; not clique(C,K).
 #show powernode(C,K,1,X): powernode(C,K,_,X) ;     clique(C,K).
+#show poweredge/4.
+#show poweredge/5.
 #show include_pwrn(C,K,T,D,L,R): direct_include(p(C,K,T),p(D,L,R)).
 #show include_node(C,K,T,X): direct_include(p(C,K,T),X) , node(X).
 #show top(CC,K,T): top(CC,K,T).
