@@ -23,6 +23,8 @@ blo:
 	$(COMMAND) --graph-data="tests/testblocks.lp"
 prot:
 	$(COMMAND) --graph-data="tests/proteome_yeast_1.lp"
+prol:
+	$(COMMAND) --graph-data="tests/proteome_yeast_1_letters.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 clique:
