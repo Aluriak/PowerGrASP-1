@@ -160,14 +160,14 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
 #show edge(X,Y): oedge(X,Y) , not covered(X,Y) , not covered(cc,k,X,Y) , X!=Y.
 % undesirable output
-#show clique(cc,k): not nonclique(cc,k).
+%#show clique(cc,k): not nonclique(cc,k).
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
-#show trivial/3.
+%#show trivial/3.
 #show include_block(k,B,C): include_block(k,B,C).
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
-#show star/3.
+%#show star/3.
 %#show imp/3.
 %#show step/1.
