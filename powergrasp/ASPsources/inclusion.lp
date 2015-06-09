@@ -6,8 +6,9 @@
 %
 % Input:
 %       - powernode(cc,k,1..2,Y):- element Y is in powernode cc,k,1 or cc,k,2.
-%       - edge(X,Y):- there is an edge between (power)nodes X and Y.
-%       - clique(cc,k):- powernode cc,k is a clique
+%       - poweredge(X,Y):- powernode X is linked to {power,}node Y.
+%       - include_powernode(cc,K1,T1,K2,T2):- powernode cc,K1,T1 contains powernode cc,K2,T2.
+%       - edge(X,Y):- there is an edge between nodes X and Y.
 % Output:
 %       - powernode(cc,k,1..2,Y):- element Y is in powernode cc,k,1 or cc,k,2 ;
 %                               if cc,k,t is a clique, only cc,k,2 will be generated ;
@@ -49,6 +50,5 @@ top(A):- node(A) ; not include(_,A).
 #show include_node(C,K,T,X): direct_include(p(C,K,T),X) , node(X).
 #show top(CC,K,T): top(CC,K,T).
 #show topnode(A): top(A).
-#show clique/2.
 #show trivial/3.
 #show edge/2.
