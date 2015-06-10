@@ -82,9 +82,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             k += 1
             # FIND BEST CONCEPT
             # create new solver and ground all data
-            logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if '(3,' in _))
-            logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if 'ed(' in _))
-            logger.info('\tINPUT: ' + previous_coverage)
+            logger.debug('\tINPUT: ' + previous_coverage)
             # Solver creation
             solver = gringo.Control(commons.ASP_OPTIONS)
             solver.add('base', [], graph_atoms + previous_coverage)
@@ -98,12 +96,12 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             if model is None:
                 print('No model found by bcfinder')
                 break
-            logger.info('\tOUTPUT: ' + atoms.to_str(
+            logger.debug('\tOUTPUT: ' + atoms.to_str(
                 model.atoms(), separator='.\n\t'
             ))
-            logger.info('\tOUTPUT: ' + str(atoms.count(model.atoms())))
+            logger.debug('\tOUTPUT: ' + str(atoms.count(model.atoms())))
 
-            logger.info('POWERNODES:\n\t' + atoms.prettified(
+            logger.debug('POWERNODES:\n\t' + atoms.prettified(
                 model.atoms(),
                 names=('powernode', 'poweredge', 'score'),
                 joiner='\n\t',
@@ -155,14 +153,13 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
 
         # print results
         # results_names = ('powernode',)
-        logger.info('\n\t' + atoms.prettified(result_atoms,
-                                              joiner='\n\t',
-                                              sort=True)
-        )
-        # for to_find in ('powernode', 'edgecover'):
-            # logger.info(to_find + ' found: \t' + str(to_find in str(all_atoms)))
+        logger.debug('\n\t' + atoms.prettified(
+            result_atoms,
+            joiner='\n\t',
+            sort=True
+        ))
 
-    logger.info("All cc has been performed")
+    logger.info("All cc have been performed")
 
     output.close()
     # return str(graph)
