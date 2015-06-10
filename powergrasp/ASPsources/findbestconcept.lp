@@ -79,6 +79,13 @@ parent_block(1,b(1,cc),p(cc,1,T)):- T=1..2 ; k=1. % initial condition
 parent_block(k,B,P):- include_block(k-1,B,C) ; C=b(k-1,P) ; P=p(cc,K,T) ;
                       not { include_block(k-1,B,Z) ; include_block(k-1,Z,C) }.
 
+% B is a parent block of P if it contains it and no other block contained in B contains P.
+parent_block(k,B,P):- block_contains_newconcept(k,B,P) ;
+                    not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,P) }.
+
+% a block contains a powernode if at least one point of it is in block at current step
+block_contains_newconcept(k,b(k-1,p(cc,L,U)),p(cc,k,T)):-
+                    block(k,p(cc,L,U),X) ; newconcept(cc,k,T,X).
 
 % block inclusion : keep trace of block hierarchy
 %  algorithmic for the block P of the new concept, and its parent_block B:
@@ -99,13 +106,14 @@ include_block(k,B,b(k,P)):- parent_block(k,B,P).
 %    - all blocks included in B that are in P are included in P instead of B
 include_block(k,b(k,P),C):- parent_block(k,B,P) ;
                             C=b(k-1,p(cc,L,T)) ; newconcept(cc,L,T,E) ;
-                            P=p(cc,k,U) ; newconcept(cc,k,U,E) ;
+                            P=p(cc,k,U) ; newconcept(cc,k,U,E) ; L!=k ;
                             include_block(k-1,B,C).
 %    - all blocks that aren't in P are kept «as is» for next step
-include_block(k,B,C):-  not include_block(K,b(k,P),C): K=(k-1)..k ;
-                        C=b(k-1,p(cc,L,T)) ; block(k-1,p(cc,L,T),_) ;
-                        P=p(cc,k,U) ; newconcept(cc,k,U,_) ;
-                        include_block(k-1,B,C).
+include_block(k,B,C):- not include_block(k,b(k,P),C) ;
+                       C=b(k-1,p(cc,L,U)) ; newconcept(cc,L,U,_) ;
+                       P=p(cc,k,T) ; newconcept(cc,k,T,_) ; L!=k ;
+                       0 { newconcept(cc,k,T,E) ; newconcept(cc,L,U,E) } 0 ;
+                       include_block(k-1,B,C).
 
 #show parent_block/3.
 #show include_block/3.
@@ -116,7 +124,8 @@ include_block(k,B,C):-  not include_block(K,b(k,P),C): K=(k-1)..k ;
 block(0,cc,X):- membercc(cc,X).
 
 % nodes covered by a powernode are set in the associated block
-block(k,p(cc,k,T),X):- newconcept(cc,k,T,X).
+block(k,p(cc,k,1),X):- newconcept(cc,k,1,X).
+block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; nonclique(cc,k).
 
 % keep nodes not covered by new concept in their block
 block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
@@ -154,7 +163,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % output
-#show powernode(cc,k,T,X): newconcept(cc,k,T,X) ;     nonclique(cc,k).
+#show powernode(cc,k,T,X): newconcept(cc,k,T,X) ;     nonclique(cc,k) ; not star(cc,k,T).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ; not nonclique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(_,_,_,X).
@@ -164,7 +173,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 %#show clique(cc,k): not nonclique(cc,k).
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
-%#show trivial/3.
+#show trivial/3.
 #show include_block(k,B,C): include_block(k,B,C).
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
