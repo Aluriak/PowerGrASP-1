@@ -16,6 +16,7 @@ options:
     --output-format=NAME output format                          [default: bbl]
     --interactive=BOOL   if true, program ask user for next step[default: 0]
     --loglevel=NAME      defines terminal log level             [default: debug]
+    --heuristic=NAME     defines heuristic used by the solver   [default: trendy]
 
 output formats:
     BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -55,6 +56,7 @@ if __name__ == '__main__':
         output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
         interactive   = interactive,
+        heuristic     = options['--heuristic'    ],
     ))
 
 

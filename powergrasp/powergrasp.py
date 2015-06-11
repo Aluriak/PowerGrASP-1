@@ -23,7 +23,7 @@ logger = commons.logger()
 
 
 def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
-           output_file, output_format, interactive=False):
+           output_file, output_format, heuristic, interactive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -88,7 +88,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             # create new solver and ground all data
             logger.debug('\tINPUT: ' + previous_coverage)
             # Solver creation
-            solver = gringo.Control(commons.ASP_OPTIONS)
+            solver = gringo.Control(commons.ASP_OPTIONS + [' --configuration='+heuristic])
             solver.add('base', [], graph_atoms + previous_coverage)
             solver.ground([('base', [])])
             solver.load(ccfinding)

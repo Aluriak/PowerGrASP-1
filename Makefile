@@ -5,10 +5,12 @@ TARGET=powergrasp/__main__.py
 #INTERACTIVE=--interactive=True
 ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"
+#FOUT=--output-file="data/output_alt"
+HEURISTIC=--heuristic=trendy
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
-ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE) $(LOGLEVEL)
+ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
 
 diam:
