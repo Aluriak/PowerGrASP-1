@@ -15,6 +15,7 @@ options:
     --output-file=NAME   output file (without extension)        [default: data/output]
     --output-format=NAME output format                          [default: bbl]
     --interactive=BOOL   if true, program ask user for next step[default: 0]
+    --loglevel=NAME      defines terminal log level             [default: debug]
 
 output formats:
     BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -25,6 +26,7 @@ from docopt     import docopt
 from powergrasp import compress
 from info       import __version__
 from converter  import OUTPUT_FORMATS
+import commons
 
 
 
@@ -39,6 +41,8 @@ if __name__ == '__main__':
     try:    interactive = options['--interactive'] in ('1', 'True', 'true')
     except: iterations  = False
     assert(options['--output-format'] in OUTPUT_FORMATS)
+
+    commons.log_level(options['--loglevel'])
 
     # launch compression
     (compress(

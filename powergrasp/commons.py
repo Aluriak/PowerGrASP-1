@@ -85,4 +85,13 @@ stream_handler.setLevel(LOG_LEVEL)
 _logger.addHandler(stream_handler)
 
 
+def log_level(level):
+    """Set terminal log level to given one"""
+    handlers = (_ for _ in _logger.handlers
+                if _.__class__ is logging.StreamHandler
+               )
+    for handler in handlers:
+        handler.setLevel(level.upper())
+
+
 

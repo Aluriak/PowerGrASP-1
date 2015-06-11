@@ -5,8 +5,10 @@ TARGET=powergrasp/__main__.py
 #INTERACTIVE=--interactive=True
 ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"
+LOGLEVEL=--loglevel=debug
+LOGLEVEL=--loglevel=info
 
-ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE)
+ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE) $(LOGLEVEL)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
 
 diam:
