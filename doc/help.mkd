@@ -1,0 +1,44 @@
+Compilation nécessaire pour assurer un scripting python.
+Une bonne solution est de passer via
+[python-gringo](https://github.com/lxsli/python-gringo).
+Toutes les étapes de compilations sont décrites
+dans le fichier INSTALL à la racine des source de clingo.
+Une solution presque automatisée est la suivante :
+
+        git clone https://github.com/lxsli/python-gringo
+        cd python-gringo/clingo-4.4.0-sources/
+        scons --build-dir=release # create the build dir
+        scons configure --build-dir=release pyclingo
+        vim build/release.py # see details below
+        scons clingo --build-dir=release pyclingo
+        scons gringo --build-dir=release pyclingo
+
+L'édition du fichier *release.py* consiste en
+l'ajout de données sur python
+pour certains champs, et des indications sur [TBB](https://www.threadingbuildingblocks.org) :
+
+    CPPPATH     = ['/usr/include/python2.7', '/udd/lbourneu/bin/tbb/tbb43_20150316oss/include']
+    LIBPATH = ['/udd/lbourneu/bin/tbb/tbb43_20150316oss/lib/intel64/gcc4.4']
+    WITH_PYTHON = 'python2.7'
+    WITH_TBB = 'tbb'
+
+Une fois cela fait, pip peut être utilisé pour
+installer gringo comme package python :
+
+        cd .. # goto python-gringo repo's root
+        python2 setup.py sdist
+        pip2 install --user dist/gringo-*.tar.gz
+
+NB:
+- python3 n'est pas supporté par l'actuel packaging.
+- tout a été installé en local au niveau user.
+- un makefile a été écrit pour automatiser la compilation une fois le fichier *release.py* modifié.
+- TBB doit être téléchargée sur [TBB.org](https://www.threadingbuildingblocks.org/download), et placée de telle manière que correctement référencée par *release.py*.
+
+
+
+un simple test de python2 montre que gringo
+est totalement utilisable avec
+[l'API officielle](http://potassco.sourceforge.net/gringo.html) :
+
+        python2 -c "import gringo ; gringo.__version__"
