@@ -183,7 +183,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
                 + "s (extraction in " + str(round(time_extract, 3))
                 + "). Now, statistics:\n"
     )
-    print(statistics.output(stats))
+    logger.info(statistics.output(stats))
 
     output.close()
     # return str(graph)
