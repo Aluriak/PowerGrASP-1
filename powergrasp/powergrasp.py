@@ -8,6 +8,7 @@ from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
 from commons      import basename
+import statistics
 import itertools
 import converter  as converter_module
 import commons
@@ -37,6 +38,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     output    = open(output_file + '.' + output_format, 'w')
     converter = converter_module.converter_for(output_format)
     model     = None
+    stats     = statistics.container(graph_data.rstrip('.lp'))
 
     # Extract graph data
     logger.info('#################')
@@ -61,6 +63,8 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
     graph_atoms = atoms.to_str(graph_atoms)
     del extractor
+    # stats about compression
+    statistics.add(stats, initial_edge_count=all_edges.count('.'))
     # printings
     logger.debug('EXTRACTED: ' + graph_atoms + '\n')
     logger.debug('CCEDGES  : ' + all_edges + '\n')
@@ -121,6 +125,15 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
                 result_atoms,
                 (a for a in model.atoms() if a.name() in ('powernode', 'poweredge'))
             )
+            new_powernode_count = 2
+            new_poweredge_count = len(tuple(
+                None for a in model.atoms() if a.name() == 'poweredge'
+            ))
+            statistics.add(stats,
+                           final_poweredge_count=new_poweredge_count,
+                           final_powernode_count=new_powernode_count,
+                          )
+            # statistics.add(stats, final_powernode_count=new_powernode_count)
             remain_edges = tuple(a for a in model.atoms() if a.name() == 'edge')
             # interactive mode
             if interactive:
@@ -140,6 +153,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             logger.info('No remaining edge')
         else:
             logger.info(str(len(remain_edges)) + ' remaining edge(s)')
+            statistics.add(stats, final_edge_count=len(remain_edges))
             converter.convert(remain_edges)
 
 
@@ -159,7 +173,8 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             sort=True
         ))
 
-    logger.info("All cc have been performed")
+    logger.info("All cc have been performed. Now, statistics:\n")
+    print(statistics.output(stats))
 
     output.close()
     # return str(graph)
