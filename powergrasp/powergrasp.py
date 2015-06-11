@@ -13,6 +13,7 @@ import itertools
 import converter  as converter_module
 import commons
 import gringo
+import time
 import atoms
 
 
@@ -39,6 +40,8 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     converter = converter_module.converter_for(output_format)
     model     = None
     stats     = statistics.container(graph_data.rstrip('.lp'))
+    time_cc   = None
+    time_extract = time.time()
 
     # Extract graph data
     logger.info('#################')
@@ -68,11 +71,13 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     # printings
     logger.debug('EXTRACTED: ' + graph_atoms + '\n')
     logger.debug('CCEDGES  : ' + all_edges + '\n')
+    time_extract = time.time() - time_extract
 
     # Find connected components
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
+    time_cc = time.time()
     for cc in atom_ccs:
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
@@ -173,7 +178,11 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             sort=True
         ))
 
-    logger.info("All cc have been performed. Now, statistics:\n")
+    time_cc = time.time() - time_cc
+    logger.info("All cc have been performed in " + str(round(time_cc, 3))
+                + "s (extraction in " + str(round(time_extract, 3))
+                + "). Now, statistics:\n"
+    )
     print(statistics.output(stats))
 
     output.close()
