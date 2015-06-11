@@ -103,7 +103,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             model = commons.first_solution(solver)
             # treatment of the model
             if model is None:
-                print('No model found by bcfinder')
+                logger.info(str(k) + ' optimal model(s) found by bcfinder.')
                 break
             logger.debug('\tOUTPUT: ' + atoms.to_str(
                 model.atoms(), separator='.\n\t'
