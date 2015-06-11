@@ -135,8 +135,8 @@ class BBLConverter(NeutralConverter):
         ])
 
         new_atoms = commons.first_solution(self.solver).atoms()
-        print('DEBUG INCLUSION: input     == ', atoms.to_str(self.atoms))
-        print('DEBUG INCLUSION: new_atoms == ', new_atoms)
+        logger.debug('DEBUG INCLUSION: input     == ' + atoms.to_str(self.atoms))
+        logger.debug('DEBUG INCLUSION: new_atoms == ' + str(new_atoms))
         return (
             ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'powernode'),
             ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'poweredge'),
