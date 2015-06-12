@@ -84,6 +84,14 @@ class BBLConverter(NeutralConverter):
             super().__init__()
         except TypeError: # python 2
             super(BBLConverter, self).__init__()
+        self.release_memory()  # initialize the containers
+
+    def release_memory(self):
+        """When the data is generated, all containers can be freed
+        for memory occupation optimization.
+
+        Initialize all containers.
+        """
         # nodes
         self.nodes      = set()
         self.pwnds      = set()
