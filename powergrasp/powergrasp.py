@@ -179,12 +179,17 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             sort=True
         ))
 
+    # compute a human readable final results string,
+    # and put it in the output and in level info.
     time_cc = time.time() - time_cc
-    logger.info("All cc have been performed in " + str(round(time_cc, 3))
-                + "s (extraction in " + str(round(time_extract, 3))
-                + ") with heuristic "+heuristic+". Now, statistics:\n"
+    final_results = (
+        "All cc have been performed in " + str(round(time_cc, 3))
+        + "s (extraction in " + str(round(time_extract, 3))
+        + ") with heuristic "+heuristic+".\nNow, statistics on "
+        + statistics.output(stats)
     )
-    logger.info(statistics.output(stats))
+    logger.info(final_results)
+    output.write(converter.comment(final_results.split('\n')))
 
     output.close()
     # return str(graph)
