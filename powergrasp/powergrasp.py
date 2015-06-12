@@ -168,6 +168,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
         logger.info('#################')
         # write output in file
         output.write(converter.finalized())
+        converter.release_memory()
         logger.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
 
         # print results
