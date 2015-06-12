@@ -93,7 +93,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             # create new solver and ground all data
             logger.debug('\tINPUT: ' + previous_coverage)
             # Solver creation
-            solver = gringo.Control(commons.ASP_OPTIONS + [' --configuration='+heuristic])
+            solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
             solver.add('base', [], graph_atoms + previous_coverage)
             solver.ground([('base', [])])
             solver.load(ccfinding)
@@ -181,7 +181,7 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     time_cc = time.time() - time_cc
     logger.info("All cc have been performed in " + str(round(time_cc, 3))
                 + "s (extraction in " + str(round(time_extract, 3))
-                + "). Now, statistics:\n"
+                + ") with heuristic "+heuristic+". Now, statistics:\n"
     )
     logger.info(statistics.output(stats))
 
