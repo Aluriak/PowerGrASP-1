@@ -6,7 +6,12 @@ TARGET=powergrasp/__main__.py
 ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
-HEURISTIC=--heuristic=trendy
+#HEURISTIC=--heuristic=trendy
+#HEURISTIC=--heuristic=tweety
+#HEURISTIC=--heuristic=frumpy
+#HEURISTIC=--heuristic=crafty
+#HEURISTIC=--heuristic=jumpy
+#HEURISTIC=--heuristic=handy
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
