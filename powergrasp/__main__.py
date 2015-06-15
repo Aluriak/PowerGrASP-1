@@ -15,6 +15,8 @@ options:
     --output-file=NAME   output file (without extension)        [default: data/output]
     --output-format=NAME output format                          [default: bbl]
     --interactive=BOOL   if true, program ask user for next step[default: 0]
+    --loglevel=NAME      defines terminal log level             [default: debug]
+    --heuristic=NAME     defines heuristic used by the solver   [default: frumpy]
 
 output formats:
     BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -25,6 +27,7 @@ from docopt     import docopt
 from powergrasp import compress
 from info       import __version__
 from converter  import OUTPUT_FORMATS
+import commons
 
 
 
@@ -40,6 +43,8 @@ if __name__ == '__main__':
     except: iterations  = False
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
+    commons.log_level(options['--loglevel'])
+
     # launch compression
     (compress(
         iterations    = iterations,
@@ -51,6 +56,7 @@ if __name__ == '__main__':
         output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
         interactive   = interactive,
+        heuristic     = options['--heuristic'    ],
     ))
 
 

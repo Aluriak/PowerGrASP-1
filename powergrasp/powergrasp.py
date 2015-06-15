@@ -8,9 +8,12 @@ from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
 from commons      import basename
+import statistics
+import itertools
 import converter  as converter_module
 import commons
 import gringo
+import time
 import atoms
 
 
@@ -21,7 +24,7 @@ logger = commons.logger()
 
 
 def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
-           output_file, output_format, interactive=False):
+           output_file, output_format, heuristic, interactive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -36,6 +39,9 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     output    = open(output_file + '.' + output_format, 'w')
     converter = converter_module.converter_for(output_format)
     model     = None
+    stats     = statistics.container(graph_data.rstrip('.lp'))
+    time_cc   = None
+    time_extract = time.time()
 
     # Extract graph data
     logger.info('#################')
@@ -60,19 +66,24 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
     graph_atoms = atoms.to_str(graph_atoms)
     del extractor
+    # stats about compression
+    statistics.add(stats, initial_edge_count=all_edges.count('.'))
     # printings
     logger.debug('EXTRACTED: ' + graph_atoms + '\n')
     logger.debug('CCEDGES  : ' + all_edges + '\n')
+    time_extract = time.time() - time_extract
 
     # Find connected components
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
+    time_cc = time.time()
     for cc in atom_ccs:
-        # Solver creation
-        logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
-
+        # contains interesting atoms and the non covered edges at last step
+        result_atoms = tuple()
+        remain_edges = None
         # main loop
+        logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
         previous_coverage = ''
         model = None
@@ -80,10 +91,9 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             k += 1
             # FIND BEST CONCEPT
             # create new solver and ground all data
-            logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if '(3,' in _))
-            logger.info('\tINPUT: ' + '.\n\t'.join(_ for _ in previous_coverage.split('.') if 'ed(' in _))
-            logger.info('\tINPUT: ' + previous_coverage)
-            solver = gringo.Control(commons.ASP_OPTIONS)
+            logger.debug('\tINPUT: ' + previous_coverage)
+            # Solver creation
+            solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
             solver.add('base', [], graph_atoms + previous_coverage)
             solver.ground([('base', [])])
             solver.load(ccfinding)
@@ -93,29 +103,44 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             model = commons.first_solution(solver)
             # treatment of the model
             if model is None:
-                print('No model found by bcfinder')
+                logger.info(str(k) + ' optimal model(s) found by bcfinder.')
                 break
-            logger.info('\tOUTPUT: ' + atoms.to_str(
+            logger.debug('\tOUTPUT: ' + atoms.to_str(
                 model.atoms(), separator='.\n\t'
             ))
-            logger.info('\tOUTPUT: ' + '\n'.join(_ for _ in atoms.to_str(
-                model.atoms(), separator='.\n\t'
-            ).split('\n') if '(3,' in _))
-            logger.info('\tOUTPUT: ' + str(atoms.count(model.atoms())))
+            logger.debug('\tOUTPUT: ' + str(atoms.count(model.atoms())))
 
-            logger.info('POWERNODES:\n\t' + atoms.prettified(
+            logger.debug('POWERNODES:\n\t' + atoms.prettified(
                 model.atoms(),
-                names=('powernode', 'score'),
+                names=('powernode', 'poweredge', 'score'),
                 joiner='\n\t',
                 sort=True
             ))
-            previous_coverage += atoms.to_str(model.atoms(), names=('covered', 'block', 'include_block'))
+            # atoms to be given to the next step
+            previous_coverage += atoms.to_str(
+                model.atoms(), names=('covered', 'block', 'include_block')
+            )
 
             # give new powernodes to converter
             converter.convert((a for a in model.atoms() if a.name() in (
-                'powernode', 'clique', 'edge'
+                'powernode', 'clique', 'poweredge'
             )))
-
+            # save interesting atoms
+            result_atoms = itertools.chain(
+                result_atoms,
+                (a for a in model.atoms() if a.name() in ('powernode', 'poweredge'))
+            )
+            new_powernode_count = 2
+            new_poweredge_count = len(tuple(
+                None for a in model.atoms() if a.name() == 'poweredge'
+            ))
+            statistics.add(stats,
+                           final_poweredge_count=new_poweredge_count,
+                           final_powernode_count=new_powernode_count,
+                          )
+            # statistics.add(stats, final_powernode_count=new_powernode_count)
+            remain_edges = tuple(a for a in model.atoms() if a.name() == 'edge')
+            # interactive mode
             if interactive:
                 input('Next ?')  # my name is spam
 
@@ -126,23 +151,15 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
         logger.info('## REMAIN DATA ##')
         logger.info('#################')
         # Creat solver and collect remaining edges
-        # logger.debug("INPUT REMAIN: " + all_edges + previous_coverage)
-        remain_collector = gringo.Control()
-        remain_collector.load(remaining)
-        remain_collector.add('base', [], all_edges + previous_coverage)
-        remain_collector.ground([
-            (basename(remaining), []),
-            ('base', []),
-        ])
-        remain_edges = commons.first_solution(remain_collector)
-        # logger.debug("OUTPUT REMAIN: " + str(remain_edges))
+        # logger.debug("INPUT REMAIN: " + str(remain_edges) + str(inclusion_tree))
 
         # Output
-        if remain_edges is None or len(remain_edges.atoms()) == 0:
+        if remain_edges is None or len(remain_edges) == 0:
             logger.info('No remaining edge')
         else:
-            logger.info(str(len(remain_edges.atoms())) + ' remaining edge(s)')
-            converter.convert(remain_edges.atoms())
+            logger.info(str(len(remain_edges)) + ' remaining edge(s)')
+            statistics.add(stats, final_edge_count=len(remain_edges))
+            converter.convert(remain_edges)
 
 
 
@@ -151,19 +168,30 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
         logger.info('#################')
         # write output in file
         output.write(converter.finalized())
+        converter.release_memory()
         logger.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
 
         # print results
         # results_names = ('powernode',)
-        # logger.info('\n\t' + atoms.prettified(all_atoms,
-                                              # results_only=True,
-                                              # joiner='\n\t',
-                                              # sort=True)
-        # )
-        # for to_find in ('powernode', 'edgecover'):
-            # logger.info(to_find + ' found: \t' + str(to_find in str(all_atoms)))
+        logger.debug('\n\t' + atoms.prettified(
+            result_atoms,
+            joiner='\n\t',
+            sort=True
+        ))
 
-    logger.info("All cc has been performed")
+    # compute a human readable final results string,
+    # and put it in the output and in level info.
+    time_cc = time.time() - time_cc
+    final_results = (
+        "All cc have been performed in " + str(round(time_cc, 3))
+        + "s (extraction in " + str(round(time_extract, 3))
+        + ") with heuristic " + heuristic + ".\nSolver options: "
+        + ' '.join(commons.ASP_OPTIONS)
+        + ".\nNow, statistics on "
+        + statistics.output(stats)
+    )
+    logger.info(final_results)
+    output.write(converter.comment(final_results.split('\n')))
 
     output.close()
     # return str(graph)

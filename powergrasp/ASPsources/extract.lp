@@ -22,7 +22,7 @@ node(2,Y):- edge(_,Y).
 node(X):- node(1..2,X).
 
 %Symetric graph
-inter(X,Y):- edge(X,Y). 
+inter(X,Y):- edge(X,Y).
 inter(X,Y):- edge(Y,X).
 
 %Oriented graph

@@ -104,3 +104,7 @@ class NeutralConverter(object):
     def __str__(self):
         """str version of a converter is the finalized string of data"""
         return self.finalized()
+
+    def comment(self, lines):
+        """Add lines in given iterable as comments"""
+        return '\n# ' + '\n# '.join(lines)

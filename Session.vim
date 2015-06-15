@@ -105,12 +105,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 151 - ((49 * winheight(0) + 25) / 50)
+let s:l = 115 - ((21 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-151
-normal! 0
+115
+normal! 048|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/commons.py
 set splitbelow splitright
@@ -197,12 +197,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 158 - ((19 * winheight(0) + 25) / 50)
+let s:l = 157 - ((18 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-158
-normal! 0
+157
+normal! 027|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/extract.lp
 set splitbelow splitright
@@ -220,12 +220,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 47 - ((37 * winheight(0) + 25) / 50)
+let s:l = 59 - ((49 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-47
-normal! 0
+59
+normal! 022|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/findbestconcept.lp
 set splitbelow splitright
@@ -243,34 +243,11 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 49 - ((17 * winheight(0) + 25) / 50)
+let s:l = 151 - ((49 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-49
-normal! 052|
-lcd ~/ASP/test/rewritting/powergrasp
-tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/remains.lp
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winheight=1 winwidth=1
-argglobal
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal nofen
-silent! normal! zE
-let s:l = 9 - ((8 * winheight(0) + 25) / 50)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-9
+151
 normal! 0
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/inclusion.lp
@@ -289,35 +266,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 51 - ((44 * winheight(0) + 25) / 50)
+let s:l = 19 - ((18 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-51
-normal! 013|
-lcd ~/ASP/test/rewritting/powergrasp
-tabedit ~/ASP/test/rewritting/powergrasp/debug/inclusion.lp
-set splitbelow splitright
-set nosplitbelow
-set nosplitright
-wincmd t
-set winheight=1 winwidth=1
-argglobal
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal nofen
-silent! normal! zE
-let s:l = 47 - ((39 * winheight(0) + 25) / 50)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-47
-normal! 0
+19
+normal! 066|
 lcd ~/ASP/test/rewritting/powergrasp
 tabnext 9
 set stal=1

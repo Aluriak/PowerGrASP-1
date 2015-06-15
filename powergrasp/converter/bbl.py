@@ -84,6 +84,14 @@ class BBLConverter(NeutralConverter):
             super().__init__()
         except TypeError: # python 2
             super(BBLConverter, self).__init__()
+        self.release_memory()  # initialize the containers
+
+    def release_memory(self):
+        """When the data is generated, all containers can be freed
+        for memory occupation optimization.
+
+        Initialize all containers.
+        """
         # nodes
         self.nodes      = set()
         self.pwnds      = set()
@@ -115,6 +123,7 @@ class BBLConverter(NeutralConverter):
 
         Returns many generators:
             powernode -- powernodes that are contained by nothing
+            poweredge -- poweredges that links powernode and {power,}node
             clique -- powernodes that are cliques
             edge -- edges that links elements between nodes
             top -- powernodes that are contained by nothing
@@ -134,10 +143,11 @@ class BBLConverter(NeutralConverter):
         ])
 
         new_atoms = commons.first_solution(self.solver).atoms()
-        print('DEBUG INCLUSION: input     == ', atoms.to_str(self.atoms))
-        print('DEBUG INCLUSION: new_atoms == ', new_atoms)
+        logger.debug('DEBUG INCLUSION: input     == ' + atoms.to_str(self.atoms))
+        logger.debug('DEBUG INCLUSION: new_atoms == ' + str(new_atoms))
         return (
             ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'powernode'),
+            ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'poweredge'),
             ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'clique'),
             ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'edge'),
             ((str(_) for _ in a.args()) for a in new_atoms if a.name() == 'top'),
@@ -153,7 +163,7 @@ class BBLConverter(NeutralConverter):
         Metadata will be used by finalized method.
         """
         # get additionnal data
-        powernodes, cliques, edges, tops, topnodes, trivials, inclusions_powernode, inclusions_node = (
+        powernodes, poweredges, cliques, edges, tops, topnodes, trivials, inclusions_powernode, inclusions_node = (
             self._additionnal_data_from()
         )
 
@@ -167,7 +177,23 @@ class BBLConverter(NeutralConverter):
         for a, b in edges:
             assert(a.__class__ is str and b.__class__ is str)
             self.edges[a].add(b)
-            logger.debug('EDGES:' + a + ' to ' + b)
+            logger.debug('EDGE:' + a + ' to ' + b)
+
+        # edges a, b (there is an edge between a and b)
+        for payload in poweredges:
+            payload = tuple(payload)
+            if len(payload) == 5: # powernode linked to powernode
+                cc, k1, t1, k2, t2 = payload
+                a = powernode(cc, k1, t1)
+                b = powernode(cc, k2, t2)
+            else:  # powernode linked to a node
+                assert(len(payload) == 4)
+                cc, k, t, node = payload
+                a = powernode(cc, k, t)
+                b = node
+            assert(a.__class__ is str and b.__class__ is str)
+            self.edges[a].add(b)
+            logger.debug('POWEREDGE:' + a + ' to ' + b)
 
         # trivial cc, step, num_set (a powernode contains only one node)
         for cc, step, num_set in trivials:
@@ -184,7 +210,12 @@ class BBLConverter(NeutralConverter):
             assert(num_set1 in ('1', '2') and num_set2 in ('1', '2'))
             pwrn1 = powernode(cc1, step1, num_set1)
             pwrn2 = powernode(cc2, step2, num_set2)
-            assert(pwrn2 not in self.belongs)
+            if not (pwrn2 not in self.belongs):
+                logger.error("ABNORMAL SITUTATION: assert(pwrn2 not in self.belongs) FAILED. WITH:")
+                logger.error('PWRN1:' + pwrn1)
+                logger.error('PWRN2:' + pwrn2)
+                logger.error('BELONGS:' + str(self.belongs))
+                # assert(pwrn2 not in self.belongs)
             self.belongs[pwrn2] = pwrn1
             logger.debug('INC_PWRN:' + pwrn1 + " contains " + pwrn2)
             self.contains[pwrn1].add(pwrn2)
@@ -197,36 +228,12 @@ class BBLConverter(NeutralConverter):
             assert(num_set in ('1', '2'))
             assert(node not in contained) # False iff cliques are not properly managed
             contained.add(node)
+            self.nodes.add(node)
             pwrn = powernode(cc, step, num_set)
             assert(node not in self.belongs)
             self.belongs[node] = pwrn
             self.contains[pwrn].add(node)
             logger.debug('INC_NODE:' + pwrn + ' contains ' + node)
-
-        # powernodes cc, step, num_set, node
-        for cc, step, num_set, node in powernodes:
-            assert(int(step) > 0)
-            assert(num_set in ('1', '2'))
-            node = node.strip('"')
-            pwrn      = powernode(cc,step,num_set)
-            pwrn_comp = powernode(cc,step,str(3-int(num_set)))
-            self.nodes.add(node)
-
-            # get the contained (power)node if powernode is trivial
-            if pwrn in self.trivials:
-                pwrn = node
-            if pwrn_comp in self.trivials:
-                assert(len(self.contains[pwrn_comp]) == 1)
-                pwrn_comp = next(iter(self.contains[pwrn_comp]))
-
-            if pwrn not in self.cliques and pwrn_comp not in self.cliques:
-                if pwrn != node: # add pwrn iff not trivial
-                    self.pwnds.add(pwrn)
-                if num_set == '1':
-                    print(pwrn, pwrn.__class__, pwrn_comp, pwrn_comp.__class__)
-                    self.edges[pwrn].add(pwrn_comp)
-
-            logger.debug('POWERNODE:' + pwrn + node)
 
         # top cc, step, num_set (a powernode is contained by nothing)
         for node in topnodes:

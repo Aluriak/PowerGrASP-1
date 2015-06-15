@@ -5,8 +5,11 @@ TARGET=powergrasp/__main__.py
 #INTERACTIVE=--interactive=True
 ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"
+#FOUT=--output-file="data/output_alt"
+LOGLEVEL=--loglevel=debug
+LOGLEVEL=--loglevel=info
 
-ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE)
+ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
 
 diam:
@@ -21,10 +24,18 @@ pfc:
 	$(COMMAND) --graph-data="tests/perfectfit.lp"
 blo:
 	$(COMMAND) --graph-data="tests/testblocks.lp"
+prot2:
+	$(COMMAND) --graph-data="tests/proteome_yeast_2.lp"
 prot:
 	$(COMMAND) --graph-data="tests/proteome_yeast_1.lp"
 prol:
 	$(COMMAND) --graph-data="tests/proteome_yeast_1_letters.lp"
+phos:
+	$(COMMAND) --graph-data="tests/phosphatase.lp"
+sbind:
+	$(COMMAND) --graph-data="tests/structural_binding.lp"
+bbind:
+	$(COMMAND) --graph-data="tests/structural_binding_no_bridge.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 clique:
