@@ -185,7 +185,9 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     final_results = (
         "All cc have been performed in " + str(round(time_cc, 3))
         + "s (extraction in " + str(round(time_extract, 3))
-        + ") with heuristic "+heuristic+".\nNow, statistics on "
+        + ") with heuristic " + heuristic + ".\nSolver options: "
+        + ' '.join(commons.ASP_OPTIONS)
+        + ".\nNow, statistics on "
         + statistics.output(stats)
     )
     logger.info(final_results)
