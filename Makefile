@@ -40,6 +40,8 @@ phos:
 	$(COMMAND) --graph-data="tests/phosphatase.lp"
 sbind:
 	$(COMMAND) --graph-data="tests/structural_binding.lp"
+bbind:
+	$(COMMAND) --graph-data="tests/structural_binding_no_bridge.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 clique:
