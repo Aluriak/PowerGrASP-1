@@ -84,7 +84,7 @@ parent_block(k,B,P):- block_contains_newconcept(k,B,P) ;
                     not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,P) }.
 
 % a block contains a powernode if at least one point of it is in block at current step
-block_contains_newconcept(k,b(k-1,p(cc,L,U)),p(cc,k,T)):-
+block_contains_newconcept(k,b(k,p(cc,L,U)),p(cc,k,T)):-
                     block(k,p(cc,L,U),X) ; newconcept(cc,k,T,X).
 
 % block inclusion : keep trace of block hierarchy
