@@ -4,18 +4,18 @@ The Python Powergraph analysis tool, based on Answer Set Programming solving and
 ## Requirements
 Needs [python-gringo module](https://github.com/lxsli/python-gringo).
 Unfortunately, you will need to compile clingo yourself, for includes the python support.
-This can be a pain, but maybe the little help (in french, infortunately) given by *doc/help.mkd*.
+This can be a pain, but there is a little help (in french, infortunately) given by *doc/help.mkd*.
 
 ## Basic use
 PowerGrASP can be used as a script:
 
-    python2 powergrasp --graph-data=human\_proteom.lp --output-file=for\_cytoscape.bbl
+    python2 powergrasp --graph-data=human_proteom.lp --output-file=for_cytoscape.bbl
 
 Or can be embedded in any python program:
 
     import powergrasp
 
-    with open('human_proteom.lp') as fin, open('for\_cytoscape.bbl', 'w') as fout,
+    with open('human_proteom.lp') as fin, open('for_cytoscape.bbl', 'w') as fout,
     fout.write(powergrasp.compress(fin.read()))
 
 ## Help & Details
