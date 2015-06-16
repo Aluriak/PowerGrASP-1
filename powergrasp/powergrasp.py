@@ -79,9 +79,14 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
     logger.info('#################')
     time_cc = time.time()
     for cc in atom_ccs:
-        # contains interesting atoms and the non covered edges at last step
+        # Contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
         remain_edges = None
+        # Solver creation
+        solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
+        solver.add('base', [], graph_atoms)
+        solver.ground([('base', [])])
+        solver.load(ccfinding)
         # main loop
         logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
@@ -90,14 +95,11 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
         while True:
             k += 1
             # FIND BEST CONCEPT
-            # create new solver and ground all data
-            logger.debug('\tINPUT: ' + previous_coverage)
-            # Solver creation
-            solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
-            solver.add('base', [], graph_atoms + previous_coverage)
-            solver.ground([('base', [])])
-            solver.load(ccfinding)
+            # ground all data
+            # logger.debug('\tINPUT: ' + previous_coverage)
+            solver.assign_external(gringo.Fun("step", [k-1]), False)
             solver.ground([(basename(ccfinding), [cc,k])])
+            solver.assign_external(gringo.Fun("step", [k  ]), True)
 
             # solving
             model = commons.first_solution(solver)

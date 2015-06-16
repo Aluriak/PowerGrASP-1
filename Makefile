@@ -7,7 +7,7 @@ ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 LOGLEVEL=--loglevel=debug
-LOGLEVEL=--loglevel=info
+#LOGLEVEL=--loglevel=info
 
 ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
