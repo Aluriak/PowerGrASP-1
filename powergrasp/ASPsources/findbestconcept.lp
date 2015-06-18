@@ -35,8 +35,6 @@ oedge(X,X):- membercc(cc,X) ; not nonclique(cc,k). % necessity for clique cases
 % Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
 { newconcept(cc,k,1,X): membercc(cc,X), Min<X }:- minobj(cc,k,Min).
-% or (that need a test)
-%{ newconcept(cc,k,1,X): membercc(cc,X), Min<X, block(k-1,P,X) }:- minobj(cc,k,Min) ; block(k-1,P,Min).
 
 % Choice of elements in part 2
 1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y } :- minobj(cc,k,Min).
