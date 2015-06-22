@@ -15,6 +15,7 @@ import commons
 import gringo
 import time
 import atoms
+import sys
 
 
 logger = commons.logger()
@@ -24,7 +25,7 @@ logger = commons.logger()
 
 
 def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
-           output_file, output_format, heuristic, interactive=False):
+           output_file, output_format, heuristic, interactive=False, count_model=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -141,8 +142,13 @@ def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
             # statistics.add(stats, final_powernode_count=new_powernode_count)
             remain_edges = tuple(a for a in model.atoms() if a.name() == 'edge')
             # interactive mode
-            if interactive:
+            if count_model and interactive:
+                input(str(k)+'>Next ?')  # my name is spam
+            elif interactive:
                 input('Next ?')  # my name is spam
+            elif count_model:
+                print('\r' + str(k) + ' models found', end='')
+                sys.stdout.flush()
 
 
 
