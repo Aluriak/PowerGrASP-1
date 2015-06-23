@@ -78,7 +78,7 @@ def FIRST_SOLUTION_NO_THREAD(solver):
     model = next(iter(models))
     return tuple(model) if model else None
 
-# here is some meta programming for allow external client to choose between
+# here is some lines for allow external client to choose between
 #  thread or no-thread first solution implementation:
 first_solution = FIRST_SOLUTION_THREAD
 def first_solution_function(mode=FIRST_SOLUTION_NO_THREAD):
