@@ -24,7 +24,7 @@ logger = commons.logger()
 
 
 
-def compress(iterations, graph_data, extracting, ccfinding, updating, remaining,
+def compress(graph_data, extracting, ccfinding, updating, remaining,
            output_file, output_format, heuristic, interactive=False, count_model=False):
     """Performs the graph compression with data found in graph file.
 

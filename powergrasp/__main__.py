@@ -6,7 +6,6 @@ usage:
 options:
     --help, -h
     --version, -v
-    --iterations=NUMBER  number of iterations performed, or None if no maximum
     --graph-data=FILE    filepath to ASP graph definition       [default: tests/double_biclique.lp]
     --extract=FILE       filepath to ASP extraction program     [default: powergrasp/ASPsources/extract.lp]
     --findconcept=FILE   filepath to ASP concept finder program [default: powergrasp/ASPsources/findbestconcept.lp]
@@ -38,8 +37,6 @@ if __name__ == '__main__':
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    try:    iterations  = int(options['--iterations'])
-    except: iterations  = None
     interactive = options['--interactive'] in ('1', 'True', 'true')
     count_model = options['--count-model'] in ('1', 'True', 'true')
     assert(options['--output-format'] in OUTPUT_FORMATS)
@@ -48,7 +45,6 @@ if __name__ == '__main__':
 
     # launch compression
     (compress(
-        iterations    = iterations,
         graph_data    = options['--graph-data'   ],
         extracting    = options['--extract'      ],
         ccfinding     = options['--findconcept'  ],
