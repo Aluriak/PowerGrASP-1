@@ -3,13 +3,14 @@ CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 
 TARGET=powergrasp/__main__.py
 #INTERACTIVE=--interactive=True
+MODELCOUNT=--count-model=True
 ITERATIONS=--iterations=10
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
-ARGS=$(OUTPUT) $(ITERATIONS) $(INTERACTIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
+ARGS=$(OUTPUT) $(ITERATIONS) $(MODELCOUNT) $(INTERACTIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
 
 diam:
