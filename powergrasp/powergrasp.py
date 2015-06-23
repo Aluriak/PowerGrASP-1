@@ -162,6 +162,7 @@ def compress(graph_data, extracting, ccfinding, updating, remaining,
         # Output
         if remain_edges is None or len(remain_edges) == 0:
             logger.info('No remaining edge')
+            statistics.add(stats, final_edge_count=0)
         else:
             logger.info(str(len(remain_edges)) + ' remaining edge(s)')
             statistics.add(stats, final_edge_count=len(remain_edges))
