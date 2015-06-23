@@ -37,8 +37,9 @@ if __name__ == '__main__':
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    interactive = options['--interactive'] in ('1', 'True', 'true')
-    count_model = options['--count-model'] in ('1', 'True', 'true')
+    def boolean(s): return s not in (0, '0', 'False', 'false')
+    interactive = boolean(options['--interactive'])
+    count_model = boolean(options['--count-model'])
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
     commons.log_level(options['--loglevel'])
