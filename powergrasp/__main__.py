@@ -9,7 +9,6 @@ options:
     --graph-data=FILE    filepath to ASP graph definition       [default: tests/double_biclique.lp]
     --extract=FILE       filepath to ASP extraction program     [default: powergrasp/ASPsources/extract.lp]
     --findconcept=FILE   filepath to ASP concept finder program [default: powergrasp/ASPsources/findbestconcept.lp]
-    --update=FILE        filepath to ASP updating program       [default: powergrasp/ASPsources/edgeupdate.lp]
     --remain=FILE        filepath to ASP remain finder program  [default: powergrasp/ASPsources/remains.lp]
     --output-file=NAME   output file (without extension)        [default: data/output]
     --output-format=NAME output format                          [default: bbl]
@@ -51,7 +50,6 @@ if __name__ == '__main__':
         graph_data    = options['--graph-data'   ],
         extracting    = options['--extract'      ],
         ccfinding     = options['--findconcept'  ],
-        updating      = options['--update'       ],
         remaining     = options['--remain'       ],
         output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
