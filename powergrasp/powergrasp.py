@@ -104,6 +104,9 @@ def compress(graph_data, extracting, ccfinding, updating, remaining,
             model = commons.first_solution(solver)
             # treatment of the model
             if model is None:
+                if count_model: # replace counter by the final information
+                    print('\r', end='')
+                    sys.stdout.flush()
                 logger.info(str(k) + ' optimal model(s) found by bcfinder.')
                 break
             logger.debug('\tOUTPUT: ' + atoms.to_str(
@@ -147,8 +150,12 @@ def compress(graph_data, extracting, ccfinding, updating, remaining,
             elif interactive:
                 input('Next ?')  # my name is spam
             elif count_model:
-                print('\r' + str(k) + ' models found', end='')
+                print('\r' + str(k) + ' model'
+                      + ('s' if k > 1 else '') + ' found',
+                      end=''
+                )
                 sys.stdout.flush()
+
 
 
 
