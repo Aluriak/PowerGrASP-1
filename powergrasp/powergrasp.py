@@ -25,17 +25,22 @@ logger = commons.logger()
 
 
 def compress(graph_data, extracting, ccfinding, updating, remaining,
-           output_file, output_format, heuristic, interactive=False, count_model=False):
+             output_file, output_format, heuristic,
+             interactive=False, count_model=False, threading=True):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
      for perform the computations.
 
-    Output format must be valid. TOCOMPLETE.
+    Output format must be valid.
 
     If interactive is True, an input will be expected
      from the user after each step.
     """
+    commons.first_solution_function(
+        commons.FIRST_SOLUTION_THREAD if threading
+        else commons.FIRST_SOLUTION_NO_THREAD
+    )
     # Initialize descriptors
     output    = open(output_file + '.' + output_format, 'w')
     converter = converter_module.converter_for(output_format)
@@ -55,9 +60,8 @@ def compress(graph_data, extracting, ccfinding, updating, remaining,
     extractor.load(extracting)
     extractor.ground([(basename(extracting), [])])
 
-    model = commons.first_solution(extractor)
-    assert(model is not None)
-    graph_atoms = model.atoms()
+    graph_atoms = commons.first_solution(extractor)
+    assert(graph_atoms is not None)
     # get all CC, one by one
     atom_ccs = (cc.args()[0]  # args is a list of only one element (cc/1)
                 for cc in graph_atoms
@@ -110,40 +114,40 @@ def compress(graph_data, extracting, ccfinding, updating, remaining,
                 logger.info(str(k) + ' optimal model(s) found by bcfinder.')
                 break
             logger.debug('\tOUTPUT: ' + atoms.to_str(
-                model.atoms(), separator='.\n\t'
+                model, separator='.\n\t'
             ))
-            logger.debug('\tOUTPUT: ' + str(atoms.count(model.atoms())))
+            logger.debug('\tOUTPUT: ' + str(atoms.count(model)))
 
             logger.debug('POWERNODES:\n\t' + atoms.prettified(
-                model.atoms(),
+                model,
                 names=('powernode', 'poweredge', 'score'),
                 joiner='\n\t',
                 sort=True
             ))
             # atoms to be given to the next step
             previous_coverage += atoms.to_str(
-                model.atoms(), names=('covered', 'block', 'include_block')
+                model, names=('covered', 'block', 'include_block')
             )
 
             # give new powernodes to converter
-            converter.convert((a for a in model.atoms() if a.name() in (
+            converter.convert((a for a in model if a.name() in (
                 'powernode', 'clique', 'poweredge'
             )))
             # save interesting atoms
             result_atoms = itertools.chain(
                 result_atoms,
-                (a for a in model.atoms() if a.name() in ('powernode', 'poweredge'))
+                (a for a in model if a.name() in ('powernode', 'poweredge'))
             )
             new_powernode_count = 2
             new_poweredge_count = len(tuple(
-                None for a in model.atoms() if a.name() == 'poweredge'
+                None for a in model if a.name() == 'poweredge'
             ))
             statistics.add(stats,
                            final_poweredge_count=new_poweredge_count,
                            final_powernode_count=new_powernode_count,
                           )
             # statistics.add(stats, final_powernode_count=new_powernode_count)
-            remain_edges = tuple(a for a in model.atoms() if a.name() == 'edge')
+            remain_edges = tuple(a for a in model if a.name() == 'edge')
             # interactive mode
             if count_model and interactive:
                 input(str(k)+'>Next ?')  # my name is spam

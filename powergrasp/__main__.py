@@ -15,6 +15,7 @@ options:
     --output-format=NAME output format                          [default: bbl]
     --interactive=BOOL   if true, program ask user for next step[default: 0]
     --count-model=BOOL   if true, prints models count in stdout [default: 0]
+    --threading=BOOL     if true, use threading optimization    [default: 1]
     --loglevel=NAME      defines terminal log level             [default: debug]
     --heuristic=NAME     defines heuristic used by the solver   [default: frumpy]
 
@@ -40,6 +41,7 @@ if __name__ == '__main__':
     def boolean(s): return s not in (0, '0', 'False', 'false')
     interactive = boolean(options['--interactive'])
     count_model = boolean(options['--count-model'])
+    threading   = boolean(options['--threading'  ])
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
     commons.log_level(options['--loglevel'])
@@ -53,9 +55,10 @@ if __name__ == '__main__':
         remaining     = options['--remain'       ],
         output_file   = options['--output-file'  ],
         output_format = options['--output-format'],
+        heuristic     = options['--heuristic'    ],
         interactive   = interactive,
         count_model   = count_model,
-        heuristic     = options['--heuristic'    ],
+        threading     = threading,
     ))
 
 

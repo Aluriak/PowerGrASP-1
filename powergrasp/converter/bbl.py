@@ -142,7 +142,7 @@ class BBLConverter(NeutralConverter):
             ('base', []),
         ])
 
-        new_atoms = commons.first_solution(self.solver).atoms()
+        new_atoms = commons.first_solution(self.solver)
         logger.debug('DEBUG INCLUSION: input     == ' + atoms.to_str(self.atoms))
         logger.debug('DEBUG INCLUSION: new_atoms == ' + str(new_atoms))
         return (
