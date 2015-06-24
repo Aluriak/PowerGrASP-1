@@ -7,7 +7,7 @@ MODELCOUNT=--count-model=True
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 #LBOUND=--lbound-cutoff=-1
-AGGRESSIVE=--aggressive
+#AGGRESSIVE=--aggressive
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
