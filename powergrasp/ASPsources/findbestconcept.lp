@@ -16,7 +16,7 @@
 %       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
 %       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program findbestconcept(cc,k).
+#program findbestconcept(cc,k,lowerbound).
 step(k).
 
 
@@ -151,9 +151,10 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 % Maximize score
 #maximize{S@1,S:newedgecover(cc,k,S)}.
 
-% Exclusion of concept with two nodes
-%  score of 1 is a double star configuration: this is avoided above in star definition.
-:- newedgecover(cc,k,S) ; S<=1. % 1*1 == 1 and 2*1/2 == 1
+% Exclusion of concept with not enough nodes.
+%  the maximal lowerbound is equals to 1 at least,
+%  and determined by the scorebound ASP program.
+:- newedgecover(cc,k,S) ; S<lowerbound.
 
 
 

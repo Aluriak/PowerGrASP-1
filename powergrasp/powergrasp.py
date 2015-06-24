@@ -24,8 +24,8 @@ logger = commons.logger()
 
 
 
-def compress(graph_data, extracting, ccfinding, remaining,
-             output_file, output_format, heuristic,
+def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
+             output_file, output_format, heuristic, lowerbound_cut_off=2,
              interactive=False, count_model=False, threading=True):
     """Performs the graph compression with data found in graph file.
 
@@ -36,6 +36,14 @@ def compress(graph_data, extracting, ccfinding, remaining,
 
     If interactive is True, an input will be expected
      from the user after each step.
+
+    Notes about the maximal lowerbound optimization:
+      In a linear time, it is possible to compute the
+       maximal degree in the non covered graph.
+      This value correspond to the minimal best concept score.
+      The cut-off value is here for allow client code to control
+       this optimization, by specify the value that disable this optimization
+       when the lowerbound reachs it.
     """
     commons.first_solution_function(
         commons.FIRST_SOLUTION_THREAD if threading
@@ -92,8 +100,35 @@ def compress(graph_data, extracting, ccfinding, remaining,
         k = 0
         previous_coverage = ''
         model = None
+        # disable lowerbound optimization if lowerbound_cut_off is not valid
+        if lowerbound_cut_off > 0:
+            lowerbound_value = None
+        else:
+            lowerbound_value = 1
+            lowerbound_cut_off = 1
+        # iteration
         while True:
             k += 1
+
+            # FIND THE LOWER BOUND
+            if lowerbound_value is None or lowerbound_value > lowerbound_cut_off:
+                # solver creation
+                lbound_finder = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
+                lbound_finder.add('base', [], graph_atoms + previous_coverage)
+                lbound_finder.ground([('base', [])])
+                lbound_finder.load(lowerbounding)
+                lbound_finder.ground([(basename(lowerbounding), [cc])])
+                # solving
+                model = commons.first_solution(lbound_finder)
+                assert(model is not None)
+                model = [a for a in model if a.name() == 'maxlowerbound']
+                lowerbound_value = model[0].args()[0]
+                del lbound_finder
+                if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < 1:
+                    lowerbound_value = 1
+            else:
+                lowerbound_value = 1
+
             # FIND BEST CONCEPT
             # create new solver and ground all data
             logger.debug('\tINPUT: ' + previous_coverage)
@@ -102,7 +137,7 @@ def compress(graph_data, extracting, ccfinding, remaining,
             solver.add('base', [], graph_atoms + previous_coverage)
             solver.ground([('base', [])])
             solver.load(ccfinding)
-            solver.ground([(basename(ccfinding), [cc,k])])
+            solver.ground([(basename(ccfinding), [cc,k,lowerbound_value])])
 
             # solving
             model = commons.first_solution(solver)
