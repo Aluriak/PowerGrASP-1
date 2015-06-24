@@ -26,7 +26,8 @@ logger = commons.logger()
 
 def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
              output_file, output_format, heuristic, lowerbound_cut_off=2,
-             interactive=False, count_model=False, threading=True):
+             interactive=False, count_model=False, threading=True,
+             aggressive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -56,6 +57,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     stats     = statistics.container(graph_data.rstrip('.lp'))
     time_cc   = None
     time_extract = time.time()
+    minimal_score = 1 if aggressive else 2
 
     # Extract graph data
     logger.info('#################')
@@ -98,14 +100,15 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         # main loop
         logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
-        previous_coverage = ''
+        previous_coverage = ''  # accumulation of covered/2
+        previous_blocks   = ''  # contains (include_)blocks of previous step
         model = None
         # disable lowerbound optimization if lowerbound_cut_off is not valid
         if lowerbound_cut_off > 0:
             lowerbound_value = None
         else:
-            lowerbound_value = 1
-            lowerbound_cut_off = 1
+            lowerbound_value = minimal_score
+            lowerbound_cut_off = minimal_score
         # iteration
         while True:
             k += 1
@@ -125,16 +128,16 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                 lowerbound_value = model[0].args()[0]
                 del lbound_finder
                 if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < 1:
-                    lowerbound_value = 1
+                    lowerbound_value = minimal_score
             else:
-                lowerbound_value = 1
+                lowerbound_value = minimal_score
 
             # FIND BEST CONCEPT
             # create new solver and ground all data
-            logger.debug('\tINPUT: ' + previous_coverage)
+            logger.debug('\tINPUT: ' + previous_coverage + previous_blocks)
             # Solver creation
             solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
-            solver.add('base', [], graph_atoms + previous_coverage)
+            solver.add('base', [], graph_atoms + previous_coverage + previous_blocks)
             solver.ground([('base', [])])
             solver.load(ccfinding)
             solver.ground([(basename(ccfinding), [cc,k,lowerbound_value])])
@@ -161,7 +164,10 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             ))
             # atoms to be given to the next step
             previous_coverage += atoms.to_str(
-                model, names=('covered', 'block', 'include_block')
+                model, names=('covered',)
+            )
+            previous_blocks = atoms.to_str(
+                model, names=('block', 'include_block')
             )
 
             # give new powernodes to converter

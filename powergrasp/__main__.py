@@ -16,6 +16,7 @@ options:
     --interactive=BOOL   if true, program ask user for next step[default: 0]
     --count-model=BOOL   if true, prints models count in stdout [default: 0]
     --threading=BOOL     if true, use threading optimization    [default: 1]
+    --aggressive         compress cliques of 2 elements
     --lbound-cutoff=INT  cut-off for max lowerbound optimization[default: 2]
     --loglevel=NAME      defines terminal log level             [default: debug]
     --heuristic=NAME     defines heuristic used by the solver   [default: frumpy]
@@ -62,6 +63,7 @@ if __name__ == '__main__':
         interactive        = interactive,
         count_model        = count_model,
         threading          = threading,
+        aggressive         = options['--aggressive'   ],
     ))
 
 

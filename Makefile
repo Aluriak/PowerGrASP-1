@@ -7,10 +7,11 @@ MODELCOUNT=--count-model=True
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 #LBOUND=--lbound-cutoff=-1
+AGGRESSIVE=--aggressive
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
-ARGS=$(OUTPUT) $(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
+ARGS=$(OUTPUT) $(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
 
 diam:
