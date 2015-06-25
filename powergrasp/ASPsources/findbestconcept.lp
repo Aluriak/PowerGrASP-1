@@ -117,10 +117,6 @@ include_block(k,B,C):- not include_block(k,b(k,P),C) ;
 #show include_block/3.
 
 
-
-% initial state of blocks : each node is in its cc
-block(0,cc,X):- membercc(cc,X).
-
 % nodes covered by a powernode are set in the associated block
 block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not star(cc,k,1).
 block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,1) ; nonclique(cc,k).

@@ -79,7 +79,8 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                )
     # save atoms as ASP-readable string
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
-    graph_atoms = atoms.to_str(graph_atoms)
+    first_blocks= atoms.to_str(graph_atoms, names='block')
+    graph_atoms = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
     del extractor
     # stats about compression
     statistics.add(stats, initial_edge_count=all_edges.count('.'))
@@ -101,7 +102,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
         previous_coverage = ''  # accumulation of covered/2
-        previous_blocks   = ''  # contains (include_)blocks of previous step
+        previous_blocks   = first_blocks
         model = None
         # disable lowerbound optimization if lowerbound_cut_off is not valid
         if lowerbound_cut_off > 0:
