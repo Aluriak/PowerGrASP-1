@@ -44,6 +44,8 @@ clique:
 	$(COMMAND) --graph-data="tests/cliques.lp"
 single:
 	$(COMMAND) --graph-data="tests/singlenode.lp"
+star:
+	$(COMMAND) --graph-data="tests/star.lp"
 bip:
 	$(COMMAND) --graph-data="tests/bipartite.lp"
 
