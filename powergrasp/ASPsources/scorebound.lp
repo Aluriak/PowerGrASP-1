@@ -1,11 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Computation of the maximal lower bound.
+% Computation of the score bound for quick discarding of
+%  uninteresting models.
 %
-% initial version:  23/06/2015   J. Nicolas
+% The maximal lower bound is equals to the maximal number of nodes
+%  in the same block that are linked to a node.
+%
+% initial version:  23/06/2015   L. Bourneuf
 %
 % Input:
 %       - ccedge(cc,X,Y): there exists an edge between X and Y in the graph cc.
 %       - covered(X,Y): edge(X,Y) is covered by a concept.
+%       - block(K,B,X): element X is in block B at step K.
 % Output:
 %       - maxlowerbound(S): maximal lower bound admissible in non-covered graph.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
