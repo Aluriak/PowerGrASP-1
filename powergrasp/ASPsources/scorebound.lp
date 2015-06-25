@@ -21,14 +21,13 @@ oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; not covered(X,Y).
 oedge(X,Y):- ccedge(cc,Y,X) ; X<Y ; not covered(X,Y).
 
 % compute the output degree of each node
-%   (output degree == number of links to higher nodes)
-degree(X,D):- oedge(X,_) ; D=#count{r(Y):oedge(X,Y)}.
-%degree(X,0):- not oedge(X,_) ; oedge(_,X).
+%   (output degree == number of links to higher nodes that are in the same block)
+degree(X,D,b(K,B)):- oedge(X,_) ; block(K,B,Anonymous) ;
+                     D=#count{r(Y): oedge(X,Y), block(K,B,Y)}.
 
-% maxmize the node score
-%#maximize{S@1,S:degree(X,S)}.
-maxlowerbound(S):- S=#max{D:degree(X,D)}.
+% maximize the node score
+maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))}.
 
-#show degree/2.
+%#show degree/3.
+%#show block/3.
 #show maxlowerbound/1.
-%#show ccedge/3.

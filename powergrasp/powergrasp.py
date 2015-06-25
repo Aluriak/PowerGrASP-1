@@ -104,13 +104,14 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         previous_coverage = ''  # accumulation of covered/2
         previous_blocks   = first_blocks
         model = None
-        lowerbound_value = None
+        lowerbound_value = (minimal_score + 1) if lowerbound_cut_off > 0 else 0
         # iteration
         while True:
             k += 1
 
             # FIND THE LOWER BOUND
-            if lowerbound_value is None or lowerbound_value > lowerbound_cut_off:
+            if lowerbound_value > minimal_score:
+                print('LOWER BOUND SEARCH PERFORMED')
                 # solver creation
                 lbound_finder = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
                 lbound_finder.add('base', [], graph_atoms + previous_blocks + previous_coverage)
@@ -121,9 +122,12 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                 model = commons.first_solution(lbound_finder)
                 assert(model is not None)
                 model = [a for a in model if a.name() == 'maxlowerbound']
-                lowerbound_value = model[0].args()[0]
+                try:
+                    lowerbound_value = int(model[0].args()[0])
+                except IndexError:
+                    lowerbound_value = minimal_score
                 del lbound_finder
-                if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < 1:
+                if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
                     lowerbound_value = minimal_score
             else:
                 lowerbound_value = minimal_score
