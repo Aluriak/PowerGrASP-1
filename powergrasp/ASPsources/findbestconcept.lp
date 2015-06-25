@@ -122,11 +122,12 @@ include_block(k,B,C):- not include_block(k,b(k,P),C) ;
 block(0,cc,X):- membercc(cc,X).
 
 % nodes covered by a powernode are set in the associated block
-block(k,p(cc,k,1),X):- newconcept(cc,k,1,X).
-block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; nonclique(cc,k).
+block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not star(cc,k,1).
+block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,1) ; nonclique(cc,k).
 
 % keep nodes not covered by new concept in their block
 block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
+block(k,P,X):- newconcept(cc,k,T,X): T=1..2 ; star(cc,k,T) ; block(k-1,P,X).
 
 
 
