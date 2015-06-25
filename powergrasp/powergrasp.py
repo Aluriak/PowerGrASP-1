@@ -104,12 +104,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         previous_coverage = ''  # accumulation of covered/2
         previous_blocks   = first_blocks
         model = None
-        # disable lowerbound optimization if lowerbound_cut_off is not valid
-        if lowerbound_cut_off > 0:
-            lowerbound_value = None
-        else:
-            lowerbound_value = minimal_score
-            lowerbound_cut_off = minimal_score
+        lowerbound_value = None
         # iteration
         while True:
             k += 1
@@ -118,7 +113,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             if lowerbound_value is None or lowerbound_value > lowerbound_cut_off:
                 # solver creation
                 lbound_finder = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
-                lbound_finder.add('base', [], graph_atoms + previous_coverage)
+                lbound_finder.add('base', [], graph_atoms + previous_blocks + previous_coverage)
                 lbound_finder.ground([('base', [])])
                 lbound_finder.load(lowerbounding)
                 lbound_finder.ground([(basename(lowerbounding), [cc])])
