@@ -39,11 +39,6 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 % Choice of elements in part 2
 1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y } :- minobj(cc,k,Min).
 
-% a newconcept is trivial iff it contains only one node or newconcept
-trivial(cc,k,T):- newconcept(cc,k,T,_) ; 1 { newconcept(cc,k,T,X) } 1.
-trivial(cc,k,T):- newconcept(cc,k,T,_) ; 0 { newconcept(cc,k,T,X) } 0 ;
-                  1 { include_block(k,b(k,p(cc,k,T)),b(k,X)) } 1.
-
 % a star is a biclique with one powernode composed of only one node
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 :- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
@@ -52,8 +47,11 @@ star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 %  a node is impossible if in a block different from another element in the same set
-imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,P) ; include_block(k,B,b(k,P)) ; not block(K,P,X) ; block(K,P,Y).
-%imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; not block(k-1,P,X) ; block(k-1,P,Y).
+imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
+             include_block(k-1,B,P) ; not block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
+% the following doesn't works when a powernode must be splitted because of block overlapping
+%imp(k,T,X):- not newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
+             %include_block(k-1,B,P) ; block(k,P,X) ; block(k,P,Y) ; X!=Y.
 
 % Consistency ; no impossible element can be added to the concept
 :- imp(k,T,Y); newconcept(cc,k,T,Y).
@@ -73,17 +71,19 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parent block is the smaller block B that contain a newconcept P at step k
 %   the top block is not the block created by newconcept P.
-parent_block(1,b(1,cc),p(cc,1,T)):- T=1..2 ; k=1. % initial condition
-parent_block(k,B,P):- include_block(k-1,B,C) ; C=b(k-1,P) ; P=p(cc,K,T) ;
-                      not { include_block(k-1,B,Z) ; include_block(k-1,Z,C) }.
+%parent_block(1,b(1,cc),T):- T=1..2 ; k=1. % initial condition
 
 % B is a parent block of P if it contains it and no other block contained in B contains P.
-parent_block(k,B,P):- block_contains_newconcept(k,B,P) ;
-                    not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,P) }.
+parent_block(B,T):- block_contains_newconcept(k,B,T) ;
+                      B!=b(k,p(cc,k,T)) ;
+                      not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
+% it can't have more than 2 parent_block, because there is at most two newconcepts.
+:- 3 { parent_block(_,_) }.
+:- 0 { parent_block(_,_) } 1.
 
-% a block contains a powernode if at least one point of it is in block at current step
-block_contains_newconcept(k,b(k,p(cc,L,U)),p(cc,k,T)):-
-                    block(k,p(cc,L,U),X) ; newconcept(cc,k,T,X).
+% a block contains a newconcept if at least one point of it is in block at current step
+block_contains_newconcept(k,p(cc,L,U),T):- block(k-1,p(cc,L,U),X) ; newconcept(cc,k,T,X).
+block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
 
 % block inclusion : keep trace of block hierarchy
 %  algorithmic for the block P of the new concept, and its parent_block B:
@@ -100,30 +100,33 @@ block_contains_newconcept(k,b(k,p(cc,L,U)),p(cc,k,T)):-
 %
 %  in a more logical way:
 %    - P is included in B
-include_block(k,B,b(k,P)):- parent_block(k,B,P).
+include_block(k,B,p(cc,k,1)):- parent_block(B,1).
+include_block(k,B,p(cc,k,2)):- parent_block(B,2) ; nonclique(cc,k).
 %    - all blocks included in B that are in P are included in P instead of B
-include_block(k,b(k,P),C):- parent_block(k,B,P) ;
-                            C=b(k-1,p(cc,L,T)) ; newconcept(cc,L,T,E) ;
-                            P=p(cc,k,U) ; newconcept(cc,k,U,E) ; L!=k ;
+include_block(k,p(cc,k,T),C):- parent_block(B,T) ;
+                            C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
+                            newconcept(cc,k,T,E) ; L<k ;
                             include_block(k-1,B,C).
 %    - all blocks that aren't in P are kept «as is» for next step
-include_block(k,B,C):- not include_block(k,b(k,P),C) ;
-                       C=b(k-1,p(cc,L,U)) ; newconcept(cc,L,U,_) ;
-                       P=p(cc,k,T) ; newconcept(cc,k,T,_) ; L!=k ;
-                       0 { newconcept(cc,k,T,E) ; newconcept(cc,L,U,E) } 0 ;
-                       include_block(k-1,B,C).
+include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
+                       0 { block(k-1,p(cc,L,U),E) : newconcept(cc,k,T,E) } 0 ;
+                       %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
+                       include_block(k-1,B,C) ;
+                       not include_block(k,p(cc,k,T),C) : T=1..2.
 
-#show parent_block/3.
-#show include_block/3.
+% debug: newconcept T fit perfectly with the powernode cc,L,U
+perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
+                          block(k-1,p(cc,L,U),Anonymous) ; T=1..2 ; L<k.
+#show perfectfit/2.
 
 
 % nodes covered by a powernode are set in the associated block
 block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not star(cc,k,1).
-block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,1) ; nonclique(cc,k).
+block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,2) ; nonclique(cc,k).
 
 % keep nodes not covered by new concept in their block
 block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
-block(k,P,X):- newconcept(cc,k,T,X): T=1..2 ; star(cc,k,T) ; block(k-1,P,X).
+block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
 
 
 
@@ -171,6 +174,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #show block(k,P,X): block(k,P,X).
 #show trivial/3.
 #show include_block(k,B,C): include_block(k,B,C).
+#show parent_block/2.
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
