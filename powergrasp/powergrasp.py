@@ -123,7 +123,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                 assert(model is not None)
                 model = [a for a in model if a.name() == 'maxlowerbound']
                 try:
-                    lowerbound_value = int(model[0].args()[0])
+                    lowerbound_value = model[0].args()[0]
                 except IndexError:
                     lowerbound_value = minimal_score
                 del lbound_finder
