@@ -47,10 +47,10 @@ star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 %  a node is impossible if in a block different from another element in the same set
-imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,T) ;
+imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
              include_block(k-1,B,P) ; not block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
 % the following doesn't works when a powernode must be splitted because of block overlapping
-%imp(k,T,X):- not newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,T) ;
+%imp(k,T,X):- not newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
              %include_block(k-1,B,P) ; block(k,P,X) ; block(k,P,Y) ; X!=Y.
 
 % Consistency ; no impossible element can be added to the concept
@@ -74,9 +74,12 @@ nonclique(cc,k):- not newconcept(cc,k,1,X);     newconcept(cc,k,2,X).
 %parent_block(1,b(1,cc),T):- T=1..2 ; k=1. % initial condition
 
 % B is a parent block of P if it contains it and no other block contained in B contains P.
-parent_block(k,B,T):- block_contains_newconcept(k,B,T) ;
+parent_block(B,T):- block_contains_newconcept(k,B,T) ;
                       B!=b(k,p(cc,k,T)) ;
                       not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
+% it can't have more than 2 parent_block, because there is at most two newconcepts.
+:- 3 { parent_block(_,_) }.
+:- 0 { parent_block(_,_) } 1.
 
 % a block contains a newconcept if at least one point of it is in block at current step
 block_contains_newconcept(k,p(cc,L,U),T):- block(k-1,p(cc,L,U),X) ; newconcept(cc,k,T,X).
@@ -97,10 +100,10 @@ block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
 %
 %  in a more logical way:
 %    - P is included in B
-include_block(k,B,p(cc,k,1)):- parent_block(k,B,1).
-include_block(k,B,p(cc,k,2)):- parent_block(k,B,2) ; nonclique(cc,k).
+include_block(k,B,p(cc,k,1)):- parent_block(B,1).
+include_block(k,B,p(cc,k,2)):- parent_block(B,2) ; nonclique(cc,k).
 %    - all blocks included in B that are in P are included in P instead of B
-include_block(k,p(cc,k,T),C):- parent_block(k,B,T) ;
+include_block(k,p(cc,k,T),C):- parent_block(B,T) ;
                             C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
                             newconcept(cc,k,T,E) ; L<k ;
                             include_block(k-1,B,C).
@@ -110,6 +113,11 @@ include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
                        %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
                        include_block(k-1,B,C) ;
                        not include_block(k,p(cc,k,T),C) : T=1..2.
+
+% debug: newconcept T fit perfectly with the powernode cc,L,U
+perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
+                          block(k-1,p(cc,L,U),Anonymous) ; T=1..2 ; L<k.
+#show perfectfit/2.
 
 
 % nodes covered by a powernode are set in the associated block
@@ -166,7 +174,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #show block(k,P,X): block(k,P,X).
 #show trivial/3.
 #show include_block(k,B,C): include_block(k,B,C).
-#show parent_block/3.
+#show parent_block/2.
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
