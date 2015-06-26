@@ -116,7 +116,7 @@ include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
 
 % debug: newconcept T fit perfectly with the powernode cc,L,U
 perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
-                          block(k-1,p(cc,L,U),Anonymous) ; T=1..2 ; L<k.
+                          block(k-1,p(cc,L,U),Anonymous) ; L<k ; T=1..2.
 #show perfectfit/2.
 
 
