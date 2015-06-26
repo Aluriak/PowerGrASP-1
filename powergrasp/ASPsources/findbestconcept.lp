@@ -118,7 +118,7 @@ block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,2) ; nonclique(cc,k)
 
 % keep nodes not covered by new concept in their block
 block(k,P,X):- membercc(cc,X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
-block(k,P,X):- newconcept(cc,k,T,X): T=1..2 ; star(cc,k,T) ; block(k-1,P,X).
+block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
 
 
 
