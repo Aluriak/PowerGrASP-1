@@ -165,7 +165,7 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
 #show trivial/3.
-#show include_block/3.
+#show include_block(k,B,C): include_block(k,B,C).
 #show parent_block/3.
 % debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
