@@ -14,46 +14,42 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program extract.
 
-%In nodes and Out nodes
-node(1,X):- edge(X,_).
-node(2,Y):- edge(_,Y).
+% Nodes
+node(X):- edge(X,_).
+node(Y):- edge(_,Y).
 
-%All nodes
-node(X):- node(1..2,X).
-
-%Symetric graph
+% Symetric graph
 inter(X,Y):- edge(X,Y).
 inter(X,Y):- edge(Y,X).
 
-%Oriented graph
-% an oriented edge go from smaller to bigger :
-% oedge(3, 5) is true, oedge(5, 3) is false.
-onode(1..2,X):- node(X).
-oedge(X,Y)   :- edge(X,Y); X<Y.
-oedge(X,Y)   :- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
+% Oriented graph
+%  an oriented edge go from smaller to bigger :
+%  oedge(3, 5) is true, oedge(5, 3) is false.
+oedge(X,Y)   :- edge(X,Y) ; X<Y.
+oedge(X,Y)   :- edge(Y,X) ; X<Y. % edge(5,3) become oedge(3,5)
 
-%Connected paths starting with minimal element X
-% connected(Minimum element,
-%           Element connected to the minimum
-%          )
+% Connected paths starting with minimal element X
+%  connected(Minimum element,
+%            Element connected to the minimum
+%           )
 connectedpath(X,Y):- oedge(X,Y).
 connectedpath(X,Z):- connectedpath(X,Y); inter(Y,Z); X<Z.
 
 connected(Y):- connectedpath(_,Y).
 
-%Connected component of minimum element X
-membercc(X,Y):- connectedpath(X,Y); not connected(X).
-membercc(X,X):- connectedpath(X,_); not connected(X).
+% Connected component of minimum element X
+membercc(X,Y):- connectedpath(X,Y) ; not connected(X).
+membercc(X,X):- connectedpath(X,_) ; not connected(X).
 cc(CC):- membercc(CC,T).
 
 nb(nodes,               N):- N=#count{node(X):node(X)}.
 nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 
-%edges of the connected components
-ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
+% Edges of the connected components
+ccedge(CC,X,Y):- membercc(CC,Y) ; edge(X,Y).
 
 
-% initial ccstate of blocks : each node is in its cc
+% Initial ccstate of blocks : each node is in its cc
 block(0,CC,X):- membercc(CC,X).
 
 
@@ -61,8 +57,8 @@ block(0,CC,X):- membercc(CC,X).
 #show ccedge/3.
 #show membercc/2.
 #show block/3.
+#show connectedpath/2.
 %#show inter/2.
-%#show connectedpath/2.
 
 %#show.
 %#show cc("YAL029C").
