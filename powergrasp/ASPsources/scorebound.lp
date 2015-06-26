@@ -13,7 +13,7 @@
 %       - block(K,B,X): element X is in block B at step K.
 % Output:
 %       - maxlowerbound(S): maximal lower bound admissible in non-covered graph.
-%       - surface_max(X,S): concept with minobj X have a maximal coverage of S.
+%       - upperbound(X,S): concept with minobj X have a maximal coverage of S.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program scorebound(cc).
 
@@ -31,11 +31,11 @@ maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))}.
 
 % maximal surface of each node
 degree(X,D):- oedge(X,_) ; D=#count{r(Y): oedge(X,Y)}.
-min_neighbor_degree(X,S):- S=#min{D:degree(Y,D), oedge(X,Y)} ; oedge(X,_) ; S!=#sup.
-surface_max(X,N1*N2):- degree(X,N1) ; min_neighbor_degree(X,N2).
+min_neighbor_degree(X,S):- S=#min{D:degree(Y,D), oedge(X,Y)} ; oedge(X,_) ; S!=#sup ; S!=#inf.
+upperbound(X,N1*N2):- degree(X,N1) ; min_neighbor_degree(X,N2).
 
 %#show degree/3.
 %#show block/3.
 %#show min_neighbor_degree/2.
 #show maxlowerbound/1.
-#show surface_max/2.
+#show upperbound/2.

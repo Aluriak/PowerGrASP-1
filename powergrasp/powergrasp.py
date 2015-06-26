@@ -115,6 +115,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             k += 1
 
             # FIND THE LOWER BOUND
+            ubounds = ''
             if lowerbound_value > minimal_score:
                 print('LOWER BOUND SEARCH PERFORMED')
                 # solver creation
@@ -126,7 +127,12 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                 # solving
                 model = commons.first_solution(lbound_finder)
                 assert(model is not None)
+                # keep only the bounds
+                ubounds = atoms.to_str(tuple(
+                    a for a in model if a.name() == 'upperbound'
+                ))
                 model = [a for a in model if a.name() == 'maxlowerbound']
+
                 try:
                     lowerbound_value = model[0].args()[0]
                 except IndexError:
@@ -139,10 +145,14 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
 
             # FIND BEST CONCEPT
             # create new solver and ground all data
-            logger.debug('\tINPUT: ' + previous_coverage + previous_blocks)
+            input_data = previous_coverage + previous_blocks + ubounds
+            logger.debug('\tINPUT: ('
+                         + str((input_data).count('.'))
+                         + ')\n' + input_data
+                        )
             # Solver creation
             solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
-            solver.add('base', [], graph_atoms + previous_coverage + previous_blocks)
+            solver.add('base', [], graph_atoms + input_data)
             solver.ground([('base', [])])
             solver.load(ccfinding)
             solver.ground([(basename(ccfinding), [cc,k,lowerbound_value])])
@@ -159,7 +169,13 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             logger.debug('\tOUTPUT: ' + atoms.to_str(
                 model, separator='.\n\t'
             ))
-            logger.debug('\tOUTPUT: ' + str(atoms.count(model)))
+            atom_counter = atoms.count(model)
+            if atom_counter['parent_block'] != 2:
+                logger.error("Findbestconcept ASP program doesn't find "
+                             + "exactly 2 parent_block/3 atoms. Atoms are : "
+                             + atoms.to_str(model, names='parent_block')
+                            )
+            logger.debug('\tOUTPUT: ' + str(atom_counter))
 
             logger.debug('POWERNODES:\n\t' + atoms.prettified(
                 model,
