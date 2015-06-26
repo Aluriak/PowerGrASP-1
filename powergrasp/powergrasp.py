@@ -81,7 +81,6 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     atom_ccs = (cc.args()[0]  # args is a list of only one element (cc/1)
                 for cc in graph_atoms
                 if cc.name() == 'cc'
-                and cc.args()[0] == 'YAL029C'
                )
     # save atoms as ASP-readable string
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
