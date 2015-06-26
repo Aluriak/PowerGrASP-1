@@ -31,8 +31,10 @@ maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))}.
 
 % maximal surface of each node
 degree(X,D):- oedge(X,_) ; D=#count{r(Y): oedge(X,Y)}.
+degree(X,0):- oedge(_,X) ; not oedge(X,_).
 min_neighbor_degree(X,S):- S=#min{D:degree(Y,D), oedge(X,Y)} ; oedge(X,_) ; S!=#sup ; S!=#inf.
 upperbound(X,N1*N2):- degree(X,N1) ; min_neighbor_degree(X,N2).
+upperbound(X,#sup):-  degree(X,N1) ; not min_neighbor_degree(X,_).
 
 %#show degree/3.
 %#show block/3.
