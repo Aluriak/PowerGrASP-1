@@ -40,6 +40,9 @@ badd +1 powergrasp/converter/converter.py
 badd +22 powergrasp/ASPsources/inclusion.lp
 badd +30 debug/inclusion.lp
 badd +1 powergrasp/converter/bbl.py
+badd +17 powergrasp/ASPsources/lowerbound.lp
+badd +1 powergrasp/ASPsources/scorebound.lp
+badd +1 debug/asp/test.lp
 argglobal
 silent! argdel *
 set stal=2
@@ -82,12 +85,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 16 - ((15 * winheight(0) + 25) / 50)
+let s:l = 16 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
 16
-normal! 078|
+normal! 0
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/powergrasp.py
 set splitbelow splitright
@@ -105,12 +108,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 115 - ((21 * winheight(0) + 25) / 50)
+let s:l = 143 - ((27 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-115
-normal! 048|
+143
+normal! 059|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/commons.py
 set splitbelow splitright
@@ -128,12 +131,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 37 - ((36 * winheight(0) + 25) / 50)
+let s:l = 81 - ((40 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-37
-normal! 011|
+81
+normal! 020|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/atoms.py
 set splitbelow splitright
@@ -174,12 +177,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 69 - ((10 * winheight(0) + 25) / 50)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-69
-normal! 018|
+1
+normal! 0
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/converter/bbl.py
 set splitbelow splitright
@@ -197,12 +200,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 157 - ((18 * winheight(0) + 25) / 50)
+let s:l = 145 - ((6 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-157
-normal! 027|
+145
+normal! 055|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/extract.lp
 set splitbelow splitright
@@ -220,12 +223,35 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 59 - ((49 * winheight(0) + 25) / 50)
+let s:l = 13 - ((12 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-59
-normal! 022|
+13
+normal! 0
+lcd ~/ASP/test/rewritting/powergrasp
+tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/scorebound.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal nofen
+silent! normal! zE
+let s:l = 20 - ((19 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+20
+normal! 033|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/findbestconcept.lp
 set splitbelow splitright
@@ -243,12 +269,35 @@ setlocal fml=1
 setlocal fdn=20
 setlocal nofen
 silent! normal! zE
-let s:l = 151 - ((49 * winheight(0) + 25) / 50)
+let s:l = 150 - ((26 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-151
+150
 normal! 0
+lcd ~/ASP/test/rewritting/powergrasp
+tabedit ~/ASP/test/rewritting/powergrasp/debug/asp/test.lp
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal nofen
+silent! normal! zE
+let s:l = 38 - ((31 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+38
+normal! 051|
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/ASPsources/inclusion.lp
 set splitbelow splitright
@@ -273,7 +322,7 @@ normal! zt
 19
 normal! 066|
 lcd ~/ASP/test/rewritting/powergrasp
-tabnext 9
+tabnext 3
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

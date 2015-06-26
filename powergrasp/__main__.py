@@ -8,6 +8,7 @@ options:
     --version, -v
     --graph-data=FILE    filepath to ASP graph definition       [default: tests/double_biclique.lp]
     --extract=FILE       filepath to ASP extraction program     [default: powergrasp/ASPsources/extract.lp]
+    --lowerbound=FILE    filepath to ASP lowerbound program     [default: powergrasp/ASPsources/scorebound.lp]
     --findconcept=FILE   filepath to ASP concept finder program [default: powergrasp/ASPsources/findbestconcept.lp]
     --remain=FILE        filepath to ASP remain finder program  [default: powergrasp/ASPsources/remains.lp]
     --output-file=NAME   output file (without extension)        [default: data/output]
@@ -15,6 +16,8 @@ options:
     --interactive=BOOL   if true, program ask user for next step[default: 0]
     --count-model=BOOL   if true, prints models count in stdout [default: 0]
     --threading=BOOL     if true, use threading optimization    [default: 1]
+    --aggressive         compress cliques of 2 elements
+    --lbound-cutoff=INT  cut-off for max lowerbound optimization[default: 2]
     --loglevel=NAME      defines terminal log level             [default: debug]
     --heuristic=NAME     defines heuristic used by the solver   [default: frumpy]
 
@@ -41,22 +44,26 @@ if __name__ == '__main__':
     interactive = boolean(options['--interactive'])
     count_model = boolean(options['--count-model'])
     threading   = boolean(options['--threading'  ])
+    lbound_cutoff = int(options['--lbound-cutoff'])
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
     commons.log_level(options['--loglevel'])
 
     # launch compression
     (compress(
-        graph_data    = options['--graph-data'   ],
-        extracting    = options['--extract'      ],
-        ccfinding     = options['--findconcept'  ],
-        remaining     = options['--remain'       ],
-        output_file   = options['--output-file'  ],
-        output_format = options['--output-format'],
-        heuristic     = options['--heuristic'    ],
-        interactive   = interactive,
-        count_model   = count_model,
-        threading     = threading,
+        graph_data         = options['--graph-data'   ],
+        extracting         = options['--extract'      ],
+        lowerbounding      = options['--lowerbound' ],
+        ccfinding          = options['--findconcept'  ],
+        remaining          = options['--remain'       ],
+        output_file        = options['--output-file'  ],
+        output_format      = options['--output-format'],
+        heuristic          = options['--heuristic'    ],
+        lowerbound_cut_off = lbound_cutoff,
+        interactive        = interactive,
+        count_model        = count_model,
+        threading          = threading,
+        aggressive         = options['--aggressive'   ],
     ))
 
 

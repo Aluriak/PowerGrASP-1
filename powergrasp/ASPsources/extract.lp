@@ -52,8 +52,20 @@ nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 %edges of the connected components
 ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 
+
+% initial ccstate of blocks : each node is in its cc
+block(0,CC,X):- membercc(CC,X).
+
+
 #show cc/1.
 #show ccedge/3.
 #show membercc/2.
+#show block/3.
 %#show inter/2.
-#show connectedpath/2.
+%#show connectedpath/2.
+
+%#show.
+%#show cc("YAL029C").
+%#show ccedge("YAL029C",X,Y): ccedge("YAL029C",X,Y).
+%#show membercc("YAL029C",X): membercc("YAL029C",X) .
+%#show connectedpath(X,Y): connectedpath(X,Y) , membercc("YAL029C",X).
