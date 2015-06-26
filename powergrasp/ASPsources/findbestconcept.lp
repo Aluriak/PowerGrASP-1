@@ -97,7 +97,8 @@ block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
 %
 %  in a more logical way:
 %    - P is included in B
-include_block(k,B,b(k,p(cc,k,T))):- parent_block(k,B,T).
+include_block(k,B,p(cc,k,1)):- parent_block(k,B,1).
+include_block(k,B,p(cc,k,2)):- parent_block(k,B,2) ; nonclique(cc,k).
 %    - all blocks included in B that are in P are included in P instead of B
 include_block(k,p(cc,k,T),C):- parent_block(k,B,T) ;
                             C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
