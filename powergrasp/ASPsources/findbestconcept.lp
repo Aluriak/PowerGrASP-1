@@ -47,9 +47,11 @@ star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(cc,X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 %  a node is impossible if in a block different from another element in the same set
-%imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,P) ; include_block(k,B,b(k,P)) ; not block(K,P,X) ; block(K,P,Y).
-imp(k,T,X):- newconcept(cc,k,T,X) ; not newconcept(cc,k,T,Y) ; parent_block(k,B,T) ;
-             include_block(k-1,B,b(k,P)) ; block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
+imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,T) ;
+             include_block(k-1,B,P) ; not block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
+% the following doesn't works when a powernode must be splitted because of block overlapping
+%imp(k,T,X):- not newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(k,B,T) ;
+             %include_block(k-1,B,P) ; block(k,P,X) ; block(k,P,Y) ; X!=Y.
 
 % Consistency ; no impossible element can be added to the concept
 :- imp(k,T,Y); newconcept(cc,k,T,Y).
@@ -76,10 +78,9 @@ parent_block(k,B,T):- block_contains_newconcept(k,B,T) ;
                       B!=b(k,p(cc,k,T)) ;
                       not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
 
-% a block contains a powernode if at least one point of it is in block at current step
-block_contains_newconcept(k,b(k,p(cc,L,U)),T):-
-                    block(k,p(cc,L,U),X) ; newconcept(cc,k,T,X).
-block_contains_newconcept(k,cc,T):- membercc(cc,X) ; newconcept(cc,k,T,X).
+% a block contains a newconcept if at least one point of it is in block at current step
+block_contains_newconcept(k,p(cc,L,U),T):- block(k-1,p(cc,L,U),X) ; newconcept(cc,k,T,X).
+block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
 
 % block inclusion : keep trace of block hierarchy
 %  algorithmic for the block P of the new concept, and its parent_block B:
@@ -98,16 +99,16 @@ block_contains_newconcept(k,cc,T):- membercc(cc,X) ; newconcept(cc,k,T,X).
 %    - P is included in B
 include_block(k,B,b(k,p(cc,k,T))):- parent_block(k,B,T).
 %    - all blocks included in B that are in P are included in P instead of B
-include_block(k,b(k,p(cc,k,P)),C):- parent_block(k,B,P) ;
-                            C=b(k-1,p(cc,L,T)) ; newconcept(cc,L,T,E) ;
-                            newconcept(cc,k,P,E) ; L<k ;
+include_block(k,p(cc,k,T),C):- parent_block(k,B,T) ;
+                            C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
+                            newconcept(cc,k,T,E) ; L<k ;
                             include_block(k-1,B,C).
 %    - all blocks that aren't in P are kept «as is» for next step
-include_block(k,B,C):- not include_block(k,b(k,P),C) ;
-                       C=b(k-1,p(cc,L,U)) ; newconcept(cc,L,U,_) ;
-                       P=p(cc,k,T) ; newconcept(cc,k,T,_) ; L<k ;
-                       0 { newconcept(cc,k,T,E) ; newconcept(cc,L,U,E) } 0 ;
-                       include_block(k-1,B,C).
+include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
+                       0 { block(k-1,p(cc,L,U),E) : newconcept(cc,k,T,E) } 0 ;
+                       %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
+                       include_block(k-1,B,C) ;
+                       not include_block(k,p(cc,k,T),C) : T=1..2.
 
 
 % nodes covered by a powernode are set in the associated block
