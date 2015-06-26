@@ -63,3 +63,9 @@ block(0,CC,X):- membercc(CC,X).
 #show block/3.
 %#show inter/2.
 %#show connectedpath/2.
+
+%#show.
+%#show cc("YAL029C").
+%#show ccedge("YAL029C",X,Y): ccedge("YAL029C",X,Y).
+%#show membercc("YAL029C",X): membercc("YAL029C",X) .
+%#show connectedpath(X,Y): connectedpath(X,Y) , membercc("YAL029C",X).

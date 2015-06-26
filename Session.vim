@@ -41,7 +41,7 @@ badd +22 powergrasp/ASPsources/inclusion.lp
 badd +30 debug/inclusion.lp
 badd +1 powergrasp/converter/bbl.py
 badd +17 powergrasp/ASPsources/lowerbound.lp
-badd +0 powergrasp/ASPsources/scorebound.lp
+badd +1 powergrasp/ASPsources/scorebound.lp
 argglobal
 silent! argdel *
 set stal=2
@@ -84,12 +84,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 60 - ((41 * winheight(0) + 25) / 50)
+let s:l = 16 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-60
-normal! 047|
+16
+normal! 0
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/powergrasp.py
 set splitbelow splitright
@@ -107,12 +107,12 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 59 - ((37 * winheight(0) + 25) / 50)
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-59
-normal! 024|
+1
+normal! 0
 lcd ~/ASP/test/rewritting/powergrasp
 tabedit ~/ASP/test/rewritting/powergrasp/powergrasp/commons.py
 set splitbelow splitright
@@ -298,7 +298,7 @@ normal! zt
 19
 normal! 066|
 lcd ~/ASP/test/rewritting/powergrasp
-tabnext 9
+tabnext 3
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf

@@ -72,10 +72,16 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
 
     graph_atoms = commons.first_solution(extractor)
     assert(graph_atoms is not None)
+    # graph_atoms = sorted(tuple(str(_) for _ in graph_atoms))
+    # with open('debug/opt/data_YAL029C_input.lp', 'w') as fd:
+        # fd.write('\n'.join(graph_atoms))
+    # exit()
+
     # get all CC, one by one
     atom_ccs = (cc.args()[0]  # args is a list of only one element (cc/1)
                 for cc in graph_atoms
                 if cc.name() == 'cc'
+                and cc.args()[0] == 'YAL029C'
                )
     # save atoms as ASP-readable string
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
