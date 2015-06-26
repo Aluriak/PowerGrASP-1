@@ -145,19 +145,16 @@ poweredge(p(cc,k,1),p(cc,k,2)):- nonclique(cc,k) ; not star(cc,k,T): T=1..2.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
 % Concept edge cover (score)
-newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k) ;
-                       N=N1*N2.
-newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k) ;
-                       N=(N1*(N1-1))/2.
 %newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k) ;
-                       %N=N1*N2         ; minobj(cc,k,Min) ; upperbound(Min,U) ; N<U.
-%newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k) ;
-                       %N=N1*N2         ; minobj(cc,k,Min) ; not upperbound(Min,_).
+                       %N=N1*N2.
+%newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k) ;
+                       %N=(N1*(N1-1))/2.
 
-%newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k) ;
-                       %N=(N1*(N1-1))/2 ; minobj(cc,k,Min) ; upperbound(Min,U) ; N<U.
-%newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)}                             ; not nonclique(cc,k) ;
-                       %N=(N1*(N1-1))/2 ; minobj(cc,k,Min) ; not upperbound(Min,_).
+% take account of minimal upper bound of the minimal node
+newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k) ;
+                       N=N1*N2         ; minobj(cc,k,Min) ; upperbound(Min,U) ; N<U.
+newedgecover(cc,k,N):- N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)} ;     nonclique(cc,k) ;
+                       N=N1*N2         ; minobj(cc,k,Min) ; not upperbound(Min,_).
 
 % Maximize score
 #maximize{S@1,S:newedgecover(cc,k,S)}.
