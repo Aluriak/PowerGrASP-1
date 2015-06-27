@@ -2,6 +2,8 @@ PYTHON=python2
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 
 TARGET=powergrasp/__main__.py
+#STATFILE=--stats-file=data/statistics.csv
+#PLOT=--plot-stats
 #INTERACTIVE=--interactive=True
 MODELCOUNT=--count-model=True
 OUTPUT=--output-format="bbl"
@@ -11,7 +13,7 @@ OUTPUT=--output-format="bbl"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
-ARGS=$(OUTPUT) $(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
+ARGS=$(OUTPUT) $(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC) $(STATFILE) $(PLOT)
 COMMAND=$(PYTHON) $(TARGET) $(ARGS)
 
 diam:

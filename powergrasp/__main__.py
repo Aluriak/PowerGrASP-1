@@ -20,6 +20,8 @@ options:
     --lbound-cutoff=INT  cut-off for max lowerbound optimization[default: 2]
     --loglevel=NAME      defines terminal log level             [default: debug]
     --heuristic=NAME     defines heuristic used by the solver   [default: frumpy]
+    --stats-file=FILE    save csv statistics in FILE
+    --plot-stats         plot the stats in stat_file, if exist
 
 output formats:
     BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -63,6 +65,8 @@ if __name__ == '__main__':
         interactive        = interactive,
         count_model        = count_model,
         threading          = threading,
+        statistics_filename= options['--stats-file'   ],
+        plot_stats         = options['--plot-stats'   ],
         aggressive         = options['--aggressive'   ],
     ))
 

@@ -8,6 +8,7 @@ from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
 from commons      import basename
+import plotter
 import statistics
 import itertools
 import converter  as converter_module
@@ -16,6 +17,7 @@ import gringo
 import time
 import atoms
 import sys
+import csv
 
 
 logger = commons.logger()
@@ -25,9 +27,10 @@ logger = commons.logger()
 
 
 def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
-             output_file, output_format, heuristic, lowerbound_cut_off=2,
-             interactive=False, count_model=False, threading=True,
-             aggressive=False):
+             output_file, statistics_filename='data/statistics.csv',
+             output_format='bbl', heuristic='frumpy', lowerbound_cut_off=2,
+             interactive=False, count_model=False, plot_stats=False,
+             threading=True, aggressive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -55,6 +58,16 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     converter = converter_module.converter_for(output_format)
     model     = None
     stats     = statistics.container(graph_data.rstrip('.lp'))
+    if statistics_filename:
+        try:
+            statistics_file = open(statistics_filename, 'w')
+            statistics_writer = csv.DictWriter(statistics_file, fieldnames=plotter.MEASURES)
+            statistics_writer.writeheader()
+        except IOError as e:
+            statistics_filename = None
+            logger.warning('The file ' + statistics_filename + ' can\'t be opened. No statistics will be saved.')
+    else:
+        statistics_writer = None
     time_extract = time.time()
     minimal_score = 1 if aggressive else 2
     time_compression = time.time()
@@ -113,6 +126,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         while True:
             k += 1
 
+            time_iteration = time.time()
             # FIND THE LOWER BOUND
             if lowerbound_value > minimal_score:
                 print('LOWER BOUND SEARCH PERFORMED')
@@ -193,6 +207,15 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                           )
             # statistics.add(stats, final_powernode_count=new_powernode_count)
             remain_edges = tuple(a for a in model if a.name() == 'edge')
+            # save statistics in csv file
+            time_iteration = time.time() - time_iteration
+            if statistics_writer:
+                statistics_writer.writerow({
+                    plotter.MEASURES[0] : round(time_iteration, 3),
+                    plotter.MEASURES[1] : len(remain_edges),
+                    plotter.MEASURES[2] : new_poweredge_count,
+                    plotter.MEASURES[3] : new_powernode_count,
+                })
             # interactive mode
             if count_model and interactive:
                 input(str(k)+'>Next ?')  # my name is spam
@@ -257,7 +280,11 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     output.write(converter.comment(final_results.split('\n')))
 
     output.close()
+    if statistics_filename: statistics_file.close()
     # return str(graph)
+
+    if plot_stats and statistics_filename:
+        plotter.plots(statistics_filename)
 
 
 
