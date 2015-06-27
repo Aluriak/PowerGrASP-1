@@ -55,9 +55,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     converter = converter_module.converter_for(output_format)
     model     = None
     stats     = statistics.container(graph_data.rstrip('.lp'))
-    time_cc   = None
     time_extract = time.time()
     minimal_score = 1 if aggressive else 2
+    time_compression = time.time()
 
     # Extract graph data
     logger.info('#################')
@@ -98,7 +98,6 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
-    time_cc = time.time()
     for cc in atom_ccs:
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
@@ -245,9 +244,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
 
     # compute a human readable final results string,
     # and put it in the output and in level info.
-    time_cc = time.time() - time_cc
+    time_compression = time.time() - time_compression
     final_results = (
-        "All cc have been performed in " + str(round(time_cc, 3))
+        "All cc have been performed in " + str(round(time_compression, 3))
         + "s (extraction in " + str(round(time_extract, 3))
         + ") with heuristic " + heuristic + ".\nSolver options: "
         + ' '.join(commons.ASP_OPTIONS)
