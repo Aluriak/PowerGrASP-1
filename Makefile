@@ -51,6 +51,8 @@ bip:
 
 clear:
 	rm */*.pyc
+help:
+	$(PYTHON) --help
 
 tar:
 	cd .. && tar acf tarball.tar.gz asprgc/
