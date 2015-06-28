@@ -1,7 +1,7 @@
-PYTHON=python2
+PYTHON=python2 powergrasp/__main__.py
+PYTHON3=python3 -m powergrasp
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 
-TARGET=powergrasp/__main__.py
 #INTERACTIVE=--interactive=True
 MODELCOUNT=--count-model=True
 OUTPUT=--output-format="bbl"
@@ -12,7 +12,7 @@ LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 
 ARGS=$(OUTPUT) $(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC)
-COMMAND=$(PYTHON) $(TARGET) $(ARGS)
+COMMAND=$(PYTHON) $(ARGS)
 
 diam:
 	$(COMMAND) --graph-data="tests/diamond.lp"
