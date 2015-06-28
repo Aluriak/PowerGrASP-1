@@ -3,7 +3,7 @@ The Python Powergraph analysis tool, based on Answer Set Programming solving and
 
 ## Requirements
 Needs [python-gringo module](https://github.com/lxsli/python-gringo).
-Unfortunately, you will need to compile clingo yourself, for includes the python support.
+Unfortunately, you will need to compile clingo yourself, for includes the python support. (and eventually the thread support, for a faster compression)
 This can be a pain, but there is a little help (in french, infortunately) given by *doc/help.mkd*.
 
 ## Basic use
