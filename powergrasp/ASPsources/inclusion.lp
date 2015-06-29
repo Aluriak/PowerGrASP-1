@@ -52,3 +52,4 @@ top(A):- node(A) ; not include(_,A).
 #show topnode(A): top(A).
 #show trivial/3.
 #show edge/2.
+#show edge(X,Y): ccedge(_,X,Y).

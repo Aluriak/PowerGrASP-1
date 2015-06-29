@@ -82,7 +82,7 @@ def FIRST_SOLUTION_NO_THREAD(solver):
 #  thread or no-thread first solution implementation:
 first_solution = FIRST_SOLUTION_THREAD
 def first_solution_function(mode=FIRST_SOLUTION_NO_THREAD):
-    assert(first_solution in (FIRST_SOLUTION_NO_THREAD, FIRST_SOLUTION_THREAD))
+    assert(mode in (FIRST_SOLUTION_NO_THREAD, FIRST_SOLUTION_THREAD))
     global first_solution
     first_solution = mode
 

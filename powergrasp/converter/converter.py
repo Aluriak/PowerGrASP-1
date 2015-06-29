@@ -97,9 +97,13 @@ class NeutralConverter(object):
         """
         return str(atoms)
 
+    def header(self):
+        """Return header of the file"""
+        return ''
+
     def finalized(self):
         """Return converted data"""
-        return '\n'.join(self.converted)
+        return '\n' + '\n'.join(self.converted)
 
     def __str__(self):
         """str version of a converter is the finalized string of data"""

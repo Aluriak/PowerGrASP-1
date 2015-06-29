@@ -57,9 +57,11 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     model     = None
     stats     = statistics.container(graph_data.rstrip('.lp'),
                                      statistics_filename)
+    output.write(converter.header())
     time_extract = time.time()
     time_compression = time.time()
     minimal_score = 1 if aggressive else 2
+    remain_edges_global = 0  # counter of remain_edges in all graph
 
     # Extract graph data
     logger.info('#################')
@@ -223,27 +225,32 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
 
 
 
-        logger.info('#################')
-        logger.info('## REMAIN DATA ##')
-        logger.info('#################')
+        #####################
+        #### REMAIN DATA ####
+        #####################
         # Creat solver and collect remaining edges
         # logger.debug("INPUT REMAIN: " + str(remain_edges) + str(inclusion_tree))
 
-        # Output
-        if remain_edges is None or len(remain_edges) == 0:
+        # determine how many edges remains if no compression performed
+        if remain_edges is None:  # no compression performed
+            remain_edges = tuple(a+'' for a in all_edges.split('.') if cc in a)
+
+        # Remain edges globally
+        remain_edges_global += len(remain_edges) if remain_edges else 0
+        statistics.add(stats, final_edges_count=remain_edges_global)
+
+        # Remain edges in cc
+        if len(remain_edges) == 0:
             logger.info('No remaining edge')
-            statistics.add(stats, final_edges_count=0)
         else:
             logger.info(str(len(remain_edges)) + ' remaining edge(s)')
-            statistics.add(stats, final_edges_count=len(remain_edges))
             converter.convert(remain_edges)
 
 
 
-        logger.info('#################')
-        logger.info('#### RESULTS ####')
-        logger.info('#################')
-        # write output in file
+        ########################
+        # WRITE OUTPUT IN FILE #
+        ########################
         output.write(converter.finalized())
         converter.release_memory()
         logger.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
@@ -256,6 +263,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             sort=True
         ))
 
+    logger.info('#################')
+    logger.info('#### RESULTS ####')
+    logger.info('#################')
     # compute a human readable final results string,
     # and put it in the output and in level info.
     time_compression = time.time() - time_compression

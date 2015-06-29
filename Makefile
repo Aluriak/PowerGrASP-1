@@ -57,6 +57,8 @@ star:
 	$(COMMAND) --graph-data="tests/star.lp"
 bip:
 	$(COMMAND) --graph-data="tests/bipartite.lp"
+cc:
+	$(COMMAND) --graph-data="tests/concomp.lp"
 
 clear:
 	rm */*.pyc
