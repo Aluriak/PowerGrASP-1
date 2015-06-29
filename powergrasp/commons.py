@@ -2,6 +2,7 @@
 
 # IMPORTS
 from __future__   import absolute_import, print_function
+from functools    import partial
 import logging
 from   logging.handlers import RotatingFileHandler
 import os
@@ -71,7 +72,6 @@ def FIRST_SOLUTION_NO_THREAD(solver):
     models = [None] # None will be replaced at first step by a list of atoms
     def callback(new_model, models):
         models[0] = new_model.atoms()
-    from functools import partial
     solver.solve([], partial(callback, models=models))
     # return the best model
     assert(len(models) == 1)
