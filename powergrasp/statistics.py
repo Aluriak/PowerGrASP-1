@@ -32,13 +32,13 @@ LOGGER = commons.logger()
 # INFORMATION KEYS
 INIT_EDGE = 'initial_edge_count'
 FINL_EDGE = 'final_edge_count'
-FINL_PWED = 'sharp_poweredge_count'
-FINL_PWND = 'sharp_powernode_count'
+FINL_PWED = 'poweredge_count'
+FINL_PWND = 'powernode_count'
 CONV_RATE = 'conversion_rate'
 EDGE_RDCT = 'edge_reduction'
 COMP_RTIO = 'compression_ratio'
 GENR_TIME = 'gentime'
-REMN_EDGE = 'sharp_edges'
+REMN_EDGE = 'edges'
 ALL_FIELD = (CONV_RATE, EDGE_RDCT, COMP_RTIO,
              INIT_EDGE, FINL_EDGE, FINL_PWND,
              FINL_PWED, GENR_TIME, REMN_EDGE,
@@ -259,7 +259,7 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
     # Label conversion
     def key2label(key):
         """Convert given string in label printable by matplotlib"""
-        return key.strip('count').replace('sharp', '$\#$').replace('_', ' ')
+        return '$\#$' + key.strip('count').replace('_', ' ')
 
     # PLOTTING
     # xaxis = np.linspace(0,1,len(data[MEASURES[0]]))
