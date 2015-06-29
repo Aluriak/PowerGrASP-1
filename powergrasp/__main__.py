@@ -6,22 +6,23 @@ usage:
 options:
     --help, -h
     --version, -v
-    --graph-data=FILE    filepath to ASP graph definition       [default: tests/double_biclique.lp]
-    --extract=FILE       filepath to ASP extraction program     [default: powergrasp/ASPsources/extract.lp]
-    --lowerbound=FILE    filepath to ASP lowerbound program     [default: powergrasp/ASPsources/scorebound.lp]
-    --findconcept=FILE   filepath to ASP concept finder program [default: powergrasp/ASPsources/findbestconcept.lp]
-    --remain=FILE        filepath to ASP remain finder program  [default: powergrasp/ASPsources/remains.lp]
-    --output-file=NAME   output file (without extension)        [default: data/output]
-    --output-format=NAME output format                          [default: bbl]
-    --interactive=BOOL   if true, program ask user for next step[default: 0]
-    --count-model=BOOL   if true, prints models count in stdout [default: 0]
-    --threading=BOOL     if true, use threading optimization    [default: 1]
+    --graph-data=FILE    filepath to ASP graph definition           [default: tests/double_biclique.lp]
+    --extract=FILE       filepath to ASP extraction program         [default: powergrasp/ASPsources/extract.lp]
+    --lowerbound=FILE    filepath to ASP lowerbound program         [default: powergrasp/ASPsources/scorebound.lp]
+    --findconcept=FILE   filepath to ASP concept finder program     [default: powergrasp/ASPsources/findbestconcept.lp]
+    --remain=FILE        filepath to ASP remain finder program      [default: powergrasp/ASPsources/remains.lp]
+    --output-file=NAME   output file (without extension)            [default: data/output]
+    --output-format=NAME output format (see below for formats)      [default: bbl]
+    --interactive=BOOL   if true, program ask user for next step    [default: 0]
+    --count-model=BOOL   if true, prints models count in stdout     [default: 0]
+    --threading=BOOL     if true, use threading optimization        [default: 1]
     --aggressive         compress cliques of 2 elements
-    --lbound-cutoff=INT  cut-off for max lowerbound optimization[default: 2]
-    --loglevel=NAME      defines terminal log level             [default: debug]
-    --heuristic=NAME     defines heuristic used by the solver   [default: frumpy]
+    --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
+    --loglevel=NAME      defines terminal log level                 [default: debug]
+    --heuristic=NAME     defines heuristic used by the solver       [default: frumpy]
     --stats-file=FILE    save csv statistics in FILE
-    --plot-stats         plot the stats in stat_file, if exist
+    --plot-stats         plot stats found in stats-file if exist
+    --plot-file=FILE     instead of show it, save plot in png FILE
 
 output formats:
     BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -33,6 +34,7 @@ from powergrasp import compress
 from info       import __version__
 from converter  import OUTPUT_FORMATS
 import commons
+import statistics
 
 
 
@@ -52,24 +54,30 @@ if __name__ == '__main__':
     commons.log_level(options['--loglevel'])
 
     # launch compression
-    (compress(
-        graph_data         = options['--graph-data'   ],
-        extracting         = options['--extract'      ],
-        lowerbounding      = options['--lowerbound' ],
-        ccfinding          = options['--findconcept'  ],
-        remaining          = options['--remain'       ],
-        output_file        = options['--output-file'  ],
-        output_format      = options['--output-format'],
-        heuristic          = options['--heuristic'    ],
-        lowerbound_cut_off = lbound_cutoff,
-        interactive        = interactive,
-        count_model        = count_model,
-        threading          = threading,
-        statistics_filename= options['--stats-file'   ],
-        plot_stats         = options['--plot-stats'   ],
-        aggressive         = options['--aggressive'   ],
-    ))
+    if options['--graph-data']:
+        (compress(
+            graph_data         = options['--graph-data'   ],
+            extracting         = options['--extract'      ],
+            lowerbounding      = options['--lowerbound' ],
+            ccfinding          = options['--findconcept'  ],
+            remaining          = options['--remain'       ],
+            output_file        = options['--output-file'  ],
+            output_format      = options['--output-format'],
+            heuristic          = options['--heuristic'    ],
+            lowerbound_cut_off = lbound_cutoff,
+            interactive        = interactive,
+            count_model        = count_model,
+            threading          = threading,
+            statistics_filename= options['--stats-file'   ],
+            aggressive         = options['--aggressive'   ],
+        ))
 
+
+    if options['--plot-stats'] and options['--stats-file']:
+        statistics.plots(
+            options['--stats-file'],
+            savefile=options['--plot-file']
+        )
 
 
 
