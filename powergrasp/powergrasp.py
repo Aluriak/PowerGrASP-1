@@ -158,7 +158,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                 if count_model: # replace counter by the final information
                     print('\r', end='')
                     sys.stdout.flush()
-                logger.info(str(k) + ' optimal model(s) found by bcfinder.')
+                logger.info(str(k-1) + ' optimal model(s) found by bcfinder.')
                 break
 
             # printings
