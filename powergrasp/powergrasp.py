@@ -25,9 +25,10 @@ logger = commons.logger()
 
 
 def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
-             output_file, output_format, heuristic, lowerbound_cut_off=2,
-             interactive=False, count_model=False, threading=True,
-             aggressive=False):
+             output_file, statistics_filename='data/statistics.csv',
+             output_format='bbl', heuristic='frumpy', lowerbound_cut_off=2,
+             interactive=False, count_model=False,
+             threading=True, aggressive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -54,10 +55,11 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     output    = open(output_file + '.' + output_format, 'w')
     converter = converter_module.converter_for(output_format)
     model     = None
-    stats     = statistics.container(graph_data.rstrip('.lp'))
-    time_cc   = None
+    stats     = statistics.container(graph_data.rstrip('.lp'),
+                                     statistics_filename)
     time_extract = time.time()
     minimal_score = 1 if aggressive else 2
+    time_compression = time.time()
 
     # Extract graph data
     logger.info('#################')
@@ -98,7 +100,6 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
-    time_cc = time.time()
     for cc in atom_ccs:
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
@@ -114,6 +115,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         while True:
             k += 1
 
+            time_iteration = time.time()
             # FIND THE LOWER BOUND
             if lowerbound_value > minimal_score:
                 print('LOWER BOUND SEARCH PERFORMED')
@@ -194,12 +196,16 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                 a for a in model if a.name() == 'powernode_count'
             ).args()[0]
             new_poweredge_count = atom_counter['poweredge']
-            statistics.add(stats,
-                           final_poweredge_count=new_poweredge_count,
-                           final_powernode_count=new_powernode_count,
-                          )
-            # statistics.add(stats, final_powernode_count=new_powernode_count)
             remain_edges = tuple(a for a in model if a.name() == 'edge')
+
+            # save statistics: add() method takes all data about the new iteration
+            time_iteration = time.time() - time_iteration
+            statistics.add(stats,
+                           poweredge_count=new_poweredge_count,
+                           powernode_count=new_powernode_count,
+                           gentime=round(time_iteration, 3),
+                           remain_edges_count=len(remain_edges),
+                          )
 
             # interactive mode
             if count_model and interactive:
@@ -226,10 +232,10 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
         # Output
         if remain_edges is None or len(remain_edges) == 0:
             logger.info('No remaining edge')
-            statistics.add(stats, final_edge_count=0)
+            statistics.add(stats, final_edges_count=0)
         else:
             logger.info(str(len(remain_edges)) + ' remaining edge(s)')
-            statistics.add(stats, final_edge_count=len(remain_edges))
+            statistics.add(stats, final_edges_count=len(remain_edges))
             converter.convert(remain_edges)
 
 
@@ -252,9 +258,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
 
     # compute a human readable final results string,
     # and put it in the output and in level info.
-    time_cc = time.time() - time_cc
+    time_compression = time.time() - time_compression
     final_results = (
-        "All cc have been performed in " + str(round(time_cc, 3))
+        "All cc have been performed in " + str(round(time_compression, 3))
         + "s (extraction in " + str(round(time_extract, 3))
         + ") with heuristic " + heuristic + ".\nSolver options: "
         + ' '.join(commons.ASP_OPTIONS)
@@ -265,7 +271,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     output.write(converter.comment(final_results.split('\n')))
 
     output.close()
+    statistics.finalize(stats)
     # return str(graph)
+
 
 
 
