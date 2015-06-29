@@ -13,9 +13,9 @@ options:
     --remain=FILE        filepath to ASP remain finder program      [default: powergrasp/ASPsources/remains.lp]
     --output-file=NAME   output file (without extension)            [default: data/output]
     --output-format=NAME output format (see below for formats)      [default: bbl]
-    --interactive=BOOL   if true, program ask user for next step    [default: 0]
-    --count-model=BOOL   if true, prints models count in stdout     [default: 0]
-    --threading=BOOL     if true, use threading optimization        [default: 1]
+    --interactive        program ask user for next step
+    --count-model        prints models count in stdout
+    --no-threading       don't use threading optimization
     --aggressive         compress cliques of 2 elements
     --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
     --loglevel=NAME      defines terminal log level                 [default: debug]
@@ -44,10 +44,6 @@ if __name__ == '__main__':
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    def boolean(s): return s not in (0, '0', 'False', 'false')
-    interactive = boolean(options['--interactive'])
-    count_model = boolean(options['--count-model'])
-    threading   = boolean(options['--threading'  ])
     lbound_cutoff = int(options['--lbound-cutoff'])
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
@@ -65,9 +61,9 @@ if __name__ == '__main__':
             output_format      = options['--output-format'],
             heuristic          = options['--heuristic'    ],
             lowerbound_cut_off = lbound_cutoff,
-            interactive        = interactive,
-            count_model        = count_model,
-            threading          = threading,
+            interactive        = options['--interactive'  ],
+            count_model        = options['--count-model'  ],
+            no_threading       = options['--no-threading' ],
             statistics_filename= options['--stats-file'   ],
             aggressive         = options['--aggressive'   ],
         ))

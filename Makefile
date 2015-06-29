@@ -10,14 +10,18 @@ OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
+#LOGLEVEL=--loglevel=critical
 #AGGRESSIVE=--aggressive
-#INTERACTIVE=--interactive=True
+#INTERACTIVE=--interactive
 #LBOUND=--lbound-cutoff=-1
-MODELCOUNT=--count-model=True
+#MODELCOUNT=--count-model
+NOTHREADING=--no-threading
 
 ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT)
-ARGS=$(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(HEURISTIC)
+ARGS=$(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(HEURISTIC) $(NOTHREADING)
 COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
+
+
 
 diam:
 	$(COMMAND) --graph-data="tests/diamond.lp"

@@ -28,7 +28,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
              output_file, statistics_filename='data/statistics.csv',
              output_format='bbl', heuristic='frumpy', lowerbound_cut_off=2,
              interactive=False, count_model=False,
-             threading=True, aggressive=False):
+             no_threading=True, aggressive=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -47,10 +47,10 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.
     """
-    commons.first_solution_function(
-        commons.FIRST_SOLUTION_THREAD if threading
-        else commons.FIRST_SOLUTION_NO_THREAD
-    )
+    if no_threading:
+        commons.first_solution_function(
+            commons.FIRST_SOLUTION_NO_THREAD
+        )
     # Initialize descriptors
     output    = open(output_file + '.' + output_format, 'w')
     converter = converter_module.converter_for(output_format)
