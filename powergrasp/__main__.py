@@ -73,7 +73,8 @@ if __name__ == '__main__':
         ))
 
 
-    if options['--plot-stats'] and options['--stats-file']:
+    if((options['--plot-stats'] or options['--plot-file']) and
+            options['--stats-file']):
         statistics.plots(
             options['--stats-file'],
             savefile=options['--plot-file']
