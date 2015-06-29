@@ -156,17 +156,20 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
                     sys.stdout.flush()
                 logger.info(str(k) + ' optimal model(s) found by bcfinder.')
                 break
+
+            # printings
             logger.debug('\tOUTPUT: ' + atoms.to_str(
                 model, separator='.\n\t'
             ))
-            logger.debug('\tOUTPUT: ' + str(atoms.count(model)))
-
+            atom_counter = atoms.count(model)
+            logger.debug('\tOUTPUT: ' + str(atom_counter))
             logger.debug('POWERNODES:\n\t' + atoms.prettified(
                 model,
                 names=('powernode', 'poweredge', 'score'),
                 joiner='\n\t',
                 sort=True
             ))
+
             # atoms to be given to the next step
             previous_coverage += atoms.to_str(
                 model, names=('covered',)
@@ -179,21 +182,25 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             converter.convert((a for a in model if a.name() in (
                 'powernode', 'clique', 'poweredge'
             )))
+
             # save interesting atoms
             result_atoms = itertools.chain(
                 result_atoms,
                 (a for a in model if a.name() in ('powernode', 'poweredge'))
             )
-            new_powernode_count = 2
-            new_poweredge_count = len(tuple(
-                None for a in model if a.name() == 'poweredge'
-            ))
+
+            # save the number of generated powernodes and poweredges
+            new_powernode_count = next(
+                a for a in model if a.name() == 'powernode_count'
+            ).args()[0]
+            new_poweredge_count = atom_counter['poweredge']
             statistics.add(stats,
                            final_poweredge_count=new_poweredge_count,
                            final_powernode_count=new_powernode_count,
                           )
             # statistics.add(stats, final_powernode_count=new_powernode_count)
             remain_edges = tuple(a for a in model if a.name() == 'edge')
+
             # interactive mode
             if count_model and interactive:
                 input(str(k)+'>Next ?')  # my name is spam
