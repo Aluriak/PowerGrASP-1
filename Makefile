@@ -75,5 +75,5 @@ tarasp:
 cytoscape:
 	$(CYTOSCAPE)
 show:
-	$(PYTHON)  $(STATFILE) $(PLOT)
+	$(PYTHON) --stats-file=data/statistics.csv --plot-stats
 
