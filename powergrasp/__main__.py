@@ -6,7 +6,7 @@ usage:
 options:
     --help, -h
     --version, -v
-    --graph-data=FILE    filepath to ASP graph definition           [default: tests/double_biclique.lp]
+    --graph-data=FILE    filepath to ASP graph definition
     --extract=FILE       filepath to ASP extraction program         [default: powergrasp/ASPsources/extract.lp]
     --lowerbound=FILE    filepath to ASP lowerbound program         [default: powergrasp/ASPsources/scorebound.lp]
     --findconcept=FILE   filepath to ASP concept finder program     [default: powergrasp/ASPsources/findbestconcept.lp]
