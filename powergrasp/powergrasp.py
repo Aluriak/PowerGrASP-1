@@ -58,8 +58,8 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     stats     = statistics.container(graph_data.rstrip('.lp'),
                                      statistics_filename)
     time_extract = time.time()
-    minimal_score = 1 if aggressive else 2
     time_compression = time.time()
+    minimal_score = 1 if aggressive else 2
 
     # Extract graph data
     logger.info('#################')
