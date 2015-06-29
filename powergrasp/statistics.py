@@ -16,7 +16,16 @@ Statistics information can be printed or saved in files
 from __future__   import absolute_import, print_function
 from __future__   import division
 from future.utils import iteritems, itervalues
+import commons
+import csv
+# plotting libraries
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from matplotlib.pyplot import savefig
 
+# Logger
+LOGGER = commons.logger()
 
 # INFORMATION KEYS
 INIT_EDGE = 'initial_edge_count'
@@ -26,50 +35,109 @@ FINL_PWND = 'final_powernode_count'
 CONV_RATE = 'conversion_rate'
 EDGE_RDCT = 'edge_reduction'
 COMP_RTIO = 'compression_ratio'
+GENR_TIME = 'gentime'
+REMN_EDGE = 'remain_edges_count'
 ALL_FIELD = (CONV_RATE, EDGE_RDCT, COMP_RTIO,
-             INIT_EDGE, FINL_EDGE, FINL_PWND, FINL_PWED)
+             INIT_EDGE, FINL_EDGE, FINL_PWND,
+             FINL_PWED, GENR_TIME, REMN_EDGE,
+            )
 
 # global data
 NETW_NAME = 'network_name'
+FILE_DESC = 'file_descriptor'
+FILE_WRTR = 'file_writer'
 
 # FORMATS
 FORMAT_TEX = 'tex'
 FORMAT_RAW = 'txt'
 
+# DATA FOR PLOTTING
+MEASURES = (GENR_TIME, REMN_EDGE, FINL_PWED, FINL_PWND)
+COLORS   = ('black'  , 'green'  , 'blue'   , 'red'    )
+LABELS   = (
+    'time per step',
+    'remaining edges',
+    'generated poweredge',
+    'generated powernode',
+)
 
-# FUNCTIONS
 
-def container(network_name='network'):
-    """Return a new container of statistics information"""
+# MAIN API FUNCTIONS
+
+def container(network_name='network', statistics_filename=None):
+    """Return a new container of statistics information
+
+    The statistics_filename, if not None, must be a valid name of file
+    that will be overrided, and will contains some data in csv format."""
+    # open file of statistics in csv if asked
+    if statistics_filename:
+        try:
+            statistics_file = open(statistics_filename, 'w')
+            statistics_writer = csv.DictWriter(statistics_file,
+                                               fieldnames=MEASURES)
+            statistics_writer.writeheader()
+        except IOError as e:
+            statistics_writer = None
+            LOGGER.warning('The file '
+                           + statistics_filename
+                           + ' can\'t be opened. No statistics will be saved.')
+    else:
+        statistics_writer = None
     return {
         NETW_NAME: network_name,
-        INIT_EDGE: None,
-        FINL_EDGE: None,
-        FINL_PWED: None,
-        FINL_PWND: None,
+        INIT_EDGE: 0,
+        FINL_EDGE: 0,
+        FINL_PWED: 0,
+        FINL_PWND: 0,
+        REMN_EDGE: 0,
+        GENR_TIME: 0,
+        FILE_DESC: statistics_file,
+        FILE_WRTR: statistics_writer,
     }
 
 
-def add(stats, initial_edge_count=None, final_poweredge_count=None,
-        final_edge_count=None, final_powernode_count=None):
+def add(stats, initial_edge_count=None, poweredge_count=None,
+        powernode_count=None, gentime=None,
+        final_edges_count=None, remain_edges_count=None):
     """set to given stats the given values.
 
     if a value is None, it will be not modified.
     stats is modified in place.
+
+    values:
+        initial_edge_count -- number of edges at the beginning
+        poweredge_count    -- number of poweredge created at last iteration
+        powernode_count    -- number of powernode created at last iteration
+        gentime            -- time necessary for last iteration
+        final_edges_count  -- number of edges at the end
+        remain_edges_count -- number of remaining edges at last iteration
     """
     assert(stats.__class__ == dict)
-    keytovar = {
+
+    # treats all accumulative values
+    accumulative_values = {
         INIT_EDGE: initial_edge_count,
-        FINL_EDGE: final_edge_count,
-        FINL_PWED: final_poweredge_count,
-        FINL_PWND: final_powernode_count,
+        FINL_EDGE: final_edges_count,
+        FINL_PWED: poweredge_count,
+        FINL_PWND: powernode_count,
+        GENR_TIME: gentime,
     }
-    for info, value in iteritems(keytovar):
+    for info, value in iteritems(accumulative_values):
         if value is not None:
-            if stats[info] is not None:
-                stats[info] += value
-            else:  # first time the value is assigned
-                stats[info]  = value
+            stats[info] += value
+
+    # write the data in csv file
+    if stats[FILE_DESC] and gentime and remain_edges_count:
+        assert(MEASURES[0] == GENR_TIME) # verification of plotting consistency
+        assert(MEASURES[1] == REMN_EDGE)
+        assert(MEASURES[2] == FINL_PWED)
+        assert(MEASURES[3] == FINL_PWND)
+        stats[FILE_WRTR].writerow({
+            GENR_TIME: gentime,
+            REMN_EDGE: remain_edges_count,
+            FINL_PWED: stats[FINL_PWED],
+            FINL_PWND: stats[FINL_PWND],
+        })
 
 
 def save(filename, stats, format=FORMAT_TEX, erase=False):
@@ -90,6 +158,12 @@ def output(stats, format=FORMAT_RAW):
     """
     return _final_data(stats, format)
 
+
+def finalize(stats):
+    """Close files"""
+    if stats[FILE_DESC]:
+        stats[FILE_DESC].close()
+        stats[FILE_WRTR] = None
 
 
 
@@ -112,6 +186,8 @@ def _final_data(stats, format):
     )
 
     return _formatted(data, format)
+
+
 
 
 def _formatted(data, format):
@@ -151,4 +227,60 @@ def _edge_reduction(initial_edge, final_edge, poweredge):
 def _compression_ratio(initial_edge, final_edge, poweredge):
     """Compute data compression ratio"""
     return initial_edge / (final_edge + poweredge)
+
+
+
+
+# PLOTTING
+def plots(filename, title="Compression statistics", xlabel='Iterations',
+          ylabel='{Power,} {node,edge}s counters', savefile=None, dpi=400):
+    """Generate the plot that show all the data generated by the compression
+
+    if savefile is not None and is a filename, the figure will be saved
+    in png in given file, with given dpi."""
+
+    # GET DATA
+    try:
+        data = np.genfromtxt(
+            filename,
+            delimiter=',',
+            skip_header=0,
+            skip_footer=0,
+            names=True,  # read names from header
+        )
+    except IOError as e:
+        LOGGER.warning('The file '
+                       + statistics_filename
+                       + ' can\'t be opened. No statistics will be saved.')
+
+    # PLOTTING
+    # xaxis = np.linspace(0,1,len(data[MEASURES[0]]))
+    try:
+        data_size = len(data[MEASURES[0]])
+    except TypeError:
+        LOGGER.error('Plotting compression statistics require more than one compression iteration')
+        LOGGER.error('Plotting aborted')
+        return
+
+    # convert in pandas data frame for allow plotting
+    gx = pd.DataFrame(data, columns=MEASURES)
+    # {black dotted,red,yellow,blue} line with marker o
+    styles = ['ko--','ro-','yo-','bo-']
+
+    # get plot, and sets the labels for the axis and the right axis (time)
+    plot = gx.plot(style=styles, secondary_y=[GENR_TIME])
+    lines, labels = plot.get_legend_handles_labels()
+    rines, rabels = plot.right_ax.get_legend_handles_labels()
+    plot.legend(lines + rines, [l.replace('_', ' ') for l in labels] + ['concept generation time'])
+    plot.set_xlabel(xlabel)
+    plot.set_ylabel(ylabel)
+    plot.right_ax.set_ylabel('Time (s)')
+
+    if savefile:  # print or save
+        plt.savefig(savefile, dpi=dpi)
+        LOGGER.info('Plot of statistics data saved in file ' + savefile + ' (' + str(dpi) + ' dpi)')
+    else:
+        plt.show()
+
+
 
