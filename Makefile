@@ -69,4 +69,5 @@ tarasp:
 cytoscape:
 	$(CYTOSCAPE)
 show:
-	$(CYTOSCAPE) -N data/output.nnf
+	$(PYTHON)  $(STATFILE) $(PLOT)
+
