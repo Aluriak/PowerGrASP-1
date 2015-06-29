@@ -1,20 +1,22 @@
 PYTHON=python2
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
-
 TARGET=powergrasp/__main__.py
-#STATFILE=--stats-file=data/statistics.csv
-#PLOT=--plot-stats
-#INTERACTIVE=--interactive=True
-MODELCOUNT=--count-model=True
+
+STATFILE=--stats-file=data/statistics.csv
+#PLOTFILE=--plot-file=data/statistics.png
+PLOT=--plot-stats
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
-#LBOUND=--lbound-cutoff=-1
-#AGGRESSIVE=--aggressive
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
+#AGGRESSIVE=--aggressive
+#INTERACTIVE=--interactive=True
+#LBOUND=--lbound-cutoff=-1
+MODELCOUNT=--count-model=True
 
-ARGS=$(OUTPUT) $(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(HEURISTIC) $(STATFILE) $(PLOT)
-COMMAND=$(PYTHON) $(TARGET) $(ARGS)
+ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT)
+ARGS=$(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(HEURISTIC)
+COMMAND=$(PYTHON) $(TARGET) $(ARGS) $(ALL_OUTPUTS)
 
 diam:
 	$(COMMAND) --graph-data="tests/diamond.lp"
