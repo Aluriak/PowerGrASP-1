@@ -219,16 +219,25 @@ def _formatted(data, format):
 # DATA COMPUTATION
 def _conversion_rate(initial_edge, final_edge, poweredge, powernode):
     """Compute conversion rate"""
-    return (initial_edge - final_edge - poweredge) / powernode
+    try:
+        return (initial_edge - final_edge - poweredge) / powernode
+    except ZeroDivisionError:
+        return 1.
 
 def _edge_reduction(initial_edge, final_edge, poweredge):
     """Compute edge reduction (percentage)"""
-    edge = initial_edge - final_edge
-    return ((edge - poweredge) / edge) * 100
+    try:
+        edge = initial_edge
+        return ((edge - poweredge) / edge) * 100
+    except ZeroDivisionError:
+        return 100.
 
 def _compression_ratio(initial_edge, final_edge, poweredge):
     """Compute data compression ratio"""
-    return initial_edge / (final_edge + poweredge)
+    try:
+        return initial_edge / (final_edge + poweredge)
+    except ZeroDivisionError:
+        return 1.
 
 
 
