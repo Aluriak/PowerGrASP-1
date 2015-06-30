@@ -98,6 +98,16 @@ def basename(filepath):
     """
     return os.path.splitext(os.path.basename(filepath))[0]
 
+def extension(filepath):
+    """Return the extension of given filepath.
+
+    >>> import os
+    >>> basename('~/ASP/serious/business/fly.lp')
+    lp
+
+    """
+    return os.path.splitext(os.path.basename(filepath))[1][1:]
+
 def logger(name='asprgc', logfilename=None):
     """Return logger of given name, without initialize it.
 
