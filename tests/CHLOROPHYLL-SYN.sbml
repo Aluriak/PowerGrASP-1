@@ -1,0 +1,111 @@
+<sbml xmlns="http://www.sbml.org/sbml/level2" level="2" version="1">
+    <model id="model">
+        <listOfCompartments>
+            <compartment id="cell"/>
+        </listOfCompartments>
+        <listOfSpecies>
+            <species id="Tiso27158" name="metacyc:CHLOROPHYLLIDE-A" compartment="cell"/>
+            <species id="Tiso23843" name="metacyc:NADP" compartment="cell"/>
+            <species id="Tiso23839" name="metacyc:NADPH" compartment="cell"/>
+            <species id="Tiso26057" name="metacyc:PROTON" compartment="cell"/>
+            <species id="Tiso27162" name="metacyc:MONO-VINYL-PROTOCHLOROPHYLLIDE-A" compartment="cell"/>
+            <species id="Tiso23667" name="metacyc:ATP" compartment="cell"/>
+            <species id="Tiso18769" name="metacyc:WATER" compartment="cell"/>
+            <species id="Tiso26083" name="metacyc:MG+2" compartment="cell"/>
+            <species id="Tiso27124" name="metacyc:PROTOPORPHYRIN_IX" compartment="cell"/>
+            <species id="Tiso23665" name="metacyc:ADP" compartment="cell"/>
+            <species id="Tiso26124" name="metacyc:Pi" compartment="cell"/>
+            <species id="Tiso27137" name="metacyc:MG-PROTOPORPHYRIN" compartment="cell"/>
+            <species id="Tiso27160" name="metacyc:DIVINYL-PROTOCHLOROPHYLLIDE-A" compartment="cell"/>
+            <species id="Tiso20885" name="metacyc:COPROPORPHYRINOGEN_III" compartment="cell"/>
+            <species id="Tiso27326" name="metacyc:OXYGEN-MOLECULE" compartment="cell"/>
+            <species id="Tiso20774" name="metacyc:CARBON-DIOXIDE" compartment="cell"/>
+            <species id="Tiso27129" name="metacyc:PROTOPORPHYRINOGEN" compartment="cell"/>
+            <species id="Tiso22564" name="metacyc:S-ADENOSYLMETHIONINE" compartment="cell"/>
+            <species id="Tiso27133" name="metacyc:MG-PROTOPORPHYRIN-MONOMETHYL-ESTER" compartment="cell"/>
+            <species id="Tiso22559" name="metacyc:ADENOSYL-HOMO-CYS" compartment="cell"/>
+            <species id="Tiso27134" name="metacyc:UROPORPHYRINOGEN-III" compartment="cell"/>
+            <species id="Tiso17785" name="metacyc:HYDROGEN-PEROXIDE" compartment="cell"/>
+        </listOfSpecies>
+        <listOfReactions>
+            <reaction id="Tiso47514" name="metacyc:RXN1F-10" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27162" stoichiometry="1"/>
+                    <speciesReference species="Tiso26057" stoichiometry="1"/>
+                    <speciesReference species="Tiso23839" stoichiometry="1"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso23843" stoichiometry="1"/>
+                    <speciesReference species="Tiso27158" stoichiometry="1"/>
+                </listOfProducts>
+            </reaction>
+            <reaction id="Tiso49634" name="metacyc:RXN1F-20" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27124" stoichiometry="1"/>
+                    <speciesReference species="Tiso26083" stoichiometry="1"/>
+                    <speciesReference species="Tiso18769" stoichiometry="1"/>
+                    <speciesReference species="Tiso23667" stoichiometry="1"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso27137" stoichiometry="1"/>
+                    <speciesReference species="Tiso26124" stoichiometry="1"/>
+                    <speciesReference species="Tiso23665" stoichiometry="1"/>
+                    <speciesReference species="Tiso26057" stoichiometry="3"/>
+                </listOfProducts>
+            </reaction>
+            <reaction id="Tiso51728" name="metacyc:RXN1F-72" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27160" stoichiometry="1"/>
+                    <speciesReference species="Tiso23839" stoichiometry="1"/>
+                    <speciesReference species="Tiso26057" stoichiometry="1"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso27162" stoichiometry="1"/>
+                    <speciesReference species="Tiso23843" stoichiometry="1"/>
+                </listOfProducts>
+            </reaction>
+            <reaction id="Tiso54441" name="metacyc:RXN0-1461" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27326" stoichiometry="1"/>
+                    <speciesReference species="Tiso26057" stoichiometry="2"/>
+                    <speciesReference species="Tiso20885" stoichiometry="1"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso27129" stoichiometry="1"/>
+                    <speciesReference species="Tiso20774" stoichiometry="2"/>
+                    <speciesReference species="Tiso18769" stoichiometry="2"/>
+                </listOfProducts>
+            </reaction>
+            <reaction id="Tiso55109" name="metacyc:RXN-MG-PROTOPORPHYRIN-METHYLESTER-SYN" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27137" stoichiometry="1"/>
+                    <speciesReference species="Tiso22564" stoichiometry="1"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso22559" stoichiometry="1"/>
+                    <speciesReference species="Tiso27133" stoichiometry="1"/>
+                </listOfProducts>
+            </reaction>
+            <reaction id="Tiso57148" name="metacyc:UROGENDECARBOX-RXN" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27134" stoichiometry="1"/>
+                    <speciesReference species="Tiso26057" stoichiometry="4"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso20885" stoichiometry="1"/>
+                    <speciesReference species="Tiso20774" stoichiometry="4"/>
+                </listOfProducts>
+            </reaction>
+            <reaction id="Tiso57430" name="metacyc:PROTOPORGENOXI-RXN" reversible="false">
+                <listOfReactants>
+                    <speciesReference species="Tiso27129" stoichiometry="1"/>
+                    <speciesReference species="Tiso27326" stoichiometry="3"/>
+                </listOfReactants>
+                <listOfProducts>
+                    <speciesReference species="Tiso27124" stoichiometry="1"/>
+                    <speciesReference species="Tiso17785" stoichiometry="3"/>
+                </listOfProducts>
+            </reaction>
+        </listOfReactions>
+    </model>
+</sbml>

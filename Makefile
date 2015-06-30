@@ -59,6 +59,8 @@ bip:
 	$(COMMAND) --graph-data="tests/bipartite.lp"
 cc:
 	$(COMMAND) --graph-data="tests/concomp.lp"
+chloro:
+	$(COMMAND) --graph-data="tests/CHLOROPHYLL-SYN.sbml"
 
 clear:
 	rm */*.pyc
