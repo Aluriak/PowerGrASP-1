@@ -5,7 +5,7 @@ TARGET=powergrasp/__main__.py
 
 STATFILE=--stats-file=data/statistics.csv
 #PLOTFILE=--plot-file=data/statistics.png
-PLOT=--plot-stats
+#PLOT=--plot-stats
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 LOGLEVEL=--loglevel=debug
@@ -14,8 +14,8 @@ LOGLEVEL=--loglevel=info
 #AGGRESSIVE=--aggressive
 #INTERACTIVE=--interactive
 #LBOUND=--lbound-cutoff=-1
-#MODELCOUNT=--count-model
-NOTHREADING=--no-threading
+MODELCOUNT=--count-model
+#NOTHREADING=--no-threading
 
 ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT)
 ARGS=$(MODELCOUNT) $(INTERACTIVE) $(LBOUND) $(HEURISTIC) $(NOTHREADING)
