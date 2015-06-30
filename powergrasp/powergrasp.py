@@ -47,13 +47,14 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.
     """
+    if not graph_data: return # simple protection
     if no_threading:
         commons.first_solution_function(
             commons.FIRST_SOLUTION_NO_THREAD
         )
     # Initialize descriptors
     output    = open(output_file + '.' + output_format, 'w')
-    converter = converter_module.converter_for(output_format)
+    converter = converter_module.output_converter_for(output_format)
     model     = None
     stats     = statistics.container(graph_data.rstrip('.lp'),
                                      statistics_filename)

@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-definitions of converter base class NeutralConverter.
+definitions of converter base class OutConverter.
 
 Converters are objects that convert a flow of ASP atoms
  in a particular string format.
-
-Supported formats :
-- asp: pure asp;
-- nnf: nested network format;
-- bbl: bubble format, used by Powergraph for printings;
 
 """
 from __future__   import absolute_import, print_function
@@ -53,14 +48,14 @@ def matched_splits(atoms, separator, regex):
 
 
 
-class NeutralConverter(object):
+class OutConverter(object):
     """Base class for Converters.
 
     Converters take ASP atoms (gringo.Fun), and,
      when finalizing, generate all graph description
      in the expected format.
 
-    NeutralConverter is unusable as is :
+    OutConverter is unusable as is :
      it generates ASP output.
 
     """

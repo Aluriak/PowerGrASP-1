@@ -4,14 +4,14 @@ definition of the NNF format converter.
 """
 from __future__   import absolute_import, print_function
 from future.utils import iteritems, iterkeys, itervalues
-from converter.converter import NeutralConverter
+from converter.output_converter import OutConverter
 import itertools
 import commons
 
 
 logger = commons.logger()
 
-class NNFConverter(NeutralConverter):
+class OutNNF(OutConverter):
     """Convert given atoms in NNF format"""
 
     def _convert(self, powernodes, cliques):

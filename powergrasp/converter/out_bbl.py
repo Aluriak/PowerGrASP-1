@@ -29,7 +29,7 @@ from __future__          import absolute_import, print_function
 from future.utils        import iteritems, iterkeys, itervalues
 from collections         import defaultdict
 from commons             import basename
-from converter.converter import NeutralConverter
+from converter.output_converter import OutConverter
 import itertools
 import commons
 import gringo
@@ -63,7 +63,7 @@ def subpowernode_to_powernode(subpowernode):
 
 
 
-class BBLConverter(NeutralConverter):
+class OutBBL(OutConverter):
     """Convert given atoms in BBL format
 
     Used bubble format is Bubble V1.0,
@@ -83,7 +83,7 @@ class BBLConverter(NeutralConverter):
         try: # python 3
             super().__init__()
         except TypeError: # python 2
-            super(BBLConverter, self).__init__()
+            super(OutBBL, self).__init__()
         self.release_memory()  # initialize the containers
 
     def release_memory(self):
@@ -251,7 +251,7 @@ class BBLConverter(NeutralConverter):
             logger.debug('TOP:' + cc + step + num_set)
 
     def header(self):
-        return '#BBL-1.0\n#' + BBLConverter.META_DATA + '\n'
+        return '#BBL-1.0\n#' + OutBBL.META_DATA + '\n'
 
     def finalized(self):
         self._generate_metadata()

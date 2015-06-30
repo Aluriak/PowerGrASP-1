@@ -34,6 +34,7 @@ from powergrasp import compress
 from info       import __version__
 from converter  import OUTPUT_FORMATS
 import commons
+import converter
 import statistics
 
 
@@ -51,7 +52,15 @@ if __name__ == '__main__':
 
     # launch compression
     if options['--graph-data']:
-        (compress(
+        # convert given graph in ASP readable edge/2 if necessary
+        if commons.extension(options['--graph-data']) != 'lp':
+            converter = converter.input_converter_for(
+                commons.extension(options['--graph-data'])
+            )
+            options['--graph-data'] = converter.convert(options['--graph-data'])
+
+        # compression itself
+        compress(
             graph_data         = options['--graph-data'   ],
             extracting         = options['--extract'      ],
             lowerbounding      = options['--lowerbound' ],
@@ -66,9 +75,9 @@ if __name__ == '__main__':
             no_threading       = options['--no-threading' ],
             statistics_filename= options['--stats-file'   ],
             aggressive         = options['--aggressive'   ],
-        ))
+        )
 
-
+    # plotting if statistics csv file given, and showing or saving requested
     if((options['--plot-stats'] or options['--plot-file']) and
             options['--stats-file']):
         statistics.plots(
