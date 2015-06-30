@@ -1,10 +1,12 @@
 # PowerGrASP
 The Python Powergraph analysis tool, based on Answer Set Programming solving and formal concept analysis.
 
+
 ## Requirements
 Needs [python-gringo module](https://github.com/lxsli/python-gringo).
 Unfortunately, you will need to compile clingo yourself, for includes the python support. (and eventually the thread support, for a faster compression)
 This can be a pain, but there is a little help (in french, infortunately) given by *doc/help.mkd*.
+
 
 ## Basic use
 PowerGrASP can be used as a script:
@@ -18,7 +20,9 @@ Or can be embedded in any python program:
     with open('human_proteom.lp') as fin, open('for_cytoscape.bbl', 'w') as fout:
         fout.write(powergrasp.compress(fin.read()))
 
+
 ## Help & Details
+### General overview
 The compression is configurable through command line arguments or compress function parameters.
 Used ASP source code can be changed, interactive mode can be set,… Please look at help and docstring:
 
@@ -26,8 +30,93 @@ Used ASP source code can be changed, interactive mode can be set,… Please look
     python2 powergrasp --help
     # in python
     help(powergrasp)
+    # or, in terminal with make
+    make help
+
+
+### Standard output management
+By default, PowerGrASP generates lots of outputs in stdout, essentially for debugging and compression tracking.
+With the option *loglevel*, its possible to control this behavior:
+
+    python2 powergrasp --graph-data=tests/proteome_yeast_2.lp --loglevel=warning
+
+This will block all outputs with a strictly lesser priority than warning.
+Available levels comes from logging API:
+
+    log level        | PowerGrASP
+    -----------------|-------------------
+    critical         | totally silencious
+    error            | very rarely disturbing
+    warning          | rarely disturbing
+    info             | trackable
+    debug            | trackable with __high__ verbosity
+    notset           | kraken released
+
+Please note that some options (notabily *count-models*) are completely independant of this logging management.
+
+
+### Statistics
+The compression compute some statistics about itself, and generate the final results
+at the end of the compression in the standard output.
+With some arguments, you can also show a colored graphic :
+
+    python2 powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-stats
+
+Instead of show it, powergrasp can save it in png (note that the *--plot-stats* flag is not necessary when *plot-file* option is given):
+
+    python2 powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-file=data/statistics.png
+
+
+### Answer Set Programming
+ASP is a declarative and logic language, designed for the treatment of combinatorial problems (like graph compression).
+The implementation used in this project is the [*Potsdam Answer Set Solving Collection*](http://potassco.sourceforge.net/index.html).
+
+All ASP source codes necessary for the PowerGrASP program can be found in *powergrasp/ASPsources/* directory.
+
+
+### I/O
+
+#### Input file
+PowerGrASP doesn't generate logging for pleasure : it actually perform a treatment on input data, if provided.
+The supported input file formats are currently :
+- ASP: atoms edge/2, with edge(X,Y) describing a link between nodes X and Y.
+
+Other formats will be supported in the future.
+
+#### Output file
+While the only way to print a power graph is provided by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin of Cytoscape, output format is limited to *Bubble*, which seems to be an endemic format.
+Another output format support is possible by create a new Converter class (see *powergrasp/converter/*).
 
 
 
+### Interests & References
 
+The Power Graph approach for graph compression allows a lossless compression with an emphasis on biological meaning.
+In fact, formal concepts used by Power Graph analysis have a sens in biology, especially in the case of proteomes.
+
+All graphs can be compressed through Power Graph, and will be more readable once compressed,
+but interactomes, at least, also gain in interpretability.
+
+The main inspiration of PowerGrASP : PowerGraph Analysis:
+
+    Loïc Royer, Matthias Reimann, Bill Andreopoulos, and Michael Schroeder.
+    Unraveling Protein Networks with Power Graph Analysis.
+    PLoS Comput Biol, 4(7):e1000108, July 2008.
+
+Usage of the PowerGraph Analysis :
+
+    Loic Royer, Matthias Reimann, A. Francis Stewart, and Michael Schroeder.
+    Network Compression as a Quality Measure for Protein Interaction Networks.
+    PLoS ONE, 7(6):e35729, June 2012.
+
+    Yun Zhang, Charles A Phillips, Gary L Rogers, Erich J Baker, Elissa J Chesler, and Michael A Langston.
+    On finding bicliques in bipartite graphs: a novel algorithm and
+    its application to the integration of diverse biological data types.
+    BMC Bioinformatics, 15(1):110, 2014.
+
+ASP through Potassco implementation :
+
+    M. Gebser, R. Kaminski, B. Kaufmann, M. Ostrowski, T. Schaub, and M. Schneider.
+    Potassco: The Potsdam answer set solving collection.
+    AI Communications, 24(2):107–124, 2011.
 
