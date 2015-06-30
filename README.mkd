@@ -80,6 +80,7 @@ All ASP source codes necessary for the PowerGrASP program can be found in *power
 PowerGrASP doesn't generate logging for pleasure : it actually perform a treatment on input data, if provided.
 The supported input file formats are currently :
 - ASP: atoms edge/2, with edge(X,Y) describing a link between nodes X and Y.
+- SBML: a regular SBML file, when species and reactions will be treated as nodes.
 
 Other formats will be supported in the future.
 

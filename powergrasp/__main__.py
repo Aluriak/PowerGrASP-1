@@ -25,7 +25,11 @@ options:
     --plot-file=FILE     instead of show it, save plot in png FILE
 
 output formats:
-    BBL                 formated in Bubble format, readable by CyOog plugin of Cytoscape
+    BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
+
+input formats:
+    ASP         edge/2 atoms, where edge(X,Y) describes a link between X and Y.
+    SBML        SBML file. Species and reactions will be translated as nodes.
 """
 
 from __future__ import absolute_import, print_function
