@@ -44,7 +44,9 @@ class InConverter(object):
                 # NB: opening the file is performed by the subclass, while some
                 #  format use an external module that opens itself the file
                 #  for extract data.
-                self._convert_to(fd, filename)
+                error = self._convert_to(fd, filename)
+                if error is not None:
+                    logger.error(error)
         except IOError:
             logger.critical('File ' + FILE_INPUT_ASP_NAME + " can't be opened."
                             + ' Convertion to ASP data need this file.'
@@ -58,18 +60,22 @@ class InConverter(object):
 
     @classmethod
     def error_input_file(cls, filename):
-        """log error for not openable input file"""
-        logger.error('File ' + filename + ' can\'t be opened as an '
-                     + self.FORMAT_NAME + ' file.'
-                     + ' Compression aborted')
+        """return string error for not openable input file"""
+        return ('File ' + filename + ' can\'t be opened as an '
+                + self.FORMAT_NAME + ' file.'
+                + ' Compression aborted')
 
     def _convert_to(self, filedesc_asp, inputfilename):
-        """Write in filedesc_asp the ASP version of filedesc_input"""
+        """Write in filedesc_asp the ASP version of filedesc_input
+
+        Return None, or a logging string if something bad happens.
+        """
         try:
             with open(inputfilename, 'r') as fd:
                 [filedesc_asp.write(line) for line in fd]
         except IOError:
-            self.error_input_file(inputfilename)
+            return self.error_input_file(inputfilename)
+
 
 
 

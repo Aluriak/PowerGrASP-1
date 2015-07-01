@@ -7,7 +7,6 @@ from future.utils import iteritems, iterkeys, itervalues
 from converter.input_converter import InConverter
 import itertools
 import commons
-from libsbml import readSBML
 
 
 logger = commons.logger()
@@ -27,12 +26,15 @@ class InSBML(InConverter):
              for line in sbml_to_atom_generator(filename_sbml)
             ]
         except IOError:
-            self.error_input_file(inputfilename)
+            return self.error_input_file(inputfilename)
+        except ImportError:
+            return 'libsbml python module is necessary for use SBML as input format'
 
 
 
 
 def sbml_to_atom_generator(filename):
+    from libsbml import readSBML
 
     document = readSBML(filename);
     level    = document.getLevel()
@@ -49,9 +51,7 @@ def sbml_to_atom_generator(filename):
     species_name = {}
     for specie in model.getListOfSpecies():
         species_name[specie.getId()] = specie.getName().lstrip(NAME_PREFIX)
-    # d = [e for e in dir(model) if e.lower().startswith('getA')]
-    # print(d)
-    # print(dir(reactions))
+    # get reactions, produces all edges
     for reaction in model.getListOfReactions():
         name = reaction.getName().lstrip(NAME_PREFIX)
         products  = (species_name[p.getSpecies()] for p in reaction.getListOfProducts() )
@@ -60,6 +60,4 @@ def sbml_to_atom_generator(filename):
             yield 'edge("' + name + '","' + node + '").'
 
 
-if __name__ == '__main__':
-    print('\n'.join(sbml_to_atom_generator(sys.argv[1])))
 

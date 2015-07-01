@@ -7,10 +7,9 @@ from future.utils import iteritems, iterkeys, itervalues
 from converter.input_converter import InConverter
 import itertools
 import commons
-from networkx import read_gml
 
 
-logger = commons.logger()
+LOGGER = commons.logger()
 
 
 
@@ -26,12 +25,15 @@ class InGML(InConverter):
              for line in gml_to_atom_generator(filename_gml)
             ]
         except IOError:
-            self.error_input_file(inputfilename)
+            return self.error_input_file(inputfilename)
+        except ImportError:
+            return 'networkx python module is necessary for use GML as input format'
 
 
 
 
 def gml_to_atom_generator(filename):
+    from networkx import read_gml
 
     graph = read_gml(filename)
 
