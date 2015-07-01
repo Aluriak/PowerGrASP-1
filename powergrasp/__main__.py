@@ -30,6 +30,7 @@ output formats:
 input formats:
     ASP         edge/2 atoms, where edge(X,Y) describes a link between X and Y.
     SBML        SBML file. Species and reactions will be translated as nodes.
+    GML         Graph Modeling Language file.
 """
 
 from __future__ import absolute_import, print_function

@@ -81,6 +81,7 @@ PowerGrASP doesn't generate logging for pleasure : it actually perform a treatme
 The supported input file formats are currently :
 - ASP: atoms edge/2, with edge(X,Y) describing a link between nodes X and Y.
 - SBML: a regular SBML file, when species and reactions will be treated as nodes.
+- GML: a regular Graph Modeling Language file, readable by networkx python module.
 
 Other formats will be supported in the future.
 
