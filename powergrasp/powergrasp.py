@@ -93,7 +93,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     graph_atoms = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
     del extractor
     # stats about compression
-    statistics.add(stats, initial_edge_count=all_edges.count('.'))
+    statistics.add(stats, initial_edge_count=all_edges.count('ccedge'))
     # printings
     logger.debug('EXTRACTED: ' + graph_atoms + '\n')
     logger.debug('CCEDGES  : ' + all_edges + '\n')
