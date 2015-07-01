@@ -2,7 +2,7 @@
 % Post-treatments about powernodes for easier
 %  conversion to bubble format.
 %
-% initial version:  19/05/2014   L. Bourneuf
+% initial version:  19/05/2015   L. Bourneuf
 %
 % Input:
 %       - powernode(cc,k,1..2,Y):- element Y is in powernode cc,k,1 or cc,k,2.

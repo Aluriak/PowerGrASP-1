@@ -14,25 +14,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program extract.
 
-%In nodes and Out nodes
-node(1,X):- edge(X,_).
-node(2,Y):- edge(_,Y).
+% All nodes
+node(X):- edge(X,_).
+node(Y):- edge(_,Y).
 
-%All nodes
-node(X):- node(1..2,X).
-
-%Symetric graph
+% Symetric graph
 inter(X,Y):- edge(X,Y).
 inter(X,Y):- edge(Y,X).
 
-%Oriented graph
+% Oriented graph
 % an oriented edge go from smaller to bigger :
 % oedge(3, 5) is true, oedge(5, 3) is false.
-onode(1..2,X):- node(X).
-oedge(X,Y)   :- edge(X,Y); X<Y.
-oedge(X,Y)   :- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
+oedge(X,Y):- edge(X,Y); X<Y.
+oedge(X,Y):- edge(Y,X); X<Y. % edge(5,3) become oedge(3,5)
 
-%Connected paths starting with minimal element X
+% Connected paths starting with minimal element X
 % connected(Minimum element,
 %           Element connected to the minimum
 %          )
@@ -41,13 +37,14 @@ connectedpath(X,Z):- connectedpath(X,Y); inter(Y,Z); X<Z.
 
 connected(Y):- connectedpath(_,Y).
 
-%Connected component of minimum element X
+% Connected component of minimum element X
 membercc(X,Y):- connectedpath(X,Y); not connected(X).
 membercc(X,X):- connectedpath(X,_); not connected(X).
 cc(CC):- membercc(CC,T).
 
-nb(nodes,               N):- N=#count{node(X):node(X)}.
-nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
+% Some debug counting
+%nb(nodes,               N):- N=#count{node(X):node(X)}.
+%nb(connectedcomponents, N):- N=#count{  cc(X):node(X), not connected(X)}.
 
 %edges of the connected components
 ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).

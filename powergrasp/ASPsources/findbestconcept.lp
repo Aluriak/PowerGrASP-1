@@ -3,7 +3,7 @@
 % A concept can be a biclique or a clique.
 %
 % initial version:  09/12/2014   J. Nicolas
-% revised version:  29/04/2014   L. Bourneuf
+% revised version:  29/04/2015   L. Bourneuf
 %
 % Input:
 %       - ccedge(cc,X,Y): there exists an edge between X and Y in the
