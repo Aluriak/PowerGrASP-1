@@ -65,6 +65,17 @@ uml:
 	$(COMMAND) --graph-data="tests/uml.lp"
 uvg:
 	$(COMMAND) --graph-data="tests/umlsvg.lp"
+gml:
+	$(COMMAND) --graph-data="tests/gml_test.gml"
+coli:
+	$(COMMAND) --graph-data="tests/ecoli_2896-23.gml"
+ccoli:
+	$(COMMAND) --graph-data="tests/ecoli_2896-53.gml"
+cccoli:
+	$(COMMAND) --graph-data="tests/ecoli_2391-42.gml"
+troll:
+	$(COMMAND) --graph-data="tests/notsupportedformat.troll"
+
 
 clear:
 	rm */*.pyc
