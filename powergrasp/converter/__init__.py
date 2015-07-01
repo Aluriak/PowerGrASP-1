@@ -14,6 +14,7 @@ from converter.input_converter  import InConverter
 from converter.out_nnf          import OutNNF
 from converter.out_bbl          import OutBBL
 from converter.in_sbml          import InSBML
+from converter.in_gml           import InGML
 import commons
 
 
@@ -23,6 +24,7 @@ LOGGER = commons.logger()
 INPUT_FORMAT_CONVERTERS = {
     'lp'   : InConverter,
     'sbml' : InSBML,
+    'gml'  : InGML,
 }
 OUTPUT_FORMAT_CONVERTERS = {
     'asp' : OutConverter,
