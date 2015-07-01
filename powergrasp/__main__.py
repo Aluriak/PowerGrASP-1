@@ -61,7 +61,10 @@ if __name__ == '__main__':
             converter = converter.input_converter_for(
                 commons.extension(options['--graph-data'])
             )
-            options['--graph-data'] = converter.convert(options['--graph-data'])
+            if converter:
+                options['--graph-data'] = converter.convert(options['--graph-data'])
+            else:
+                options['--graph-data'] = None
 
         # compression itself
         compress(
