@@ -1,0 +1,83 @@
+% data from an uml class diagramme,
+% where classes are nodes and links are edges.
+% the uml can be found at svgopen:
+% http://www.svgopen.org/2008/papers/59-SVG_layered_user_interfaces_and_end_to_end_models/wai-aria.png
+
+edge("region",("list";
+               "application";
+               "tabpanel";
+               "log";
+               "banner";
+               "contentinfo";
+               "definition";
+               "main";
+               "navigation";
+               "note";
+               "search";
+               "secondary";
+               "seealso";
+               "status";)).
+edge("description","tooltip").
+edge("section",("listitem";
+                "grid";
+                "group";
+                "description";
+                "img";
+                "marquee";
+                "region";
+                "gridcell")).
+edge("structure",("section";
+                  "separator";
+                  "document";
+                  "presentation";
+                  "sectionhead")).
+edge("roletype",("widget";
+                 "structure";
+                 "window")).
+edge("widget",("composite";
+               "input";
+               "button";
+               "link";
+               "gridcell";
+               "tab")).
+edge("sectionhead",("rowheader";
+                    "heading";
+                    "columnheader";
+                    "tab")).
+edge("gridcell",("rowheader";"columnheader")).
+edge("status",("grid";
+               "select";
+               "composite";
+               "spinbutton";
+               "progressbar";
+               "alert";
+               "timer")).
+edge("alertdialog",("alert";"dialog")).
+edge("dialog","window").
+edge("input",("range";
+              "textbox";
+              "option";
+              "listitem";
+              "grid";
+              "select")).
+edge("range",("spinbutton";"slider")).
+edge("option",("checkbox";
+               "menuitem";
+               "treeitem")).
+edge("listitem",("menuitem";"treeitem")).
+edge("checkbox",("radio";"menuitemcheckbox")).
+edge("menuitem",("menuitemcheckbox";"menuitemradio")).
+edge("radio","menuitemradio").
+edge("group",("select";
+              "row";
+              "menubar";
+              "toolbar")).
+edge("select",("tree";
+               "radiogroup";
+               "combobox";
+               "menu";
+               "listbox")).
+edge("list",("menu";"listbox";"directory")).
+edge("directory","tablist").
+edge("treegrid",("grid";"tree")).
+

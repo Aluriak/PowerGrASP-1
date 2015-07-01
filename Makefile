@@ -61,6 +61,10 @@ cc:
 	$(COMMAND) --graph-data="tests/concomp.lp"
 chloro:
 	$(COMMAND) --graph-data="tests/CHLOROPHYLL-SYN.sbml"
+uml:
+	$(COMMAND) --graph-data="tests/uml.lp"
+uvg:
+	$(COMMAND) --graph-data="tests/umlsvg.lp"
 
 clear:
 	rm */*.pyc
