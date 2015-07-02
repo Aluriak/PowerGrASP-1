@@ -122,7 +122,6 @@ def add(stats, initial_edge_count=None, poweredge_count=None,
         FINL_EDGE: final_edges_count,
         FINL_PWED: poweredge_count,
         FINL_PWND: powernode_count,
-        GENR_TIME: gentime,
     }
     for info, value in iteritems(accumulative_values):
         if value is not None:
@@ -293,6 +292,10 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
     plot.set_xlabel(xlabel)
     plot.set_ylabel(ylabel)
     plot.right_ax.set_ylabel('Time (s)')
+
+    # axis limits : show the 0
+    plot.right_ax.set_ylim(0, max(gx[GENR_TIME])*2)
+    plot.set_ylim(0, gx[REMN_EDGE][0]*1.1)
 
     # print or save
     if savefile:
