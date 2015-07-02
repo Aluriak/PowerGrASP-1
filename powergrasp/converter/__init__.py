@@ -60,7 +60,6 @@ def __non_valid_format_handling(format, formats, is_output):
                     )
         return None
     else:
-        print(format, formats)
         return formats[format]()
 
 

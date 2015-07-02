@@ -271,7 +271,6 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
         return '$\#$' + key.strip('count').replace('_', ' ')
 
     # PLOTTING
-    # xaxis = np.linspace(0,1,len(data[MEASURES[0]]))
     try:
         data_size = len(data[MEASURES[0]])
     except TypeError:
