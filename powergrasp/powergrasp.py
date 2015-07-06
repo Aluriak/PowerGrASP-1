@@ -47,7 +47,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.
     """
-    if not graph_data: return # simple protection
+    if not graph_data: return  # simple protection
+
+    # initialization of first solution getter
     if no_threading:
         commons.first_solution_function(
             commons.FIRST_SOLUTION_NO_THREAD
