@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import gringo
-from commons import basename, first_solution
+from future.utils import iteritems
+from commons      import basename, first_solution
 
 ASP_FILE_INTEGRITY = 'powergrasp/ASPsources/integrity.lp'
 
@@ -27,4 +28,17 @@ def test_integrity(asp_graph_data_filename,
         }
     else:  # no solution
         return {}
+
+
+def dict2atoms(graph, converted_graph_filename):
+    """write in given filename the equivalent to given graph in ASP"""
+    with open(converted_graph_filename, 'w') as fd:
+        for node, targets in iteritems(converted_graph_filename):
+            fd.write('\n'.join(
+                'edge("'
+                + str(node)
+                + '","' + str(n)
+                + '").'
+                for n in targets
+            ))
 
