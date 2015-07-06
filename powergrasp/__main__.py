@@ -23,6 +23,7 @@ options:
     --stats-file=FILE    save csv statistics in FILE
     --plot-stats         plot stats found in stats-file if exist
     --plot-file=FILE     instead of show it, save plot in png FILE
+    --profiling          print graph info before compress it
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -66,6 +67,10 @@ if __name__ == '__main__':
                 options['--graph-data'] = converter.convert(options['--graph-data'])
             else:
                 options['--graph-data'] = None
+
+        if options['--profiling']:
+            import utils
+            print(utils.test_integrity(options['--graph-data']))
 
         # compression itself
         compress(
