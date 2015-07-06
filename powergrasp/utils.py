@@ -42,3 +42,13 @@ def dict2atoms(graph, converted_graph_filename):
                 for n in targets
             ))
 
+def make_clique(nb_node, filename):
+    """write in given file a graph that is a clique of nb_node node"""
+    def int2node(i) : return '"n' + str(i+1) + '"'
+    with open(filename, 'w') as fd:
+            [fd.write('edge(' + int2node(idx) + ',' + int2node(linked) + ').\n')
+             for idx in range(nb_node)
+             for linked in range(idx+1, nb_node)
+            ]
+
+
