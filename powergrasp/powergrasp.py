@@ -26,7 +26,7 @@ logger = commons.logger()
 
 def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
              output_file, statistics_filename='data/statistics.csv',
-             output_format='bbl', heuristic='frumpy', lowerbound_cut_off=2,
+             output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False,
              no_threading=True, aggressive=False):
     """Performs the graph compression with data found in graph file.
@@ -125,8 +125,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             if lowerbound_value > minimal_score:
                 print('LOWER BOUND SEARCH PERFORMED')
                 # solver creation
-                lbound_finder = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
-                lbound_finder.add('base', [], graph_atoms + previous_blocks + previous_coverage)
+                lbound_finder = gringo.Control(commons.ASP_OPTIONS)
+                lbound_finder.add('base', [], graph_atoms
+                                  + previous_blocks + previous_coverage)
                 lbound_finder.ground([('base', [])])
                 lbound_finder.load(lowerbounding)
                 lbound_finder.ground([(basename(lowerbounding), [cc])])
@@ -148,8 +149,9 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
             # create new solver and ground all data
             logger.debug('\tINPUT: ' + previous_coverage + previous_blocks)
             # Solver creation
-            solver = gringo.Control(commons.ASP_OPTIONS + ['--configuration='+heuristic])
-            solver.add('base', [], graph_atoms + previous_coverage + previous_blocks)
+            solver = gringo.Control(commons.ASP_OPTIONS)
+            solver.add('base', [], graph_atoms
+                       + previous_coverage + previous_blocks)
             solver.ground([('base', [])])
             solver.load(ccfinding)
             solver.ground([(basename(ccfinding), [cc,k,lowerbound_value])])
@@ -275,8 +277,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     final_results = (
         "All cc have been performed in " + str(round(time_compression, 3))
         + "s (extraction in " + str(round(time_extract, 3))
-        + ") with heuristic " + heuristic + ".\nSolver options: "
-        + ' '.join(commons.ASP_OPTIONS)
+        + ".\nSolver options: " + ' '.join(commons.ASP_OPTIONS)
         + ".\nNow, statistics on "
         + statistics.output(stats)
     )

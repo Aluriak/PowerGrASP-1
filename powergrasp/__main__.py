@@ -19,7 +19,6 @@ options:
     --aggressive         compress cliques of 2 elements
     --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
     --loglevel=NAME      defines terminal log level                 [default: debug]
-    --heuristic=NAME     defines heuristic used by the solver       [default: frumpy]
     --stats-file=FILE    save csv statistics in FILE
     --plot-stats         plot stats found in stats-file if exist
     --plot-file=FILE     instead of show it, save plot in png FILE
@@ -32,6 +31,7 @@ input formats:
     ASP         edge/2 atoms, where edge(X,Y) describes a link between X and Y.
     SBML        SBML file. Species and reactions will be translated as nodes.
     GML         Graph Modeling Language file.
+
 """
 
 from __future__ import absolute_import, print_function
@@ -81,7 +81,6 @@ if __name__ == '__main__':
             remaining          = options['--remain'       ],
             output_file        = options['--output-file'  ],
             output_format      = options['--output-format'],
-            heuristic          = options['--heuristic'    ],
             lowerbound_cut_off = lbound_cutoff,
             interactive        = options['--interactive'  ],
             count_model        = options['--count-model'  ],

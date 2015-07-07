@@ -20,6 +20,7 @@ ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
 # ASP SOLVER OPTIONS
 ASP_OPTIONS     = ['--update-domains']
 ASP_OPTIONS.append('-Wno-atom-undefined')
+ASP_OPTIONS.append('--configuration=frumpy')
 ASP_OPTIONS.append('--heuristic=Vsids')
 # ASP_OPTIONS     = []
 # ASP_OPTIONS.append('--opt-strategy=bb,1') # default and best with frumpy + Vsids
