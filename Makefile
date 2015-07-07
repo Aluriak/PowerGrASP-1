@@ -52,6 +52,8 @@ triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 clique:
 	$(COMMAND) --graph-data="tests/cliques.lp"
+cclique:
+	$(COMMAND) --graph-data="tests/big_clique.lp"
 single:
 	$(COMMAND) --graph-data="tests/singlenode.lp"
 star:
