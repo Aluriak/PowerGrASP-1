@@ -50,45 +50,6 @@ RESULTS_PREDICATS = (
 
 
 # FUNCTIONS
-def FIRST_SOLUTION_THREAD(solver):
-    """Return atoms of the first model found by given gringo.Control instance.
-    If no model is find, None will be return instead.
-    This function assume that the solver is built with the thread support."""
-    model = None
-    with solver.solve_iter() as it:
-        # take the first model, or None
-        models = tuple(_ for _ in it)
-        try:
-            model = next(iter(models)).atoms()
-        except StopIteration:
-            model = None
-    return model
-
-def FIRST_SOLUTION_NO_THREAD(solver):
-    """Return atoms of the first model found by given gringo.Control instance.
-    If no model is find, None will be return instead.
-    These function can be used on solver even if no thread support allowed."""
-    # NB: not as the solve_iter method, the models are given
-    #     in reversed order by solve(2) method: the best is the last
-    models = [None] # None will be replaced at first step by a list of atoms
-    def callback(new_model, models):
-        models[0] = new_model.atoms()
-    solver.solve([], partial(callback, models=models))
-    # return the best model
-    assert(len(models) == 1)
-    model = next(iter(models))
-    return tuple(model) if model else None
-
-# here is some lines for allow external client to choose between
-#  thread or no-thread first solution implementation:
-first_solution = FIRST_SOLUTION_THREAD
-def first_solution_function(mode=FIRST_SOLUTION_NO_THREAD):
-    assert(mode in (FIRST_SOLUTION_NO_THREAD, FIRST_SOLUTION_THREAD))
-    global first_solution
-    first_solution = mode
-
-
-
 def basename(filepath):
     """Return the basename of given filepath.
 
