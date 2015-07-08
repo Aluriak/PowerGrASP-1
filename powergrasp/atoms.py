@@ -83,6 +83,7 @@ def count(atoms, names=None):
     if names is an iterable of atoms names,
      only founded atoms will be returned.
     """
+    if atoms is None: atoms = []
     counts = iteritems(Counter(a.name() for a in atoms))
     if names is None:
         return {n:c for n, c in counts}
@@ -100,6 +101,7 @@ def to_str(atoms, names=None, separator='.'):
      and at the end of the atoms.
 
     """
+    if atoms is None: return ''
     if names is None:
         atoms = (str(a) for a in atoms)
     else: # names is provided
