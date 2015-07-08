@@ -115,102 +115,137 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
         lowerbound_value = (minimal_score + 1) if lowerbound_cut_off > 0 else 0
         # iteration
         while True:
+            # STEP INITIALIZATION
             k += 1
-
             time_iteration = time.time()
+            number_concept = 0  # cc exhausted if equals to 0 at the loop's end
+
             # FIND THE LOWER BOUND
+            #  indicate that the preprocesser must found the max lowerbound
             if lowerbound_value > minimal_score:
                 print('LOWER BOUND SEARCH PERFORMED')
-                # solver creation
-                lbound_finder = gringo.Control(commons.ASP_OPTIONS)
-                lbound_finder.add('base', [], graph_atoms
-                                  + previous_blocks + previous_coverage)
-                lbound_finder.ground([('base', [])])
-                lbound_finder.load(lowerbounding)
-                lbound_finder.ground([(basename(lowerbounding), [cc])])
-                # solving
-                model = commons.first_solution(lbound_finder)
-                assert(model is not None)
-                model = [a for a in model if a.name() == 'maxlowerbound']
-                try:
-                    lowerbound_value = model[0].args()[0]
-                except IndexError:
-                    lowerbound_value = minimal_score
-                del lbound_finder
-                if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
-                    lowerbound_value = minimal_score
+                lowerbound_atom = 'lowerbound.'  # must be found
             else:
+                lowerbound_atom = ''  # no search
+
+            # PREPROCESSING
+            model = solving.model_from(
+                base_atoms=(graph_atoms + previous_coverage
+                            + previous_blocks + lowerbound_atom),
+                aspfile=preprocessing,
+                aspargs=[cc]
+            )
+            assert(model is not None)
+            # treatment of the model
+            lowbound = tuple(a for a in model if a.name() == 'maxlowerbound')
+            preprocessed_graph_atoms = atoms.to_str(
+                atom for atom in model
+                if atom.name() != 'maxlowerbound'
+            )
+            logger.debug('PREPROCESSED: ' + preprocessed_graph_atoms)
+            try:
+                lowerbound_value = lowbound[0].args()[0]
+            except IndexError:
+                lowerbound_value = minimal_score
+            if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
                 lowerbound_value = minimal_score
 
-            # FIND BEST CONCEPT
-            # create new solver and ground all data
-            logger.debug('\tINPUT: ' + previous_coverage + previous_blocks)
-            # Solver creation
-            solver = gringo.Control(commons.ASP_OPTIONS)
-            solver.add('base', [], graph_atoms
-                       + previous_coverage + previous_blocks)
-            solver.ground([('base', [])])
-            solver.load(ccfinding)
-            solver.ground([(basename(ccfinding), [cc,k,lowerbound_value])])
+            # FIND BEST CLIQUE
+            model = solving.model_from(
+                base_atoms=(preprocessed_graph_atoms
+                            + previous_coverage + previous_blocks),
+                aspfile=ccfinding,
+                aspargs=[cc,k,lowerbound_value]
+            )
+            # model = None  # debug: no clique for a simpler world
+            # treatment of the model
+            if model is not None:
+                # keep atoms that describes the maximal clique
+                number_concept += 1
+                logger.debug('CLIQUE OUTPUT: ' + atoms.to_str(model))
+                logger.debug('CLIQUE OUTPUT: ' + str(atoms.count(model)))
+                assert('score' in str(model))
+                lowerbound_value = max(
+                    lowerbound_value,
+                    int(next(a for a in model if a.name() == 'score').args()[0]),
+                )
+                best_model = model
+            else:
+                logger.debug('CLIQUE SEARCH: no model found')
+                best_model = None
+            del model
 
-            # solving
-            model = commons.first_solution(solver)
+            # FIND BEST BICLIQUE
+            model = solving.model_from(
+                base_atoms=(preprocessed_graph_atoms
+                            + previous_coverage + previous_blocks),
+                aspfile=bcfinding,
+                aspargs=[cc,k,lowerbound_value]
+            )
             # treatment of the model
             if model is None:
+                logger.debug('BICLIQUE SEARCH: no model found')
+            else:
+                best_model = model
+                number_concept += 1  # we find a concept
+                # printings
+                logger.debug('\tOUTPUT: ' + atoms.to_str(
+                    model, separator='.\n\t'
+                ))
+                atom_counter = atoms.count(model)
+                logger.debug('\tOUTPUT: ' + str(atom_counter))
+                logger.debug('POWERNODES:\n\t' + atoms.prettified(
+                    model,
+                    names=('powernode', 'poweredge', 'score'),
+                    joiner='\n\t',
+                    sort=True
+                ))
+            del model
+
+            if best_model is not None:
+                # atoms to be given to the next step
+                previous_coverage += atoms.to_str(
+                    best_model, names=('covered',)
+                )
+                previous_blocks = atoms.to_str(
+                    best_model, names=('block', 'include_block')
+                )
+
+                # give new powernodes to converter
+                converter.convert((a for a in best_model if a.name() in (
+                    'powernode', 'clique', 'poweredge'
+                )))
+
+                # save interesting atoms
+                result_atoms = itertools.chain(
+                    result_atoms,
+                    (a for a in best_model if a.name() in ('powernode', 'poweredge'))
+                )
+
+                # save the number of generated powernodes and poweredges
+                new_powernode_count = next(
+                    a for a in best_model if a.name() == 'powernode_count'
+                ).args()[0]
+                new_poweredge_count = atom_counter['poweredge']
+                remain_edges = tuple(a for a in best_model if a.name() == 'edge')
+
+                # save statistics: add() method takes all data about the new iteration
+                time_iteration = time.time() - time_iteration
+                statistics.add(
+                    stats,
+                    poweredge_count=new_poweredge_count,
+                    powernode_count=new_powernode_count,
+                    gentime=round(time_iteration, 3),
+                    remain_edges_count=len(remain_edges),
+                )
+
+            # stop cc compression if no model found
+            if number_concept == 0:
                 if count_model: # replace counter by the final information
                     print('\r', end='')
                     sys.stdout.flush()
                 logger.info(str(k-1) + ' optimal model(s) found by bcfinder.')
                 break
-
-            # printings
-            logger.debug('\tOUTPUT: ' + atoms.to_str(
-                model, separator='.\n\t'
-            ))
-            atom_counter = atoms.count(model)
-            logger.debug('\tOUTPUT: ' + str(atom_counter))
-            logger.debug('POWERNODES:\n\t' + atoms.prettified(
-                model,
-                names=('powernode', 'poweredge', 'score'),
-                joiner='\n\t',
-                sort=True
-            ))
-
-            # atoms to be given to the next step
-            previous_coverage += atoms.to_str(
-                model, names=('covered',)
-            )
-            previous_blocks = atoms.to_str(
-                model, names=('block', 'include_block')
-            )
-
-            # give new powernodes to converter
-            converter.convert((a for a in model if a.name() in (
-                'powernode', 'clique', 'poweredge'
-            )))
-
-            # save interesting atoms
-            result_atoms = itertools.chain(
-                result_atoms,
-                (a for a in model if a.name() in ('powernode', 'poweredge'))
-            )
-
-            # save the number of generated powernodes and poweredges
-            new_powernode_count = next(
-                a for a in model if a.name() == 'powernode_count'
-            ).args()[0]
-            new_poweredge_count = atom_counter['poweredge']
-            remain_edges = tuple(a for a in model if a.name() == 'edge')
-
-            # save statistics: add() method takes all data about the new iteration
-            time_iteration = time.time() - time_iteration
-            statistics.add(stats,
-                           poweredge_count=new_poweredge_count,
-                           powernode_count=new_powernode_count,
-                           gentime=round(time_iteration, 3),
-                           remain_edges_count=len(remain_edges),
-                          )
-
             # interactive mode
             if count_model and interactive:
                 input(str(k)+'>Next ?')  # my name is spam
