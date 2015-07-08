@@ -8,8 +8,9 @@ options:
     --version, -v
     --graph-data=FILE    filepath to ASP graph definition
     --extract=FILE       filepath to ASP extraction program         [default: powergrasp/ASPsources/extract.lp]
-    --lowerbound=FILE    filepath to ASP lowerbound program         [default: powergrasp/ASPsources/scorebound.lp]
-    --findconcept=FILE   filepath to ASP concept finder program     [default: powergrasp/ASPsources/findbestconcept.lp]
+    --preprocess=FILE    filepath to ASP lowerbound program         [default: powergrasp/ASPsources/preprocessing.lp]
+    --findbiclique=FILE  filepath to ASP biclique finder program    [default: powergrasp/ASPsources/findbestbiclique.lp]
+    --findclique=FILE    filepath to ASP clique finder program      [default: powergrasp/ASPsources/findbestclique.lp]
     --remain=FILE        filepath to ASP remain finder program      [default: powergrasp/ASPsources/remains.lp]
     --output-file=NAME   output file (without extension)            [default: data/output]
     --output-format=NAME output format (see below for formats)      [default: bbl]
@@ -76,8 +77,9 @@ if __name__ == '__main__':
         compress(
             graph_data         = options['--graph-data'   ],
             extracting         = options['--extract'      ],
-            lowerbounding      = options['--lowerbound' ],
-            ccfinding          = options['--findconcept'  ],
+            preprocessing      = options['--preprocess'   ],
+            ccfinding          = options['--findclique'   ],
+            bcfinding          = options['--findbiclique' ],
             remaining          = options['--remain'       ],
             output_file        = options['--output-file'  ],
             output_format      = options['--output-format'],

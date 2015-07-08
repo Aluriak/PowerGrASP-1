@@ -25,8 +25,8 @@ logger = commons.logger()
 
 
 
-def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
-             output_file, statistics_filename='data/statistics.csv',
+def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
+             remaining, output_file, statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False,
              no_threading=True, aggressive=False):
