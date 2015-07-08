@@ -12,7 +12,14 @@
 %       - covered(X,Y): edge(X,Y) is already covered.
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
-%       - clique(cc,k): concept cc at step k is a clique.
+%       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
+%       - poweredge(cc,K1,T1,X): powernode K1,T1 is linked to node X.
+%       - covered(X,Y): oriented edge X to Y is covered by returned powernode(s).
+%       - include_block():
+%       - block():
+%       - include_powernode():
+%       - powernode_count():
+%       - edge(X,Y): oriented edge X to Y remains unused at this step
 %       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
 %       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,16 +177,14 @@ newedgecover(cc,k,(N*(N-1))/2):-  N={newconcept(cc,k,1,X)}                      
 #show edge(X,Y): oedge(X,Y) , not covered(X,Y) , not covered(cc,k,X,Y) , X!=Y.
 #show powernode_count(1): not nonclique(cc,k).
 #show powernode_count(2-S): nonclique(cc,k) , S={star(cc,k,_)}.
-% undesirable output
-%#show clique(cc,k): not nonclique(cc,k).
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
-#show trivial/3.
 #show include_block(k,B,C): include_block(k,B,C).
+% debug output
 #show parent_block/2.
-% debug
 #show score(cc,k,b(S)): newedgecover(cc,k,S),     nonclique(cc,k).
 #show score(cc,k,c(S)): newedgecover(cc,k,S), not nonclique(cc,k).
+%#show clique(cc,k): not nonclique(cc,k).
 %#show star/3.
 %#show imp/3.
 %#show step/1.
