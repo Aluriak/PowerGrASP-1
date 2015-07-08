@@ -11,6 +11,7 @@ from commons      import basename
 import statistics
 import itertools
 import converter  as converter_module
+import solving
 import commons
 import gringo
 import time
@@ -51,7 +52,7 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
 
     # initialization of first solution getter
     if no_threading:
-        commons.first_solution_function(
+        solving.first_solution_function(
             commons.FIRST_SOLUTION_NO_THREAD
         )
     # Initialize descriptors
@@ -77,12 +78,8 @@ def compress(graph_data, extracting, lowerbounding, ccfinding, remaining,
     extractor.load(extracting)
     extractor.ground([(basename(extracting), [])])
 
-    graph_atoms = commons.first_solution(extractor)
+    graph_atoms = solving.first_solution(extractor)
     assert(graph_atoms is not None)
-    # graph_atoms = sorted(tuple(str(_) for _ in graph_atoms))
-    # with open('debug/opt/data_YAL029C_input.lp', 'w') as fd:
-        # fd.write('\n'.join(graph_atoms))
-    # exit()
 
     # get all CC, one by one
     atom_ccs = (cc.args()[0]  # args is a list of only one element (cc/1)

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import gringo
 from future.utils import iteritems
-from commons      import basename, first_solution
+from commons      import basename
+from solving      import first_solution
 
 ASP_FILE_INTEGRITY = 'powergrasp/ASPsources/integrity.lp'
 
