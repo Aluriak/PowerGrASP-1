@@ -11,7 +11,6 @@ OUTPUT=--output-format="bbl"
 LOGLEVEL=--loglevel=debug
 #LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=critical
-#AGGRESSIVE=--aggressive
 #INTERACTIVE=--interactive
 #LBOUND=--lbound-cutoff=-1
 MODELCOUNT=--count-model

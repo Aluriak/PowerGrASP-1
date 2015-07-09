@@ -17,7 +17,6 @@ options:
     --interactive        program ask user for next step
     --count-model        prints models count in stdout
     --no-threading       don't use threading optimization
-    --aggressive         compress cliques of 2 elements
     --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
     --loglevel=NAME      defines terminal log level                 [default: debug]
     --stats-file=FILE    save csv statistics in FILE
@@ -88,7 +87,6 @@ if __name__ == '__main__':
             count_model        = options['--count-model'  ],
             no_threading       = options['--no-threading' ],
             statistics_filename= options['--stats-file'   ],
-            aggressive         = options['--aggressive'   ],
         )
 
     # plotting if statistics csv file given, and showing or saving requested

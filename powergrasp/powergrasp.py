@@ -26,10 +26,11 @@ logger = commons.logger()
 
 
 def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
-             remaining, output_file, statistics_filename='data/statistics.csv',
+             postprocessing, remaining, output_file,
+             statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False,
-             no_threading=True, aggressive=False):
+             no_threading=True):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -64,7 +65,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
     output.write(converter.header())
     time_extract = time.time()
     time_compression = time.time()
-    minimal_score = 1 if aggressive else 2
+    minimal_score = 2
     remain_edges_global = 0  # counter of remain_edges in all graph
 
     # Extract graph data
