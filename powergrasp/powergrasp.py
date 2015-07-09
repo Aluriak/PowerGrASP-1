@@ -93,7 +93,8 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
     graph_atoms = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
     del extractor
     # stats about compression
-    statistics.add(stats, initial_edge_count=all_edges.count('ccedge'))
+    remain_edges_global = all_edges.count('ccedge')
+    statistics.add(stats, initial_edge_count=remain_edges_global)
     # printings
     logger.debug('EXTRACTED: ' + graph_atoms + '\n')
     logger.debug('CCEDGES  : ' + all_edges + '\n')
@@ -107,29 +108,38 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
         remain_edges = None
+        previous_coverage = ''  # accumulation of covered/2
+        previous_blocks   = first_blocks
         # main loop
         logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
-        previous_coverage = ''  # accumulation of covered/2
-        previous_blocks   = first_blocks
-        model = None
+        last_score = remain_edges_global  # score of the previous step
+        # lowerbound value is impossible to now at first 1,
+        #  but will be firstly computed if its better than min score.
+        # If lowerbound value is smaller or than minimal_score,
+        #  the optimization is disabled for avoid a costly treatment while
+        #  search for little concepts.
         lowerbound_value = (minimal_score + 1) if lowerbound_cut_off > 0 else 0
         # iteration
         while True:
             # STEP INITIALIZATION
             k += 1
             time_iteration = time.time()
-            number_concept = 0  # cc exhausted if equals to 0 at the loop's end
+            model = None
+            best_model = None
+            score = None  # contains the score of the generated concept
 
-            # FIND THE LOWER BOUND
-            #  indicate that the preprocesser must found the max lowerbound
+            # LOWER BOUND: is it necessary to find it ?
             if lowerbound_value > minimal_score:
-                print('LOWER BOUND SEARCH PERFORMED')
-                lowerbound_atom = 'lowerbound.'  # must be found
+                print('LOWER BOUND SET TO ' + str(lowerbound_value))
+                #  indicate that the preprocesser must found the max lowerbound
+                lowerbound_atom = 'lowerbound.'
             else:
-                lowerbound_atom = ''  # no search
+                lowerbound_atom = ''  # no max lowbound search in preprocessing
 
+            #########################
             # PREPROCESSING
+            #########################
             model = solving.model_from(
                 base_atoms=(graph_atoms + previous_coverage
                             + previous_blocks + lowerbound_atom),
@@ -143,7 +153,6 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                 atom for atom in model
                 if atom.name() != 'maxlowerbound'
             )
-            logger.debug('PREPROCESSED: ' + preprocessed_graph_atoms)
             try:
                 lowerbound_value = lowbound[0].args()[0]
             except IndexError:
@@ -151,59 +160,76 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
             if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
                 lowerbound_value = minimal_score
 
+            #########################
             # FIND BEST CLIQUE
+            #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
-                aspfile=ccfinding,
-                aspargs=[cc,k,lowerbound_value]
+                aspfile=(ccfinding, postprocessing),
+                aspargs=([cc,k],
+                         [cc,k,lowerbound_value,last_score]),
             )
-            # model = None  # debug: no clique for a simpler world
             # treatment of the model
-            if model is not None:
-                # keep atoms that describes the maximal clique
-                number_concept += 1
-                logger.debug('CLIQUE OUTPUT: ' + atoms.to_str(model))
-                logger.debug('CLIQUE OUTPUT: ' + str(atoms.count(model)))
+            if model is None:
+                logger.debug('CLIQUE SEARCH: no model found')
+            else:
+                best_model = model
                 assert('score' in str(model))
+                score = next(a for a in model if a.name() == 'score').args()[0]
+                assert(isinstance(score, int))
                 lowerbound_value = max(
                     lowerbound_value,
-                    int(next(a for a in model if a.name() == 'score').args()[0]),
+                    score,
                 )
-                best_model = model
-            else:
-                logger.debug('CLIQUE SEARCH: no model found')
-                best_model = None
-            del model
+                atom_counter = atoms.count(model)
 
+            #########################
             # FIND BEST BICLIQUE
+            #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
-                aspfile=bcfinding,
-                aspargs=[cc,k,lowerbound_value]
+                aspfile=(bcfinding, postprocessing),
+                aspargs=([cc,k],
+                         [cc,k,lowerbound_value,last_score]),
             )
             # treatment of the model
             if model is None:
                 logger.debug('BICLIQUE SEARCH: no model found')
             else:
                 best_model = model
-                number_concept += 1  # we find a concept
                 # printings
                 logger.debug('\tOUTPUT: ' + atoms.to_str(
                     model, separator='.\n\t'
                 ))
+                score = next(a for a in model if a.name() == 'score').args()[0]
+                assert(isinstance(score, int))
                 atom_counter = atoms.count(model)
-                logger.debug('\tOUTPUT: ' + str(atom_counter))
+
+            #########################
+            # BEST MODEL TREATMENT
+            #########################
+            # stop cc compression if no model found
+            if best_model is None:
+                if count_model: # replace counter by the final information
+                    print('\r', end='')
+                    sys.stdout.flush()
+                logger.info(str(k-1) + ' optimal model(s)'
+                            + ' found by best concept search.')
+                break
+            else:  # at least one model was found, and the best is best_model
+                # debug printing
                 logger.debug('POWERNODES:\n\t' + atoms.prettified(
-                    model,
+                    best_model,
                     names=('powernode', 'poweredge', 'score'),
                     joiner='\n\t',
                     sort=True
                 ))
-            del model
-
-            if best_model is not None:
+                # new concept is the previous concept of next concept
+                assert(isinstance(score, int))
+                last_score = score
+                remain_edges_global -= score  # score is equals to edge cover
                 # atoms to be given to the next step
                 previous_coverage += atoms.to_str(
                     best_model, names=('covered',)
@@ -220,7 +246,8 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                 # save interesting atoms
                 result_atoms = itertools.chain(
                     result_atoms,
-                    (a for a in best_model if a.name() in ('powernode', 'poweredge'))
+                    (a for a in best_model
+                     if a.name() in ('powernode', 'poweredge'))
                 )
 
                 # save the number of generated powernodes and poweredges
@@ -237,16 +264,9 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                     poweredge_count=new_poweredge_count,
                     powernode_count=new_powernode_count,
                     gentime=round(time_iteration, 3),
-                    remain_edges_count=len(remain_edges),
+                    remain_edges_count=remain_edges_global,
                 )
 
-            # stop cc compression if no model found
-            if number_concept == 0:
-                if count_model: # replace counter by the final information
-                    print('\r', end='')
-                    sys.stdout.flush()
-                logger.info(str(k-1) + ' optimal model(s) found by bcfinder.')
-                break
             # interactive mode
             if count_model and interactive:
                 input(str(k)+'>Next ?')  # my name is spam
@@ -266,18 +286,17 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
         #####################
         #### REMAIN DATA ####
         #####################
-        # Creat solver and collect remaining edges
-        # logger.debug("INPUT REMAIN: " + str(remain_edges) + str(inclusion_tree))
+        # statistics
+        assert(remain_edges_global >= 0)
 
         # determine how many edges remains if no compression performed
         if remain_edges is None:  # no compression performed
-            remain_edges = tuple(a+'' for a in all_edges.split('.') if cc in a)
-
-        # Remain edges globally
-        remain_edges_global += len(remain_edges) if remain_edges else 0
-        statistics.add(stats, final_edges_count=remain_edges_global)
+            # all_edges contains all atoms ccedge/3
+            remain_edges = (a for a in all_edges.split('.'))
+            remain_edges = tuple(a for a in remain_edges if str(cc) in a)
 
         # Remain edges in cc
+        statistics.add(stats, final_edges_count=len(remain_edges))
         if len(remain_edges) == 0:
             logger.info('No remaining edge')
         else:
@@ -309,7 +328,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
     time_compression = time.time() - time_compression
     final_results = (
         "All cc have been performed in " + str(round(time_compression, 3))
-        + "s (extraction in " + str(round(time_extract, 3))
+        + "s (extraction in " + str(round(time_extract, 3)) + ')'
         + ".\nSolver options: " + ' '.join(commons.ASP_OPTIONS)
         + ".\nNow, statistics on "
         + statistics.output(stats)
