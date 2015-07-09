@@ -73,31 +73,39 @@ def model_from(base_atoms, aspfile, aspargs=[], program_name=None):
     given as grounding arguments and base_atoms given as input atoms.
 
     base_atoms -- string, ASP-readable atoms
-    aspfile -- filename, contains the grounded ASP source code
-    aspargs -- list of values, arguments of program defined in aspfile
-    program_name -- string, name of the program defined in aspfile
+    aspfile -- (list of) filename, contains the grounded ASP source code
+    aspargs -- (list of) list of values, arguments of program defined in aspfile
+    program_name -- (list of) string, name of the program defined in aspfile
 
     Note that aspfile must contains a program that have the given program_name,
     or the basename of the file.
-    For instance, if the aspfile is ~/ASP/solvemyproblem.lp,
-     the program_name must be specified or 'solvemyproblem'.
+    For instance, if the aspfile is (~/ASP/solvemyproblem.lp, ~/ASP/mixin.lp),
+     the program_name must be specified or ('solvemyproblem', 'mixin').
 
     """
-    # use the right basename
-    if program_name is None: program_name = commons.basename(aspfile)
+    # use the right basename and use list of aspfile in all cases
+    if isinstance(aspfile, str):
+        aspfile = [aspfile]
+        aspargs = [aspargs]
+    if program_name is None:
+        program_name = tuple(commons.basename(f) for f in aspfile)
+    title = ', '.join(program_name).upper()
+    assert(len(aspfile) == len(program_name) and len(aspfile) == len(aspargs))
     # debug
-    LOGGER.debug(program_name.upper() + ' INPUT: ' + base_atoms)
-    # create the solver, ground base and program
+    LOGGER.debug(title + ' INPUT: ' + base_atoms)
+    # create the solver, ground base and program in a single ground call
     solver = gringo.Control(commons.ASP_OPTIONS)
     solver.add('base', [], base_atoms)
-    solver.ground([('base', [])])
-    solver.load(aspfile)
-    solver.ground([(program_name, aspargs)])
+    map(solver.load, aspfile)
+    program_name = ('base',) + program_name
+    aspargs      = ([],) + tuple(aspargs)
+    solver.ground(zip(program_name, aspargs))
     # compute and return the first solution
     model = first_solution(solver)
     # debug
-    LOGGER.debug(program_name.upper() + ' OUTPUT: ' + atoms.to_str(model))
-    LOGGER.debug(program_name.upper() + ' OUTPUT: ' + str(atoms.count(model)))
+    LOGGER.debug(title + ' OUTPUT: ' + atoms.to_str(model))
+    LOGGER.debug(title + ' OUTPUT: ' + str(atoms.count(model)))
     return model
+
 
 
