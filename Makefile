@@ -9,7 +9,7 @@ STATFILE=--stats-file=data/statistics.csv
 OUTPUT=--output-format="bbl"
 #FOUT=--output-file="data/output_alt"
 LOGLEVEL=--loglevel=debug
-#LOGLEVEL=--loglevel=info
+LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=critical
 #INTERACTIVE=--interactive
 #LBOUND=--lbound-cutoff=-1
