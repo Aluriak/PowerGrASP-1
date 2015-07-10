@@ -20,6 +20,7 @@ Another util function is model_from(3), that allow the user
 from __future__       import print_function
 from __future__       import absolute_import
 from functools        import partial
+from collections      import deque
 import commons
 import gringo
 import atoms
@@ -37,11 +38,11 @@ def FIRST_SOLUTION_THREAD(solver):
     model = None
     with solver.solve_iter() as it:
         # take the first model, or None
-        models = tuple(_ for _ in it)
-        try:
-            model = next(iter(models)).atoms()
-        except StopIteration:
-            model = None
+        models = deque([None], 1)
+        map(models.append, (_ for _ in it))
+        models = models.pop()
+        if models is not None:
+            model = models.atoms()
     return model
 
 def FIRST_SOLUTION_NO_THREAD(solver):
