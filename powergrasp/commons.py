@@ -2,19 +2,30 @@
 
 # IMPORTS
 from __future__   import absolute_import, print_function
-import logging
 from   logging.handlers import RotatingFileHandler
+import logging
+import info
 import os
 
 
 # DIRECTORIES, FILENAMES
-LOGGER_NAME     = 'asprgc'
+LOGGER_NAME     = info.__name__.lower()
 DIR_LOGS        = 'logs/'
-DIR_ASP_SRC     = 'data/'
+DIR_DATA        = 'data/'
+DIR_TEST_CASES  = 'tests/'
+DIR_SOURCES     = info.__name__.lower() + '/'
+DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
+FILE_OUTPUT     = DIR_DATA + 'output'
 ASP_FILE_EXT    = '.lp'
-ASP_SRC_GRAPH   = DIR_ASP_SRC + 'diamond' + ASP_FILE_EXT
-ASP_SRC_EXTRACT = DIR_ASP_SRC + 'extract' + ASP_FILE_EXT
-ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
+
+# ASP SOURCES
+ASP_SRC_EXTRACT = DIR_ASP_SOURCES + 'extract'          + ASP_FILE_EXT
+ASP_SRC_PREPRO  = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
+ASP_SRC_FINDCC  = DIR_ASP_SOURCES + 'findbestclique'   + ASP_FILE_EXT
+ASP_SRC_FINDBC  = DIR_ASP_SOURCES + 'findbestbiclique' + ASP_FILE_EXT
+ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
+ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
+
 
 # ASP SOLVER OPTIONS
 ASP_OPTIONS     = []
@@ -69,7 +80,7 @@ def extension(filepath):
     """
     return os.path.splitext(os.path.basename(filepath))[1][1:]
 
-def logger(name='asprgc', logfilename=None):
+def logger(name=LOGGER_NAME, logfilename=None):
     """Return logger of given name, without initialize it.
 
     Equivalent of logging.getLogger() call.
