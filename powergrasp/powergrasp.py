@@ -54,7 +54,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
     # initialization of first solution getter
     if no_threading:
         solving.first_solution_function(
-            commons.FIRST_SOLUTION_NO_THREAD
+            solving.FIRST_SOLUTION_NO_THREAD
         )
     # Initialize descriptors
     output    = open(output_file + '.' + output_format, 'w')

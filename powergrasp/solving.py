@@ -19,6 +19,7 @@ Another util function is model_from(3), that allow the user
 """
 from __future__       import print_function
 from __future__       import absolute_import
+from functools        import partial
 import commons
 import gringo
 import atoms
