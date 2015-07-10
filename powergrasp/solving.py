@@ -51,14 +51,15 @@ def FIRST_SOLUTION_NO_THREAD(solver):
     These function can be used on solver even if no thread support allowed."""
     # NB: not as the solve_iter method, the models are given
     #     in reversed order by solve(2) method: the best is the last
-    models = [None] # None will be replaced at first step by a list of atoms
+    # None will be replaced at first step by a list of atoms
+    models = deque([None], 1)
     def callback(new_model, models):
-        models[0] = new_model.atoms()
+        models.append(new_model.atoms())
     solver.solve([], partial(callback, models=models))
     # return the best model
     assert(len(models) == 1)
-    model = next(iter(models))
-    return tuple(model) if model else None
+    model = models.pop()
+    return tuple(model) if model is not None else None
 
 
 first_solution = FIRST_SOLUTION_THREAD
