@@ -138,7 +138,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                 lowerbound_atom = ''  # no max lowbound search in preprocessing
 
             #########################
-            # PREPROCESSING
+            logger.debug('PREPROCESSING')
             #########################
             model = solving.model_from(
                 base_atoms=(graph_atoms + previous_coverage
@@ -161,7 +161,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                 lowerbound_value = minimal_score
 
             #########################
-            # FIND BEST CLIQUE
+            logger.debug('FIND BEST CLIQUE')
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
@@ -185,7 +185,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                 atom_counter = atoms.count(model)
 
             #########################
-            # FIND BEST BICLIQUE
+            logger.debug('FIND BEST BICLIQUE')
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
@@ -208,7 +208,7 @@ def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
                 atom_counter = atoms.count(model)
 
             #########################
-            # BEST MODEL TREATMENT
+            logger.debug('BEST MODEL TREATMENT')
             #########################
             # stop cc compression if no model found
             if best_model is None:
