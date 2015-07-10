@@ -81,7 +81,6 @@ if __name__ == '__main__':
             ccfinding          = options['--findclique'   ],
             bcfinding          = options['--findbiclique' ],
             postprocessing     = options['--postprocess'  ],
-            remaining          = options['--remain'       ],
             output_file        = options['--output-file'  ],
             output_format      = options['--output-format'],
             lowerbound_cut_off = lbound_cutoff,

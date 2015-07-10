@@ -7,7 +7,9 @@ from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
 from aspsolver    import ASPSolver
-from commons      import basename
+from commons      import basename, FILE_OUTPUT
+from commons      import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
+from commons      import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
 import statistics
 import itertools
 import converter  as converter_module
@@ -25,9 +27,11 @@ logger = commons.logger()
 
 
 
-def compress(graph_data, extracting, preprocessing, ccfinding, bcfinding,
-             postprocessing, remaining, output_file,
-             statistics_filename='data/statistics.csv',
+
+def compress(graph_data, extracting=ASP_SRC_EXTRACT,
+             preprocessing=ASP_SRC_PREPRO, ccfinding=ASP_SRC_FINDCC,
+             bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
+             output_file=FILE_OUTPUT, statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False,
              no_threading=True):
