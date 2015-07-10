@@ -6,7 +6,7 @@
 %
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
-%       - membercc(cc,Y): Y is a member of cc.
+%       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,1,X): X is the member of the clique cc at step k.
 %       - clique(cc,k): concept is a clique.
@@ -24,13 +24,13 @@ inter(Y,X):- oedge(X,Y).
 clique3:- oedge(X,Y); oedge(Y,Z); oedge(X,Z).
 
 % Choice of a  clique of at least 3 elements
-3 {newconcept(cc,k,1,X): membercc(cc,X)}:- clique3.
+3 {newconcept(cc,k,1,X): membercc(X)}:- clique3.
 
 % Consistency of the clique
 :- newconcept(cc,k,1,X); newconcept(cc,k,1,Y); X<Y; not oedge(X,Y).
 
 % Maximality of the clique
-:- membercc(cc,X); not newconcept(cc,k,1,X); inter(X,Y):newconcept(cc,k,1,Y) ; clique3.
+:- membercc(X); not newconcept(cc,k,1,X); inter(X,Y):newconcept(cc,k,1,Y) ; clique3.
 
 % Compute score as the edge cover of the clique
 edgecover((N*(N-1))/2):- N={newconcept(cc,k,1,X):membercc(cc,X)} ; clique3.

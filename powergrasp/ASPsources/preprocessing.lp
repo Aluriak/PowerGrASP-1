@@ -12,7 +12,7 @@
 %       - lowbound: exits iff the maxlowerbound must be computed
 % Output:
 %       - oedge(X,Y): there exits a usable edge between X and Y with X<Y
-%       - membercc(cc,Y): Y is a member of cc, and is used by oedge
+%       - membercc(Y): Y is a member of cc, and is used by oedge
 %       - maxlowerbound(S): the maximal score lower bound is S
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program preprocessing(cc).
@@ -22,8 +22,8 @@ oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; not covered(X,Y).
 oedge(X,Y):- ccedge(cc,Y,X) ; X<Y ; not covered(X,Y).
 
 % node describes really used nodes
-node(X):- membercc(cc,X) ; oedge(X,_).
-node(X):- membercc(cc,X) ; oedge(_,X).
+membercc(X):- membercc(cc,X) ; oedge(X,_).
+membercc(X):- membercc(cc,X) ; oedge(_,X).
 
 % compute the output degree of each node
 %   (output degree == number of links to higher nodes that are in the same block)
@@ -34,7 +34,7 @@ degree(X,D,b(K,B)):- lowerbound ; oedge(X,_) ; block(K,B,Anonymous) ;
 maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
 
 % outputs preprocessed data
+#show.
 #show oedge/2.
 #show maxlowerbound/1.
-#show membercc(cc,X): node(X).
-%#show membercc/2.
+#show membercc/1.
