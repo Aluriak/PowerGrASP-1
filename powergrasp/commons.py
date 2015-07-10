@@ -18,7 +18,7 @@ ASP_SRC_EXTRACT = DIR_ASP_SRC + 'extract' + ASP_FILE_EXT
 ASP_SRC_FINDCC  = DIR_ASP_SRC + 'findconcept' + ASP_FILE_EXT
 
 # ASP SOLVER OPTIONS
-ASP_OPTIONS     = ['--update-domains']
+ASP_OPTIONS     = []
 ASP_OPTIONS.append('-Wno-atom-undefined')
 ASP_OPTIONS.append('--configuration=frumpy')
 ASP_OPTIONS.append('--heuristic=Vsids')
