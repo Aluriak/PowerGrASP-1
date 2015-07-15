@@ -109,6 +109,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
     logger.info('####   CC    ####')
     logger.info('#################')
     for cc in atom_ccs:
+        assert(isinstance(cc, str) or isinstance(cc, gringo.Fun))
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
         remain_edges = None
