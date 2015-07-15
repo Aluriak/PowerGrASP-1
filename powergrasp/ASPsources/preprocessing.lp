@@ -17,6 +17,7 @@
 %       - oedge(X,Y): there exits a usable edge between X and Y with X<Y
 %       - membercc(Y): Y is a member of cc, and is used by oedge
 %       - maxlowerbound(S): the maximal score lower bound is S
+%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program preprocessing(cc).
 
@@ -30,8 +31,11 @@ membercc(X):- membercc(cc,X) ; oedge(_,X).
 
 % compute the output degree of each node
 %   (output degree == number of links to higher nodes that are in the same block)
-degree(X,D,b(K,B)):- lowerbound ; oedge(X,_) ; block(K,B,Anonymous) ;
-                     D=#count{r(Y): oedge(X,Y), block(K,B,Y)}.
+%degree(X,D,b(K,B)):- lowerbound ; oedge(X,_) ; block(K,B,Anonymous) ;
+                     %D=#count{r(Y): oedge(X,Y), block(K,B,Y)}.
+inter(X,Y):- oedge(X,Y).
+inter(Y,X):- oedge(X,Y).
+degree(X,D):- inter(X,_) ; D=#count{r(Y): inter(X,Y)}.
 
 % maximize the node score
 maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
@@ -41,3 +45,4 @@ maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
 #show oedge/2.
 #show maxlowerbound/1.
 #show membercc/1.
+#show degree/2.

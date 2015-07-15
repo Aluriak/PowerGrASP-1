@@ -7,6 +7,7 @@
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
 %       - membercc(Y): Y is a member of cc.
+%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
 %       - newconcept(cc,k,1,X): X is the member of the clique cc at step k.
 %       - clique(cc,k): concept is a clique.

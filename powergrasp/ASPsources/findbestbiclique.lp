@@ -8,6 +8,7 @@
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
 %       - membercc(Y): Y is a member of cc.
+%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - star(cc,k,T): set T of concept is a star.

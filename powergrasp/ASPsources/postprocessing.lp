@@ -15,6 +15,7 @@
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - clique(cc,k): concept is a clique.
 %       - star(cc,k,T): set T of concept is a star.
+%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
