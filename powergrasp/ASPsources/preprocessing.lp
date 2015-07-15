@@ -10,6 +10,9 @@
 %       - membercc(cc,Y): Y is a member of cc, but not its root.
 %       - covered(X,Y): edge(X,Y) is already covered.
 %       - lowbound: exits iff the maxlowerbound must be computed
+%       - include_block(k,B,p(cc,k,T)): block B contains set T of newconcept.
+%       - block(k,B,X): block B contains X.
+%       - include_powernode(cc,K1,T1,K2,T2): powernode K1,T1 contains K2,T2.
 % Output:
 %       - oedge(X,Y): there exits a usable edge between X and Y with X<Y
 %       - membercc(Y): Y is a member of cc, and is used by oedge

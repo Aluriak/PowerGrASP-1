@@ -20,10 +20,10 @@
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
 %       - poweredge(cc,K1,T1,X): powernode K1,T1 is linked to node X.
 %       - covered(X,Y): oriented edge X to Y is covered by returned powernode(s).
-%       - include_block():
-%       - block():
-%       - include_powernode():
-%       - powernode_count():
+%       - include_block(k,B,p(cc,k,T)): block B contains set T of newconcept.
+%       - block(k,B,X): block B contains X.
+%       - include_powernode(cc,K1,T1,K2,T2): powernode K1,T1 contains K2,T2.
+%       - powernode_count(S): S powernode are generated.
 %       - edge(X,Y): oriented edge X to Y remains unused at this step
 %       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
 %       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]

@@ -11,6 +11,7 @@
 %       - connectedpath(X,Y): there exists a path from X to Y, X<Y.
 %       - cc(CC): CC is the minimal element of a connected component.
 %       - ccedge(CC,X,Y): there exists an edge between X and Y in CC.
+%       - block(0,CC,X): X is in the block cc a step 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program extract.
 
