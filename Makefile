@@ -69,6 +69,8 @@ three:
 	$(COMMAND) --graph-data="tests/threenode.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
+tiso:
+	$(COMMAND) --graph-data="tests/tiso_1.0.sbml"
 uml:
 	$(COMMAND) --graph-data="tests/uml.lp"
 uvg:
