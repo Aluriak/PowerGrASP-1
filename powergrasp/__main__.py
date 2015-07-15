@@ -17,6 +17,7 @@ options:
     --output-format=NAME output format (see below for formats)      [default: bbl]
     --interactive        program ask user for next step
     --count-model        prints models count in stdout
+    --count-cc           prints connected component count in stdout
     --no-threading       don't use threading optimization
     --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
     --loglevel=NAME      defines terminal log level                 [default: debug]
@@ -86,6 +87,7 @@ if __name__ == '__main__':
             lowerbound_cut_off = lbound_cutoff,
             interactive        = options['--interactive'  ],
             count_model        = options['--count-model'  ],
+            count_cc           = options['--count-cc'     ],
             no_threading       = options['--no-threading' ],
             statistics_filename= options['--stats-file'   ],
         )

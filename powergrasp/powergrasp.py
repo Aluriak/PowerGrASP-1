@@ -33,7 +33,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
              bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
              output_file=FILE_OUTPUT, statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
-             interactive=False, count_model=False,
+             interactive=False, count_model=False, count_cc=False,
              no_threading=True):
     """Performs the graph compression with data found in graph file.
 
@@ -91,6 +91,10 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 for cc in graph_atoms
                 if cc.name() == 'cc'
                )
+    if count_cc:
+        atom_ccs = tuple(atom_ccs)
+        atom_ccs_count = len(atom_ccs)
+    atom_ccs = enumerate(atom_ccs)
     # save atoms as ASP-readable string
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
     first_blocks= atoms.to_str(graph_atoms, names='block')
@@ -108,7 +112,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
     logger.info('#################')
     logger.info('####   CC    ####')
     logger.info('#################')
-    for cc in atom_ccs:
+    for cc_nb, cc in atom_ccs:
         assert(isinstance(cc, str) or isinstance(cc, gringo.Fun))
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
@@ -116,7 +120,9 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
         previous_coverage = ''  # accumulation of covered/2
         previous_blocks   = first_blocks
         # main loop
-        logger.info('#### CC: ' + str(cc) + ' ' + str(cc.__class__))
+        logger.info('#### CC ' + str(cc_nb+1)
+                    + ('/' + str(atom_ccs_count) if count_cc else '')
+                    + ': ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
         last_score = remain_edges_global  # score of the previous step
         # lowerbound value is impossible to now at first 1,
