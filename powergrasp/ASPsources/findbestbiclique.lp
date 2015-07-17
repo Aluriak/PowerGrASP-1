@@ -35,9 +35,10 @@ implies(X,Y):- inter(Y,Z): inter(X,Z) ; X!=Y ; membercc(X) ; membercc(Y).
 quasiimplies(X,Y):- inter(X,Y) ; inter(X,T) ; T!=Y ; inter(Y,Z): inter(X,Z), Z!=Y.
 % Neighbours of X and Y are the same, except for the edge (X,Y)
 clarifiable(X,Y):- quasiimplies(X,Y), quasiimplies(Y,X).
+
+
 % Choice of the minimum of the concept
 1{minobj(cc,k,X):membercc(X)}1.
-
 
 % Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
@@ -67,9 +68,9 @@ imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
 %Holding implication properties in concepts of maximal surface
 %-------------------------------------------------------------
 % Each time a part contained an element, it must contain its implied element
-:- newconcept(cc,k,T,X) ; implies(X,Y) ; not newconcept(cc,k,T,Y).%; 1 {parent_block(B,p(cc,k,T))} 1.
+:- newconcept(cc,k,T,X) ; implies(X,Y) ; not newconcept(cc,k,T,Y) ; 1 {parent_block(B,p(cc,k,T))} 1 ; T=1..2.
 % Each time a part contained an element of a quasi implication, it must contain the other element
-:- newconcept(cc,k,T,Y) ; clarifiable(X,Y) ; not newconcept(cc,k,T,X).%; 1 {parent_block(B,p(cc,k,T))} 1.
+:- newconcept(cc,k,T,Y) ; clarifiable(X,Y) ; not newconcept(cc,k,T,X) ; 1 {parent_block(B,p(cc,k,T))} 1 ; T=1..2.
 
 % a star is a biclique with one powernode composed of only one node
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
