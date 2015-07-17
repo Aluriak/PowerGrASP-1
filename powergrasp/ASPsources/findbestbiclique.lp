@@ -68,9 +68,9 @@ imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
 %Holding implication properties in concepts of maximal surface
 %-------------------------------------------------------------
 % Each time a part contained an element, it must contain its implied element
-%:- newconcept(cc,k,T,X) ; implies(X,Y) ; not newconcept(cc,k,T,Y) ; 2 {parent_block(B,p(cc,k,T))} 2 ; T=1..2.
+:- newconcept(cc,k,T,X) ; implies(X,Y) ; not newconcept(cc,k,T,Y) ; 2 {parent_block(B,p(cc,k,T))} 2 ; T=1..2.
 % Each time a part contained an element of a quasi implication, it must contain the other element
-%:- newconcept(cc,k,T,Y) ; clarifiable(X,Y) ; not newconcept(cc,k,T,X) ; 2 {parent_block(B,p(cc,k,T))} 2 ; T=1..2.
+:- newconcept(cc,k,T,Y) ; clarifiable(X,Y) ; not newconcept(cc,k,T,X) ; 2 {parent_block(B,p(cc,k,T))} 2 ; T=1..2.
 
 % a star is a biclique with one powernode composed of only one node
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
