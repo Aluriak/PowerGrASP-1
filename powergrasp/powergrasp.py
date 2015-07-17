@@ -239,6 +239,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 ))
                 # new concept is the previous concept of next concept
                 assert(isinstance(score, int))
+                assert(score >= minimal_score)
                 last_score = score
                 remain_edges_global -= score  # score is equals to edge cover
                 # atoms to be given to the next step
