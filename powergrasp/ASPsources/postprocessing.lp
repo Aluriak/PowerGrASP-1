@@ -101,6 +101,11 @@ block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% EDGE COVER %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Edge cover is computed as the number of edges replaced by the poweredge.
+%  the score is defined as the upperbound (maximal edge cover) minus edge cover.
+%  bigger is the edge cover, smaller is the score.
+%  solver's job is to minimize the score, thus maximize the edge cover.
+
 % clique: create an edge to powernode itself / don't need to create two powernodes
 poweredge(p(cc,k,1),p(cc,k,1)):- clique(cc,k).
 % star: link directly the alone node to the second powernode
@@ -111,36 +116,37 @@ poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 % Are covered all edges of concept that link two nodes of different sets.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
-%score(cc,k,T,N):- N={newconcept(cc,k,T,Y)}; mindeg(cc,k,3-T,Mindeg); N<=Mindeg; T=1..2.
-score(cc,k,T,N):- N={newconcept(cc,k,T,Y)} ; T=1..2.
+%edgecover(cc,k,T,N):- N={newconcept(cc,k,T,Y)}; mindeg(cc,k,3-T,Mindeg); N<=Mindeg; T=1..2.
+edgecover(cc,k,T,N):- N={newconcept(cc,k,T,Y)} ; T=1..2.
 
 % Concept score, equal to maximal score - edge cover.
-newedgecover(cc,k,N):- N=upperbound-(N1*N2); N>0     ; not clique(cc,k) ;
-                       score(cc,k,1,N1) ; score(cc,k,2,N2).
-%newedgecover(cc,k,N):- N=upperbound-(N1*N2)         ; not clique(cc,k) ; N>0 ;
-%                       N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-newedgecover(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>0 ; clique(cc,k) ;
-                       N1={newconcept(cc,k,1,X)}.
-%newedgecover(cc,k,N):- N=N1*N2         ; N<=upperbound ; not clique(cc,k) ;
-                       %N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-%newedgecover(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
-                       %N1={newconcept(cc,k,1,X)}.
+score(cc,k,N):- N=upperbound-(N1*N2); N>0     ; not clique(cc,k) ;
+                edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
+%score(cc,k,N):- N=upperbound-(N1*N2)         ; not clique(cc,k) ; N>0 ;
+%                N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
+score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>0 ; clique(cc,k) ;
+                N1={newconcept(cc,k,1,X)}.
+%score(cc,k,N):- N=N1*N2         ; N<=upperbound ; not clique(cc,k) ;
+                %N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
+%score(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
+                %N1={newconcept(cc,k,1,X)}.
+edgecover(cc,k,upperbound-S):- score(cc,k,S).
 
 
 % Minimize score
-#minimize{S@1,S:newedgecover(cc,k,S)}.
+#minimize{S@1,S:score(cc,k,S)}.
 
 % Exclusion of concepts with not enough nodes.
 %  the maximal lowerbound is equals to 1 at least,
 %  and determined by the scorebound ASP program,
 %  as the number of remaining edges in the connected component
 %  and the size of the previous concept.
-:- newedgecover(cc,k,S) ; S>upperbound-lowerbound.
+:- score(cc,k,S) ; S>upperbound-lowerbound.
 
 % Exclusion of concepts with a better score than possible
 % Assume version of findbestclique with Mindeg2>=Mindeg1,
 %  it is possible to refine the upper bound given the chosen minedge
-:- newedgecover(cc,k,S) ; mindeg(cc,k,2,Mindeg2) ; N=(Mindeg2*Mindeg2) ;
+:- score(cc,k,S) ; mindeg(cc,k,2,Mindeg2) ; N=(Mindeg2*Mindeg2) ;
    N>upperbound ; S>(N-lowerbound).
 
 
@@ -150,7 +156,7 @@ newedgecover(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>0 ; clique(cc,k) ;
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Discard cases when no score is generated
-:- not newedgecover(cc,k,_).
+:- not score(cc,k,_).
 
 %#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
@@ -168,7 +174,7 @@ newedgecover(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>0 ; clique(cc,k) ;
 #show newconcept/3.
 % debug output
 #show parent_block/2.
-#show score(upperbound-S): newedgecover(cc,k,S).
+#show score(S): edgecover(cc,k,S).
 #show clique/2.
 #show upper(upperbound).
 #show lower(lowerbound).
