@@ -120,11 +120,11 @@ covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..
 edgecover(cc,k,T,N):- N={newconcept(cc,k,T,Y)} ; T=1..2.
 
 % Concept score, equal to maximal score - edge cover.
-score(cc,k,N):- N=upperbound-(N1*N2); N>0     ; not clique(cc,k) ;
+score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
-%score(cc,k,N):- N=upperbound-(N1*N2)         ; not clique(cc,k) ; N>0 ;
+%score(cc,k,N):- N=upperbound-(N1*N2)         ; not clique(cc,k) ; N>=0 ;
 %                N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>0 ; clique(cc,k) ;
+score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
 %score(cc,k,N):- N=N1*N2         ; N<=upperbound ; not clique(cc,k) ;
                 %N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
@@ -147,7 +147,7 @@ edgecover(cc,k,upperbound-S):- score(cc,k,S).
 % Assume version of findbestclique with Mindeg2>=Mindeg1,
 %  it is possible to refine the upper bound given the chosen minedge
 :- score(cc,k,S) ; mindeg(cc,k,2,Mindeg2) ; N=(Mindeg2*Mindeg2) ;
-   N>upperbound ; S>(N-lowerbound).
+   N>=upperbound ; S>=(N-lowerbound).
 
 
 
