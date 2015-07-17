@@ -31,6 +31,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program postprocessing(cc,k,lowerbound,upperbound).
 
+% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=frumpy --heuristic=Vsids -Wno-atom-undefined
+% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=handy --heuristic=Vsids -Wno-atom-undefined
+% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=handy --heuristic=Vsids -Wno-atom-undefined --opt-heuristic
+% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=handy --heuristic=Vsids -Wno-atom-undefined --opt-strategy=bb,2
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,7 +75,7 @@ include_block(k,p(cc,k,T),C):- parent_block(B,T) ;
                             C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
                             newconcept(cc,k,T,E) ; L<k ;
                             include_block(k-1,B,C).
-%    - all blocks that aren't in P are kept «as is» for next step
+%    - all blocks that aren't in P are kept "as is" for next step
 include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
                        0 { block(k-1,p(cc,L,U),E) : newconcept(cc,k,T,E) } 0 ;
                        %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
@@ -106,20 +111,37 @@ poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 % Are covered all edges of concept that link two nodes of different sets.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
-% Concept edge cover (score)
-newedgecover(cc,k,N):- N=N1*N2         ; N<=upperbound ; not clique(cc,k) ;
-                       N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-newedgecover(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
+%score(cc,k,T,N):- N={newconcept(cc,k,T,Y)}; mindeg(cc,k,3-T,Mindeg); N<=Mindeg; T=1..2.
+score(cc,k,T,N):- N={newconcept(cc,k,T,Y)} ; T=1..2.
+
+% Concept score, equal to maximal score - edge cover.
+newedgecover(cc,k,N):- N=upperbound-(N1*N2); N>0     ; not clique(cc,k) ;
+                       score(cc,k,1,N1) ; score(cc,k,2,N2).
+%newedgecover(cc,k,N):- N=upperbound-(N1*N2)         ; not clique(cc,k) ; N>0 ;
+%                       N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
+newedgecover(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>0 ; clique(cc,k) ;
                        N1={newconcept(cc,k,1,X)}.
+%newedgecover(cc,k,N):- N=N1*N2         ; N<=upperbound ; not clique(cc,k) ;
+                       %N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
+%newedgecover(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
+                       %N1={newconcept(cc,k,1,X)}.
 
 
-% Maximize score
-#maximize{S@1,S:newedgecover(cc,k,S)}.
+% Minimize score
+#minimize{S@1,S:newedgecover(cc,k,S)}.
 
-% Exclusion of concept with not enough nodes.
+% Exclusion of concepts with not enough nodes.
 %  the maximal lowerbound is equals to 1 at least,
-%  and determined by the scorebound ASP program.
-:- newedgecover(cc,k,S) ; S<lowerbound.
+%  and determined by the scorebound ASP program,
+%  as the number of remaining edges in the connected component
+%  and the size of the previous concept.
+:- newedgecover(cc,k,S) ; S>upperbound-lowerbound.
+
+% Exclusion of concepts with a better score than possible
+% Assume version of findbestclique with Mindeg2>=Mindeg1,
+%  it is possible to refine the upper bound given the chosen minedge
+:- newedgecover(cc,k,S) ; mindeg(cc,k,2,Mindeg2) ; N=(Mindeg2*Mindeg2) ;
+   N>upperbound ; S>(N-lowerbound).
 
 
 
@@ -127,7 +149,10 @@ newedgecover(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% output
+% Discard cases when no score is generated
+:- not newedgecover(cc,k,_).
+
+%#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
@@ -140,9 +165,12 @@ newedgecover(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
+#show newconcept/3.
 % debug output
 #show parent_block/2.
-#show score(S): newedgecover(cc,k,S).
+#show score(upperbound-S): newedgecover(cc,k,S).
 #show clique/2.
+#show upper(upperbound).
+#show lower(lowerbound).
 %#show star/3.
 %#show imp/3.
