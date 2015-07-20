@@ -227,6 +227,7 @@ def _edge_reduction(initial_edge, final_edge, poweredge):
     """Compute edge reduction (percentage)"""
     try:
         edge = initial_edge
+        poweredge = final_edge + poweredge
         return ((edge - poweredge) / edge) * 100
     except ZeroDivisionError:
         return 100.
