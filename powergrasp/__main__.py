@@ -25,6 +25,7 @@ options:
     --plot-stats         plot stats found in stats-file if exist
     --plot-file=FILE     instead of show it, save plot in png FILE
     --profiling          print graph info before compress it
+    --thread=INT         use n thread for ASP solving (one by default)
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -57,6 +58,7 @@ if __name__ == '__main__':
     assert(options['--output-format'] in OUTPUT_FORMATS)
 
     commons.log_level(options['--loglevel'])
+    commons.thread(options['--thread'])
 
     # launch compression
     if options['--graph-data']:

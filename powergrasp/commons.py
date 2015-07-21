@@ -80,6 +80,12 @@ def extension(filepath):
     """
     return os.path.splitext(os.path.basename(filepath))[1][1:]
 
+def thread(number):
+    """Set ASP options for use n thread, or only one if set to None"""
+    assert(number is None or number > 0)
+    if number is not None:
+        ASP_OPTIONS.append('--parallel-mode=' + str(number) + ',split')
+
 def logger(name=LOGGER_NAME, logfilename=None):
     """Return logger of given name, without initialize it.
 
