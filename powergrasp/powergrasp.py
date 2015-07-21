@@ -131,6 +131,8 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
         #  the optimization is disabled for avoid a costly treatment while
         #  search for little concepts.
         lowerbound_value = (minimal_score + 1) if lowerbound_cut_off > 0 else 0
+        def printable_bounds():
+            return '[' + str(lowerbound_value) + ';' + str(last_score) + ']'
         # iteration
         while True:
             # STEP INITIALIZATION
@@ -172,7 +174,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 lowerbound_value = minimal_score
 
             #########################
-            logger.debug('FIND BEST CLIQUE')
+            logger.debug('FIND BEST CLIQUE ' + printable_bounds())
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
@@ -196,7 +198,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 atom_counter = atoms.count(model)
 
             #########################
-            logger.debug('FIND BEST BICLIQUE')
+            logger.debug('FIND BEST BICLIQUE' + printable_bounds())
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
@@ -226,7 +228,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 if count_model: # replace counter by the final information
                     print('\r', end='')
                     sys.stdout.flush()
-                logger.info(str(k-1) + ' optimal model(s)'
+                logger.info(str(k-1) + ' optimal model' + ('s' if k-1>1 else '')
                             + ' found by best concept search.')
                 break
             else:  # at least one model was found, and the best is best_model
@@ -286,7 +288,8 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 input('Next ?')  # my name is spam
             elif count_model:
                 print('\r' + str(k) + ' model'
-                      + ('s' if k > 1 else '') + ' found',
+                      + ('s' if k > 1 else '') + ' found'
+                      + ' with bounds ' + printable_bounds().ljust(80),
                       end=''
                 )
                 sys.stdout.flush()
@@ -350,7 +353,6 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
 
     output.close()
     statistics.finalize(stats)
-    # return str(graph)
 
 
 
