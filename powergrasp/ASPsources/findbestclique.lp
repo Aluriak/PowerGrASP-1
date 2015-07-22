@@ -6,6 +6,7 @@
 %
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
+%       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
@@ -17,10 +18,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Symetric and non-oriented edges
-inter(X,Y):- oedge(X,Y).
-inter(Y,X):- oedge(X,Y).
-
 % Clique of 3 elements
 clique3:- oedge(X,Y); oedge(Y,Z); oedge(X,Z).
 

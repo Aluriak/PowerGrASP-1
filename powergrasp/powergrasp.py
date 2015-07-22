@@ -144,7 +144,6 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
 
             # LOWER BOUND: is it necessary to find it ?
             if lowerbound_value > minimal_score:
-                print('LOWER BOUND SET TO ' + str(lowerbound_value))
                 #  indicate that the preprocesser must found the max lowerbound
                 lowerbound_atom = 'lowerbound.'
             else:

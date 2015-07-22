@@ -25,6 +25,10 @@
 oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; not covered(X,Y).
 oedge(X,Y):- ccedge(cc,Y,X) ; X<Y ; not covered(X,Y).
 
+% Symetric and non-oriented edges
+inter(X,Y):- oedge(X,Y).
+inter(Y,X):- oedge(X,Y).
+
 % node describes really used nodes
 membercc(X):- membercc(cc,X) ; oedge(X,_).
 membercc(X):- membercc(cc,X) ; oedge(_,X).
@@ -46,3 +50,4 @@ maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
 #show maxlowerbound/1.
 #show membercc/1.
 #show degree/2.
+#show inter/2.

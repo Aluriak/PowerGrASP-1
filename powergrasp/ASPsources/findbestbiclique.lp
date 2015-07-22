@@ -7,6 +7,7 @@
 %
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
+%       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
@@ -20,22 +21,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% maximal degree in graph and non oriented edges
-%maxdeg(cc,k,Maxdeg):- Maxdeg=#max{D: degree(_,D)}.
-maxdeg(cc,k,Maxdeg):- degree(X, Maxdeg), not degree(Y, D): degree(Y, D), D>Maxdeg.
-inter(X,Y):- membercc(X) ; oedge(X,Y).
-inter(X,Y):- membercc(X) ; oedge(Y,X).
-
 % share at least one neighbor
 linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
-
-% Neighbours of X are included in neighbours of Y
-implies(X,Y):- inter(Y,Z): inter(X,Z) ; X!=Y ; membercc(X) ; membercc(Y).
-% Neighbours of X are included in neighbours of Y, except for the edge (X,Y)
-quasiimplies(X,Y):- inter(X,Y) ; inter(X,T) ; T!=Y ; inter(Y,Z): inter(X,Z), Z!=Y.
-% Neighbours of X and Y are the same, except for the edge (X,Y)
-clarifiable(X,Y):- quasiimplies(X,Y), quasiimplies(Y,X).
-
 
 % Choice of the minimum of the concept
 1{minobj(cc,k,X):membercc(X)}1.
@@ -55,7 +42,6 @@ imp(k,T,X):- membercc(X); newconcept(cc,k,T,Y) ; not linked2(X,Y); X!=Y.
 %  a node is impossible if in a block different from another element in the same set
 imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
              include_block(k-1,B,P) ; not block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
-
 % Consistency ; no impossible element can be added to the concept
 :- imp(k,T,Y); newconcept(cc,k,T,Y).
 
@@ -65,13 +51,6 @@ imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% CONCEPT PROPERTIES %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Holding implication properties in concepts of maximal surface
-%-------------------------------------------------------------
-% Each time a part contained an element, it must contain its implied element
-:- newconcept(cc,k,T,X) ; implies(X,Y) ; not newconcept(cc,k,T,Y) ; 2 {parent_block(B,p(cc,k,T))} 2 ; T=1..2.
-% Each time a part contained an element of a quasi implication, it must contain the other element
-:- newconcept(cc,k,T,Y) ; clarifiable(X,Y) ; not newconcept(cc,k,T,X) ; 2 {parent_block(B,p(cc,k,T))} 2 ; T=1..2.
-
 % a star is a biclique with one powernode composed of only one node
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 :- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case

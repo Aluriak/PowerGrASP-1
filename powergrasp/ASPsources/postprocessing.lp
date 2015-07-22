@@ -31,10 +31,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program postprocessing(cc,k,lowerbound,upperbound).
 
-% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=frumpy --heuristic=Vsids -Wno-atom-undefined
-% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=handy --heuristic=Vsids -Wno-atom-undefined
-% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=handy --heuristic=Vsids -Wno-atom-undefined --opt-heuristic
-% ..\..\bin\clingo4.5 atoms2.lp findbestbiclique2.lp postprocessing3.lp --configuration=handy --heuristic=Vsids -Wno-atom-undefined --opt-strategy=bb,2
 
 
 
@@ -116,21 +112,14 @@ poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 % Are covered all edges of concept that link two nodes of different sets.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
-%edgecover(cc,k,T,N):- N={newconcept(cc,k,T,Y)}; mindeg(cc,k,3-T,Mindeg); N<=Mindeg; T=1..2.
+% Edge cover, the number of edge covered by the concept
 edgecover(cc,k,T,N):- N={newconcept(cc,k,T,Y)} ; T=1..2.
 
 % Concept score, equal to maximal score - edge cover.
 score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
-%score(cc,k,N):- N=upperbound-(N1*N2)         ; not clique(cc,k) ; N>=0 ;
-%                N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
 score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
-%score(cc,k,N):- N=N1*N2         ; N<=upperbound ; not clique(cc,k) ;
-                %N1={newconcept(cc,k,1,X)} ; N2={newconcept(cc,k,2,Y)}.
-%score(cc,k,N):- N=(N1*(N1-1))/2 ; N<=upperbound ;     clique(cc,k) ;
-                %N1={newconcept(cc,k,1,X)}.
-edgecover(cc,k,upperbound-S):- score(cc,k,S).
 
 
 % Minimize score
@@ -142,12 +131,6 @@ edgecover(cc,k,upperbound-S):- score(cc,k,S).
 %  as the number of remaining edges in the connected component
 %  and the size of the previous concept.
 :- score(cc,k,S) ; S>upperbound-lowerbound.
-
-% Exclusion of concepts with a better score than possible
-% Assume version of findbestclique with Mindeg2>=Mindeg1,
-%  it is possible to refine the upper bound given the chosen minedge
-:- score(cc,k,S) ; mindeg(cc,k,2,Mindeg2) ; N=(Mindeg2*Mindeg2) ;
-   N>=upperbound ; S>=(N-lowerbound).
 
 
 
@@ -174,7 +157,7 @@ edgecover(cc,k,upperbound-S):- score(cc,k,S).
 #show newconcept/3.
 % debug output
 #show parent_block/2.
-#show score(S): edgecover(cc,k,S).
+#show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
 #show clique/2.
 #show upper(upperbound).
 #show lower(lowerbound).
