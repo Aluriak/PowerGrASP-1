@@ -12,10 +12,11 @@
 % initial version:  09/07/2014   L. Bourneuf
 %
 % Input (from findbestclique or findbestbiclique):
-%       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
+%       - concept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - clique(cc,k): concept is a clique.
 %       - star(cc,k,T): set T of concept is a star.
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
+%       - powernode(cc,L,T,X): a concept in cc exists, created at step L and having node X in set T
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
@@ -32,65 +33,38 @@
 #program postprocessing(cc,k,lowerbound,upperbound).
 
 
+:- powernode(cc,L,_,_) ; L>=k.  % existing powernodes are created in the previous steps
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
+%%%%%%%%%%%  OVERLAP  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% B is a parent block of P if it contains it and no other block contained in B contains P.
-parent_block(B,T):- block_contains_newconcept(k,B,T) ;
-                      B!=b(k,p(cc,k,T)) ;
-                      not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
-% it can't have more than 2 parent_block, because there is at most two newconcepts.
-:- 3 { parent_block(_,_) }.
-:- 0 { parent_block(_,_) } 1.
-
-% a block contains a newconcept if at least one point of it is in block at current step
-block_contains_newconcept(k,p(cc,L,U),T):- block(k-1,p(cc,L,U),X) ; newconcept(cc,k,T,X).
-block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
-
-% block inclusion : keep trace of block hierarchy
-%  algorithmic for the block P of the new concept, and its parent_block B:
-%    if all nodes of B are in P (<=> P == B): done
-%    else: (<=> P is included in B)
-%      create include_block(k,B,P)
-%      for each block C in B:
-%        assert(C is included in P OR C inter P = {0})
-%        if C included in P:
-%          don't create include_block(k,B,C)
-%          create include_block(k,P,C)
-%        else: (C inter P = {0})
-%          do nothing else
-%
-%  in a more logical way:
-%    - P is included in B
-include_block(k,B,p(cc,k,1)):- parent_block(B,1).
-include_block(k,B,p(cc,k,2)):- parent_block(B,2) ; not clique(cc,k).
-%    - all blocks included in B that are in P are included in P instead of B
-include_block(k,p(cc,k,T),C):- parent_block(B,T) ;
-                            C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
-                            newconcept(cc,k,T,E) ; L<k ;
-                            include_block(k-1,B,C).
-%    - all blocks that aren't in P are kept "as is" for next step
-include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
-                       0 { block(k-1,p(cc,L,U),E) : newconcept(cc,k,T,E) } 0 ;
-                       %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
-                       include_block(k-1,B,C) ;
-                       not include_block(k,p(cc,k,T),C) : T=1..2.
-
-% debug: newconcept T fit perfectly with the powernode cc,L,U
-perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
-                          block(k-1,p(cc,L,U),Anonymous) ; T=1..2 ; L<k.
-#show perfectfit/2.
-
-
-% nodes covered by a powernode are set in the associated block
-block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not star(cc,k,1).
-block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,2) ; not clique(cc,k).
-
-% keep nodes not covered by new concept in their block
-block(k,P,X):- membercc(X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
-block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
+% at least one node is already used by an existing powernode
+overlaps(T,p(cc,L,U)):- concept(cc,k,T,X) ; powernode(cc,L,U,X) ; exclude(T,p(cc,L,U)).
+% set T is included in an existing powernode, or vice-versa
+include(T,p(cc,L,U)):- concept(cc,k,T,X): powernode(cc,L,U,X) ; powernode(cc,L,U,_) ; T=1..2.
+include(p(cc,L,U),T):- powernode(cc,k,T,X): concept(cc,k,U,X) ; powernode(cc,L,U,_) ; T=1..2.
+exclude(T,p(cc,L,U)):- not include(p(cc,L,U),T) ; not include(T,p(cc,L,U)) ; concept(cc,k,T,_) ; powernode(cc,L,U,_).
+% set T is strictly equivalent to an existing powernode (all nodes in common)
+equivalent(T,p(cc,L,U)):- include(T,p(cc,L,U)) ; include(p(cc,L,U),T).
+% in case of overlaps with an existing powernode P, two concepts can be created
+ powernode_inclusion(K,V,L,U):- K!=L ; powernode(cc,K,V,_) ; powernode(cc,L,U,_) ;
+                                powernode(cc,K,V,X): powernode(cc,L,U,X).
+derivative_concept((L,U),T,X):- overlaps(T,p(cc,L,U)) ; powernode(cc,L,U,X) ; concept(cc,k,T,X) ;
+                                not powernode(cc,K,V,X): overlaps(T,p(cc,K,V)), powernode_inclusion(L,U,K,V).
+derivative_concept((0,0),T,X):- overlaps(T,p(cc,L,U)) ;
+                                concept(cc,k,T,X) ; not powernode(cc,_,_,X).
+% keep only the largest concept (with the maximal number of nodes)
+node_count((L,U),T,C):- derivative_concept((L,U),T,_) ; C={derivative_concept((L,U),T,_)}.
+max_node_count((L,U),T,C):- node_count((L,U),T,C) ; C=#max{S:node_count(_,T,S)}.
+max_concept((L,U),T):- max_node_count((L,U),T,S) ;
+                       not max_node_count((L2,U2),T,S2): max_node_count((L2,U2),T,S2), (L,U)<(L2,U2).
+% one max concept for each set, but may have 0 or one (if no existing powernode or overlaps)
+:- 3 { max_concept(_,_) }.
+% define the newconcept as one of the largest newconcept
+newconcept(cc,k,T,X):- derivative_concept((L,U),T,X) ; max_concept((L,U),T).
+% when no overlaps is detected
+newconcept(cc,k,T,X):- concept(cc,k,T,X) ; not max_concept(_,T).
 
 
 
@@ -106,7 +80,7 @@ block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
 poweredge(p(cc,k,1),p(cc,k,1)):- clique(cc,k).
 % star: link directly the alone node to the second powernode
 poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
-% in all other cases: create a poweredge between the two newconcepts
+% in all other cases: create a poweredge between the two sets of the newconcept
 poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 
 % Are covered all edges of concept that link two nodes of different sets.
@@ -152,14 +126,17 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S): not clique(cc,k) , S={star(cc,k,_)}.
 #show covered(X,Y): covered(cc,k,X,Y).
-#show block(k,P,X): block(k,P,X).
-#show include_block(k,B,C): include_block(k,B,C).
-#show newconcept/3.
+% overlap
+#show perfectfit/2.
+#show overlap/2.
+#show intersection/3.
+#show difference/3.
 % debug output
 #show parent_block/2.
 #show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
 #show clique/2.
 #show upper(upperbound).
 #show lower(lowerbound).
+#show powernode/4.
 %#show star/3.
 %#show imp/3.

@@ -10,7 +10,7 @@
 %       - membercc(Y): Y is a member of cc.
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
-%       - newconcept(cc,k,1,X): X is the member of the clique cc at step k.
+%       - concept(cc,k,1,X): X is the member of the clique cc at step k.
 %       - clique(cc,k): concept is a clique.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #program findbestclique(cc,k).
@@ -22,19 +22,19 @@
 clique3:- oedge(X,Y); oedge(Y,Z); oedge(X,Z).
 
 % Choice of a  clique of at least 3 elements
-3 {newconcept(cc,k,1,X): membercc(X)}:- clique3.
+3 {concept(cc,k,1,X): membercc(X)}:- clique3.
 
 % Consistency of the clique
-:- newconcept(cc,k,1,X); newconcept(cc,k,1,Y); X<Y; not oedge(X,Y).
+:- concept(cc,k,1,X); concept(cc,k,1,Y); X<Y; not oedge(X,Y).
 
 % Maximality of the clique
-:- membercc(X); not newconcept(cc,k,1,X); inter(X,Y):newconcept(cc,k,1,Y) ; clique3.
+:- membercc(X); not concept(cc,k,1,X); inter(X,Y):concept(cc,k,1,Y) ; clique3.
 
 % Compute score as the edge cover of the clique
-edgecover((N*(N-1))/2):- N={newconcept(cc,k,1,X):membercc(cc,X)} ; clique3.
+edgecover((N*(N-1))/2):- N={concept(cc,k,1,X):membercc(cc,X)} ; clique3.
 
-% Compatibility with postprocessing: newconcept(cc,k,2,X) exists
-newconcept(cc,k,2,X):- newconcept(cc,k,1,X).
+% Compatibility with postprocessing: concept(cc,k,2,X) exists
+concept(cc,k,2,X):- concept(cc,k,1,X).
 
 
 
