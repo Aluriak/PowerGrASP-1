@@ -113,12 +113,12 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
     logger.info('####   CC    ####')
     logger.info('#################')
     for cc_nb, cc in atom_ccs:
-        assert(isinstance(cc, str) or isinstance(cc, gringo.Fun))
+        assert(any(isinstance(cc, cls) for cls in (str, gringo.Fun, int)))
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
         remain_edges = None
-        previous_coverage = ''  # accumulation of covered/2
-        previous_blocks   = first_blocks
+        previous_coverage   = ''  # accumulation of covered/2
+        previous_powernodes = first_blocks
         # main loop
         logger.info('#### CC ' + str(cc_nb+1)
                     + ('/' + str(atom_ccs_count) if count_cc else '')
@@ -154,7 +154,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
             #########################
             model = solving.model_from(
                 base_atoms=(graph_atoms + previous_coverage
-                            + previous_blocks + lowerbound_atom),
+                            + previous_powernodes + lowerbound_atom),
                 aspfile=preprocessing,
                 aspargs=[cc]
             )
@@ -177,7 +177,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
-                            + previous_coverage + previous_blocks),
+                            + previous_coverage + previous_powernodes),
                 aspfile=(ccfinding, postprocessing),
                 aspargs=([cc,k],
                          [cc,k,lowerbound_value,last_score]),
@@ -201,7 +201,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
-                            + previous_coverage + previous_blocks),
+                            + previous_coverage + previous_powernodes),
                 aspfile=(bcfinding, postprocessing),
                 aspargs=([cc,k],
                          [cc,k,lowerbound_value,last_score]),
@@ -247,8 +247,8 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 previous_coverage += atoms.to_str(
                     best_model, names=('covered',)
                 )
-                previous_blocks = atoms.to_str(
-                    best_model, names=('block', 'include_block')
+                previous_powernodes = atoms.to_str(
+                    best_model, names=('powernode',)
                 )
 
                 # give new powernodes to converter
