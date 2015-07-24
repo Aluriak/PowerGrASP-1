@@ -56,6 +56,8 @@ diam:
 	$(COMMAND) --graph-data="tests/diamond.lp"
 ddiam:
 	$(COMMAND) --graph-data="tests/double_biclique.lp"
+inc:
+	$(COMMAND) --graph-data="tests/inclusions.lp"
 pfc:
 	$(COMMAND) --graph-data="tests/perfectfit.lp"
 phos:
