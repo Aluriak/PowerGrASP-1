@@ -42,7 +42,7 @@ inter(Y,X):- oedge(X,Y).
 degree(X,D):- inter(X,_) ; D=#count{r(Y): inter(X,Y)}.
 
 % maximize the node score
-maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
+%maxlowerbound(S):- S=#max{D:degree(_,D)} ; lowerbound.
 
 % outputs preprocessed data
 #show.
