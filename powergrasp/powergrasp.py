@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-TOWRITE
+Main source file of the package, containing tho compress function.
+
+The compress function get numerous arguments,
+ for allowing a parametrable compression.
+
 """
 from __future__   import absolute_import, print_function
 from builtins     import input

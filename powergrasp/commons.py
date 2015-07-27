@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Definition of numerous constants, for paths, names, arguments for ASP solvers.
+Moreover, some generalist functions are defined,
+ notabily for solving management and logging.
+
+"""
 
 # IMPORTS
 from __future__   import absolute_import, print_function
