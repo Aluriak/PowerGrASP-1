@@ -29,6 +29,8 @@ abn:
 	$(COMMAND) --graph-data="tests/abnormal.lp"
 bbind:
 	$(COMMAND) --graph-data="tests/structural_binding_no_bridge.lp"
+bintree:
+	$(COMMAND) --graph-data="tests/bintree.lp"
 bip:
 	$(COMMAND) --graph-data="tests/bipartite.lp"
 blo:
@@ -71,6 +73,8 @@ star:
 	$(COMMAND) --graph-data="tests/star.lp"
 three:
 	$(COMMAND) --graph-data="tests/threenode.lp"
+tree:
+	$(COMMAND) --graph-data="tests/tree.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 tiso:

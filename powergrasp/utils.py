@@ -6,6 +6,7 @@ or the compression.
 """
 
 import gringo
+import itertools
 from future.utils import iteritems
 from commons      import basename
 from solving      import first_solution
@@ -57,5 +58,29 @@ def make_clique(nb_node, filename):
              for idx in range(nb_node)
              for linked in range(idx+1, nb_node)
             ]
+
+
+def make_tree(nb_node, filename, nb_child=lambda:2):
+    """write in given file a graph that is a bintree of nb_node node"""
+    import math
+    carac   = (chr(_) for _ in range(ord('a'), ord('z')+1))
+    nb_cars = int(math.ceil(math.log(nb_node, 26)))
+    label   = (''.join(c)
+               for c in itertools.islice(itertools.product(
+                carac, repeat=nb_cars), nb_node
+               ))
+    def childs():
+        for _ in range(nb_child()):
+            yield next(label)
+    def edge(n, m):
+        return 'edge(' + n + ',' + m + ').\n'
+    nodes = [next(label)]
+    with open(filename, 'w') as fd:
+        for node in nodes:
+            for child in childs():
+                fd.write(edge(node, child))
+                nodes.append(child)
+
+
 
 
