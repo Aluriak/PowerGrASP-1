@@ -51,13 +51,5 @@ imp(k,T,X):- concept(cc,k,T,X) ; concept(cc,k,T,Y) ; parent_block(B,T) ;
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%% CONCEPT PROPERTIES %%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% a star is a biclique with one powernode composed of only one node
-star(cc,k,T):- 1 { concept(cc,k,T,X) } 1 ; T=1..2.
-:- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
-
-
 
 
