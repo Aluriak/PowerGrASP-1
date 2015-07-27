@@ -247,8 +247,8 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 previous_coverage += atoms.to_str(
                     best_model, names=('covered',)
                 )
-                previous_powernodes = atoms.to_str(
-                    best_model, names=('powernode',)
+                previous_powernodes += atoms.to_str(
+                    best_model, names=('powernode', 'powernode_inclusion')
                 )
 
                 # give new powernodes to converter
