@@ -17,15 +17,14 @@
 %       - star(cc,k,T): set T of concept is a star.
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 %       - powernode(cc,L,T,X): a concept in cc exists, created at step L and having node X in set T
+%       - powernode_inclusion(K,V,L,U): powernode K,V includes powernode L,U.
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
 %       - poweredge(cc,K1,T1,X): powernode K1,T1 is linked to node X.
 %       - covered(X,Y): oriented edge X to Y is covered by returned powernode(s).
-%       - include_block(k,B,p(cc,k,T)): block B contains set T of newconcept.
-%       - block(k,B,X): block B contains X.
-%       - include_powernode(cc,K1,T1,K2,T2): powernode K1,T1 contains K2,T2.
-%       - powernode_count(S): S powernode are generated.
+%       - powernode_inclusion(K,V,L,U): powernode K,V includes powernode L,U. (only new ones are generated)
+%       - powernode_count(S): S new powernode are generated.
 %       - edge(X,Y): oriented edge X to Y remains unused at this step
 %       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
 %       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]
@@ -33,38 +32,60 @@
 #program postprocessing(cc,k,lowerbound,upperbound).
 
 
-:- powernode(cc,L,_,_) ; L>=k.  % existing powernodes are created in the previous steps
+% existing powernodes are created in the previous steps
+bug(powernodenumber):- powernode(cc,L,_,_) ; L>=k.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%  OVERLAP  %%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% at least one node is already used by an existing powernode
-overlaps(T,p(cc,L,U)):- concept(cc,k,T,X) ; powernode(cc,L,U,X) ; exclude(T,p(cc,L,U)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%         COMPARISON between       %%%%%%%%%%%%
+%%%%%%%%%%%  a concept set and a power node  %%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+powernode_element(cc,X):- powernode(cc,_,_,X).
+
 % set T is included in an existing powernode, or vice-versa
-include(T,p(cc,L,U)):- concept(cc,k,T,X): powernode(cc,L,U,X) ; powernode(cc,L,U,_) ; T=1..2.
-include(p(cc,L,U),T):- powernode(cc,k,T,X): concept(cc,k,U,X) ; powernode(cc,L,U,_) ; T=1..2.
-exclude(T,p(cc,L,U)):- not include(p(cc,L,U),T) ; not include(T,p(cc,L,U)) ; concept(cc,k,T,_) ; powernode(cc,L,U,_).
-% set T is strictly equivalent to an existing powernode (all nodes in common)
-equivalent(T,p(cc,L,U)):- include(T,p(cc,L,U)) ; include(p(cc,L,U),T).
-% in case of overlaps with an existing powernode P, two concepts can be created
- powernode_inclusion(K,V,L,U):- K!=L ; powernode(cc,K,V,_) ; powernode(cc,L,U,_) ;
-                                powernode(cc,K,V,X): powernode(cc,L,U,X).
+include1(T,p(cc,L,U)):- concept(cc,k,T,X): powernode(cc,L,U,X) ; powernode(cc,L,U,_) ; T=1..2.
+include2(p(cc,L,U),T):- powernode(cc,k,T,X): concept(cc,k,U,X) ; powernode(cc,L,U,_) ; T=1..2.
+
+% set T is either partially overlapping or disjoint from  powernode p(cc,L,U)
+exclude(T,p(cc,L,U)):- not include2(p(cc,L,U),T) ; not include1(T,p(cc,L,U)) ; concept(cc,k,T,_) ; powernode(cc,L,U,_).
+% set T is partially overlapping powernode p(cc,L,U)
+overlaps(T,p(cc,L,U)):- concept(cc,k,T,X) ; powernode(cc,L,U,X) ; exclude(T,p(cc,L,U)).
+
+% in case of partial overlap with an existing powernode P, two concepts can be created
 derivative_concept((L,U),T,X):- overlaps(T,p(cc,L,U)) ; powernode(cc,L,U,X) ; concept(cc,k,T,X) ;
                                 not powernode(cc,K,V,X): overlaps(T,p(cc,K,V)), powernode_inclusion(L,U,K,V).
-derivative_concept((0,0),T,X):- overlaps(T,p(cc,L,U)) ;
-                                concept(cc,k,T,X) ; not powernode(cc,_,_,X).
+derivative_concept((0,0),T,X):- overlaps(T,p(cc,_,_)) ;
+                                concept(cc,k,T,X) ; not powernode_element(cc,X).
+
 % keep only the largest concept (with the maximal number of nodes)
 node_count((L,U),T,C):- derivative_concept((L,U),T,_) ; C={derivative_concept((L,U),T,_)}.
-max_node_count((L,U),T,C):- node_count((L,U),T,C) ; C=#max{S:node_count(_,T,S)}.
-max_concept((L,U),T):- max_node_count((L,U),T,S) ;
-                       not max_node_count((L2,U2),T,S2): max_node_count((L2,U2),T,S2), (L,U)<(L2,U2).
+max_count(T,Max):- Max=#max{S:node_count(_,T,S)} ; T=1..2.
+max_concept((L,U),T):- max_count(T,Max) ; node_count((L,U),T,Max) ;
+                       not node_count((L2,U2),T,Max): node_count((L2,U2),T,Max), (L,U)>(L2,U2).
 % one max concept for each set, but may have 0 or one (if no existing powernode or overlaps)
-:- 3 { max_concept(_,_) }.
+bug(toomuchmaxconcept):- 3 { max_concept(_,_) }.
+
 % define the newconcept as one of the largest newconcept
 newconcept(cc,k,T,X):- derivative_concept((L,U),T,X) ; max_concept((L,U),T).
 % when no overlaps is detected
 newconcept(cc,k,T,X):- concept(cc,k,T,X) ; not max_concept(_,T).
+
+%Inclusion between previous powernodes and newconcept
+powernode_inclusion(k,T,L,U):- newconcept(cc,k,T,Y) ; powernode(cc,L,U,Y) ; not star(cc,k,T) ;
+                               newconcept(cc,k,T,X): powernode(cc,L,U,X).
+powernode_inclusion(L,U,k,T):- newconcept(cc,k,T,Y) ; powernode(cc,L,U,Y) ; not star(cc,k,T) ;
+                               powernode(cc,L,U,X): newconcept(cc,k,T,X).
+
+% set T is strictly equivalent to the powernode p(cc,L,U)(all nodes in common)
+equivalent(T,p(cc,L,U)):- powernode_inclusion(L,U,k,T) ; powernode_inclusion(k,T,L,U).
+% use the newconcept iff no existing powernode is equivalent
+equivalent_powernode(K,U,T):- newconcept(cc,k,T,_) ; equivalent(T,p(cc,K,U)).
+equivalent_powernode(k,T,T):- newconcept(cc,k,T,_) ; not equivalent(T,_).
+
+% a star is a biclique with one powernode composed of only one node
+star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2 ; not clique(cc,k).
+:- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
 
 
 
@@ -77,11 +98,12 @@ newconcept(cc,k,T,X):- concept(cc,k,T,X) ; not max_concept(_,T).
 %  solver's job is to minimize the score, thus maximize the edge cover.
 
 % clique: create an edge to powernode itself / don't need to create two powernodes
-poweredge(p(cc,k,1),p(cc,k,1)):- clique(cc,k).
+poweredge(p(cc,K,U),p(cc,K,U)):- clique(cc,k) ; equivalent_powernode(K,U,1).
 % star: link directly the alone node to the second powernode
-poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
+poweredge(p(cc,K,U),        X):- star(cc,k,T) ; newconcept(cc,k,T,X) ; equivalent_powernode(K,U,3-T).
 % in all other cases: create a poweredge between the two sets of the newconcept
-poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
+poweredge(p(cc,K,U),p(cc,L,V)):- not clique(cc,k) ; not star(cc,k,T): T=1..2 ;
+                                 equivalent_powernode(K,U,1) ; equivalent_powernode(L,V,2).
 
 % Are covered all edges of concept that link two nodes of different sets.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
@@ -94,7 +116,6 @@ score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
 score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
-
 
 % Minimize score
 #minimize{S@1,S:score(cc,k,S)}.
@@ -115,28 +136,31 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 % Discard cases when no score is generated
 :- not score(cc,k,_).
 
-%#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
-#show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
-#show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
+#show bug/1.
+#show powernode(cc,K,U,X): newconcept(cc,k,T,X) ; equivalent_powernode(K,U,T) ;
+                           not clique(cc,k) ; not star(cc,k,T) ; T=1..2.
+#show powernode(cc,K,U,X): newconcept(cc,k,1,X) ; equivalent_powernode(K,U,1) ; clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
-#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(_,_,_,X).
-#show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
+#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X), newconcept(_,_,_,X).
 #show edge(X,Y): oedge(X,Y) , not covered(X,Y) , not covered(cc,k,X,Y) , X!=Y.
 #show powernode_count(1): clique(cc,k).
-#show powernode_count(2-S): not clique(cc,k) , S={star(cc,k,_)}.
+#show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={equivalent(_,_,_,_)}.
 #show covered(X,Y): covered(cc,k,X,Y).
+#show powernode_inclusion(k,T,L,U): powernode_inclusion(k,T,L,U).
+#show powernode_inclusion(L,U,k,T): powernode_inclusion(L,U,k,T).
 % overlap
-#show perfectfit/2.
-#show overlap/2.
-#show intersection/3.
-#show difference/3.
+#show equivalent/2.
+#show equivalent_powernode/3.
+%#show overlaps/2.
+%#show star/3.
+%#show clique/2.
+%#show newconcept/4.
 % debug output
-#show parent_block/2.
 #show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
-#show clique/2.
-#show upper(upperbound).
-#show lower(lowerbound).
-#show powernode/4.
+%#show clique/2.
+%#show upper(upperbound).
+%#show lower(lowerbound).
+%#show powernode/4.
 %#show star/3.
 %#show imp/3.
