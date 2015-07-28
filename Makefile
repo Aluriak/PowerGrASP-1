@@ -83,6 +83,7 @@ troll:
 	$(COMMAND) --graph-data="tests/notsupportedformat.troll"
 
 
+clr: clear
 clear:
 	rm */*.pyc
 help:
