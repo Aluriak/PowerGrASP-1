@@ -10,7 +10,6 @@ from __future__   import absolute_import, print_function
 from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
-from aspsolver    import ASPSolver
 from commons      import basename, FILE_OUTPUT
 from commons      import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from commons      import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
