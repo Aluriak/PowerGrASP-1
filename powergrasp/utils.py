@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Definition of various functions with no direct link to the package
+or the compression.
+
+"""
+
 import gringo
 from future.utils import iteritems
 from commons      import basename

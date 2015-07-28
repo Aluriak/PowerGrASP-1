@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 definition of the SBML input format converter.
+
+The data is used as follow:
+    - species are nodes;
+    - reactions are nodes;
+    - an edge is created between each reaction node and each species involved in it;
+
 """
 from __future__   import absolute_import, print_function
 from future.utils import iteritems, iterkeys, itervalues
