@@ -1,0 +1,76 @@
+# PowerGrASP
+This documentation is dedicated to PowerGrASP users who want to know more and contributors,
+while the README is sufficient for understand how PowerGrASP works, and how perform a compression.
+Moreover, an heavy use of internal docstring have been performed: doc inside the code is the most up-to-date ressource about PowerGrASP functionnalities, behavior and usage.
+Don't forget that Python allows an access to the docstring without browsing the code with the help(1) function.
+
+
+## Architecture
+PowerGrASP mainly uses the Python language and Clingo, an Answer Set Programming implementation by *Potassco*.
+All is packaged in a pythonic way for allows the upload on pypi as soon as [*python-gringo*](https://github.com/lxsli/python-gringo), the bridge between Python and ASP, will be uploaded there itself.
+With the help of the *docopt* module, PowerGrASP can be interfaced with the command-line as with another Python program.
+
+The program us basically a Python code that call Clingo multiple times, until the input graph have a compressible motif,
+and finally perform a traduction of the concepts (biclique, clique, star) in the output format.
+
+This output format is readable by Cytoscape, once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
+
+### Modules
+Les modules suivants représentent l'intégralité des modules python composant PowerGrASP.
+- *__main__*: interface between the command line and the compression procedures.
+- *atoms*: provides many functions for manipulating atoms objects, output of ASP solvers.
+- *commons*: global definitions of constants, various generalist functions and logging management.
+- *converter*: converter library, that allows the transformation of input and output data in treatable formats.
+- *info*: informations on the package itself.
+- *powergrasp*: definition of the main compression procedure.
+- *solving*: provides functions abstracting solving treatment like solver construction and best solution access.
+- *statistics*: defines way to do compression statistics, and how print/stock them.
+- *utils*: definition of functions that have been used one time ; not important, but can be useful for generate data.
+
+Moreover, inside the PowerGrASP module is a *ASPSources* subdirectory,
+that contains all ASP source code used by PowerGrASP.
+
+
+## Algorithm
+While the more important part of the compression is performed in the ASP side, the compression algorithm can't be detailed without description of Clingo heuristics and behavior. This is not the goal of this document.
+However, the Python side needs to be well understood.
+
+1. determination of the connected component (ASP solver used).
+2. for each connected component:
+    1. preprocessing of the data, and determination of a minimal score based on the nodes degree (ASP solver used).
+    2. search for the best clique (ASP solver used) (ASP solver used).
+    3. search for the best biclique (ASP solver used), that must be better than the clique (ASP solver used).
+    4. if a model is found (either clique or biclique):
+        1. post processing of the model (ASP solver used).
+        2. save the constructed powernodes and poweredges.
+        3. call statistics for take count of advancement.
+        4. rebranch to 2.1, with the step number increased by 1.
+    5. else: (no interesting model)
+        1. break the compression for this connected component.
+        2. produce the output format string and write it in output file (ASP solver used).
+3. print final statistics.
+
+Note that at each iteration, grounding and solving is performed four times.
+
+
+## Usage
+Cf *README.mkd* and *Makefile*.
+
+
+## I/O formats
+### Input
+The only input format managed by the compression is an ASP code that contains atoms *edge/2*, describing the link between two nodes identified by their labels.
+However, PowerGrASP embeds a converter library that works before PowerGrASP
+for create a new file from the non-ASP input file.
+Formats currently managed by PowerGrASP are described in the internal docstring and in the README.
+
+### Output
+PowerGrASP only outputs *Bubble*-formated files. Bubble is a file format defined by BIOTEC, used by the module [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) of [Cytoscape **2**](http://www.cytoscape.org/download_old_versions.html).
+The converter library embedded in PowerGrASP can perform conversion after the compression.
+This is, however, not an important feature, while the only way for printing power graphs
+is Cytoscape and the module CyOog, which use exclusively the Bubble format.
+Like for inputs, managed output files are detailed in internal docstring and README.
+
+
+
+
