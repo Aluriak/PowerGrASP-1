@@ -4,6 +4,14 @@ while the README is sufficient for understand how PowerGrASP works, and how perf
 Moreover, an heavy use of internal docstring have been performed: doc inside the code is the most up-to-date ressource about PowerGrASP functionnalities, behavior and usage.
 Don't forget that Python allows an access to the docstring without browsing the code with the help(1) function.
 
+PowerGrASP is a Python module that allows user to compress a graph, according to the Power Graph method,
+and as final output produce a file that contains the compressed graph (see *output* and *visualization* for details).
+The compression, performed with the help of Formal Concept Analysis and Logic Programming,
+have a visualization interest: the compressed graph is easier to read, even in case of big graphs, and,
+in the case of biological data, have some interesting properties for data interpretation.
+
+Some papers are given at the end.
+
 
 ## Architecture
 PowerGrASP mainly uses the Python language and Clingo, an Answer Set Programming implementation by *Potassco*.
@@ -17,7 +25,7 @@ This output format is readable by Cytoscape, once the plugin [CyOog](http://www.
 
 ### Modules
 Les modules suivants représentent l'intégralité des modules python composant PowerGrASP.
-- *__main__*: interface between the command line and the compression procedures.
+- *\_\_main\_\_*: interface between the command line and the compression procedures.
 - *atoms*: provides many functions for manipulating atoms objects, output of ASP solvers.
 - *commons*: global definitions of constants, various generalist functions and logging management.
 - *converter*: converter library, that allows the transformation of input and output data in treatable formats.
@@ -32,29 +40,78 @@ that contains all ASP source code used by PowerGrASP.
 
 
 ## Algorithm
-While the more important part of the compression is performed in the ASP side, the compression algorithm can't be detailed without description of Clingo heuristics and behavior. This is not the goal of this document.
-However, the Python side needs to be well understood.
+While the more important part of the compression is performed in the ASP side, the compression algorithm can't be detailed without description of Clingo heuristics and behavior. This is not the goal of this document. Altough some tips on the implementation will be described below.  
 
-1. determination of the connected component (ASP solver used).
+### Python side
+It needs to be well understood.
+
+1. determination of the connected component (ASP solver used (*extraction.lp*)).
 2. for each connected component:
-    1. preprocessing of the data, and determination of a minimal score based on the nodes degree (ASP solver used).
-    2. search for the best clique (ASP solver used) (ASP solver used).
-    3. search for the best biclique (ASP solver used), that must be better than the clique (ASP solver used).
+    1. preprocessing of the data, and determination of a minimal score based on the nodes degree (ASP solver used (*preprocessing.lp*)).
+    2. search for the best clique (ASP solver used) (ASP solver used (*findbestclique.lp* and *postprocessing.lp*)).
+    3. search for the best biclique, that must be better than the clique (ASP solver used (*findbestbiclique.lp* and *postprocessing.lp*)).
     4. if a model is found (either clique or biclique):
-        1. post processing of the model (ASP solver used).
         2. save the constructed powernodes and poweredges.
         3. call statistics for take count of advancement.
         4. rebranch to 2.1, with the step number increased by 1.
     5. else: (no interesting model)
         1. break the compression for this connected component.
-        2. produce the output format string and write it in output file (ASP solver used).
+        2. produce the output format string and write it in output file (ASP solver used (*inclusions.lp*)).
 3. print final statistics.
 
-Note that at each iteration, grounding and solving is performed four times.
+Note that at each iteration, grounding and solving is performed three times.
+
+### Scoring
+The score of generated concepts (clique, biclique, star) are equals to the number of edge it covered.
+At each step, the best concept, choosen for being produced, is one of the concept with the higher edge cover.
+
+NB: in the *postprocessing.lp* ASP source, the score is inverted for being minimized by the solver.
+The main reason is because the solver deals best with minimization than maximization.
+
+### Blocks and alternatives
+With blocks, PowerGrASP avoid creation of overlapping power nodes.
+A block is a partition of the space, and a node can only be in a single block.
+By their nature, blocks and power nodes are really close. Power nodes keep reference to all their contained nodes, while blocks just keep the nodes that are contained directly.
+An inclusion tree of blocks is maintained along the compression.
+This appears to be very costly, probably because of the maximality constraint that can't be used with blocks:
+we can't discard models that are not maximal, because the maximal model is possibly in an overlapping condition
+with a previously created power node.
+
+This costly treatment of the data is mainly used and maintained in the *postprocessing.lp* ASP source,
+and a significant amount of time have been dedicated to find a best way to avoid overlapping power nodes.
+
+Currently, the best concurrent of blocks is the *concept post-reduction*:
+instead of keep all concepts, and scores them after discard those that overlaps,
+it is possible to generate only the maximum ones, and reduce them until they overlaps,
+and finally score the reduced ones.
+This principle, implemented in the branch *enhancement#15*, seems to be slower. (2.4 times the time needed for the *structural binding* test case with blocks)
+
+
+## Implementation details
+TODO: logging, converter lib, CLI.
 
 
 ## Usage
-Cf *README.mkd* and *Makefile*.
+Cf *README.mkd* and *Makefile* for exact PowerGrASP command line or python usage.
+
+
+
+## Visualization
+PowerGrASP ultimate goal is to provide a tool that allows anyone to compress a graph.
+And the compressed graph is not only a new version of the same data: it's also a new look on it.
+
+The only way known by PowerGrASP author for Power Graph visualization is a Cytoscape plugin named *CyOog*,
+developed by BIOTEC in 2012.
+This plugin is the result of their work on graph compression, and embeds their compression program.
+Interestingly, the plugin use an endemic file format, *bubble*, that describes the compressed graph.
+This file format is close to the Nested Network Format (NNF), is human readable,
+and (thankfully) can be loaded by CyOog for print the compressed graph.
+
+PowerGrASP is only a bubble file generator: it works independantly of Cytoscape,
+and use other technics for reach a comparable result with CyOog.
+As a consequence, while showing the compressed graph is not PowerGrASP's job,
+it lets Cytoscape (and CyOog) perform the final printings.
+
 
 
 ## I/O formats
@@ -71,6 +128,38 @@ This is, however, not an important feature, while the only way for printing powe
 is Cytoscape and the module CyOog, which use exclusively the Bubble format.
 Like for inputs, managed output files are detailed in internal docstring and README.
 
+
+
+
+## References
+The Power Graph approach for graph compression allows a lossless compression with an emphasis on biological meaning.
+In fact, formal concepts used by Power Graph analysis have a sens in biology, especially in the case of proteomes.
+
+All graphs can be compressed through Power Graph, and will be more readable once compressed,
+but interactomes, at least, also gain in interpretability.
+
+The main inspiration of PowerGrASP : PowerGraph Analysis:
+
+    Loïc Royer, Matthias Reimann, Bill Andreopoulos, and Michael Schroeder.
+    Unraveling Protein Networks with Power Graph Analysis.
+    PLoS Comput Biol, 4(7):e1000108, July 2008.
+
+Usage of the PowerGraph Analysis :
+
+    Loic Royer, Matthias Reimann, A. Francis Stewart, and Michael Schroeder.
+    Network Compression as a Quality Measure for Protein Interaction Networks.
+    PLoS ONE, 7(6):e35729, June 2012.
+
+    Yun Zhang, Charles A Phillips, Gary L Rogers, Erich J Baker, Elissa J Chesler, and Michael A Langston.
+    On finding bicliques in bipartite graphs: a novel algorithm and
+    its application to the integration of diverse biological data types.
+    BMC Bioinformatics, 15(1):110, 2014.
+
+ASP through Potassco implementation :
+
+    M. Gebser, R. Kaminski, B. Kaufmann, M. Ostrowski, T. Schaub, and M. Schneider.
+    Potassco: The Potsdam answer set solving collection.
+    AI Communications, 24(2):107–124, 2011.
 
 
 

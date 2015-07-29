@@ -52,6 +52,10 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
       In a linear time, it is possible to compute the
        maximal degree in the non covered graph.
       This value correspond to the minimal best concept score.
+      In real life, the blocks (used by ASP for avoid overlapping powernodes)
+       complicate the job.
+      Moreover, as cliques are searched before the biclique, the lowerbound
+       value is increased if a clique with a better score is found.
       The cut-off value is here for allow client code to control
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.

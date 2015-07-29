@@ -67,6 +67,9 @@ class InConverter(object):
         """Write in filedesc_asp the ASP version of filedesc_input
 
         Return None, or a logging string if something bad happens.
+
+        This method is the only one that needs to be overrided
+        by other converters.
         """
         try:
             with open(inputfilename, 'r') as fd:
