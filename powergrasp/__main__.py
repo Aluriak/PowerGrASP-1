@@ -13,7 +13,7 @@ options:
     --findclique=FILE    filepath to ASP clique finder program      [default: powergrasp/ASPsources/findbestclique.lp]
     --postprocess=FILE   filepath to ASP postprocessing program     [default: powergrasp/ASPsources/postprocessing.lp]
     --remain=FILE        filepath to ASP remain finder program      [default: powergrasp/ASPsources/remains.lp]
-    --output-file=NAME   output file (without extension)            [default: data/output]
+    --output-file=NAME   output file or dir (without extension)     [default: data/tmp]
     --output-format=NAME output format (see below for formats)      [default: bbl]
     --interactive        program ask user for next step
     --count-model        prints models count in stdout
@@ -42,11 +42,13 @@ from docopt     import docopt
 from powergrasp import compress
 from info       import __version__
 from converter  import OUTPUT_FORMATS
+import os
 import commons
 import converter
 import statistics
 
 
+LOGGER = commons.logger()
 
 
 if __name__ == '__main__':
@@ -75,6 +77,16 @@ if __name__ == '__main__':
         if options['--profiling']:
             import utils
             print(utils.test_integrity(options['--graph-data']))
+
+        if os.path.isdir(options['--output-file']):
+            LOGGER.info('Given output file is not a file, but a directory ('
+                        + options['--output-file'] + ').'
+                        + ' Output file will be placed in it, with the name '
+                        + options['--graph-data'])
+            options['--output-file'] = os.path.join(
+                options['--output-file'],
+                options['--graph-data']
+            )
 
         # compression itself
         compress(
