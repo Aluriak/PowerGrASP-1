@@ -7,7 +7,7 @@ STATFILE=--stats-file=data/statistics.csv
 #PLOTFILE=--plot-file=data/statistics.png
 #PLOT=--plot-stats
 OUTPUT=--output-format="bbl"
-#FOUT=--output-file="data/output_alt"
+FOUT=--output-file="data/output"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=critical
@@ -81,6 +81,21 @@ gml:
 	$(COMMAND) --graph-data="tests/gml_test.gml"
 troll:
 	$(COMMAND) --graph-data="tests/notsupportedformat.troll"
+
+
+# this is a way to treat multiple files
+pack: FOUT=--output-file="data/tmp"
+pack:
+	- rm -r mkdir data/tmp/*
+	mkdir -p data/tmp
+	$(COMMAND) --graph-data="tests/pv/2391_12.gml"
+	$(COMMAND) --graph-data="tests/pv/2391_83.gml"
+	$(COMMAND) --graph-data="tests/pv/502_56.gml"
+	$(COMMAND) --graph-data="tests/pv/502_67.gml"
+	$(COMMAND) --graph-data="tests/pv/502_76.gml"
+	$(COMMAND) --graph-data="tests/pv/502_83.gml"
+	rm data/tmp/*[^\.bbl]
+	tar acf data/tmp.tar.gz data/tmp/
 
 
 clr: clear
