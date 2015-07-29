@@ -32,8 +32,6 @@ ASP_OPTIONS     = []
 ASP_OPTIONS.append('-Wno-atom-undefined')
 ASP_OPTIONS.append('--configuration=handy')
 ASP_OPTIONS.append('--heuristic=Vsids')
-# ASP_OPTIONS.append('--opt-mode=opt')
-# ASP_OPTIONS.append('--models=0')
 # ASP_OPTIONS     = []
 # ASP_OPTIONS.append('--opt-strategy=bb,1') # default and best with frumpy + Vsids
 # ASP_OPTIONS.append('--opt-strategy=bb,2') # better in default mode
