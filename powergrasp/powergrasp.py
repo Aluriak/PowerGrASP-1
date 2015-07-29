@@ -37,7 +37,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
              output_file=FILE_OUTPUT, statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
-             no_threading=True):
+             no_threading=True, show_preprocessed=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -178,6 +178,10 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 lowerbound_value = minimal_score
             if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
                 lowerbound_value = minimal_score
+            if show_preprocessed:
+                print('PREPROCESSED DATA:',
+                      '\n\tlowbound:', lowbound,
+                      '\n\tATOMS:', preprocessed_graph_atoms)
 
             #########################
             logger.debug('FIND BEST CLIQUE ' + printable_bounds())

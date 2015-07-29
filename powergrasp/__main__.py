@@ -16,6 +16,7 @@ options:
     --output-file=NAME   output file or dir (without extension)     [default: data/tmp]
     --output-format=NAME output format (see below for formats)      [default: bbl]
     --interactive        program ask user for next step
+    --show-pre           print preprocessed data in stdout
     --count-model        prints models count in stdout
     --count-cc           prints connected component count in stdout
     --no-threading       don't use threading optimization
@@ -100,6 +101,7 @@ if __name__ == '__main__':
             output_format      = options['--output-format'],
             lowerbound_cut_off = lbound_cutoff,
             interactive        = options['--interactive'  ],
+            show_preprocessed  = options['--show-pre'     ],
             count_model        = options['--count-model'  ],
             count_cc           = options['--count-cc'     ],
             no_threading       = options['--no-threading' ],
