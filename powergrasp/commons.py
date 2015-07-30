@@ -36,7 +36,7 @@ ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
 # ASP SOLVER OPTIONS
 ASP_OPTIONS     = []
 ASP_OPTIONS.append('-Wno-atom-undefined')
-ASP_OPTIONS.append('--configuration=handy')
+ASP_OPTIONS.append('--configuration=frumpy')
 ASP_OPTIONS.append('--heuristic=Vsids')
 # ASP_OPTIONS.append('--opt-mode=opt')
 # ASP_OPTIONS.append('--models=0')
