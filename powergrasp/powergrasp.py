@@ -254,9 +254,9 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                     best_model, names=('powernode', 'powernode_inclusion')
                 )
 
-                # give new powernodes to converter
+                # give new powernodes to converter, with poweredges and powernode inclusions
                 converter.convert((a for a in best_model if a.name() in (
-                    'powernode', 'clique', 'poweredge'
+                    'powernode', 'poweredge', 'powernode_inclusion'
                 )))
 
                 # save interesting atoms
