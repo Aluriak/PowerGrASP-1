@@ -221,7 +221,7 @@ class OutBBL(OutConverter):
             pwrn1 = powernode(cc1, step1, num_set1)
             pwrn2 = powernode(cc2, step2, num_set2)
             if not (pwrn2 not in self.belongs):
-                logger.error("ABNORMAL SITUTATION: assert(pwrn2 not in self.belongs) FAILED. WITH:")
+                logger.error("ABNORMAL SITUATION: assert(pwrn2 not in self.belongs) FAILED. WITH:")
                 logger.error('PWRN1:' + pwrn1)
                 logger.error('PWRN2:' + pwrn2)
                 logger.error('BELONGS:' + str(self.belongs))
