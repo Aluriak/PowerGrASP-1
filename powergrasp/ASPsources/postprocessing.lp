@@ -45,7 +45,7 @@ powernode_element(cc,X):- powernode(cc,_,_,X).
 
 % set T is included in an existing powernode, or vice-versa
 include1(T,p(cc,L,U)):- concept(cc,k,T,X): powernode(cc,L,U,X) ; powernode(cc,L,U,_) ; T=1..2.
-include2(p(cc,L,U),T):- powernode(cc,k,T,X): concept(cc,k,U,X) ; powernode(cc,L,U,_) ; T=1..2.
+include2(p(cc,L,U),T):- powernode(cc,k,T,X): concept(cc,L,U,X) ; powernode(cc,L,U,_) ; T=1..2.
 
 % set T is either partially overlapping or disjoint from  powernode p(cc,L,U)
 exclude(T,p(cc,L,U)):- not include2(p(cc,L,U),T) ; not include1(T,p(cc,L,U)) ; concept(cc,k,T,_) ; powernode(cc,L,U,_).
