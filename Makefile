@@ -25,6 +25,8 @@ COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
 
 
+abn:
+	$(COMMAND) --graph-data="tests/abnormal.lp"
 bbind:
 	$(COMMAND) --graph-data="tests/structural_binding_no_bridge.lp"
 bip:
