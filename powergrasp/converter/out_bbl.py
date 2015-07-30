@@ -35,6 +35,7 @@ import commons
 import solving
 import gringo
 import atoms
+import info
 
 logger        = commons.logger()
 ASP_INCLUSION = 'powergrasp/ASPsources/inclusion.lp'
@@ -78,7 +79,10 @@ class OutBBL(OutConverter):
     An ASP solver is used for perform complex treatments.
 
     """
-    META_DATA   = "File written by the ASPRGC module"
+    META_DATA = (
+        "File written by the " + info.__name__
+        + " module (" + info.__version__ + ")"
+    )
 
     def __init__(self):
         try: # python 3
