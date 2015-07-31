@@ -1,5 +1,7 @@
-PYTHON=python2 powergrasp/__main__.py
-PYTHON3=python3 -m powergrasp
+PYTHON2_CMD=python2
+PYTHON3_CMD=python3
+PYTHON=$(PYTHON2_CMD) powergrasp/__main__.py
+PYTHON3=$(PYTHON3_CMD) -m powergrasp
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 TARGET=powergrasp/__main__.py
 
@@ -25,6 +27,11 @@ ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) 
 COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
 
+# BENCHMARKS
+#BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp,tests/structural_binding.lp
+BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp
+BENCHMARK_OUTPUT=data/benchmarks.csv
+BENCHMARK_RUN=--runs=4
 
 abn:
 	$(COMMAND) --graph-data="tests/abnormal.lp"
@@ -107,7 +114,8 @@ pack:
 	tar acf data/tmp.tar.gz data/tmp/
 
 benchmarks:
-	python3 data/benchmarks.py
+	$(PYTHON2_CMD) powergrasp/benchmarks.py $(BENCHMARK_INPUT) --output-file=$(BENCHMARK_OUTPUT) $(BENCHMARK_RUN)
+	cat $(BENCHMARK_OUTPUT)
 
 clr: clear
 clear:
