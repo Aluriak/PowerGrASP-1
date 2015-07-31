@@ -28,8 +28,8 @@ COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
 
 # BENCHMARKS
-#BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp,tests/structural_binding.lp
-BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp
+BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp,tests/structural_binding.lp
+#BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp
 BENCHMARK_OUTPUT=data/benchmarks.csv
 BENCHMARK_RUN=--runs=4
 
