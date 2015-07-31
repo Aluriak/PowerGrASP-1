@@ -219,7 +219,9 @@ def _formatted(data, format):
 def _conversion_rate(initial_edge, final_edge, poweredge, powernode):
     """Compute conversion rate"""
     try:
-        return (initial_edge - final_edge - poweredge) / powernode
+        edge = initial_edge
+        poweredge = final_edge + poweredge
+        return (edge - poweredge) / powernode
     except ZeroDivisionError:
         return 1.
 
