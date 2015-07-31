@@ -150,7 +150,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X), newconcept(_,_,_,X).
 #show edge(X,Y): oedge(X,Y) , not covered(X,Y) , not covered(cc,k,X,Y) , X!=Y.
 #show powernode_count(1): clique(cc,k).
-#show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={equivalent(_,_,_,_)}.
+#show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={equivalent(_,_)}.
 #show covered(X,Y): covered(cc,k,X,Y).
 #show powernode_inclusion(cc,k,T,L,U): powernode_inclusion(cc,k,T,L,U), not equivalent(T,p(cc,L,U)).
 #show powernode_inclusion(cc,L,U,k,T): powernode_inclusion(cc,L,U,k,T), not equivalent(T,p(cc,L,U)).
