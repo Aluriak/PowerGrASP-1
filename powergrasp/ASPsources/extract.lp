@@ -43,6 +43,5 @@ ccedge(CC,X,Y):- membercc(CC,Y);  edge(X,Y).
 
 #show cc/1.
 #show inter/2.
-#show block/3.
 #show ccedge/3.
 #show membercc/2.
