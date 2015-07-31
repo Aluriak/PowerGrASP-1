@@ -17,8 +17,7 @@ Or can be embedded in any python program:
 
     import powergrasp
 
-    with open('human_proteom.lp') as fin, open('for_cytoscape.bbl', 'w') as fout:
-        fout.write(powergrasp.compress(fin.read()))
+    powergrasp.compress('human_proteom.lp', 'for_cytoscape.bbl')
 
 
 ## Help & Details
