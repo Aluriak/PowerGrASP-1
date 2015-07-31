@@ -106,6 +106,8 @@ pack:
 	rm data/tmp/*[^\.bbl]
 	tar acf data/tmp.tar.gz data/tmp/
 
+benchmarks:
+	python3 data/benchmarks.py
 
 clr: clear
 clear:
