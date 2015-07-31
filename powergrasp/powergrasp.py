@@ -31,10 +31,10 @@ logger = commons.logger()
 
 
 
-def compress(graph_data, extracting=ASP_SRC_EXTRACT,
+def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
              preprocessing=ASP_SRC_PREPRO, ccfinding=ASP_SRC_FINDCC,
              bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
-             output_file=FILE_OUTPUT, statistics_filename='data/statistics.csv',
+             statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
              no_threading=True, show_preprocessed=False):
@@ -59,6 +59,12 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
       The cut-off value is here for allow client code to control
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.
+
+    The function itself returns a float that is, in seconds,
+     the time necessary for the compression,
+     and the object provided by the statistics module,
+     that contains statistics about the compression.
+
     """
     if not graph_data: return  # simple protection
 
@@ -373,6 +379,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
 
     output.close()
     statistics.finalize(stats)
+    return time_compression, stats
 
 
 
