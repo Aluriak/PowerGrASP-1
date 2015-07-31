@@ -278,6 +278,16 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 new_powernode_count = next(
                     a for a in best_model if a.name() == 'powernode_count'
                 ).args()[0]
+                if new_powernode_count not in (0,1,2):
+                    LOGGER.error('Error of Powernode generation: '
+                                 + str(new_powernode_count) + 'generated.'
+                                 + ('It can be a problem of stars that are counted as powernodes'
+                                    if new_powernode_count < 0 else
+                                    'Too many powernodes for one step.')
+                                 + ' It\'s probable that this problem will only'
+                                 + ' touch the statistics, but the compression'
+                                 + ' itself will not be compromised.'
+                                )
                 new_poweredge_count = atom_counter['poweredge']
                 remain_edges = tuple(a for a in best_model if a.name() == 'edge')
 
