@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-TOWRITE
+Main source file of the package, containing tho compress function.
+
+The compress function get numerous arguments,
+ for allowing a parametrable compression.
+
 """
 from __future__   import absolute_import, print_function
 from builtins     import input
@@ -27,10 +31,10 @@ logger = commons.logger()
 
 
 
-def compress(graph_data, extracting=ASP_SRC_EXTRACT,
+def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
              preprocessing=ASP_SRC_PREPRO, ccfinding=ASP_SRC_FINDCC,
              bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
-             output_file=FILE_OUTPUT, statistics_filename='data/statistics.csv',
+             statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
              no_threading=True, show_preprocessed=False):
@@ -48,9 +52,19 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
       In a linear time, it is possible to compute the
        maximal degree in the non covered graph.
       This value correspond to the minimal best concept score.
+      In real life, the blocks (used by ASP for avoid overlapping powernodes)
+       complicate the job.
+      Moreover, as cliques are searched before the biclique, the lowerbound
+       value is increased if a clique with a better score is found.
       The cut-off value is here for allow client code to control
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.
+
+    The function itself returns a float that is, in seconds,
+     the time necessary for the compression,
+     and the object provided by the statistics module,
+     that contains statistics about the compression.
+
     """
     if not graph_data: return  # simple protection
 
@@ -365,6 +379,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
 
     output.close()
     statistics.finalize(stats)
+    return time_compression, stats
 
 
 

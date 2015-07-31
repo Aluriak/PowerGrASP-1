@@ -159,6 +159,13 @@ def output(stats, format=FORMAT_RAW):
     """
     return _final_data(stats, format)
 
+def conversion_rate(stats):
+    """Accessor on data"""
+    return stats[CONV_RATE]
+
+def edge_reduction(stats):
+    """Accessor on data"""
+    return stats[EDGE_RDCT]
 
 def finalize(stats):
     """Close files"""
@@ -170,23 +177,22 @@ def finalize(stats):
 
 def _final_data(stats, format):
     """Compute and produce all given stats in string."""
-    data = dict(stats)
     assert(stats[INIT_EDGE] is not None)
     assert(stats[FINL_EDGE] is not None)
     assert(stats[FINL_PWND] is not None)
     assert(stats[FINL_PWED] is not None)
 
-    data[CONV_RATE] = _conversion_rate(
+    stats[CONV_RATE] = _conversion_rate(
         stats[INIT_EDGE], stats[FINL_EDGE], stats[FINL_PWED], stats[FINL_PWND]
     )
-    data[EDGE_RDCT] = _edge_reduction(
+    stats[EDGE_RDCT] = _edge_reduction(
         stats[INIT_EDGE], stats[FINL_EDGE], stats[FINL_PWED]
     )
-    data[COMP_RTIO] = _compression_ratio(
+    stats[COMP_RTIO] = _compression_ratio(
         stats[INIT_EDGE], stats[FINL_EDGE], stats[FINL_PWED]
     )
 
-    return _formatted(data, format)
+    return _formatted(dict(stats), format)
 
 
 

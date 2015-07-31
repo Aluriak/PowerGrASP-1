@@ -12,15 +12,16 @@ Supported formats :
 
 """
 from __future__   import absolute_import, print_function
+from commons      import basename
 import itertools
+import tempfile
 import commons
 import re
 import os
 
 
-logger = commons.logger()
-
-FILE_INPUT_ASP_NAME = 'data/tmp_input_converted.lp'
+LOGGER = commons.logger()
+DIR_INPUT_ASP_NAME = 'data/tmp/'
 
 
 
@@ -39,24 +40,21 @@ class InConverter(object):
         """Read the given file, and put in the returned file
         the equivalent asp data.
         """
+        outputfile = os.path.join(DIR_INPUT_ASP_NAME, basename(filename))
         try:
-            with open(FILE_INPUT_ASP_NAME, 'w') as fd:
+            with open(outputfile, 'w') as fd:
                 # NB: opening the file is performed by the subclass, while some
                 #  format use an external module that opens itself the file
                 #  for extract data.
                 error = self._convert_to(fd, filename)
                 if error is not None:
-                    logger.error(error)
+                    LOGGER.error(error)
         except IOError:
-            logger.critical('File ' + FILE_INPUT_ASP_NAME + " can't be opened."
+            LOGGER.critical('File ' + outputfile + " can't be opened."
                             + ' Convertion to ASP data need this file.'
                             + ' Compression aborted')
             return None
-        return FILE_INPUT_ASP_NAME
-
-    @staticmethod
-    def delete_temporary_file():
-        os.remove(FILE_INPUT_ASP_NAME)
+        return outputfile
 
     @classmethod
     def error_input_file(cls, filename):
@@ -69,6 +67,9 @@ class InConverter(object):
         """Write in filedesc_asp the ASP version of filedesc_input
 
         Return None, or a logging string if something bad happens.
+
+        This method is the only one that needs to be overrided
+        by other converters.
         """
         try:
             with open(inputfilename, 'r') as fd:

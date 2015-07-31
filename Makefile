@@ -1,5 +1,7 @@
-PYTHON=python2 powergrasp/__main__.py
-PYTHON3=python3 -m powergrasp
+PYTHON2_CMD=python2
+PYTHON3_CMD=python3
+PYTHON=$(PYTHON2_CMD) powergrasp/__main__.py
+PYTHON3=$(PYTHON3_CMD) -m powergrasp
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 TARGET=powergrasp/__main__.py
 
@@ -7,7 +9,7 @@ STATFILE=--stats-file=data/statistics.csv
 #PLOTFILE=--plot-file=data/statistics.png
 #PLOT=--plot-stats
 OUTPUT=--output-format="bbl"
-#FOUT=--output-file="data/output_alt"
+FOUT=--output-file="data/output"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=critical
@@ -25,6 +27,11 @@ ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) 
 COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
 
+# BENCHMARKS
+#BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp,tests/structural_binding.lp
+BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp
+BENCHMARK_OUTPUT=data/benchmarks.csv
+BENCHMARK_RUN=--runs=4
 
 abn:
 	$(COMMAND) --graph-data="tests/abnormal.lp"
@@ -92,6 +99,25 @@ troll:
 	$(COMMAND) --graph-data="tests/notsupportedformat.troll"
 
 
+# this is a way to treat multiple files
+pack: FOUT=--output-file="data/tmp"
+pack:
+	- rm -r mkdir data/tmp/*
+	mkdir -p data/tmp
+	$(COMMAND) --graph-data="tests/pv/2391_12.gml"
+	$(COMMAND) --graph-data="tests/pv/2391_83.gml"
+	$(COMMAND) --graph-data="tests/pv/502_56.gml"
+	$(COMMAND) --graph-data="tests/pv/502_67.gml"
+	$(COMMAND) --graph-data="tests/pv/502_76.gml"
+	$(COMMAND) --graph-data="tests/pv/502_83.gml"
+	rm data/tmp/*[^\.bbl]
+	tar acf data/tmp.tar.gz data/tmp/
+
+benchmarks:
+	$(PYTHON2_CMD) powergrasp/benchmarks.py $(BENCHMARK_INPUT) --output-file=$(BENCHMARK_OUTPUT) $(BENCHMARK_RUN)
+	cat $(BENCHMARK_OUTPUT)
+
+clr: clear
 clear:
 	rm */*.pyc
 help:

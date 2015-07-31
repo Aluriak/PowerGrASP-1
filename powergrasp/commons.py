@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Definition of numerous constants, for paths, names, arguments for ASP solvers.
+Moreover, some generalist functions are defined,
+ notabily for solving management and logging.
+
+"""
 
 # IMPORTS
 from __future__   import absolute_import, print_function
@@ -23,8 +29,7 @@ ASP_SRC_EXTRACT = DIR_ASP_SOURCES + 'extract'          + ASP_FILE_EXT
 ASP_SRC_PREPRO  = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
 ASP_SRC_FINDCC  = DIR_ASP_SOURCES + 'findbestclique'   + ASP_FILE_EXT
 ASP_SRC_FINDBC  = DIR_ASP_SOURCES + 'findbestbiclique' + ASP_FILE_EXT
-ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
-ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
+ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'postprocessing'    + ASP_FILE_EXT
 
 
 # ASP SOLVER OPTIONS

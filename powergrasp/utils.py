@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Definition of various functions with no direct link to the package
+or the compression.
+
+"""
+
 import gringo
 import itertools
 from future.utils import iteritems
@@ -23,7 +29,7 @@ def test_integrity(asp_graph_data_filename,
     graph_atoms = first_solution(solver)
     if graph_atoms:
         return {
-            a.args()[0]:a.args()[1]
+            str(a.args()[0]):str(a.args()[1])
             for a in graph_atoms
             if  a.name() == 'nb'
             and len(a.args()) == 2
