@@ -17,10 +17,11 @@ L'édition du fichier *release.py* consiste en
 l'ajout de données sur python
 pour certains champs, et des indications sur [TBB](https://www.threadingbuildingblocks.org) :
 
-    CPPPATH     = ['/usr/include/python2.7', '/udd/lbourneu/bin/tbb/tbb43_20150316oss/include']
-    LIBPATH = ['/udd/lbourneu/bin/tbb/tbb43_20150316oss/lib/intel64/gcc4.4']
+    CPPPATH     = ['/usr/include/python2.7', '/home/michel/tbb/tbb43_20150316oss/include']
+    LIBPATH = ['/home/michel/tbb/tbb43_20150316oss/lib/intel64/gcc4.4']
     WITH_PYTHON = 'python2.7'
     WITH_TBB = 'tbb'
+
 
 Une fois cela fait, pip peut être utilisé pour
 installer gringo comme package python :

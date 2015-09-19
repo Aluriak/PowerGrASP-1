@@ -31,7 +31,7 @@ clique3:- oedge(X,Y); oedge(Y,Z); oedge(X,Z).
 :- membercc(X); not newconcept(cc,k,1,X); inter(X,Y):newconcept(cc,k,1,Y) ; clique3.
 
 % Compute score as the edge cover of the clique
-edgecover((N*(N-1))/2):- N={newconcept(cc,k,1,X):membercc(cc,X)} ; clique3.
+edgecover((N*(N-1))/2):- N={newconcept(cc,k,1,X):membercc(X)} ; clique3.
 
 % Compatibility with postprocessing: newconcept(cc,k,2,X) exists
 newconcept(cc,k,2,X):- newconcept(cc,k,1,X).

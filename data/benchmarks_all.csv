@@ -1,0 +1,12 @@
+name,filename,powergrasp implementation (or source),average time,#node,#edge,edge reduction,conversion rate,
+Casein Kinase II Complex,tests/proteome_yeast_1.lp,blocks,0.99,25,80,63.75,4.25,
+Histone interaction,tests/proteome_yeast_2.lp,blocks,1.59,42,106,70.75,5.0,
+Interactions of SH3 Carrying Proteins,tests/structural_binding.lp,blocks,102.32,864,1241,60.84,3.74,
+Casein Kinase II Complex,tests/proteome_yeast_1.lp,concept reduction,1.57,25,80,63.75,3.92,
+Histone interaction,tests/proteome_yeast_2.lp,concept reduction,2.5,42,106,69.81,4.11,
+Interactions of SH3 Carrying Proteins,tests/structural_binding.lp,concept reduction,180.13,864,1241,61.0,3.62,
+Casein Kinase II Complex,tests/proteome_yeast_1.lp,power graph analysis,,25,80,62,,,
+Histone interaction,tests/proteome_yeast_2.lp,power graph analysis,,42,106,,,
+Interactions of SH3 Carrying Proteins,tests/structural_binding.lp,power graph analysis,,864,1241,80,,
+Human Protein Tyrosine Phosphatase Homology Network,tests/phosphatase.lp,power graph analysis,,279,4849,,,
+

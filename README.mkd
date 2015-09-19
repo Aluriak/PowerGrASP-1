@@ -1,6 +1,6 @@
 # PowerGrASP
 The Python Powergraph analysis tool, based on Answer Set Programming solving and formal concept analysis.
-
+More documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/documentation.mkd).
 
 ## Requirements
 Needs [python-gringo module](https://github.com/lxsli/python-gringo).
@@ -17,8 +17,7 @@ Or can be embedded in any python program:
 
     import powergrasp
 
-    with open('human_proteom.lp') as fin, open('for_cytoscape.bbl', 'w') as fout:
-        fout.write(powergrasp.compress(fin.read()))
+    powergrasp.compress('human_proteom.lp', 'for_cytoscape.bbl')
 
 
 ## Help & Details
@@ -88,6 +87,7 @@ Other formats will be supported in the future.
 #### Output file
 While the only way to print a power graph is provided by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin of Cytoscape, output format is limited to *Bubble*, which seems to be an endemic format.
 Another output format support is possible by create a new Converter class (see *powergrasp/converter/*).
+Cytoscape, for using the CyOog plugin, must be in version __[2.x](http://www.cytoscape.org/download_old_versions.html)__.
 
 
 

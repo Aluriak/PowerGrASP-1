@@ -1,5 +1,7 @@
-PYTHON=python2 powergrasp/__main__.py
-PYTHON3=python3 -m powergrasp
+PYTHON2_CMD=python2
+PYTHON3_CMD=python3
+PYTHON=$(PYTHON2_CMD) powergrasp/__main__.py
+PYTHON3=$(PYTHON3_CMD) -m powergrasp
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 TARGET=powergrasp/__main__.py
 
@@ -7,7 +9,7 @@ STATFILE=--stats-file=data/statistics.csv
 #PLOTFILE=--plot-file=data/statistics.png
 #PLOT=--plot-stats
 OUTPUT=--output-format="bbl"
-#FOUT=--output-file="data/output_alt"
+FOUT=--output-file="data/output"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=critical
@@ -18,15 +20,25 @@ MODELCOUNT=--count-model
 #NOTHREADING=--no-threading
 PROFILING=--profiling
 #THREAD=--thread=4
+#PRE=--show-pre
 
 ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING)
-ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD)
+ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) $(PRE)
 COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
 
+# BENCHMARKS
+BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp,tests/structural_binding.lp
+#BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp
+BENCHMARK_OUTPUT=data/benchmarks.csv
+BENCHMARK_RUN=--runs=4
 
+abn:
+	$(COMMAND) --graph-data="tests/abnormal.lp"
 bbind:
 	$(COMMAND) --graph-data="tests/structural_binding_no_bridge.lp"
+bintree:
+	$(COMMAND) --graph-data="tests/bintree.lp"
 bip:
 	$(COMMAND) --graph-data="tests/bipartite.lp"
 blo:
@@ -51,6 +63,8 @@ diam:
 	$(COMMAND) --graph-data="tests/diamond.lp"
 ddiam:
 	$(COMMAND) --graph-data="tests/double_biclique.lp"
+inc:
+	$(COMMAND) --graph-data="tests/inclusions.lp"
 pfc:
 	$(COMMAND) --graph-data="tests/perfectfit.lp"
 phos:
@@ -69,6 +83,8 @@ star:
 	$(COMMAND) --graph-data="tests/star.lp"
 three:
 	$(COMMAND) --graph-data="tests/threenode.lp"
+tree:
+	$(COMMAND) --graph-data="tests/tree.lp"
 triv:
 	$(COMMAND) --graph-data="tests/trivial.lp"
 tiso:
@@ -83,6 +99,25 @@ troll:
 	$(COMMAND) --graph-data="tests/notsupportedformat.troll"
 
 
+# this is a way to treat multiple files
+pack: FOUT=--output-file="data/tmp"
+pack:
+	- rm -r mkdir data/tmp/*
+	mkdir -p data/tmp
+	$(COMMAND) --graph-data="tests/pv/2391_12.gml"
+	$(COMMAND) --graph-data="tests/pv/2391_83.gml"
+	$(COMMAND) --graph-data="tests/pv/502_56.gml"
+	$(COMMAND) --graph-data="tests/pv/502_67.gml"
+	$(COMMAND) --graph-data="tests/pv/502_76.gml"
+	$(COMMAND) --graph-data="tests/pv/502_83.gml"
+	rm data/tmp/*[^\.bbl]
+	tar acf data/tmp.tar.gz data/tmp/
+
+benchmarks:
+	$(PYTHON2_CMD) powergrasp/benchmarks.py $(BENCHMARK_INPUT) --output-file=$(BENCHMARK_OUTPUT) $(BENCHMARK_RUN)
+	cat $(BENCHMARK_OUTPUT)
+
+clr: clear
 clear:
 	rm */*.pyc
 help:

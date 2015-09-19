@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-TOWRITE
+Main source file of the package, containing tho compress function.
+
+The compress function get numerous arguments,
+ for allowing a parametrable compression.
+
 """
 from __future__   import absolute_import, print_function
 from builtins     import input
 from future.utils import itervalues, iteritems
 from collections  import defaultdict
-from aspsolver    import ASPSolver
 from commons      import basename, FILE_OUTPUT
 from commons      import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from commons      import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
@@ -28,13 +31,13 @@ logger = commons.logger()
 
 
 
-def compress(graph_data, extracting=ASP_SRC_EXTRACT,
+def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
              preprocessing=ASP_SRC_PREPRO, ccfinding=ASP_SRC_FINDCC,
              bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
-             output_file=FILE_OUTPUT, statistics_filename='data/statistics.csv',
+             statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
-             no_threading=True):
+             no_threading=True, show_preprocessed=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -49,9 +52,19 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
       In a linear time, it is possible to compute the
        maximal degree in the non covered graph.
       This value correspond to the minimal best concept score.
+      In real life, the blocks (used by ASP for avoid overlapping powernodes)
+       complicate the job.
+      Moreover, as cliques are searched before the biclique, the lowerbound
+       value is increased if a clique with a better score is found.
       The cut-off value is here for allow client code to control
        this optimization, by specify the value that disable this optimization
        when the lowerbound reachs it.
+
+    The function itself returns a float that is, in seconds,
+     the time necessary for the compression,
+     and the object provided by the statistics module,
+     that contains statistics about the compression.
+
     """
     if not graph_data: return  # simple protection
 
@@ -113,7 +126,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
     logger.info('####   CC    ####')
     logger.info('#################')
     for cc_nb, cc in atom_ccs:
-        assert(isinstance(cc, str) or isinstance(cc, gringo.Fun))
+        assert(any(isinstance(cc, cls) for cls in (str, gringo.Fun, int)))
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
         remain_edges = None
@@ -171,6 +184,10 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 lowerbound_value = minimal_score
             if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
                 lowerbound_value = minimal_score
+            if show_preprocessed:
+                print('PREPROCESSED DATA:',
+                      '\n\tlowbound:', lowbound,
+                      '\n\tATOMS:', preprocessed_graph_atoms)
 
             #########################
             logger.debug('FIND BEST CLIQUE ' + printable_bounds())
@@ -267,6 +284,16 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
                 new_powernode_count = next(
                     a for a in best_model if a.name() == 'powernode_count'
                 ).args()[0]
+                if new_powernode_count not in (0,1,2):
+                    LOGGER.error('Error of Powernode generation: '
+                                 + str(new_powernode_count) + 'generated.'
+                                 + ('It can be a problem of stars that are counted as powernodes'
+                                    if new_powernode_count < 0 else
+                                    'Too many powernodes for one step.')
+                                 + ' It\'s probable that this problem will only'
+                                 + ' touch the statistics, but the compression'
+                                 + ' itself will not be compromised.'
+                                )
                 new_poweredge_count = atom_counter['poweredge']
                 remain_edges = tuple(a for a in best_model if a.name() == 'edge')
 
@@ -352,6 +379,7 @@ def compress(graph_data, extracting=ASP_SRC_EXTRACT,
 
     output.close()
     statistics.finalize(stats)
+    return time_compression, stats
 
 
 
