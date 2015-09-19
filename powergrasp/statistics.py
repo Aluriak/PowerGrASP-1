@@ -18,16 +18,19 @@ from __future__   import division
 from future.utils import iteritems, itervalues
 import commons
 import csv
-# plotting libraries
-from matplotlib import rc
-rc('text', usetex=True)
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-from matplotlib.pyplot import savefig
 
 # Logger
 LOGGER = commons.logger()
+
+try:
+    # plotting libraries
+    #  this is just a test for print a warning if there are not present
+    import matplotlib
+    import pandas
+    import numpy
+except ImportError:
+    LOGGER.warning('plotting libraries are not all there. '
+                   'Maybe you will need to install them.')
 
 # INFORMATION KEYS
 INIT_EDGE = 'initial_edge_count'
@@ -249,6 +252,20 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
 
     if savefile is not None and is a filename, the figure will be saved
     in png in given file, with given dpi."""
+    try:
+        # plotting libraries
+        from matplotlib import rc
+        rc('text', usetex=True)
+        import matplotlib.pyplot as plt
+        import numpy as np
+        import pandas as pd
+        from matplotlib.pyplot import savefig
+    except ImportError:
+        LOGGER.error('plotting libraries are not all there. '
+                     'Please install matplotlib and pandas modules. '
+                     'Plotting aborted.')
+        return  # end of plotting
+
 
     # GET DATA
     try:
