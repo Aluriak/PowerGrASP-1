@@ -2,10 +2,15 @@
 The Python Powergraph analysis tool, based on Answer Set Programming solving and formal concept analysis.
 More documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/documentation.mkd).
 
+
 ## Requirements
-Needs [python-gringo module](https://github.com/lxsli/python-gringo).
+Needs [python-gringo module](https://github.com/lxsli/python-gringo), with Clingo in [version 4.5.0](https://github.com/lxsli/python-gringo/tree/8b960fd0c4ad2fbff9b5acc2fa64555f47c28dd5).
 Unfortunately, you will need to compile clingo yourself, for includes the python support. (and eventually the thread support, for a faster compression)
 This can be a pain, but there is a little help (in french, infortunately) given by *doc/help.mkd*.
+
+With Python 2.7, python-gringo module and Clingo 4.5.0, PowerGrASP was tested on fedora 21 and archlinux, with success.
+Higher versions of python or clingo will change drastically the API, so PowerGrASP is not compatible.
+Smaller versions will mainly lead to bugs, or, if it's really smaller, API divergences.
 
 
 ## Basic use
