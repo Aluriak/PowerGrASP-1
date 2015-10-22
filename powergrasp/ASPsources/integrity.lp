@@ -25,7 +25,10 @@ nb(node,N):-       N={node(X)   }.
 nb(edge,N):-       N={oedge(_,_)}.
 nb(input_edge,N):- N={edge(_,_) }.
 nb(repeatition,K-L):- nb(edge,L) ; nb(input_edge,K).
+bad(node, k):- node( k).  %  k is a constant used for step number
+bad(node,cc):- node(cc).  % cc is a constant used for connected component reference
 
-#show edge(X,Y): oedge(X,Y).
+%#show edge(X,Y): oedge(X,Y).
 #show nb/2.
+#show bad/2.
 
