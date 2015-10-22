@@ -24,21 +24,14 @@ def test_integrity(asp_graph_data_filename,
 
     Return a dict property:value.
     """
-    solver = gringo.Control()
-    solver.load(asp_graph_data_filename)
-    solver.ground([('base', [])])
-    solver.load(asp_file_integrity)
-    solver.ground([(basename(asp_file_integrity), [])])
-    graph_atoms = first_solution(solver)
-    if graph_atoms:
-        return {
-            str(a.args()[0]):str(a.args()[1])
-            for a in graph_atoms
-            if  a.name() == 'nb'
-            and len(a.args()) == 2
-        }
-    else:  # no solution
-        return {}
+    with open(asp_graph_data_filename) as fd:
+        graph_atoms = ''.join(l for l in fd.read() if l not in '\n ')
+    model = solving.model_from(graph_atoms, ASP_FILE_INTEGRITY)
+    assert model is not None
+    return {
+        name + ' ' + ': '.join(str(_) for _ in args)
+        for name, args in (atoms.split(atom) for atom in model)
+    }
 
 
 def dict2atoms(graph, converted_graph_filename):
