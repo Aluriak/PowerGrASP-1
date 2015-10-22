@@ -16,7 +16,7 @@ PowerGrASP was tested with gringo 4.5.1 and 4.5.3, and not compliant with versio
 ## Basic use
 PowerGrASP can be used as a script:
 
-    python2 powergrasp --graph-data=human_proteom.lp --output-file=for_cytoscape.bbl
+    python3 powergrasp --graph-data=human_proteom.lp --output-file=for_cytoscape.bbl
 
 Or can be embedded in any python program:
 
@@ -31,9 +31,9 @@ The compression is configurable through command line arguments or compress funct
 Used ASP source code can be changed, interactive mode can be set,… Please look at help and docstring:
 
     # in terminal
-    python2 powergrasp --help
+    python3 powergrasp --help
     # in python
-    help(powergrasp)
+    >>> help(powergrasp)
     # or, in terminal with make
     make help
 
@@ -42,7 +42,7 @@ Used ASP source code can be changed, interactive mode can be set,… Please look
 By default, PowerGrASP generates lots of outputs in stdout, essentially for debugging and compression tracking.
 With the option *loglevel*, its possible to control this behavior:
 
-    python2 powergrasp --graph-data=tests/proteome_yeast_2.lp --loglevel=warning
+    python3 powergrasp --graph-data=tests/proteome_yeast_2.lp --loglevel=warning
 
 This will block all outputs with a strictly lesser priority than warning.
 Available levels comes from logging API:
@@ -64,11 +64,11 @@ The compression compute some statistics about itself, and generate the final res
 at the end of the compression in the standard output.
 With some arguments, you can also show a colored graphic :
 
-    python2 powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-stats
+    python3 powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-stats
 
 Instead of show it, powergrasp can save it in png (note that the *--plot-stats* flag is not necessary when *plot-file* option is given):
 
-    python2 powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-file=data/statistics.png
+    python3 powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-file=data/statistics.png
 
 
 ### Answer Set Programming
