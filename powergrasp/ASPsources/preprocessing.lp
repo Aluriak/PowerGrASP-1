@@ -41,17 +41,17 @@ membercc(X):- membercc(cc,X) ; oedge(_,X).
 %   (output degree == number of links to higher nodes that are in the same block)
 %degree(X,D,b(K,B)):- lowerbound ; oedge(X,_) ; block(K,B,Anonymous) ;
                      %D=#count{r(Y): oedge(X,Y), block(K,B,Y)}.
-inter(X,Y):- oedge(X,Y).
-inter(Y,X):- oedge(X,Y).
-degree(X,D):- inter(X,_) ; D=#count{r(Y): inter(X,Y)}.
+%degree(X,D):- inter(X,_) ; D=#count{r(Y): inter(X,Y)}.
 
 % maximize the node score
-maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
+%maxlowerbound(S):- S=#max{D:degree(_,D)} ; lowerbound.
+%maxlowerbound(S):- lowerbound ; degree(_,S) ; not degree(_,D): degree(_,D), D>S.
+%maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
 
 % outputs preprocessed data
 #show.
 #show oedge/2.
-#show maxlowerbound/1.
 #show membercc/1.
-#show degree/2.
 #show inter/2.
+%#show maxlowerbound/1.
+%#show degree/2.

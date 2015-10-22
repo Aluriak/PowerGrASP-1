@@ -130,10 +130,10 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #minimize{S@1,S:score(cc,k,S)}.
 
 % Exclusion of concepts with not enough nodes.
-%  the maximal lowerbound is equals to 1 at least,
-%  and determined by the scorebound ASP program,
-%  as the number of remaining edges in the connected component
-%  and the size of the previous concept.
+%  The lowerbound is equals to 1 at least,
+%  and determined by the scorebound ASP program.
+%  The upperbound is the min between the number of remaining edges
+%  in the connected component and the size of the previous concept.
 :- score(cc,k,S) ; S>upperbound-lowerbound.
 
 
