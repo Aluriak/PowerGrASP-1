@@ -8,3 +8,5 @@ debug/
 *.nnf
 cyoog.cfg
 Session.vim
+asp_py_lextab.py
+asp_py_parsetab.py
