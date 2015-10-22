@@ -38,15 +38,16 @@ input formats:
 
 """
 
-from __future__ import absolute_import, print_function
-from docopt     import docopt
-from powergrasp import compress
-from info       import __version__
-from converter  import OUTPUT_FORMATS
+from __future__            import absolute_import, print_function
+from docopt                import docopt
+from powergrasp.powergrasp import compress
+from powergrasp.info       import __version__
+from powergrasp.converter  import OUTPUT_FORMATS
+import powergrasp.statistics as statistics  # this is not the stdlib !
+import powergrasp.converter  as converter
+import powergrasp.commons    as commons
+import powergrasp.utils      as utils  # used for profiling
 import os
-import commons
-import converter
-import statistics
 
 
 LOGGER = commons.logger()
@@ -76,7 +77,6 @@ if __name__ == '__main__':
                 options['--graph-data'] = None
 
         if options['--profiling']:
-            import utils
             print(utils.test_integrity(options['--graph-data']))
 
         if os.path.isdir(options['--output-file']):
