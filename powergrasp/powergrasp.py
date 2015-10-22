@@ -25,7 +25,7 @@ import time
 import sys
 
 
-logger = commons.logger()
+LOGGER = commons.logger()
 
 
 
@@ -87,23 +87,17 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
     remain_edges_global = 0  # counter of remain_edges in all graph
 
     # Extract graph data
-    logger.info('#################')
-    logger.info('#### EXTRACT ####')
-    logger.info('#################')
+    LOGGER.info('#################')
+    LOGGER.info('#### EXTRACT ####')
+    LOGGER.info('#################')
     # creat a solver that get all information about the graph
-    extractor = gringo.Control()
-    extractor.load(graph_data)
-    extractor.ground([('base', [])])
-    extractor.load(extracting)
-    extractor.ground([(basename(extracting), [])])
-
-    graph_atoms = solving.first_solution(extractor)
+    graph_atoms = solving.model_from('', [graph_data, extracting])
     assert(graph_atoms is not None)
 
     # get all CC, one by one
-    atom_ccs = (cc.args()[0]  # args is a list of only one element (cc/1)
+    atom_ccs = (atoms.split(cc).args[0]
                 for cc in graph_atoms
-                if cc.name() == 'cc'
+                if cc.startswith('cc(')
                )
     if count_cc:
         atom_ccs = tuple(atom_ccs)
@@ -113,28 +107,27 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
     all_edges   = atoms.to_str(graph_atoms, names='ccedge')
     first_blocks= atoms.to_str(graph_atoms, names='block')
     graph_atoms = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
-    del extractor
     # stats about compression
     remain_edges_global = all_edges.count('ccedge')
     statistics.add(stats, initial_edge_count=remain_edges_global)
     # printings
-    logger.debug('EXTRACTED: ' + graph_atoms + '\n')
-    logger.debug('CCEDGES  : ' + all_edges + '\n')
+    LOGGER.debug('EXTRACTED: ' + graph_atoms + '\n')
+    LOGGER.debug('CCEDGES  : ' + all_edges + '\n')
     time_extract = time.time() - time_extract
 
     # Find connected components
-    logger.info('#################')
-    logger.info('####   CC    ####')
-    logger.info('#################')
+    LOGGER.info('#################')
+    LOGGER.info('####   CC    ####')
+    LOGGER.info('#################')
     for cc_nb, cc in atom_ccs:
-        assert(any(isinstance(cc, cls) for cls in (str, gringo.Fun, int)))
+        assert(any(isinstance(cc, cls) for cls in (str, int)))
         # contains interesting atoms and the non covered edges at last step
         result_atoms = tuple()
         remain_edges = None
         previous_coverage = ''  # accumulation of covered/2
         previous_blocks   = first_blocks
         # main loop
-        logger.info('#### CC ' + str(cc_nb+1)
+        LOGGER.info('#### CC ' + str(cc_nb+1)
                     + ('/' + str(atom_ccs_count) if count_cc else '')
                     + ': ' + str(cc) + ' ' + str(cc.__class__))
         k = 0
@@ -164,49 +157,59 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
                 lowerbound_atom = ''  # no max lowbound search in preprocessing
 
             #########################
-            logger.debug('PREPROCESSING')
+            LOGGER.debug('PREPROCESSING')
             #########################
             model = solving.model_from(
                 base_atoms=(graph_atoms + previous_coverage
                             + previous_blocks + lowerbound_atom),
-                aspfile=preprocessing,
-                aspargs=[cc]
+                aspfiles=preprocessing,
+                aspargs={ASP_ARG_CC:cc}
             )
-            assert(model is not None)
+            if model is None:
+                # no more models !
+                break
             # treatment of the model
-            lowbound = tuple(a for a in model if a.name() == 'maxlowerbound')
+            lowbound = tuple(a for a in model if a.startswith('maxlowerbound'))
             preprocessed_graph_atoms = atoms.to_str(
                 atom for atom in model
-                if atom.name() != 'maxlowerbound'
+                if not atom.startswith('maxlowerbound(')
             )
             try:
-                lowerbound_value = lowbound[0].args()[0]
+                assert len(lowbound) <= 1  # multiple maxlowerbound is impossible
+                lowerbound_value = atoms.split(lowbound[0])[1][0]
             except IndexError:
                 lowerbound_value = minimal_score
-            if lowerbound_value.__class__ is gringo.InfType or lowerbound_value < minimal_score:
+            # the string 'inf' is the ASP type for 'infinitely small'
+            # so, if no lowerbound found, 'inf' will be returned and
+            # can't be converted in integer
+            try:
+                lowerbound_value = int(lowerbound_value)
+            except ValueError:
                 lowerbound_value = minimal_score
             if show_preprocessed:
+                # flag show_preprocessed ask for print output in stdout
                 print('PREPROCESSED DATA:',
                       '\n\tlowbound:', lowbound,
                       '\n\tATOMS:', preprocessed_graph_atoms)
 
             #########################
-            logger.debug('FIND BEST CLIQUE ' + printable_bounds())
+            LOGGER.debug('FIND BEST CLIQUE ' + printable_bounds())
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
-                aspfile=(ccfinding, postprocessing),
-                aspargs=([cc,k],
-                         [cc,k,lowerbound_value,last_score]),
+                aspfiles=(ccfinding, postprocessing),
+                aspargs={ASP_ARG_CC:cc, ASP_ARG_STEP:k,
+                         ASP_ARG_LOWERBOUND:lowerbound_value,
+                         ASP_ARG_UPPERBOUND:last_score}
             )
             # treatment of the model
             if model is None:
-                logger.debug('CLIQUE SEARCH: no model found')
+                LOGGER.debug('CLIQUE SEARCH: no model found')
             else:
                 best_model = model
                 assert('score' in str(model))
-                score = next(a for a in model if a.name() == 'score').args()[0]
+                score = int(atoms.arg(next(a for a in model if a.startswith('score(')))[0])
                 assert(isinstance(score, int))
                 lowerbound_value = max(
                     lowerbound_value,
@@ -215,42 +218,45 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
                 atom_counter = atoms.count(model)
 
             #########################
-            logger.debug('FIND BEST BICLIQUE' + printable_bounds())
+            LOGGER.debug('FIND BEST BICLIQUE' + printable_bounds())
             #########################
             model = solving.model_from(
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
-                aspfile=(bcfinding, postprocessing),
-                aspargs=([cc,k],
-                         [cc,k,lowerbound_value,last_score]),
+                aspfiles=(bcfinding, postprocessing),
+                aspargs={ASP_ARG_CC:cc, ASP_ARG_STEP:k,
+                         ASP_ARG_LOWERBOUND:lowerbound_value,
+                         ASP_ARG_UPPERBOUND:last_score}
             )
             # treatment of the model
             if model is None:
-                logger.debug('BICLIQUE SEARCH: no model found')
+                LOGGER.debug('BICLIQUE SEARCH: no model found')
             else:
                 best_model = model
                 # printings
-                logger.debug('\tOUTPUT: ' + atoms.to_str(
+                LOGGER.debug('\tOUTPUT: ' + atoms.to_str(
                     model, separator='.\n\t'
                 ))
-                score = next(a for a in model if a.name() == 'score').args()[0]
+                score = int(atoms.arg(next(
+                    a for a in model if a.startswith('score(')
+                )))
                 assert(isinstance(score, int))
                 atom_counter = atoms.count(model)
 
             #########################
-            logger.debug('BEST MODEL TREATMENT')
+            LOGGER.debug('BEST MODEL TREATMENT')
             #########################
             # stop cc compression if no model found
             if best_model is None:
                 if count_model: # replace counter by the final information
                     print('\r', end='')
                     sys.stdout.flush()
-                logger.info(str(k-1) + ' optimal model' + ('s' if k-1>1 else '')
-                            + ' found by best concept search.')
+                    print(str(k-1) + ' optimal model' + ('s' if k-1>1 else '')
+                          + ' found by best concept search.')
                 break
             else:  # at least one model was found, and the best is best_model
                 # debug printing
-                logger.debug('POWERNODES:\n\t' + atoms.prettified(
+                LOGGER.debug('POWERNODES:\n\t' + atoms.prettified(
                     best_model,
                     names=('powernode', 'poweredge', 'score'),
                     joiner='\n\t',
@@ -270,21 +276,22 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
                 )
 
                 # give new powernodes to converter
-                converter.convert((a for a in best_model if a.name() in (
-                    'powernode', 'clique', 'poweredge'
-                )))
+                converter.convert((
+                    a for a in best_model
+                    if atoms.split(a).name in ('powernode', 'clique', 'poweredge')
+                ))
 
                 # save interesting atoms
                 result_atoms = itertools.chain(
                     result_atoms,
                     (a for a in best_model
-                     if a.name() in ('powernode', 'poweredge'))
+                     if atoms.split(a).name in ('powernode', 'poweredge'))
                 )
 
                 # save the number of generated powernodes and poweredges
-                new_powernode_count = next(
-                    a for a in best_model if a.name() == 'powernode_count'
-                ).args()[0]
+                new_powernode_count = int(atoms.arg(next(
+                    a for a in best_model if a.startswith('powernode_count')
+                )))
                 if new_powernode_count not in (0,1,2):
                     LOGGER.error('Error of Powernode generation: '
                                  + str(new_powernode_count) + 'generated.'
@@ -296,7 +303,7 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
                                  + ' itself will not be compromised.'
                                 )
                 new_poweredge_count = atom_counter['poweredge']
-                remain_edges = tuple(a for a in best_model if a.name() == 'edge')
+                remain_edges = tuple(a for a in best_model if a.startswith('edge('))
 
                 # save statistics: add() method takes all data about the new iteration
                 time_iteration = time.time() - time_iteration
@@ -340,9 +347,9 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
         # Remain edges in cc
         statistics.add(stats, final_edges_count=len(remain_edges))
         if len(remain_edges) == 0:
-            logger.info('No remaining edge')
+            LOGGER.info('No remaining edge')
         else:
-            logger.info(str(len(remain_edges)) + ' remaining edge(s)')
+            LOGGER.info(str(len(remain_edges)) + ' remaining edge(s)')
             converter.convert(remain_edges)
 
 
@@ -352,36 +359,33 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
         ########################
         output.write(converter.finalized())
         converter.release_memory()
-        logger.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
+        LOGGER.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
 
         # print results
         # results_names = ('powernode',)
-        logger.debug('\n\t' + atoms.prettified(
+        LOGGER.debug('\n\t' + atoms.prettified(
             result_atoms,
             joiner='\n\t',
             sort=True
         ))
 
-    logger.info('#################')
-    logger.info('#### RESULTS ####')
-    logger.info('#################')
+    LOGGER.info('#################')
+    LOGGER.info('#### RESULTS ####')
+    LOGGER.info('#################')
     # compute a human readable final results string,
     # and put it in the output and in level info.
     time_compression = time.time() - time_compression
     final_results = (
         "All cc have been performed in " + str(round(time_compression, 3))
         + "s (extraction in " + str(round(time_extract, 3)) + ')'
-        + ".\nSolver options: " + ' '.join(commons.ASP_OPTIONS)
+        + ".\nGrounder options: " + commons.ASP_GRINGO_OPTIONS
+        + ".\nSolver options: "   + commons.ASP_CLASP_OPTIONS
         + ".\nNow, statistics on "
         + statistics.output(stats)
     )
-    logger.info(final_results)
+    LOGGER.info(final_results)
     output.write(converter.comment(final_results.split('\n')))
 
     output.close()
     statistics.finalize(stats)
     return time_compression, stats
-
-
-
-
