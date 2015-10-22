@@ -1,7 +1,9 @@
 PYTHON2_CMD=python2
 PYTHON3_CMD=python3
-PYTHON=$(PYTHON2_CMD) powergrasp/__main__.py
+PYTHON2=$(PYTHON2_CMD) powergrasp/__main__.py
 PYTHON3=$(PYTHON3_CMD) -m powergrasp
+PYTHON=$(PYTHON3)
+#PYTHON=$(PYTHON2)
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 TARGET=powergrasp/__main__.py
 
@@ -12,10 +14,11 @@ OUTPUT=--output-format="bbl"
 FOUT=--output-file="data/output"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
+LOGLEVEL=--loglevel=warning
 #LOGLEVEL=--loglevel=critical
 #INTERACTIVE=--interactive
-CCCOUNT=--count-cc
 #LBOUND=--lbound-cutoff=-1
+CCCOUNT=--count-cc
 MODELCOUNT=--count-model
 #NOTHREADING=--no-threading
 PROFILING=--profiling
