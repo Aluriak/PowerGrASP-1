@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 """
 definition of the GML input format converter.
+
 """
 from __future__   import absolute_import, print_function
 from future.utils import iteritems, iterkeys, itervalues
-from converter.input_converter import InConverter
+from powergrasp.converter.input_converter import InConverter
+import powergrasp.commons as commons
 import itertools
-import commons
 
 
 LOGGER = commons.logger()
-
-
 
 
 class InGML(InConverter):

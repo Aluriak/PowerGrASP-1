@@ -7,15 +7,15 @@ Supported formats :
 - bbl: bubble format, used by Powergraph for printings;
 
 """
-from __future__                 import absolute_import
-from future.utils               import iterkeys
-from converter.output_converter import OutConverter
-from converter.input_converter  import InConverter
-from converter.out_nnf          import OutNNF
-from converter.out_bbl          import OutBBL
-from converter.in_sbml          import InSBML
-from converter.in_gml           import InGML
-import commons
+from __future__                            import absolute_import
+from future.utils                          import iterkeys
+from powergrasp.converter.output_converter import OutConverter
+from powergrasp.converter.input_converter  import InConverter
+from powergrasp.converter.out_nnf          import OutNNF
+from powergrasp.converter.out_bbl          import OutBBL
+from powergrasp.converter.in_sbml          import InSBML
+from powergrasp.converter.in_gml           import InGML
+import powergrasp.commons as commons
 
 
 LOGGER = commons.logger()

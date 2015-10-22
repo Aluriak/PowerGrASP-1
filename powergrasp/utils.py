@@ -5,11 +5,14 @@ or the compression.
 
 """
 
-import gringo
+
 import itertools
-from future.utils import iteritems
-from commons      import basename
-from solving      import first_solution
+from future.utils       import iteritems
+
+import powergrasp.atoms   as atoms
+import powergrasp.solving as solving
+from powergrasp.commons import basename
+
 
 ASP_FILE_INTEGRITY = 'powergrasp/ASPsources/integrity.lp'
 

@@ -4,9 +4,9 @@ definition of the NNF format converter.
 """
 from __future__   import absolute_import, print_function
 from future.utils import iteritems, iterkeys, itervalues
-from converter.output_converter import OutConverter
+from powergrasp.converter.output_converter import OutConverter
+import powergrasp.commons as commons
 import itertools
-import commons
 
 
 logger = commons.logger()

@@ -9,8 +9,8 @@ Moreover, some generalist functions are defined,
 # IMPORTS
 from __future__   import absolute_import, print_function
 from   logging.handlers import RotatingFileHandler
+import powergrasp.info as info
 import logging
-import info
 import os
 
 

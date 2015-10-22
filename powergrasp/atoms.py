@@ -5,10 +5,10 @@ Provides converters, access and printings of atoms.
 
 """
 
-from __future__   import absolute_import, print_function
-from future.utils import iteritems, itervalues
-from collections  import defaultdict, Counter
-from commons      import RESULTS_PREDICATS
+from __future__         import absolute_import, print_function
+from future.utils       import iteritems, itervalues
+from collections        import defaultdict, Counter, namedtuple
+from powergrasp.commons import RESULTS_PREDICATS
 import itertools
 import gringo
 

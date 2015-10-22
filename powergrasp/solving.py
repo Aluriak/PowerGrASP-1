@@ -17,13 +17,12 @@ Another util function is model_from(3), that allow the user
  to reuse quickly a solving pattern.
 
 """
-from __future__       import print_function
-from __future__       import absolute_import
-from functools        import partial
-from collections      import deque
-import commons
-import gringo
-import atoms
+from __future__  import print_function, absolute_import
+from functools   import partial
+from collections import deque
+import powergrasp.commons as commons
+import powergrasp.atoms   as atoms
+import pyasp.asp          as asp
 import os
 
 

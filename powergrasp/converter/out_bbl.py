@@ -28,14 +28,13 @@ The Cytoscape plugin CyOoG is able to read and print that format.
 from __future__          import absolute_import, print_function
 from future.utils        import iteritems, iterkeys, itervalues
 from collections         import defaultdict
-from commons             import basename
-from converter.output_converter import OutConverter
+from powergrasp.commons  import basename
+from powergrasp.converter.output_converter import OutConverter
+import powergrasp.commons as commons
+import powergrasp.solving as solving
+import powergrasp.atoms   as atoms
+import powergrasp.info    as info
 import itertools
-import commons
-import solving
-import gringo
-import atoms
-import info
 
 logger        = commons.logger()
 ASP_INCLUSION = 'powergrasp/ASPsources/inclusion.lp'

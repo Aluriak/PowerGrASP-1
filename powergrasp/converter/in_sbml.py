@@ -10,9 +10,9 @@ The data is used as follow:
 """
 from __future__   import absolute_import, print_function
 from future.utils import iteritems, iterkeys, itervalues
-from converter.input_converter import InConverter
+from powergrasp.converter.input_converter import InConverter
 import itertools
-import commons
+import powergrasp.commons as commons
 
 
 logger = commons.logger()

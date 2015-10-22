@@ -16,7 +16,7 @@ Statistics information can be printed or saved in files
 from __future__   import absolute_import, print_function
 from __future__   import division
 from future.utils import iteritems, itervalues
-import commons
+import powergrasp.commons as commons
 import csv
 
 # Logger
