@@ -29,85 +29,48 @@ import os
 LOGGER = commons.logger()
 
 
-
-def FIRST_SOLUTION_THREAD(solver):
-    """Return atoms of the first model found by given gringo.Control instance.
-    If no model is find, None will be return instead.
-    This function assume that the solver is built with the thread support."""
-    model = None
-    with solver.solve_iter() as it:
-        # take the first model, or None
-        models = deque([None], 1)
-        map(models.append, (_ for _ in it))
-        models = models.pop()
-        if models is not None:
-            model = models.atoms()
-    return model
-
-def FIRST_SOLUTION_NO_THREAD(solver):
-    """Return atoms of the first model found by given gringo.Control instance.
-    If no model is find, None will be return instead.
-    These function can be used on solver even if no thread support allowed."""
-    # NB: not as the solve_iter method, the models are given
-    #     in reversed order by solve(2) method: the best is the last
-    # None will be replaced at first step by a list of atoms
-    models = deque([None], 1)
-    def callback(new_model, models):
-        models.append(new_model.atoms())
-    solver.solve([], partial(callback, models=models))
-    # return the best model
-    assert(len(models) == 1)
-    model = models.pop()
-    return tuple(model) if model is not None else None
-
-
-first_solution = FIRST_SOLUTION_THREAD
-def first_solution_function(mode=FIRST_SOLUTION_NO_THREAD):
-    """allow external client to choose between thread or no-thread
-    first solution implementation"""
-    assert(mode in (FIRST_SOLUTION_NO_THREAD, FIRST_SOLUTION_THREAD))
-    global first_solution
-    first_solution = mode
-
-
-def model_from(base_atoms, aspfile, aspargs=[], program_name=None):
-    """Compute a model from ASP source code in aspfile, with aspargs
+def model_from(base_atoms, aspfiles, aspargs={},
+               gringo_options='', clasp_options=''):
+    """Compute a model from ASP source code in aspfiles, with aspargs
     given as grounding arguments and base_atoms given as input atoms.
 
     base_atoms -- string, ASP-readable atoms
-    aspfile -- (list of) filename, contains the grounded ASP source code
-    aspargs -- (list of) list of values, arguments of program defined in aspfile
-    program_name -- (list of) string, name of the program defined in aspfile
-
-    Note that aspfile must contains a program that have the given program_name,
-    or the basename of the file.
-    For instance, if the aspfile is (~/ASP/solvemyproblem.lp, ~/ASP/mixin.lp),
-     the program_name must be specified or ('solvemyproblem', 'mixin').
+    aspfiles -- (list of) filename, contains the ASP source code
+    aspargs -- dict of constant:values, that will be set as constants in aspfiles
+    gringo_options -- string of command-line options given to gringo
+    clasp_options -- string of command-line options given to clasp
 
     """
-    # use the right basename and use list of aspfile in all cases
-    if isinstance(aspfile, str):
-        aspfile = [aspfile]
-        aspargs = [aspargs]
-    if program_name is None:
-        program_name = tuple(commons.basename(f) for f in aspfile)
-    title = ', '.join(program_name).upper()
-    assert(len(aspfile) == len(program_name) and len(aspfile) == len(aspargs))
-    # debug
-    LOGGER.debug(title + ' INPUT: ' + base_atoms)
-    # create the solver, ground base and program in a single ground call
-    solver = gringo.Control(commons.ASP_OPTIONS)
-    solver.add('base', [], base_atoms)
-    map(solver.load, aspfile)
-    program_name = ('base',) + program_name
-    aspargs      = ([],) + tuple(aspargs)
-    solver.ground(zip(program_name, aspargs))
-    # compute and return the first solution
-    model = first_solution(solver)
-    # debug
-    LOGGER.debug(title + ' OUTPUT: ' + atoms.to_str(model))
-    LOGGER.debug(title + ' OUTPUT: ' + str(atoms.count(model)))
-    return model
+    # use the right basename and use list of aspfiles in all cases
+    if isinstance(aspfiles, str):
+        aspfiles = [aspfiles]
+    elif isinstance(aspfiles, tuple):  # solver take only list, not tuples
+        aspfiles = list(aspfiles)
 
+    # define the command line options for gringo and clasp
+    constants = ' -c '.join(str(k)+'='+str(v) for k,v in aspargs.items())
+    if len(aspargs) > 0:  # must begin by a -c for announce the first constant
+        constants = '-c ' + constants
+    gringo_options = ' '.join((constants, commons.ASP_GRINGO_OPTIONS, gringo_options))
+    clasp_options += ' ' + ' '.join(commons.ASP_CLASP_OPTIONS)
 
+    #  create solver and ground base and program in a single ground call.
+    solver = asp.Gringo4Clasp(gringo_options=gringo_options,
+                              clasp_options=clasp_options)
+    # print('SOLVING:', aspfiles, constants)
+    # print('INPUT:', base_atoms.__class__, base_atoms)
+    answers = solver.run(aspfiles, additionalProgramText=base_atoms)
+    # print('OK !')
+    # print(len(answers), 'ANSWER(S):', '\n'.join(str(_) for _ in answers))
 
+    # return the last solution (which is the best), or None if no solution
+    try:
+        last_solution = deque(answers, maxlen=1)[0]
+        # print('LAST_SOLUTION: ', len(last_solution), ' "', last_solution, '"', sep='')
+        # a solution is valid if at least one atom is returned
+        return last_solution if len(last_solution) > 0 else None
+        LOGGER.debug(title + ' OUTPUT: ' + atoms.to_str(model))
+        LOGGER.debug(title + ' OUTPUT: ' + str(atoms.count(model)))
+    except IndexError:
+        # no valid model
+        return None
