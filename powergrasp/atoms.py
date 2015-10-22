@@ -10,7 +10,52 @@ from future.utils       import iteritems, itervalues
 from collections        import defaultdict, Counter, namedtuple
 from powergrasp.commons import RESULTS_PREDICATS
 import itertools
-import gringo
+
+
+# Atom definition
+ATOM = namedtuple('Atom', ['name', 'args'])
+
+
+def split(atom):
+    """Return the splitted version of given atom.
+
+    atom -- string formatted as an ASP readable atom
+
+    >>>> split('edge(lacA,lacZ)')
+    ('edge', ('lacA', 'lacZ'))
+
+    """
+    payload = atom.strip('.').strip(')')
+    try:
+        pred, data = payload.split('(')
+        return ATOM(pred, tuple(data.split(',')))
+    except ValueError:  # no args !
+        return ATOM(payload, None)
+
+
+def arg(atom):
+    """Return the argument of given atom, as a tuple if necessary.
+
+    If the atom have only one arg, the arg itself will be used.
+
+    >>>> split('edge(lacA,lacZ)')
+    ('lacA', 'lacZ')
+    >>>> split('score(13)')
+    '13'
+    >>>> split('lowerbound')
+    None
+
+    """
+    payload = atom.strip('.').strip(')')
+    try:
+        data = tuple(payload.split('(')[1].split(','))
+        if len(data) > 1:
+            return data
+        else:
+            return next(iter(data))
+    except ValueError:  # no args !
+        return None
+
 
 def prettified(atoms, names=None, sizes=None,
                joiner='\n', results_only=False, sort=False, hashs=False):
@@ -32,7 +77,7 @@ def prettified(atoms, names=None, sizes=None,
 
     """
     atoms, hashs_values = itertools.tee(atoms)
-    atoms = ((a.name(), a.args()) for a in atoms)
+    atoms = (split(a) for a in atoms)
     if hashs:
         hashs_values = (a.__hash__() for a in hashs_values)
     # filter results
@@ -84,7 +129,7 @@ def count(atoms, names=None):
      only founded atoms will be returned.
     """
     if atoms is None: atoms = []
-    counts = iteritems(Counter(a.name() for a in atoms))
+    counts = iteritems(Counter(split(a)[0] for a in atoms))
     if names is None:
         return {n:c for n, c in counts}
     else:
@@ -109,7 +154,7 @@ def to_str(atoms, names=None, separator='.'):
         if names.__class__ is str:
             names = (names,)
         # get only atoms that are requested
-        atoms = (str(a) for a in atoms if a.name() in names)
+        atoms = (str(a) for a in atoms if a[:a.find('(')] in names)
     # output construction
     output = separator.join(atoms)
     if len(output) > 0:
