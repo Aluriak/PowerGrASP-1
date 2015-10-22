@@ -31,29 +31,35 @@ ASP_SRC_FINDCC  = DIR_ASP_SOURCES + 'findbestclique'   + ASP_FILE_EXT
 ASP_SRC_FINDBC  = DIR_ASP_SOURCES + 'findbestbiclique' + ASP_FILE_EXT
 ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'postprocessing'    + ASP_FILE_EXT
 
+# Constants involved in ASP solving
+ASP_ARG_CC   = 'cc'
+ASP_ARG_STEP = 'k'
+ASP_ARG_UPPERBOUND = 'upperbound'
+ASP_ARG_LOWERBOUND = 'lowerbound'
 
 # ASP SOLVER OPTIONS
-ASP_OPTIONS     = []
-ASP_OPTIONS.append('-Wno-atom-undefined')
-ASP_OPTIONS.append('--configuration=frumpy')
-ASP_OPTIONS.append('--heuristic=Vsids')
-# ASP_OPTIONS.append('--opt-mode=opt')
-# ASP_OPTIONS.append('--models=0')
-# ASP_OPTIONS     = []
-# ASP_OPTIONS.append('--opt-strategy=bb,1') # default and best with frumpy + Vsids
-# ASP_OPTIONS.append('--opt-strategy=bb,2') # better in default mode
-# ASP_OPTIONS.append('--opt-strategy=bb,3') # longest of the bb
-# ASP_OPTIONS.append('--opt-strategy=usc,1') # usc seems to never finish…
-# ASP_OPTIONS.append('--opt-strategy=usc,2')
-# ASP_OPTIONS.append('--opt-strategy=usc,3')
+ASP_GRINGO_OPTIONS = ''  # no default options
+ASP_CLASP_OPTIONS  = ''  # options of solving heuristics
+ASP_CLASP_OPTIONS += ' -Wno-atom-undefined'
+ASP_CLASP_OPTIONS += ' --configuration=frumpy'
+ASP_CLASP_OPTIONS += ' --heuristic=Vsids'
+# ASP_CLASP_OPTIONS.append('--opt-mode=opt')
+# ASP_CLASP_OPTIONS.append('--models=0')
+# ASP_CLASP_OPTIONS     = []
+# ASP_CLASP_OPTIONS.append('--opt-strategy=bb,1') # default and best with frumpy + Vsids
+# ASP_CLASP_OPTIONS.append('--opt-strategy=bb,2') # better in default mode
+# ASP_CLASP_OPTIONS.append('--opt-strategy=bb,3') # longest of the bb
+# ASP_CLASP_OPTIONS.append('--opt-strategy=usc,1') # usc seems to never finish…
+# ASP_CLASP_OPTIONS.append('--opt-strategy=usc,2')
+# ASP_CLASP_OPTIONS.append('--opt-strategy=usc,3')
 
 
-# ASP_OPTIONS.append('--heuristic=Berkmin') # default and ok
-# ASP_OPTIONS.append('--heuristic=Vsids') # the faster
-# ASP_OPTIONS.append('--heuristic=Vmtf')
-# ASP_OPTIONS.append('--heuristic=Domain')
-# ASP_OPTIONS.append('--heuristic=Unit')
-# ASP_OPTIONS.append('--heuristic=None')
+# ASP_CLASP_OPTIONS.append('--heuristic=Berkmin') # default and ok
+# ASP_CLASP_OPTIONS.append('--heuristic=Vsids') # the faster
+# ASP_CLASP_OPTIONS.append('--heuristic=Vmtf')
+# ASP_CLASP_OPTIONS.append('--heuristic=Domain')
+# ASP_CLASP_OPTIONS.append('--heuristic=Unit')
+# ASP_CLASP_OPTIONS.append('--heuristic=None')
 
 
 # VALUES
