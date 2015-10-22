@@ -29,24 +29,8 @@ class InGML(InConverter):
             return 'networkx python module is necessary for use GML as input format'
 
 
-
-
 def gml_to_atom_generator(filename):
     from networkx import read_gml
-
     graph = read_gml(filename)
-
-    # graph node returns a dict like that:
-    # {0: {'id': 0, 'label': u'R_NADK'}}
-    # {node_id: {'id': node_id, 'label': node_label}
-    # definition of a id:label dict:
-    names = {idn:val['label'] for idn, val in iteritems(graph.node)}
-
-    # create all edges:
-    for ida, idb in graph.edges():
-        yield 'edge("' + names[ida] + '","' + names[idb] + '").'
-
-
-
-
-
+    for node1, node2 in graph.edges():
+        yield 'edge("' + node1 + '","' + node2 + '").'
