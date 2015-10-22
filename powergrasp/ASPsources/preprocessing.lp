@@ -4,6 +4,9 @@
 %
 % initial version:  08/07/2014   L. Bourneuf
 %
+% Constants:
+%       - cc: treated connected component. (cc/1 gives existing cc)
+%
 % Input:
 %       - ccedge(cc,X,Y): there exists an edge between X and Y in the
 %                         subgraph corresponding to connected component cc
@@ -19,7 +22,8 @@
 %       - maxlowerbound(S): the maximal score lower bound is S
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program preprocessing(cc).
+
+
 
 % get oriented edges of the connected component that are not covered
 oedge(X,Y):- ccedge(cc,X,Y) ; X<Y ; not covered(X,Y).

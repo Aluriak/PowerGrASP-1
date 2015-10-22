@@ -5,16 +5,18 @@
 % revised version:  29/04/2015   L. Bourneuf
 % revised version:  08/07/2015   L. Bourneuf
 %
+% Constants:
+%       - cc: treated connected component. (cc/1 gives existing cc)
+%       -  k: current step of treatment (first step is 1)
+%
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
-%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - star(cc,k,T): set T of concept is a star.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program findbestbiclique(cc,k).
 
 
 

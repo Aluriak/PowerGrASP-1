@@ -21,7 +21,7 @@
 %       - top(CC,K,T):- powernode CC,K,T is contained by nothing.
 %       - topnode(X):- node X is contained by nothing.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program inclusion.
+%#program inclusion.
 
 node(X):- powernode(_,_,_,X).
 

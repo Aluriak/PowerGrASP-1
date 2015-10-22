@@ -14,7 +14,6 @@
 %       - nb(input_edge,N): 
 %       - nb(repeatition,N): 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program integrity.
 
 
 oedge(X,Y):- edge(X,Y) ; X<Y.

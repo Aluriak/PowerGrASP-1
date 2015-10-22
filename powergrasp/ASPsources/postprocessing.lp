@@ -11,11 +11,16 @@
 %
 % initial version:  09/07/2014   L. Bourneuf
 %
+% Constants:
+%       - cc: treated connected component. (cc/1 gives existing cc)
+%       -  k: current step of treatment (first step is 1)
+%       - lowerbound: the minimal score (see 'lowerbound optimization')
+%       - upperbound: the maximal score (see 'lowerbound optimization')
+%
 % Input (from findbestclique or findbestbiclique):
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - clique(cc,k): concept is a clique.
 %       - star(cc,k,T): set T of concept is a star.
-%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
@@ -29,8 +34,7 @@
 %       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
 %       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program postprocessing(cc,k,lowerbound,upperbound).
-
+%#program postprocessing(cc,k,lowerbound,upperbound).
 
 
 

@@ -4,16 +4,20 @@
 % initial version:  09/12/2014   J. Nicolas
 % revised version:  07/07/2015   L. Bourneuf
 %
+% Constants:
+%       - cc: treated connected component. (cc/1 gives existing cc)
+%       -  k: current step of treatment (first step is 1)
+%
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
-%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
 % Output:
 %       - newconcept(cc,k,1,X): X is the member of the clique cc at step k.
 %       - clique(cc,k): concept is a clique.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program findbestclique(cc,k).
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%

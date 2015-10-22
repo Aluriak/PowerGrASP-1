@@ -13,7 +13,8 @@
 %       - ccedge(CC,X,Y): there exists an edge between X and Y in CC.
 %       - block(0,CC,X): X is in the block cc a step 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#program extract.
+
+
 
 % Symetric graph
 inter(X,Y):- edge(X,Y).
