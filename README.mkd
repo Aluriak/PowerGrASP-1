@@ -4,13 +4,13 @@ More documentation about PowerGrASP can be found in the [documentation file](htt
 
 
 ## Requirements
-Needs [python-gringo module](https://github.com/lxsli/python-gringo), with Clingo in [version 4.5.0](https://github.com/lxsli/python-gringo/tree/8b960fd0c4ad2fbff9b5acc2fa64555f47c28dd5).
-Unfortunately, you will need to compile clingo yourself, for includes the python support. (and eventually the thread support, for a faster compression)
-This can be a pain, but there is a little help (in french, infortunately) given by *doc/help.mkd*.
+A simple `pip install powergrasp` is theorically sufficient.
+However, because of the pyasp module, a file manipulation must be realised :
+- get compatible versions of [gringo](http://sourceforge.net/projects/potassco/files/gringo/4.5.3/) and [clasp](http://sourceforge.net/projects/potassco/files/clasp/3.1.3/) on the [potassco website](http://sourceforge.net/projects/potassco/files);
+- put the retrieved executables __gringo__ and __clasp__ in __/usr/lib/python3.5/site-packages/pyasp/bin__, with names __gringo4__ and __clasp__, respectively;
 
-With Python 2.7, python-gringo module and Clingo 4.5.0, PowerGrASP was tested on fedora 21 and archlinux, with success.
-Higher versions of python or clingo will change drastically the API, so PowerGrASP is not compatible.
-Smaller versions will mainly lead to bugs, or, if it's really smaller, API divergences.
+This manipulation is necessary while the *pyasp* module doesn't get the used version of gringo and clasp. (4.5.3 and 3.1.3)
+PowerGrASP was tested with gringo 4.5.1 and 4.5.3, and not compliant with versions 4.4.x, because of some known bugs.
 
 
 ## Basic use
