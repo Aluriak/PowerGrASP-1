@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __name__ = 'PowerGrASP'
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 
 
 # link between filenames and studies
