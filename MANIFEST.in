@@ -1,1 +1,2 @@
-include requirements.txt optional-requirements.txt Makefile README.mkd LICENCE
+include requirements.txt optional-requirements.txt Makefile README.mkd LICENCE logs/powergrasp.log
+recursive-include tests/ data/
