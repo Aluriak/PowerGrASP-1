@@ -30,8 +30,8 @@ setup(
     package_data = {
         __name__ : ['README.mkd', 'LICENSE.txt', 'requirements.txt',
                     'optional-requirements.txt', 'Makefile', 'LICENCE',
-                    'powergrasp/logs/powergrasp.log', 'powergrasp/tests/*.lp',
-                    'powergrasp/tests/*.gml', 'powergrasp/data/*.csv']
+                    'logs/powergrasp.log', 'tests/*.lp',
+                    'tests/*.gml', 'data/*.csv']
     },
     include_package_data = True,
     install_requires=reqs,
