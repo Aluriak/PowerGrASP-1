@@ -140,6 +140,8 @@ cytoscape:
 show:
 	$(PYTHON) --stats-file=$(DATA)statistics.csv --plot-stats
 
+test_register:
+	python setup.py register -r https://testpypi.python.org/pypi
 test_install:
 	python setup.py sdist upload -r https://testpypi.python.org/pypi
 	pip install -U -i https://testpypi.python.org/pypi powergrasp
