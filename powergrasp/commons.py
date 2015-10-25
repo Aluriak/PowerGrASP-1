@@ -8,7 +8,9 @@ Moreover, some generalist functions are defined,
 
 # IMPORTS
 from __future__   import absolute_import, print_function
-from   logging.handlers import RotatingFileHandler
+from pkg_resources import resource_filename
+from functools     import partial
+from logging.handlers import RotatingFileHandler
 import powergrasp.info as info
 import logging
 import os
@@ -16,21 +18,22 @@ import os
 
 # DIRECTORIES, FILENAMES
 PACKAGE_NAME    = info.__name__.lower()
+ACCESS_FILE     = partial(resource_filename, PACKAGE_NAME)
 LOGGER_NAME     = PACKAGE_NAME
-DIR_LOGS        = PACKAGE_NAME + '/logs/'
-DIR_DATA        = PACKAGE_NAME + '/data/'
-DIR_TEST_CASES  = PACKAGE_NAME + '/tests/'
-DIR_SOURCES     = PACKAGE_NAME + '/'
+DIR_LOGS        = 'logs/'
+DIR_DATA        = 'data/'
+DIR_TEST_CASES  = 'tests/'
+DIR_SOURCES     = ''
 DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
 FILE_OUTPUT     = DIR_DATA + 'output'
 ASP_FILE_EXT    = '.lp'
 
 # ASP SOURCES
-ASP_SRC_EXTRACT = DIR_ASP_SOURCES + 'extract'          + ASP_FILE_EXT
-ASP_SRC_PREPRO  = DIR_ASP_SOURCES + 'preprocessing'    + ASP_FILE_EXT
-ASP_SRC_FINDCC  = DIR_ASP_SOURCES + 'findbestclique'   + ASP_FILE_EXT
-ASP_SRC_FINDBC  = DIR_ASP_SOURCES + 'findbestbiclique' + ASP_FILE_EXT
-ASP_SRC_POSTPRO = DIR_ASP_SOURCES + 'postprocessing'    + ASP_FILE_EXT
+ASP_SRC_EXTRACT = ACCESS_FILE(DIR_ASP_SOURCES +'extract'         + ASP_FILE_EXT)
+ASP_SRC_PREPRO  = ACCESS_FILE(DIR_ASP_SOURCES +'preprocessing'   + ASP_FILE_EXT)
+ASP_SRC_FINDCC  = ACCESS_FILE(DIR_ASP_SOURCES +'findbestclique'  + ASP_FILE_EXT)
+ASP_SRC_FINDBC  = ACCESS_FILE(DIR_ASP_SOURCES +'findbestbiclique'+ ASP_FILE_EXT)
+ASP_SRC_POSTPRO = ACCESS_FILE(DIR_ASP_SOURCES +'postprocessing'  + ASP_FILE_EXT)
 
 # Constants involved in ASP solving
 ASP_ARG_CC   = 'cc'
@@ -117,7 +120,7 @@ formatter    = logging.Formatter(
     '%(asctime)s :: %(levelname)s :: %(message)s'
 )
 file_handler = RotatingFileHandler(
-    DIR_LOGS + LOGGER_NAME + '.log',
+    ACCESS_FILE(DIR_LOGS + LOGGER_NAME + '.log'),
     'a', 1000000, 1
 )
 file_handler.setLevel(LOG_LEVEL)
