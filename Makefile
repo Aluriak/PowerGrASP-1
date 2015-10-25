@@ -6,12 +6,14 @@ PYTHON=$(PYTHON3)
 #PYTHON=$(PYTHON2)
 CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 TARGET=powergrasp/__main__.py
+TESTS=powergrasp/tests/
+DATA=powergrasp/data/
 
-STATFILE=--stats-file=data/statistics.csv
-#PLOTFILE=--plot-file=data/statistics.png
+STATFILE=--stats-file=$(DATA)statistics.csv
+#PLOTFILE=--plot-file=$(DATA)statistics.png
 #PLOT=--plot-stats
 OUTPUT=--output-format="bbl"
-FOUT=--output-file="data/output"
+FOUT=--output-file="$(DATA)output"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 LOGLEVEL=--loglevel=warning
@@ -31,90 +33,90 @@ COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
 
 # BENCHMARKS
-BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp,tests/structural_binding.lp
-#BENCHMARK_INPUT=--inputs=tests/proteome_yeast_1.lp,tests/proteome_yeast_2.lp
-BENCHMARK_OUTPUT=data/benchmarks.csv
+BENCHMARK_INPUT=--inputs=$(TESTS)proteome_yeast_1.lp,$(TESTS)proteome_yeast_2.lp,$(TESTS)structural_binding.lp
+#BENCHMARK_INPUT=--inputs=$(TESTS)proteome_yeast_1.lp,$(TESTS)proteome_yeast_2.lp
+BENCHMARK_OUTPUT=$(DATA)benchmarks.csv
 BENCHMARK_RUN=--runs=4
 
 abn:
-	$(COMMAND) --graph-data="tests/abnormal.lp"
+	$(COMMAND) --graph-data="$(TESTS)abnormal.lp"
 bbind:
-	$(COMMAND) --graph-data="tests/structural_binding_no_bridge.lp"
+	$(COMMAND) --graph-data="$(TESTS)structural_binding_no_bridge.lp"
 bintree:
-	$(COMMAND) --graph-data="tests/bintree.lp"
+	$(COMMAND) --graph-data="$(TESTS)bintree.lp"
 bip:
-	$(COMMAND) --graph-data="tests/bipartite.lp"
+	$(COMMAND) --graph-data="$(TESTS)bipartite.lp"
 blo:
-	$(COMMAND) --graph-data="tests/testblocks.lp"
+	$(COMMAND) --graph-data="$(TESTS)testblocks.lp"
 cdiam:
-	$(COMMAND) --graph-data="tests/double_biclique_and_clique.lp"
+	$(COMMAND) --graph-data="$(TESTS)double_biclique_and_clique.lp"
 clique:
-	$(COMMAND) --graph-data="tests/cliques.lp"
+	$(COMMAND) --graph-data="$(TESTS)cliques.lp"
 cclique:
-	$(COMMAND) --graph-data="tests/big_clique.lp"
+	$(COMMAND) --graph-data="$(TESTS)big_clique.lp"
 cc:
-	$(COMMAND) --graph-data="tests/concomp.lp"
+	$(COMMAND) --graph-data="$(TESTS)concomp.lp"
 coli:
-	$(COMMAND) --graph-data="tests/ecoli_2896-23.gml"
+	$(COMMAND) --graph-data="$(TESTS)ecoli_2896-23.gml"
 ccoli:
-	$(COMMAND) --graph-data="tests/ecoli_2896-53.gml"
+	$(COMMAND) --graph-data="$(TESTS)ecoli_2896-53.gml"
 cccoli:
-	$(COMMAND) --graph-data="tests/ecoli_2391-42.gml"
+	$(COMMAND) --graph-data="$(TESTS)ecoli_2391-42.gml"
 chloro:
-	$(COMMAND) --graph-data="tests/CHLOROPHYLL-SYN.sbml"
+	$(COMMAND) --graph-data="$(TESTS)CHLOROPHYLL-SYN.sbml"
 diam:
-	$(COMMAND) --graph-data="tests/diamond.lp"
+	$(COMMAND) --graph-data="$(TESTS)diamond.lp"
 ddiam:
-	$(COMMAND) --graph-data="tests/double_biclique.lp"
+	$(COMMAND) --graph-data="$(TESTS)double_biclique.lp"
 inc:
-	$(COMMAND) --graph-data="tests/inclusions.lp"
+	$(COMMAND) --graph-data="$(TESTS)inclusions.lp"
 pfc:
-	$(COMMAND) --graph-data="tests/perfectfit.lp"
+	$(COMMAND) --graph-data="$(TESTS)perfectfit.lp"
 phos:
-	$(COMMAND) --graph-data="tests/phosphatase.lp"
+	$(COMMAND) --graph-data="$(TESTS)phosphatase.lp"
 prol:
-	$(COMMAND) --graph-data="tests/proteome_yeast_1_letters.lp"
+	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_1_letters.lp"
 prot:
-	$(COMMAND) --graph-data="tests/proteome_yeast_1.lp"
+	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_1.lp"
 prot2:
-	$(COMMAND) --graph-data="tests/proteome_yeast_2.lp"
+	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_2.lp"
 sbind:
-	$(COMMAND) --graph-data="tests/structural_binding.lp"
+	$(COMMAND) --graph-data="$(TESTS)structural_binding.lp"
 single:
-	$(COMMAND) --graph-data="tests/singlenode.lp"
+	$(COMMAND) --graph-data="$(TESTS)singlenode.lp"
 star:
-	$(COMMAND) --graph-data="tests/star.lp"
+	$(COMMAND) --graph-data="$(TESTS)star.lp"
 three:
-	$(COMMAND) --graph-data="tests/threenode.lp"
+	$(COMMAND) --graph-data="$(TESTS)threenode.lp"
 tree:
-	$(COMMAND) --graph-data="tests/tree.lp"
+	$(COMMAND) --graph-data="$(TESTS)tree.lp"
 triv:
-	$(COMMAND) --graph-data="tests/trivial.lp"
+	$(COMMAND) --graph-data="$(TESTS)trivial.lp"
 tiso:
-	$(COMMAND) --graph-data="tests/tiso_1.0.sbml"
+	$(COMMAND) --graph-data="$(TESTS)tiso_1.0.sbml"
 uml:
-	$(COMMAND) --graph-data="tests/uml.lp"
+	$(COMMAND) --graph-data="$(TESTS)uml.lp"
 uvg:
-	$(COMMAND) --graph-data="tests/umlsvg.lp"
+	$(COMMAND) --graph-data="$(TESTS)umlsvg.lp"
 gml:
-	$(COMMAND) --graph-data="tests/gml_test.gml"
+	$(COMMAND) --graph-data="$(TESTS)gml_test.gml"
 troll:
-	$(COMMAND) --graph-data="tests/notsupportedformat.troll"
+	$(COMMAND) --graph-data="$(TESTS)notsupportedformat.troll"
 
 
 # this is a way to treat multiple files
-pack: FOUT=--output-file="data/tmp"
+pack: FOUT=--output-file="$(DATA)tmp"
 pack:
-	- rm -r mkdir data/tmp/*
-	mkdir -p data/tmp
-	$(COMMAND) --graph-data="tests/pv/2391_12.gml"
-	$(COMMAND) --graph-data="tests/pv/2391_83.gml"
-	$(COMMAND) --graph-data="tests/pv/502_56.gml"
-	$(COMMAND) --graph-data="tests/pv/502_67.gml"
-	$(COMMAND) --graph-data="tests/pv/502_76.gml"
-	$(COMMAND) --graph-data="tests/pv/502_83.gml"
-	rm data/tmp/*[^\.bbl]
-	tar acf data/tmp.tar.gz data/tmp/
+	- rm -r mkdir $(DATA)tmp/*
+	mkdir -p $(DATA)tmp
+	$(COMMAND) --graph-data="$(TESTS)pv/2391_12.gml"
+	$(COMMAND) --graph-data="$(TESTS)pv/2391_83.gml"
+	$(COMMAND) --graph-data="$(TESTS)pv/502_56.gml"
+	$(COMMAND) --graph-data="$(TESTS)pv/502_67.gml"
+	$(COMMAND) --graph-data="$(TESTS)pv/502_76.gml"
+	$(COMMAND) --graph-data="$(TESTS)pv/502_83.gml"
+	rm $(DATA)tmp/*[^\.bbl]
+	tar acf $(DATA)tmp.tar.gz $(DATA)tmp/
 
 benchmarks:
 	$(PYTHON2_CMD) powergrasp/benchmarks.py $(BENCHMARK_INPUT) --output-file=$(BENCHMARK_OUTPUT) $(BENCHMARK_RUN)
@@ -136,7 +138,7 @@ tarasp:
 cytoscape:
 	$(CYTOSCAPE)
 show:
-	$(PYTHON) --stats-file=data/statistics.csv --plot-stats
+	$(PYTHON) --stats-file=$(DATA)statistics.csv --plot-stats
 
 test_install:
 	python setup.py sdist upload -r https://testpypi.python.org/pypi

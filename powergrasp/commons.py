@@ -15,11 +15,12 @@ import os
 
 
 # DIRECTORIES, FILENAMES
-LOGGER_NAME     = info.__name__.lower()
-DIR_LOGS        = 'logs/'
-DIR_DATA        = 'data/'
-DIR_TEST_CASES  = 'tests/'
-DIR_SOURCES     = info.__name__.lower() + '/'
+PACKAGE_NAME    = info.__name__.lower()
+LOGGER_NAME     = PACKAGE_NAME
+DIR_LOGS        = PACKAGE_NAME + '/logs/'
+DIR_DATA        = PACKAGE_NAME + '/data/'
+DIR_TEST_CASES  = PACKAGE_NAME + '/tests/'
+DIR_SOURCES     = PACKAGE_NAME + '/'
 DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
 FILE_OUTPUT     = DIR_DATA + 'output'
 ASP_FILE_EXT    = '.lp'

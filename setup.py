@@ -16,7 +16,7 @@ from pip.download import PipSession
 # parse_requirements() returns generator of pip.req.InstallRequirement objects
 install_reqs = parse_requirements('requirements.txt', session=PipSession())
 reqs = [str(ir.req) for ir in install_reqs]
-# reqs = 
+# reqs =
 
 
 #########################
@@ -29,9 +29,9 @@ setup(
     packages = find_packages(exclude=['powergrasp/']),
     package_data = {
         __name__ : ['README.mkd', 'LICENSE.txt', 'requirements.txt',
-                    'optional-requirements.txt', 'Makefile', 'licence',
-                    'logs/powergrasp.log', 'tests/*.lp', 'tests/*.gml',
-                    'data/*.csv']
+                    'optional-requirements.txt', 'Makefile', 'LICENCE',
+                    'powergrasp/logs/powergrasp.log', 'powergrasp/tests/*.lp',
+                    'powergrasp/tests/*.gml', 'powergrasp/data/*.csv']
     },
     include_package_data = True,
     install_requires=reqs,
