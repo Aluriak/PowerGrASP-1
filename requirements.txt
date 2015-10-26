@@ -1,3 +1,2 @@
 docopt==0.6.2
-future==0.15.2
 pyasp==1.4.1

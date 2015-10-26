@@ -13,9 +13,6 @@ Statistics information can be printed or saved in files
 
 """
 
-from __future__   import absolute_import, print_function
-from __future__   import division
-from future.utils import iteritems, itervalues
 import powergrasp.commons as commons
 import csv
 
@@ -126,7 +123,7 @@ def add(stats, initial_edge_count=None, poweredge_count=None,
         FINL_PWED: poweredge_count,
         FINL_PWND: powernode_count,
     }
-    for info, value in iteritems(accumulative_values):
+    for info, value in accumulative_values.items():
         if value is not None:
             stats[info] += value
 

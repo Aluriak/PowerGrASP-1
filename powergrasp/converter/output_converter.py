@@ -6,7 +6,6 @@ Converters are objects that convert a flow of ASP atoms
  in a particular string format.
 
 """
-from __future__   import absolute_import, print_function
 import powergrasp.commons as commons
 import itertools
 import re

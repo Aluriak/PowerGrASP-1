@@ -3,8 +3,6 @@
 definition of the GML input format converter.
 
 """
-from __future__   import absolute_import, print_function
-from future.utils import iteritems, iterkeys, itervalues
 from powergrasp.converter.input_converter import InConverter
 import powergrasp.commons as commons
 import itertools

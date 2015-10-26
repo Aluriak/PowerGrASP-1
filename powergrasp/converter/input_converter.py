@@ -11,7 +11,6 @@ Supported formats :
 - bbl: bubble format, used by Powergraph for printings;
 
 """
-from __future__         import absolute_import, print_function
 from powergrasp.commons import basename
 import powergrasp.commons as commons
 import itertools

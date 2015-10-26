@@ -38,7 +38,6 @@ input formats:
 
 """
 
-from __future__            import absolute_import, print_function
 from docopt                import docopt
 from powergrasp.powergrasp import compress
 from powergrasp.info       import __version__

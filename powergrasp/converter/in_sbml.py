@@ -8,8 +8,6 @@ The data is used as follow:
     - an edge is created between each reaction node and each species involved in it;
 
 """
-from __future__   import absolute_import, print_function
-from future.utils import iteritems, iterkeys, itervalues
 from powergrasp.converter.input_converter import InConverter
 import itertools
 import powergrasp.commons as commons

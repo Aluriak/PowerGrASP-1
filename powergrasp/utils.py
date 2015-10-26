@@ -7,8 +7,6 @@ or the compression.
 
 
 import itertools
-from future.utils       import iteritems
-
 import powergrasp.atoms   as atoms
 import powergrasp.solving as solving
 from powergrasp.commons import basename
@@ -37,7 +35,7 @@ def test_integrity(asp_graph_data_filename,
 def dict2atoms(graph, converted_graph_filename):
     """write in given filename the equivalent to given graph in ASP"""
     with open(converted_graph_filename, 'w') as fd:
-        for node, targets in iteritems(converted_graph_filename):
+        for node, targets in converted_graph_filename.items():
             fd.write('\n'.join(
                 'edge("'
                 + str(node)

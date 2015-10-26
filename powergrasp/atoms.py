@@ -5,8 +5,6 @@ Provides converters, access and printings of atoms.
 
 """
 
-from __future__         import absolute_import, print_function
-from future.utils       import iteritems, itervalues
 from collections        import defaultdict, Counter, namedtuple
 from powergrasp.commons import RESULTS_PREDICATS
 import itertools
@@ -129,7 +127,7 @@ def count(atoms, names=None):
      only founded atoms will be returned.
     """
     if atoms is None: atoms = []
-    counts = iteritems(Counter(split(a)[0] for a in atoms))
+    counts = Counter(split(a)[0] for a in atoms).items()
     if names is None:
         return {n:c for n, c in counts}
     else:

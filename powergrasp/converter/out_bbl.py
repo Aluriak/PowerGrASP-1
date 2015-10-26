@@ -25,8 +25,6 @@ The Cytoscape plugin CyOoG is able to read and print that format.
 
 
 """
-from __future__          import absolute_import, print_function
-from future.utils        import iteritems, iterkeys, itervalues
 from collections         import defaultdict
 from powergrasp.commons  import basename
 from powergrasp.converter.output_converter import OutConverter
@@ -276,7 +274,7 @@ class OutBBL(OutConverter):
                )
              + '\t'
              + container
-             for container, containeds in iteritems(self.contains)
+             for container, containeds in self.contains.items()
              for contained in containeds
             ),
         # EDGEs
@@ -286,7 +284,7 @@ class OutBBL(OutConverter):
             ),
             # create edges
             ('EDGE\t' + node + '\t' + target + '\t1.0'
-             for node, targets in iteritems(self.edges)
+             for node, targets in self.edges.items()
              for target in targets
             ),
         ))

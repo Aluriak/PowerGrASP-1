@@ -6,9 +6,7 @@ The compress function get numerous arguments,
  for allowing a parametrable compression.
 
 """
-from __future__         import absolute_import , print_function
 from builtins           import input
-from future.utils       import itervalues, iteritems
 from collections        import defaultdict
 from powergrasp.commons import basename, FILE_OUTPUT
 from powergrasp.commons import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC

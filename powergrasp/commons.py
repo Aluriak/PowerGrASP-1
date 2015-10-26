@@ -7,7 +7,6 @@ Moreover, some generalist functions are defined,
 """
 
 # IMPORTS
-from __future__   import absolute_import, print_function
 from pkg_resources import resource_filename
 from functools     import partial
 from logging.handlers import RotatingFileHandler
