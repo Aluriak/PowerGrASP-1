@@ -98,9 +98,13 @@ def extension(filepath):
 
 def thread(number):
     """Set ASP options for use n thread, or only one if set to None"""
+    _logger.warning('Threading optimization is currently not implemented.'
+                    'PowerGrASP will run with only one thread.')
+    return
+    global ASP_CLASP_OPTIONS
     assert(number is None or number > 0)
     if number is not None:
-        ASP_OPTIONS.append('--parallel-mode=' + str(number) + ',split')
+        ASP_CLASP_OPTIONS += '--parallel-mode=' + str(number) + ',split'
 
 def logger(name=LOGGER_NAME, logfilename=None):
     """Return logger of given name, without initialize it.

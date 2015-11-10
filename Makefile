@@ -22,7 +22,6 @@ LOGLEVEL=--loglevel=warning
 #LBOUND=--lbound-cutoff=-1
 CCCOUNT=--count-cc
 MODELCOUNT=--count-model
-#NOTHREADING=--no-threading
 PROFILING=--profiling
 #THREAD=--thread=4
 #PRE=--show-pre

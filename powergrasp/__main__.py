@@ -19,14 +19,13 @@ options:
     --show-pre           print preprocessed data in stdout
     --count-model        prints models count in stdout
     --count-cc           prints connected component count in stdout
-    --no-threading       don't use threading optimization
     --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
     --loglevel=NAME      defines terminal log level                 [default: debug]
     --stats-file=FILE    save csv statistics in FILE
     --plot-stats         plot stats found in stats-file if exist
     --plot-file=FILE     instead of show it, save plot in png FILE
     --profiling          print graph info before compress it
-    --thread=INT         use n thread for ASP solving (one by default)
+    --thread=INT         use n thread for ASP solving               [default: 1]
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -57,11 +56,19 @@ if __name__ == '__main__':
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    lbound_cutoff = int(options['--lbound-cutoff'])
-    assert(options['--output-format'] in OUTPUT_FORMATS)
-
+    # define the log file, if necessary
+    if options['--logfile']:
+        commons.log_file(options['--logfile'])
+    # and the log level
     commons.log_level(options['--loglevel'])
-    commons.thread(options['--thread'])
+    # threading
+    nb_thread = int(options['--thread'])
+    if nb_thread > 1:
+        commons.thread(nb_thread)
+    # cut-off
+    lbound_cutoff = int(options['--lbound-cutoff'])
+    # output format verification
+    assert(options['--output-format'] in OUTPUT_FORMATS)
 
     # launch compression
     if options['--graph-data']:
@@ -103,7 +110,6 @@ if __name__ == '__main__':
             show_preprocessed  = options['--show-pre'     ],
             count_model        = options['--count-model'  ],
             count_cc           = options['--count-cc'     ],
-            no_threading       = options['--no-threading' ],
             statistics_filename= options['--stats-file'   ],
         )
 

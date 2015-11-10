@@ -36,7 +36,7 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
              statistics_filename='data/statistics.csv',
              output_format='bbl', lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
-             no_threading=True, show_preprocessed=False):
+             show_preprocessed=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc and update files
@@ -67,11 +67,6 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
     """
     if not graph_data: return  # simple protection
 
-    # initialization of first solution getter
-    if no_threading:
-        solving.first_solution_function(
-            solving.FIRST_SOLUTION_NO_THREAD
-        )
     # Initialize descriptors
     output    = open(output_file + '.' + output_format, 'w')
     converter = converter_module.output_converter_for(output_format)
