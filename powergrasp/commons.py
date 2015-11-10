@@ -26,6 +26,7 @@ DIR_SOURCES     = ''
 DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
 FILE_OUTPUT     = DIR_DATA + 'output'
 ASP_FILE_EXT    = '.lp'
+FILENAME_LOG    = DIR_LOGS + LOGGER_NAME + '.log'
 
 # ASP SOURCES
 ASP_SRC_EXTRACT = ACCESS_FILE(DIR_ASP_SOURCES +'extract'         + ASP_FILE_EXT)
@@ -118,18 +119,6 @@ def logger(name=LOGGER_NAME, logfilename=None):
 _logger = logging.getLogger(LOGGER_NAME)
 _logger.setLevel(LOG_LEVEL)
 
-# log file
-formatter    = logging.Formatter(
-    '%(asctime)s :: %(levelname)s :: %(message)s'
-)
-file_handler = RotatingFileHandler(
-    ACCESS_FILE(DIR_LOGS + LOGGER_NAME + '.log'),
-    'a', 1000000, 1
-)
-file_handler.setLevel(LOG_LEVEL)
-file_handler.setFormatter(formatter)
-_logger.addHandler(file_handler)
-
 # terminal log
 stream_handler = logging.StreamHandler()
 formatter      = logging.Formatter('%(levelname)s: %(message)s')
@@ -137,11 +126,38 @@ stream_handler.setFormatter(formatter)
 stream_handler.setLevel(LOG_LEVEL)
 _logger.addHandler(stream_handler)
 
+# log file
+formatter    = logging.Formatter(
+    '%(asctime)s :: %(levelname)s :: %(message)s'
+)
+try:
+    file_handler = RotatingFileHandler(
+        ACCESS_FILE(FILENAME_LOG),
+        'a', 1000000, 1
+    )
+    file_handler.setLevel(LOG_LEVEL)
+    file_handler.setFormatter(formatter)
+    _logger.addHandler(file_handler)
+except PermissionError:
+    _logger.warning(os.path.abspath(DIR_LOGS + LOGGER_NAME + '.log')
+                    + "can't be written because of a permission error."
+                    + "No logs will be saved in file.")
+
+
+def log_file(filename):
+    handlers = (_ for _ in _logger.handlers
+                if isinstance(_, RotatingFileHandler)
+               )
+    for handler in handlers:
+        print(dir(handler))
+        exit()
+        handler.setLevel(level.upper())
+
 
 def log_level(level):
     """Set terminal log level to given one"""
     handlers = (_ for _ in _logger.handlers
-                if _.__class__ is logging.StreamHandler
+                if isinstance(_, logging.StreamHandler)
                )
     for handler in handlers:
         handler.setLevel(level.upper())

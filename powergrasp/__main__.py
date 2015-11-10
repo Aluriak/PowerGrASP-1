@@ -21,6 +21,7 @@ options:
     --count-cc           prints connected component count in stdout
     --lbound-cutoff=INT  cut-off for max lowerbound optimization    [default: 2]
     --loglevel=NAME      defines terminal log level                 [default: debug]
+    --logfile=FILE       file where all logs will be put in
     --stats-file=FILE    save csv statistics in FILE
     --plot-stats         plot stats found in stats-file if exist
     --plot-file=FILE     instead of show it, save plot in png FILE
