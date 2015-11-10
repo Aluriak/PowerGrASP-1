@@ -16,3 +16,4 @@ man/
 share/
 PowerGrASP.egg-info/
 dist/
+.zcache/
