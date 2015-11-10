@@ -5,12 +5,25 @@ More documentation about PowerGrASP can be found in the [documentation file](htt
 
 ## Requirements
 A simple `pip install powergrasp` is theorically sufficient.
+
 However, because of the pyasp module, a file manipulation must be realised :
 - get compatible versions of [gringo](http://sourceforge.net/projects/potassco/files/gringo/4.5.3/) and [clasp](http://sourceforge.net/projects/potassco/files/clasp/3.1.3/) on the [potassco website](http://sourceforge.net/projects/potassco/files);
-- put the retrieved executables __gringo__ and __clasp__ in __/usr/lib/python3.5/site-packages/pyasp/bin__, with names __gringo4__ and __clasp__, respectively;
+- put the retrieved executables __gringo__ and __clasp__ in __/usr/lib/python3.5/site-packages/pyasp/bin__ (see table below for details), with names __gringo4__ and __clasp__, respectively;
 
 This manipulation is necessary while the *pyasp* module doesn't get the used version of gringo and clasp. (4.5.3 and 3.1.3)
 PowerGrASP was tested with gringo 4.5.1 and 4.5.3, and not compliant with versions 4.4.x, because of some known bugs.
+Note that, if you use a virtualenv, the directories where executables should be put are in the lib directory create by virtualenv.
+
+A more complex but more useful `pip install --user powergrasp` performs the installation in the user level.
+This allows powergrasp to store all its logs, data results,… without problems in its self data and logs directories.
+
+
+    installation      | directory where __gringo__ and __clasp__ should be put (likely)
+    ------------------|-------------------
+    system (pip)      | __/usr/lib/python3.5/site-packages/pyasp/bin
+    user (pip --user) | ~/.local/lib/python3.5/site-packages/pyasp/bin
+    virtualenv + pip  | path/to/virtualenv/lib/python3.5/site-packages/pyasp/bin
+
 
 
 ## Basic use
