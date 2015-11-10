@@ -1,20 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Definitions of many functions that helps for manipulation of ASP solvers
-and best model collecting.
-
-FIRST_SOLUTION_THREAD and FIRST_SOLUTION_NO_THREAD are functions
- that return the best model find by given solver, after a solve call.
-These two function should not be called directly:
- instead, client code should use the first_solution function,
- that is an alias to one of them.
-By default, FIRST_SOLUTION_THREAD is used, but if clingo is not compiled with
- the thread support, client code can call
- >>> first_solution_function(FIRST_SOLUTION_NO_THREAD)
- for use the non threaded but slower function.
-
-Another util function is model_from(3), that allow the user
- to reuse quickly a solving pattern.
+Definitions of model_from(5) that encapsulate
+ the ASP grounder and solver calls.
 
 """
 from functools   import partial
@@ -35,7 +22,7 @@ def model_from(base_atoms, aspfiles, aspargs={},
 
     base_atoms -- string, ASP-readable atoms
     aspfiles -- (list of) filename, contains the ASP source code
-    aspargs -- dict of constant:values, that will be set as constants in aspfiles
+    aspargs -- dict of constant:value that will be set as constants in aspfiles
     gringo_options -- string of command-line options given to gringo
     clasp_options -- string of command-line options given to clasp
 
