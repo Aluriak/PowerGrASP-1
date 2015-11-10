@@ -7,8 +7,6 @@ Supported formats :
 - bbl: bubble format, used by Powergraph for printings;
 
 """
-from __future__                            import absolute_import
-from future.utils                          import iterkeys
 from powergrasp.converter.output_converter import OutConverter
 from powergrasp.converter.input_converter  import InConverter
 from powergrasp.converter.out_nnf          import OutNNF
@@ -32,8 +30,8 @@ OUTPUT_FORMAT_CONVERTERS = {
     'nnf' : OutBBL,
 }
 
-INPUT_FORMATS  = tuple(iterkeys( INPUT_FORMAT_CONVERTERS))
-OUTPUT_FORMATS = tuple(iterkeys(OUTPUT_FORMAT_CONVERTERS))
+INPUT_FORMATS  = tuple(INPUT_FORMAT_CONVERTERS.keys())
+OUTPUT_FORMATS = tuple(OUTPUT_FORMAT_CONVERTERS.keys())
 
 
 # converters access

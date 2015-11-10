@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 definition of the NNF format converter.
+
 """
 from powergrasp.converter.output_converter import OutConverter
 import powergrasp.commons as commons

@@ -20,8 +20,6 @@ Generate a CSV file as output.
 """
 
 
-
-from __future__ import absolute_import, print_function, division
 from docopt     import docopt
 from powergrasp import compress
 from info       import __version__, STUDYNAMES
@@ -38,6 +36,7 @@ import statistics
 
 
 LOGGER = commons.logger()
+
 
 # CSV DATA
 FIELD_NAME = 'name'
