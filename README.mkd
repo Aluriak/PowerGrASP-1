@@ -18,11 +18,11 @@ A more complex but more useful `pip install --user powergrasp` performs the inst
 This allows powergrasp to store all its logs, data results,… without problems in its self data and logs directories.
 
 
-    installation      | directory where __gringo__ and __clasp__ should be put (likely)
-    ------------------|-------------------
-    system (pip)      | __/usr/lib/python3.5/site-packages/pyasp/bin
-    user (pip --user) | ~/.local/lib/python3.5/site-packages/pyasp/bin
-    virtualenv + pip  | path/to/virtualenv/lib/python3.5/site-packages/pyasp/bin
+    installation level | directory where __gringo__ and __clasp__ should be put (likely)
+    -------------------|-------------------
+    system (pip)       | /usr/lib/python3.5/site-packages/pyasp/bin
+    user (pip --user)  | ~/.local/lib/python3.5/site-packages/pyasp/bin
+    virtualenv + pip   | path/to/virtualenv/lib/python3.5/site-packages/pyasp/bin
 
 
 
