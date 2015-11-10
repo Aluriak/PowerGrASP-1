@@ -71,6 +71,7 @@ def container(network_name='network', statistics_filename=None):
 
     The statistics_filename, if not None, must be a valid name of file
     that will be overrided, and will contains some data in csv format."""
+    statistics_file, statistics_writer = None, None
     # open file of statistics in csv if asked
     if statistics_filename:
         try:
@@ -79,9 +80,7 @@ def container(network_name='network', statistics_filename=None):
                                                fieldnames=MEASURES)
             statistics_writer.writeheader()
         except IOError as e:
-            statistics_writer = None
-            LOGGER.warning('The file '
-                           + statistics_filename
+            LOGGER.warning('The file ' + statistics_filename
                            + ' can\'t be opened. No statistics will be saved.')
     else:
         statistics_writer = None
