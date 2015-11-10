@@ -10,9 +10,7 @@ cyoog.cfg
 Session.vim
 asp_py_lextab.py
 asp_py_parsetab.py
-bin/
-include/
-lib/
+venv/
 pip-selfcheck.json
 man/
 share/
