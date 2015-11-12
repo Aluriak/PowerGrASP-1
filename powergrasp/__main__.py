@@ -13,7 +13,7 @@ options:
     --findclique=FILE    filepath to ASP clique finder program      [default: powergrasp/ASPsources/findbestclique.lp]
     --postprocess=FILE   filepath to ASP postprocessing program     [default: powergrasp/ASPsources/postprocessing.lp]
     --remain=FILE        filepath to ASP remain finder program      [default: powergrasp/ASPsources/remains.lp]
-    --output-file=NAME   output file or dir (without extension)     [default: data/tmp]
+    --output-file=NAME   output file or dir
     --output-format=NAME output format (see below for formats)      [default: bbl]
     --interactive        program ask user for next step
     --show-pre           print preprocessed data in stdout
@@ -95,6 +95,9 @@ if __name__ == '__main__':
                 options['--output-file'],
                 commons.basename(options['--graph-data'])
             )
+        elif not options['--output-file'].endswith(options['--output-format']):
+            # given output file doesn't ends with the proper extension
+            options['--output-file'] += '.' + options['--output-format']
 
         # compression itself
         compress(

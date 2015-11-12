@@ -8,7 +8,7 @@ The compress function get numerous arguments,
 """
 from builtins           import input
 from collections        import defaultdict
-from powergrasp.commons import basename, FILE_OUTPUT
+from powergrasp.commons import basename
 from powergrasp.commons import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from powergrasp.commons import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
 from powergrasp.commons import ASP_ARG_UPPERBOUND, ASP_ARG_CC
@@ -30,11 +30,11 @@ LOGGER = commons.logger()
 
 
 
-def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
+def compress(graph_data, output_file=None, *, extracting=ASP_SRC_EXTRACT,
              preprocessing=ASP_SRC_PREPRO, ccfinding=ASP_SRC_FINDCC,
              bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
              statistics_filename='data/statistics.csv',
-             output_format='bbl', lowerbound_cut_off=2,
+             output_format=None, lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
              show_preprocessed=False):
     """Performs the graph compression with data found in graph file.
@@ -42,7 +42,10 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
     Use ASP source code found in extract, findcc and update files
      for perform the computations.
 
-    Output format must be valid.
+    Output format must be a valid string,
+     or will be inferred from the output file name, or will be set as bbl.
+
+    If output file is None, result will be printed in stdout.
 
     If interactive is True, an input will be expected
      from the user after each step.
@@ -67,11 +70,20 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
     """
     if not graph_data: return  # simple protection
 
+    # Deduce output format:
+    if not output_format:
+        try:
+            output_format = output_file.split('.')[-1]
+        except (IndexError, AttributeError):  # use the bbl if nothing found
+            output_format = converter_module.DEFAULT_OUTPUT_FORMAT
+    assert output_format in converter_module.OUTPUT_FORMATS
+    if output_file: assert output_file.endswith(output_format)
+
     # Initialize descriptors
-    output    = open(output_file + '.' + output_format, 'w')
+    output    = open(output_file, 'w') if output_file else sys.stdout
     converter = converter_module.output_converter_for(output_format)
     model     = None
-    stats     = statistics.container(graph_data.rstrip('.lp'),
+    stats     = statistics.container(graph_data,
                                      statistics_filename)
     output.write(converter.header())
     time_extract = time.time()
@@ -352,7 +364,7 @@ def compress(graph_data, output_file=FILE_OUTPUT, extracting=ASP_SRC_EXTRACT,
         ########################
         output.write(converter.finalized())
         converter.release_memory()
-        LOGGER.debug('FINAL DATA SAVED IN FILE ' + output_file + '.' + output_format)
+        LOGGER.debug('FINAL DATA SAVED IN FILE ' + output.name)
 
         # print results
         # results_names = ('powernode',)
