@@ -28,11 +28,14 @@ ASP_FILE_EXT    = '.lp'
 FILENAME_LOG    = DIR_LOGS + LOGGER_NAME + '.log'
 
 # ASP SOURCES
-ASP_SRC_EXTRACT = ACCESS_FILE(DIR_ASP_SOURCES +'extract'         + ASP_FILE_EXT)
-ASP_SRC_PREPRO  = ACCESS_FILE(DIR_ASP_SOURCES +'preprocessing'   + ASP_FILE_EXT)
-ASP_SRC_FINDCC  = ACCESS_FILE(DIR_ASP_SOURCES +'findbestclique'  + ASP_FILE_EXT)
-ASP_SRC_FINDBC  = ACCESS_FILE(DIR_ASP_SOURCES +'findbestbiclique'+ ASP_FILE_EXT)
-ASP_SRC_POSTPRO = ACCESS_FILE(DIR_ASP_SOURCES +'postprocessing'  + ASP_FILE_EXT)
+def __asp_file(name):
+    return ACCESS_FILE(DIR_ASP_SOURCES + name + ASP_FILE_EXT)
+ASP_SRC_EXTRACT   = __asp_file('extract')
+ASP_SRC_PREPRO    = __asp_file('preprocessing')
+ASP_SRC_FINDCC    = __asp_file('findbestclique')
+ASP_SRC_FINDBC    = __asp_file('findbestbiclique')
+ASP_SRC_POSTPRO   = __asp_file('postprocessing')
+ASP_SRC_INCLUSION = __asp_file('inclusion')
 
 # Constants involved in ASP solving
 ASP_ARG_CC   = 'cc'
