@@ -6,12 +6,18 @@ Provides converters, access and printings of atoms.
 """
 
 from collections        import defaultdict, Counter, namedtuple
-from powergrasp.commons import RESULTS_PREDICATS
 import itertools
 
 
 # Atom definition
 ATOM = namedtuple('Atom', ['name', 'args'])
+
+# CONSTANTS
+RESULTS_PREDICATS = (
+    'powernode',
+    'poweredge',
+    'score',
+)
 
 
 def split(atom):
@@ -62,7 +68,7 @@ def prettified(atoms, names=None, sizes=None,
 
     if names is given, only atoms with given name will be used.
     if results_only is True, only some atoms will be printed.
-      (defined by commons.RESULTS_PREDICATS)
+      (defined by RESULTS_PREDICATS)
     if sizes is provided, atoms with args number not in sizes
       will not be printed.
 

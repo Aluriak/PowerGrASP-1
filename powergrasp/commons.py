@@ -71,16 +71,6 @@ ASP_CLASP_OPTIONS += ' --heuristic=Vsids'
 # ASP_CLASP_OPTIONS.append('--heuristic=None')
 
 
-# VALUES
-LOG_LEVEL         = logging.DEBUG
-RESULTS_PREDICATS = (
-    'powernode',
-    'poweredge',
-    'score',
-)
-
-
-
 # FUNCTIONS
 def basename(filepath):
     """Return the basename of given filepath.
