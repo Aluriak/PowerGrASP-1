@@ -396,6 +396,6 @@ def compress(graph_data, output_file=None, *, extracting=None,
     LOGGER.info(final_results)
     output.write(converter.comment(final_results.split('\n')))
 
-    output.close()
+    if output is not sys.stdout: output.close()
     statistics.finalize(stats)
     return time_compression, stats

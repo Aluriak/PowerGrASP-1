@@ -1,0 +1,3 @@
+include LICENCE MANIFEST.in requirements.txt optional-requirements.txt README.mkd
+recursive-include powergrasp/ASPsources *.lp
+recursive-include powergrasp/logs README.txt
