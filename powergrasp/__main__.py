@@ -85,7 +85,9 @@ if __name__ == '__main__':
         if options['--profiling']:
             print(utils.test_integrity(options['--graph-data']))
 
-        if os.path.isdir(options['--output-file']):
+        if options['--output-file'] is None:
+            pass
+        elif os.path.isdir(options['--output-file']):
             LOGGER.info('Given output file is not a file, but a directory ('
                         + options['--output-file'] + ').'
                         + ' Output file will be placed in it, with the name '
