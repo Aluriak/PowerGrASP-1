@@ -24,13 +24,12 @@ reqs = [str(ir.req) for ir in install_reqs]
 setup(
     name = __name__,
     version = __version__,
-    py_modules = ['info'],
-    packages = find_packages(exclude=['powergrasp/']),
+    packages = find_packages(),
     package_data = {
-        __name__ : ['README.mkd', 'LICENSE.txt', 'requirements.txt',
-                    'optional-requirements.txt', 'Makefile', 'LICENCE',
-                    'logs/powergrasp.log', 'tests/*.lp',
-                    'tests/*.gml', 'data/*.csv']
+        '' : ['README.mkd', 'LICENSE.txt', 'requirements.txt',
+              'optional-requirements.txt', 'Makefile', 'LICENCE'],
+        'powergrasp': ['ASPsources/*.lp', 'logs/*.txt',
+                       'tests/*.lp', 'tests/*.gml'],
     },
     include_package_data = True,
     install_requires=reqs,
