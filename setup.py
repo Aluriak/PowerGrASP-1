@@ -28,8 +28,8 @@ setup(
     package_data = {
         '' : ['README.mkd', 'LICENSE.txt', 'requirements.txt',
               'optional-requirements.txt', 'Makefile', 'LICENCE'],
-        'powergrasp': ['ASPsources/*.lp', 'logs/*.txt',
-                       'tests/*.lp', 'tests/*.gml'],
+        'powergrasp': ['ASPsources/*.lp', 'logs/README.txt',
+                       'tests/*.lp', 'tests/*.sbml', 'tests/*.gml'],
     },
     include_package_data = True,
     install_requires=reqs,
