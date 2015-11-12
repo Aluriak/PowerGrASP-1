@@ -24,7 +24,6 @@ DIR_DATA        = 'data/'
 DIR_TEST_CASES  = 'tests/'
 DIR_SOURCES     = ''
 DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
-FILE_OUTPUT     = DIR_DATA + 'output'
 ASP_FILE_EXT    = '.lp'
 FILENAME_LOG    = DIR_LOGS + LOGGER_NAME + '.log'
 
