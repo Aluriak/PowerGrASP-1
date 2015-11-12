@@ -37,6 +37,10 @@ BENCHMARK_INPUT=--inputs=$(TESTS)proteome_yeast_1.lp,$(TESTS)proteome_yeast_2.lp
 BENCHMARK_OUTPUT=$(DATA)benchmarks.csv
 BENCHMARK_RUN=--runs=4
 
+basical:
+	$(PYTHON3) --graph-data="$(TESTS)abnormal.lp"
+
+
 abn:
 	$(COMMAND) --graph-data="$(TESTS)abnormal.lp"
 bbind:
