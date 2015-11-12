@@ -21,6 +21,7 @@ import powergrasp.atoms      as atoms
 import itertools
 import time
 import sys
+import os
 
 
 LOGGER = commons.logger()
@@ -66,7 +67,15 @@ def compress(graph_data, output_file=None, *, extracting=None,
      that contains statistics about the compression.
 
     """
-    if not graph_data: return  # simple protection
+    # defensive returns
+    if not graph_data: return
+    try:
+        with open(graph_data) as fd:
+            pass
+    except (PermissionError, FileNotFoundError):
+        LOGGER.error("input file " + str(graph_data) +
+                     " can't be opened. Compression aborted.")
+        return
 
     # Deduce output format:
     if not output_format:
