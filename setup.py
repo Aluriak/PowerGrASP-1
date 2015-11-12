@@ -26,8 +26,6 @@ setup(
     version = __version__,
     packages = find_packages(),
     package_data = {
-        '' : ['README.mkd', 'LICENSE.txt', 'requirements.txt',
-              'optional-requirements.txt', 'Makefile', 'LICENCE'],
         'powergrasp': ['ASPsources/*.lp', 'logs/README.txt',
                        'tests/*.lp', 'tests/*.sbml', 'tests/*.gml'],
     },
