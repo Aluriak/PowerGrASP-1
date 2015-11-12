@@ -26,10 +26,6 @@ import sys
 LOGGER = commons.logger()
 
 
-
-
-
-
 def compress(graph_data, output_file=None, *, extracting=None,
              preprocessing=None, ccfinding=None,
              bcfinding=None, postprocessing=None,

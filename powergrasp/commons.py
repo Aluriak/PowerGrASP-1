@@ -9,9 +9,8 @@ Moreover, some generalist functions are defined,
 # IMPORTS
 from pkg_resources import resource_filename
 from functools     import partial
-from logging.handlers import RotatingFileHandler
 import powergrasp.info as info
-import logging
+import logging, logging.handlers
 import os
 
 
@@ -25,7 +24,11 @@ DIR_TEST_CASES  = 'tests/'
 DIR_SOURCES     = ''
 DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
 ASP_FILE_EXT    = '.lp'
-FILENAME_LOG    = DIR_LOGS + LOGGER_NAME + '.log'
+
+# LOGGING VALUES
+DEFAULT_LOG_LEVEL = logging.DEBUG
+DEFAULT_LOG_FILE  = ACCESS_FILE(DIR_LOGS + LOGGER_NAME + '.log')
+
 
 # ASP SOURCES
 def __asp_file(name):
@@ -109,55 +112,57 @@ def thread(number):
     if number is not None:
         ASP_CLASP_OPTIONS += '--parallel-mode=' + str(number) + ',split'
 
-def logger(name=LOGGER_NAME, logfilename=None):
+
+# logging functions
+def logger(name=LOGGER_NAME):
     """Return logger of given name, without initialize it.
 
     Equivalent of logging.getLogger() call.
+
     """
     return logging.getLogger(name)
 
 
+def configure_logger(log_filename=None, term_log_level=None):
+    """Operate the logger configuration for the package"""
+    print('configure_logger')
+    _logger = logger()
+    # remove any previous configuration
+    _logger = logging.getLogger(LOGGER_NAME)
+    _logger.handlers.clear()
+    _logger.setLevel(DEFAULT_LOG_LEVEL)
 
-_logger = logging.getLogger(LOGGER_NAME)
-_logger.setLevel(LOG_LEVEL)
+    # terminal log
+    stream_handler = logging.StreamHandler()
+    formatter      = logging.Formatter('%(levelname)s: %(message)s')
+    stream_handler.setFormatter(formatter)
+    stream_handler.setLevel(term_log_level.upper())
+    _logger.addHandler(stream_handler)
 
-# terminal log
-stream_handler = logging.StreamHandler()
-formatter      = logging.Formatter('%(levelname)s: %(message)s')
-stream_handler.setFormatter(formatter)
-stream_handler.setLevel(LOG_LEVEL)
-_logger.addHandler(stream_handler)
-
-# log file
-formatter    = logging.Formatter(
-    '%(asctime)s :: %(levelname)s :: %(message)s'
-)
-try:
-    file_handler = RotatingFileHandler(
-        ACCESS_FILE(FILENAME_LOG),
-        'a', 1000000, 1
+    # log file
+    formatter = logging.Formatter(
+        '%(asctime)s :: %(levelname)s :: %(message)s'
     )
-    file_handler.setLevel(LOG_LEVEL)
-    file_handler.setFormatter(formatter)
-    _logger.addHandler(file_handler)
-except PermissionError:
-    _logger.warning(os.path.abspath(DIR_LOGS + LOGGER_NAME + '.log')
-                    + "can't be written because of a permission error."
-                    + "No logs will be saved in file.")
+    try:
+        file_handler = logging.handlers.RotatingFileHandler(
+            log_filename if log_filename else DEFAULT_LOG_FILE, 'a', 2**16, 1)
+        file_handler.setLevel(logging.DEBUG)  # get always all data
+        file_handler.setFormatter(formatter)
+        _logger.addHandler(file_handler)
+    except PermissionError:
+        _logger.warning(os.path.abspath(DIR_LOGS + LOGGER_NAME + '.log')
+                        + "can't be written because of a permission error."
+                        + "No logs will be saved in file.")
 
 
 def log_file(filename):
-    handlers = (_ for _ in _logger.handlers
-                if isinstance(_, RotatingFileHandler)
-               )
-    for handler in handlers:
-        print(dir(handler))
-        exit()
-        handler.setLevel(level.upper())
+    """Set the log file"""
+    configure_logger(log_filename=filename)
 
 
 def log_level(level):
     """Set terminal log level to given one"""
+    _logger = logger()
     handlers = (_ for _ in _logger.handlers
                 if isinstance(_, logging.StreamHandler)
                )

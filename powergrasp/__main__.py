@@ -48,19 +48,17 @@ import powergrasp.utils      as utils  # used for profiling
 import os
 
 
-LOGGER = commons.logger()
 
 
 if __name__ == '__main__':
+    LOGGER = commons.logger()
+
     # read options
     options = docopt(__doc__, version=__version__)
 
     # parse them
-    # define the log file, if necessary
-    if options['--logfile']:
-        commons.log_file(options['--logfile'])
-    # and the log level
-    commons.log_level(options['--loglevel'])
+    # define the log file and the log level, if necessary
+    commons.configure_logger(options['--logfile'], options['--loglevel'])
     # threading
     nb_thread = int(options['--thread'])
     if nb_thread > 1:
