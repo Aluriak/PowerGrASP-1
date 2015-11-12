@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
-__name__ = 'PowerGrASP'
-__version__ = '0.3.5'
+__name__    = 'PowerGrASP'
+__fix       = '6'
+__minor     = '3'
+__major     = '0'
+__version__ = '.'.join((__major, __minor, __fix))
 
 
 # link between filenames and studies
