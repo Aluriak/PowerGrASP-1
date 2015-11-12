@@ -30,17 +30,19 @@ LOGGER = commons.logger()
 
 
 
-def compress(graph_data, output_file=None, *, extracting=ASP_SRC_EXTRACT,
-             preprocessing=ASP_SRC_PREPRO, ccfinding=ASP_SRC_FINDCC,
-             bcfinding=ASP_SRC_FINDBC, postprocessing=ASP_SRC_POSTPRO,
+def compress(graph_data, output_file=None, *, extracting=None,
+             preprocessing=None, ccfinding=None,
+             bcfinding=None, postprocessing=None,
              statistics_filename='data/statistics.csv',
              output_format=None, lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
              show_preprocessed=False):
     """Performs the graph compression with data found in graph file.
 
-    Use ASP source code found in extract, findcc and update files
-     for perform the computations.
+    Use ASP source code found in extract, findcc, findbc
+     and {pre,post}processiing files for perform the computations,
+     or the default ones if None is provided.
+     (which is probably what user want in 99.99% of cases)
 
     Output format must be a valid string,
      or will be inferred from the output file name, or will be set as bbl.
@@ -78,6 +80,13 @@ def compress(graph_data, output_file=None, *, extracting=ASP_SRC_EXTRACT,
             output_format = converter_module.DEFAULT_OUTPUT_FORMAT
     assert output_format in converter_module.OUTPUT_FORMATS
     if output_file: assert output_file.endswith(output_format)
+
+    # Select proper ASP source if not given
+    if not extracting: extracting         = commons.ASP_SRC_EXTRACT
+    if not preprocessing: preprocessing   = commons.ASP_SRC_PREPRO
+    if not ccfinding: ccfinding           = commons.ASP_SRC_FINDCC
+    if not bcfinding: bcfinding           = commons.ASP_SRC_FINDBC
+    if not postprocessing: postprocessing = commons.ASP_SRC_POSTPRO
 
     # Initialize descriptors
     output    = open(output_file, 'w') if output_file else sys.stdout

@@ -6,13 +6,12 @@ usage:
 options:
     --help, -h
     --version, -v
-    --graph-data=FILE    filepath to ASP graph definition
-    --extract=FILE       filepath to ASP extraction program         [default: powergrasp/ASPsources/extract.lp]
-    --preprocess=FILE    filepath to ASP preprocessing program      [default: powergrasp/ASPsources/preprocessing.lp]
-    --findbiclique=FILE  filepath to ASP biclique finder program    [default: powergrasp/ASPsources/findbestbiclique.lp]
-    --findclique=FILE    filepath to ASP clique finder program      [default: powergrasp/ASPsources/findbestclique.lp]
-    --postprocess=FILE   filepath to ASP postprocessing program     [default: powergrasp/ASPsources/postprocessing.lp]
-    --remain=FILE        filepath to ASP remain finder program      [default: powergrasp/ASPsources/remains.lp]
+    --graph-data=FILE    filepath to input graph definition
+    --extract=FILE       filepath to custom ASP extraction program
+    --preprocess=FILE    filepath to custom ASP preprocessing program
+    --findbiclique=FILE  filepath to custom ASP biclique finder program
+    --findclique=FILE    filepath to custom ASP clique finder program
+    --postprocess=FILE   filepath to custom ASP postprocessing program
     --output-file=NAME   output file or dir
     --output-format=NAME output format (see below for formats)      [default: bbl]
     --interactive        program ask user for next step
