@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __name__    = 'PowerGrASP'
-__fix       = '15'
+__fix       = '16'
 __minor     = '3'
 __major     = '0'
 __version__ = '.'.join((__major, __minor, __fix))
