@@ -26,14 +26,22 @@ def split(atom):
     atom -- string formatted as an ASP readable atom
 
     >>>> split('edge(lacA,lacZ)')
-    ('edge', ('lacA', 'lacZ'))
+    Atom(name='edge', args=('lacA', 'lacZ'))
+    >>>> split('edge(42,12)
+    Atom(name='edge', args=('42','12'))
+    >>>> split('edge("ASX38","MER(HUMAN)")')
+    Atom(name='edge', args=('"ASX38"','"MER(HUMAN)"'))
+    >>>> split('lowerbound.')
+    Atom(name='lowerbound', args=None)
 
     """
     payload = atom.strip('.').strip(')')
-    try:
-        pred, data = payload.split('(')
-        return ATOM(pred, tuple(data.split(',')))
-    except ValueError:  # no args !
+    if '(' in payload:
+        # the first opening parenthesis indicates the predicate name end
+        first_par = payload.find('(')
+        pred, args = payload[:first_par], payload[first_par+1:]
+        return ATOM(pred, tuple(args.split(',')))
+    else:  # atom have no args
         return ATOM(payload, None)
 
 
