@@ -8,6 +8,11 @@ Provides converters, access and printings of atoms.
 from collections        import defaultdict, Counter, namedtuple
 import itertools
 
+import pyasp.asp as pyasp
+
+
+# ASP Parser: if atoms are defined as arguments, consider them strings.
+PARSER = pyasp.Parser(collapseTerms=True, collapseAtoms=False)
 
 # Atom definition
 ATOM = namedtuple('Atom', ['name', 'args'])
@@ -23,26 +28,32 @@ RESULTS_PREDICATS = (
 def split(atom):
     """Return the splitted version of given atom.
 
-    atom -- string formatted as an ASP readable atom
+    atom -- string formatted as an ASP readable atom.
+    return -- None or an ATOM object with field name and args.
+
+    If many atoms are defined in the input string,
+        only one will be returned.
+    If given atom is not valid, None is returned.
 
     >>>> split('edge(lacA,lacZ)')
     Atom(name='edge', args=('lacA', 'lacZ'))
-    >>>> split('edge(42,12)
+    >>>> split('edge(42,12))
     Atom(name='edge', args=('42','12'))
     >>>> split('edge("ASX38","MER(HUMAN)")')
     Atom(name='edge', args=('"ASX38"','"MER(HUMAN)"'))
     >>>> split('lowerbound.')
-    Atom(name='lowerbound', args=None)
+    Atom(name='lowerbound', args=[])
+    >>>> split('lowerbound.upperbound')
+    (Atom(name='lowerbound', args=[]), Atom(name='upperbound', args=[]))
+    >>>> split('this is not a valid atom')
+    None
 
     """
-    payload = atom.strip('.').strip(')')
-    if '(' in payload:
-        # the first opening parenthesis indicates the predicate name end
-        first_par = payload.find('(')
-        pred, args = payload[:first_par], payload[first_par+1:]
-        return ATOM(pred, tuple(args.split(',')))
-    else:  # atom have no args
-        return ATOM(payload, None)
+    try:
+        parsed = next(iter(PARSER.parse(atom)))
+        return ATOM(parsed.predicate, tuple(parsed.args()))
+    except TypeError:
+        return None
 
 
 def arg(atom):
