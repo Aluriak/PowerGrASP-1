@@ -25,14 +25,15 @@ The Cytoscape plugin CyOoG is able to read and print that format.
 
 
 """
+import itertools
 from collections         import defaultdict
+
 from powergrasp.commons  import basename, ASP_SRC_INCLUSION
 from powergrasp.converter.output_converter import OutConverter
-import powergrasp.commons as commons
-import powergrasp.solving as solving
-import powergrasp.atoms   as atoms
-import powergrasp.info    as info
-import itertools
+from powergrasp import info
+from powergrasp import commons
+from powergrasp import solving
+from powergrasp import atoms
 
 
 logger         = commons.logger()

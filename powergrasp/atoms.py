@@ -8,11 +8,11 @@ Provides converters, access and printings of atoms.
 from collections        import defaultdict, Counter, namedtuple
 import itertools
 
-import pyasp.asp as pyasp
+from pyasp import asp
 
 
 # ASP Parser: if atoms are defined as arguments, consider them strings.
-PARSER = pyasp.Parser(collapseTerms=True, collapseAtoms=False)
+PARSER = asp.Parser(collapseTerms=True, collapseAtoms=False)
 
 # Atom definition
 ATOM = namedtuple('Atom', ['name', 'args'])

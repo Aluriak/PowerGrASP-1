@@ -6,22 +6,23 @@ The compress function get numerous arguments,
  for allowing a parametrable compression.
 
 """
+import os
+import sys
+import time
+import itertools
 from builtins           import input
 from collections        import defaultdict
+
 from powergrasp.commons import basename
 from powergrasp.commons import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from powergrasp.commons import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
 from powergrasp.commons import ASP_ARG_UPPERBOUND, ASP_ARG_CC
 from powergrasp.commons import ASP_ARG_LOWERBOUND, ASP_ARG_STEP
-import powergrasp.statistics as statistics  # this is not the stdlib !
-import powergrasp.converter  as converter_module
-import powergrasp.solving    as solving
-import powergrasp.commons    as commons
-import powergrasp.atoms      as atoms
-import itertools
-import time
-import sys
-import os
+from powergrasp import converter as converter_module
+from powergrasp import statistics
+from powergrasp import solving
+from powergrasp import commons
+from powergrasp import atoms
 
 
 LOGGER = commons.logger()

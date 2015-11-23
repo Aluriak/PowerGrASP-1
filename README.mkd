@@ -1,28 +1,21 @@
 # PowerGrASP
-The Python Powergraph analysis tool, based on Answer Set Programming solving and formal concept analysis.
-More documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/documentation.mkd).
+The Python [Powergraph analysis](https://en.wikipedia.org/wiki/Power_graph_analysis) tool,
+based on [Answer Set Programming](https://en.wikipedia.org/wiki/Answer_set_programming) solving and formal concept analysis.
+
+More technical documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/documentation.mkd).
+PowerGrASP results, compared to the existing BIOTEC tool, can be found in the [results file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/results.mkd).
 
 
-## Requirements
-A simple `pip install powergrasp` is theorically sufficient.
 
-However, because of the pyasp module, a file manipulation must be realised :
-- get compatible versions of [gringo](http://sourceforge.net/projects/potassco/files/gringo/4.5.3/) and [clasp](http://sourceforge.net/projects/potassco/files/clasp/3.1.3/) on the [potassco website](http://sourceforge.net/projects/potassco/files);
-- put the retrieved executables __gringo__ and __clasp__ in __/usr/lib/python3.5/site-packages/pyasp/bin__ (see table below for details), with names __gringo4__ and __clasp__, respectively;
+## Installation & Requirements
 
-This manipulation is necessary while the *pyasp* module doesn't get the used version of gringo and clasp. (4.5.3 and 3.1.3)
-PowerGrASP was tested with gringo 4.5.1 and 4.5.3, and not compliant with versions 4.4.x, because of some known bugs.
-Note that, if you use a virtualenv, the directories where executables should be put are in the lib directory create by virtualenv.
+    pip install powergrasp
 
-A more complex but more useful `pip install --user powergrasp` performs the installation in the user level.
-This allows powergrasp to store all its logs, data results,… without problems in its self data and logs directories.
-
-
-    installation level | directory where __gringo__ and __clasp__ should be put (likely)
-    -------------------|-------------------
-    system (pip)       | /usr/lib/python3.5/site-packages/pyasp/bin
-    user (pip --user)  | ~/.local/lib/python3.5/site-packages/pyasp/bin
-    virtualenv + pip   | path/to/virtualenv/lib/python3.5/site-packages/pyasp/bin
+Just be sure that, in the library installation directory, for pyasp, you have the binaries *gringo4* and *clasp* installed.
+In case of a system-wide installation, these binaries can be found in */usr/lib/python3.5/site-packages/pyasp/bin/*.
+The binaries, if not properly installed by pip, can be found on the sourceforge website:
+- [gringo4](http://sourceforge.net/projects/potassco/files/gringo/4.5.3/), in version 4.5.3, that probably needs to be renamed from *gringo* to *gringo4*.
+- [clasp](http://sourceforge.net/projects/potassco/files/clasp/3.1.3/), in version 3.1.3.
 
 
 
@@ -111,7 +104,7 @@ Cytoscape, for using the CyOog plugin, must be in version __[2.x](http://www.cyt
 
 ### Interests & References
 
-The Power Graph approach for graph compression allows a lossless compression with an emphasis on biological meaning.
+The [Power Graph approach for graph compression](https://en.wikipedia.org/wiki/Power_graph_analysis) allows a lossless compression with an emphasis on biological meaning.
 In fact, formal concepts used by Power Graph analysis have a sens in biology, especially in the case of proteomes.
 
 All graphs can be compressed through Power Graph, and will be more readable once compressed,
@@ -123,7 +116,7 @@ The main inspiration of PowerGrASP : PowerGraph Analysis:
     Unraveling Protein Networks with Power Graph Analysis.
     PLoS Comput Biol, 4(7):e1000108, July 2008.
 
-Usage of the PowerGraph Analysis :
+Usage of the PowerGraph Analysis:
 
     Loic Royer, Matthias Reimann, A. Francis Stewart, and Michael Schroeder.
     Network Compression as a Quality Measure for Protein Interaction Networks.
@@ -134,7 +127,7 @@ Usage of the PowerGraph Analysis :
     its application to the integration of diverse biological data types.
     BMC Bioinformatics, 15(1):110, 2014.
 
-ASP through Potassco implementation :
+ASP through Potassco implementation:
 
     M. Gebser, R. Kaminski, B. Kaufmann, M. Ostrowski, T. Schaub, and M. Schneider.
     Potassco: The Potsdam answer set solving collection.

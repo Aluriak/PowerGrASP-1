@@ -39,12 +39,12 @@ input formats:
 
 from docopt                import docopt
 from powergrasp.powergrasp import compress
-from powergrasp.info       import __version__
 from powergrasp.converter  import OUTPUT_FORMATS
-import powergrasp.statistics as statistics  # this is not the stdlib !
-import powergrasp.converter  as converter
-import powergrasp.commons    as commons
-import powergrasp.utils      as utils  # used for profiling
+from powergrasp import info
+from powergrasp import statistics
+from powergrasp import converter
+from powergrasp import commons
+from powergrasp import utils
 import os
 
 
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     LOGGER = commons.logger()
 
     # read options
-    options = docopt(__doc__, version=__version__)
+    options = docopt(__doc__, version=info.__version__)
 
     # parse them
     # define the log file and the log level, if necessary

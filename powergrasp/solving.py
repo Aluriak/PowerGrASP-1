@@ -4,12 +4,13 @@ Definitions of model_from(5) that encapsulate
  the ASP grounder and solver calls.
 
 """
+import os
 from functools   import partial
 from collections import deque
-import powergrasp.commons as commons
-import powergrasp.atoms   as atoms
-import pyasp.asp          as asp
-import os
+
+from powergrasp import commons
+from powergrasp import atoms
+from pyasp import asp
 
 
 LOGGER = commons.logger()

@@ -9,7 +9,8 @@ Moreover, some generalist functions are defined,
 # IMPORTS
 from pkg_resources import resource_filename
 from functools     import partial
-import powergrasp.info as info
+
+from powergrasp    import info
 import logging, logging.handlers
 import os
 

@@ -5,10 +5,10 @@ or the compression.
 
 """
 
-
 import itertools
-import powergrasp.atoms   as atoms
-import powergrasp.solving as solving
+
+from powergrasp import atoms
+from powergrasp import solving
 from powergrasp.commons import basename
 
 
