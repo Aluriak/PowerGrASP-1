@@ -83,10 +83,7 @@ class OutBBL(OutConverter):
     )
 
     def __init__(self):
-        try: # python 3
-            super().__init__()
-        except TypeError: # python 2
-            super(OutBBL, self).__init__()
+        super().__init__()
         self.release_memory()  # initialize the containers
 
     def release_memory(self):
