@@ -109,13 +109,23 @@ class DataExtractor(observers.CompressionObserver, dict):
 
     def _update(self, signals):
         if Signals.CompressionStopped in signals:
+            # get compression time or None
+            compression_time = None
+            if self.time_counter:
+                compression_time = self.time_counter.compression_time
+            # get extraction time or None
+            extraction_time = None
+            if self.time_counter:
+                extraction_time = self.time_counter.extraction_time
+            compression_time = self.time_counter.compression_time
+            # create the final result render
             final_results = (
                 "All cc have been performed "
-                + ("in " + str(round(self.time_counter.compression_time, 3))
-                   if self.time_counter else '')
+                + ("in " + str(round(compression_time, 3))
+                   if compression_time else '')
                 + 's '
-                + ('(extraction in ' + str(round(self.time_counter.extraction_time, 3)) + ')'
-                   if self.time_counter else '')
+                + ('(extraction in ' + str(round(extraction_time, 3)) + ')'
+                   if extraction_time else '')
                 + "\nGrounder options: " + commons.ASP_GRINGO_OPTIONS
                 + "\nSolver options: "   + commons.ASP_CLASP_OPTIONS
                 + "\nNow, statistics on "
