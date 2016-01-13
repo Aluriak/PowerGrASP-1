@@ -300,6 +300,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             notify_observers(Signals.StepStopped)
             notify_observers(Signals.StepFinalized)
 
+        notify_observers(Signals.IterationStopped)
         # END while model_found_at_last_iteration
         # Here, all models was processed in the connected component
 
