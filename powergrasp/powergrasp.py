@@ -121,7 +121,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
     if statistics_filename:
         instanciated_observers.append(statistics.DataExtractor(
             statistics_filename,
-            output_converter=output_converter.converter,
+            output_converter=output_converter,
             time_counter=time_counter,
         ))
     if show_preprocessed:
