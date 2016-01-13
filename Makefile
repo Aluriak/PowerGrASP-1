@@ -111,6 +111,10 @@ troll:
 	$(COMMAND) --graph-data="$(TESTS)notsupportedformat.troll"
 
 
+plot:
+	$(PYTHON) $(PLOT) $(STATFILE)
+
+
 # this is a way to treat multiple files
 pack: FOUT=--output-file="$(DATA)tmp"
 pack:
