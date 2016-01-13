@@ -315,10 +315,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             # send them to observers (including the output converter)
             notify_observers(remain_edge_generated=remain_edges)
 
-        notify_observers(
-            Signals.ConnectedComponentStopped,
-            final_edge_count_generated=len(remain_edges),
-        )
+        notify_observers(Signals.ConnectedComponentStopped)
 
         # print results
         LOGGER.debug('\n\t' + atoms.prettified(
