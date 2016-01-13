@@ -130,8 +130,6 @@ class DataExtractor(observers.CompressionObserver, dict):
             self[FINL_TIME] = float(signals[Signals.CompressionTimeGenerated])
         if Signals.AllEdgeGenerated in signals:
             self[INIT_EDGE] = int(signals[Signals.AllEdgeGenerated])
-        if Signals.FinalEdgeCountGenerated in signals:
-            self[FINL_EDGE] = int(signals[Signals.FinalEdgeCountGenerated])
         if Signals.StepDataGenerated in signals:
             powernode_count, poweredge_count, remain_edges_global = (
                 signals[Signals.StepDataGenerated])
