@@ -20,8 +20,6 @@ import os
 
 
 LOGGER = commons.logger()
-DIR_INPUT_ASP_NAME = 'data/tmp/'
-
 
 
 class InConverter(object):
@@ -35,25 +33,24 @@ class InConverter(object):
     """
     FORMAT_NAME = 'asp'
 
-    def convert(self, filename):
+    def convert(self, filename:str) -> str:
         """Read the given file, and put in the returned file
         the equivalent asp data.
         """
-        outputfile = os.path.join(DIR_INPUT_ASP_NAME, basename(filename))
         try:
-            with open(outputfile, 'w') as fd:
-                # NB: opening the file is performed by the subclass, while some
-                #  format use an external module that opens itself the file
-                #  for extract data.
-                error = self._convert_to(fd, filename)
-                if error is not None:
-                    LOGGER.error(error)
-        except IOError:
+            output_file = tempfile.NamedTemporaryFile(mode='w', delete=False)
+            # NB: opening the filename is performed by the subclass, while some
+            #  format use an external module that opens itself the file
+            #  for extract data.
+            error = self._convert_to(output_file, filename)
+            if error is not None:
+                LOGGER.error(error)
+        except (IOError, PermissionError):
             LOGGER.critical('File ' + outputfile + " can't be opened."
                             + ' Convertion to ASP data need this file.'
                             + ' Compression aborted')
             return None
-        return outputfile
+        return output_file.name
 
     @classmethod
     def error_input_file(cls, filename):
