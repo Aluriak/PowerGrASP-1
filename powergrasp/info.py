@@ -1,9 +1,15 @@
-# -*- coding: utf-8 -*-
-__name__    = 'PowerGrASP'
-__fix       = '22'
-__minor     = '3'
-__major     = '0'
-__version__ = '.'.join((__major, __minor, __fix))
+"""
+Some meta informations about the package.
+
+"""
+
+
+PROGRAM_NAME    = 'PowerGrASP'
+PACKAGE_NAME    = PROGRAM_NAME.lower()
+__fix           = '22'
+__minor         = '3'
+__major         = '0'
+PACKAGE_VERSION = '.'.join((__major, __minor, __fix))
 
 
 # link between filenames and studies
@@ -15,6 +21,3 @@ STUDYNAMES.update({
     'structural_binding' : 'Interactions of SH3 Carrying Proteins',
     'phosphatase'        : 'Human Protein Tyrosine Phosphatase Homology Network',
 })
-
-
-
