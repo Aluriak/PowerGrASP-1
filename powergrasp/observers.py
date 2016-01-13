@@ -58,11 +58,21 @@ class Signals(Enum):
     StepDataGenerated         = 'step_data_generated'
 
 
+# Priorities: observers are called with respect to their priority (smaller is after)
+MAXIMAL_PRIORITY = 100
+HIGH_PRIORITY    =  80
+MEDIUM_PRIORITY  =  50
+SMALL_PRIORITY   =  20
+MINIMAL_PRIORITY =   0
+
+
 class CompressionObserver:
     """Base class for all compression observers, where the update method used
     by compression is implemented.
 
     Derived classes must implements the _update method.
+    They can also overwrite the priority method, for ensure to be called before
+    others observers.
 
     """
     def update(self, *args, **kwargs):
@@ -72,6 +82,10 @@ class CompressionObserver:
         kwargs = {Signals(sig): value for sig, value in kwargs.items()}
         assert all(sig in Signals for sig in kwargs.keys())
         self._update(kwargs)
+
+    @property
+    def priority(self):
+        return MEDIUM_PRIORITY
 
 
 class ObservedSignalLogger(CompressionObserver):
@@ -95,6 +109,11 @@ class InteractiveCompression(CompressionObserver):
                 input('<hit enter for next model computation>')
             except KeyboardInterrupt:
                 exit()
+
+    @property
+    def priority(self):
+        return MINIMAL_PRIORITY
+
 
 
 class ObjectCounter(CompressionObserver):
@@ -157,6 +176,10 @@ class OutputWriter(CompressionObserver):
             if self.output is not sys.stdout: self.output.close()
         if Signals.CompressionStarted in signals:
             self.output.write(self.converter.header())
+
+    @property
+    def priority(self):
+        return MINIMAL_PRIORITY
 
 
 class TimeCounter(CompressionObserver):
@@ -238,3 +261,7 @@ class TimeCounter(CompressionObserver):
         "Return the prettified property name deduced from the property name"
         property_name = property_name[len(TimeCounter.TIMER_PREFIX):]
         return property_name.replace('_', ' ').title()
+
+    @property
+    def priority(self):
+        return MAXIMAL_PRIORITY
