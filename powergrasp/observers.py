@@ -17,6 +17,7 @@ LOGGER = commons.logger()
 SIGNAL_STARTED   = '_started'
 SIGNAL_STOPPED   = '_stopped'
 SIGNAL_GENERATED = '_generated'
+SIGNAL_FOUND     = '_found'
 
 
 class Signals(Enum):
@@ -37,11 +38,14 @@ class Signals(Enum):
     PreprocessingStopped      = 'preprocessing_stopped'
     PostprocessingStarted     = 'postprocessing_started'
     PostprocessingStopped     = 'postprocessing_stopped'
-    # Objects signals
+    # Finalizations
     StepFinalized             = 'step_finalized'         # send after the StepStopped signal
     CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
+    # Objects signals
     ConnectedComponentsFound  = 'connected_components_found'
     ModelFound                = 'model_found'
+    BicliqueFound             = 'biclique_found'
+    CliqueFound               = 'clique_found'
     # Data signals
     CompressionTimeGenerated  = 'compression_time_generated'
     AllEdgeGenerated          = 'all_edge_generated'
@@ -55,6 +59,12 @@ class Signals(Enum):
 
 
 class CompressionObserver:
+    """Base class for all compression observers, where the update method used
+    by compression is implemented.
+
+    Derived classes must implements the _update method.
+
+    """
     def update(self, *args, **kwargs):
         # integrate signals of args in kwargs, convert all into Signals object
         # and finally launch the update
@@ -64,7 +74,21 @@ class CompressionObserver:
         self._update(kwargs)
 
 
+class ObservedSignalLogger(CompressionObserver):
+    def __init__(self, signal, log_header='', log_level=0):
+        self.log_header = log_header
+        self.log_level = log_level
+        self.signal = Signals(signal)
+
+    def _update(self, signals):
+        data = self.signal in signals
+        if data:
+            LOGGER.log(self.log_level, self.log_header + str(data))
+
+
 class InteractiveCompression(CompressionObserver):
+    """Make the compression interactive: ask for an input from user
+    at the end of each step"""
     def _update(self, signals):
         if Signals.StepStopped in signals:
             try:
@@ -73,15 +97,40 @@ class InteractiveCompression(CompressionObserver):
                 exit()
 
 
-class ConnectedComponentsCounter(CompressionObserver):
+class ObjectCounter(CompressionObserver):
+    """Counter of objects, based on received signals ending with '_found'"""
+
+    PREFIX = '_counter_'
+
+    def __init__(self):
+        self.props = []
+        for signal in (s for s in Signals if s.value.endswith(SIGNAL_FOUND)):
+            prop = ObjectCounter.property_named_from(signal.value)
+            setattr(self, prop, 0)
+            self.props.append(prop)
+
     def _update(self, signals):
-        if Signals.ConnectedComponentsFound in signals:
-            ccs = signals[Signals.ConnectedComponentsFound]
-            self._nb_ccs      = len(ccs)
-        if Signals.ConnectedComponentStarted in signals:
-            cc_num, cc_name = signals[Signals.ConnectedComponentStarted]
-            LOGGER.info('#### CC ' + cc_name + ' ' + str(cc_num+1)
-                        + '/' + str(self._nb_ccs))
+        for signal in signals:
+            name = signal.value
+            if name.endswith(SIGNAL_FOUND):
+                prop = ObjectCounter.property_named_from(name)
+                setattr(self, prop, getattr(self, prop) + 1)
+        if Signals.StepFinalized in signals:
+            for prop in self.props:
+                LOGGER.info(self.__class__.__name__ + ': '
+                            + ObjectCounter.prettified(prop)
+                            + ': ' + getattr(self, prop))
+
+    @staticmethod
+    def property_named_from(signal_name):
+        "Return the property name deduced from the signal name"
+        return ObjectCounter.PREFIX + signal_name[:-len(SIGNAL_FOUND)]
+
+    @staticmethod
+    def prettified(property_name):
+        "Return the prettified property name deduced from the property name"
+        property_name = property_name[len(ObjectCounter.PREFIX):]
+        return property_name.replace('_', ' ').title()
 
 
 class OutputWriter(CompressionObserver):
@@ -189,15 +238,3 @@ class TimeCounter(CompressionObserver):
         "Return the prettified property name deduced from the property name"
         property_name = property_name[len(TimeCounter.TIMER_PREFIX):]
         return property_name.replace('_', ' ').title()
-
-
-class ObservedSignalLogger(CompressionObserver):
-    def __init__(self, signal, log_header='', log_level=0):
-        self.log_header = log_header
-        self.log_level = log_level
-        self.signal = Signals(signal)
-
-    def _update(self, signals):
-        data = self.signal in signals
-        if data:
-            LOGGER.log(self.log_level, self.log_header + str(data))
