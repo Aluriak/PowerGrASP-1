@@ -88,9 +88,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('####   CC    ####')
     LOGGER.info('#################')
     for cc_nb, cc in atom_ccs:
-        notify_observers(
-            connected_component_started=(cc_nb, cc)
-        )
+        notify_observers(connected_component_started=(cc_nb, cc),
+                         connected_components_found=cc)
         assert any(isinstance(cc, cls) for cls in (str, int))
         # contains interesting atoms and the non covered edges at last step
         model_found_at_last_iteration = True  # False when no model found
@@ -110,14 +109,10 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         def printable_bounds():
             return '[' + str(lowerbound_value) + ';' + str(last_score) + ']'
         # iteration
-        notify_observers(
-            Signals.IterationStarted
-        )
+        notify_observers(Signals.IterationStarted)
         while model_found_at_last_iteration:
             # STEP INITIALIZATION
-            notify_observers(
-                Signals.StepStarted
-            )
+            notify_observers(Signals.StepStarted)
             k += 1
             time_iteration = time.time()
             model = None
@@ -168,9 +163,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 lowerbound_value = int(lowerbound_value)
             except ValueError:
                 lowerbound_value = MINIMAL_SCORE
-            notify_observers(
-                Signals.PreprocessingStopped
-            )
+            notify_observers(Signals.PreprocessingStopped)
 
             #########################
             LOGGER.debug('FIND BEST CLIQUE ' + printable_bounds())
@@ -296,6 +289,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                                          new_poweredge_count,
                                          remain_edges_global),
                 )
+                assert(remain_edges_global > 0)
             # notify_observers:
             notify_observers(Signals.StepStopped)
             notify_observers(Signals.StepFinalized)
@@ -318,7 +312,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             LOGGER.info('No remaining edge')
         else:
             LOGGER.info(str(len(remain_edges)) + ' remaining edge(s)')
-            notify_observers(final_edge_generated=remain_edges)
+            # send them to observers (including the output converter)
+            notify_observers(remain_edge_generated=remain_edges)
 
         notify_observers(
             Signals.ConnectedComponentStopped,
@@ -340,5 +335,3 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     # and put it in the output and in level info.
     notify_observers(Signals.CompressionStopped)
     notify_observers(Signals.CompressionFinalized)
-
-
