@@ -13,6 +13,8 @@ from powergrasp import solving
 from powergrasp import commons
 from powergrasp import atoms
 
+from powergrasp.observers import Signals  # shortcut
+
 
 LOGGER = commons.logger()
 # under this minimal score, the found concept is not interesting
@@ -50,8 +52,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('#### EXTRACT ####')
     LOGGER.info('#################')
     notify_observers(
-        observers.Signals.CompressionStarted,
-        observers.Signals.ExtractionStarted
+        Signals.CompressionStarted,
+        Signals.ExtractionStarted
     )
     # creat a solver that get all information about the graph
     graph_atoms = solving.model_from('', [graph_lp, asp_extracting])
@@ -72,7 +74,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     remain_edges_global = all_edges.count('ccedge(')
     # notifications about the extraction
     notify_observers(
-        observers.Signals.ExtractionStopped,
+        Signals.ExtractionStopped,
         all_edge_generated=remain_edges_global,
         step_data_generated=(0, 0, remain_edges_global)
     )
@@ -109,12 +111,12 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             return '[' + str(lowerbound_value) + ';' + str(last_score) + ']'
         # iteration
         notify_observers(
-            observers.Signals.IterationStarted
+            Signals.IterationStarted
         )
         while model_found_at_last_iteration:
             # STEP INITIALIZATION
             notify_observers(
-                observers.Signals.StepStarted
+                Signals.StepStarted
             )
             k += 1
             time_iteration = time.time()
@@ -133,7 +135,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             LOGGER.debug('PREPROCESSING')
             #########################
             notify_observers(
-                observers.Signals.PreprocessingStarted
+                Signals.PreprocessingStarted
             )
             model = solving.model_from(
                 base_atoms=(graph_atoms + previous_coverage
@@ -145,8 +147,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 # break # no more models !
                 model_found_at_last_iteration = False
                 notify_observers(step_data_generated=[None] * 3)
-                notify_observers(observers.Signals.StepStopped)
-                notify_observers(observers.Signals.StepFinalized)
+                notify_observers(Signals.StepStopped)
+                notify_observers(Signals.StepFinalized)
                 continue
             # treatment of the model
             lowbound = tuple(a for a in model if a.startswith('maxlowerbound'))
@@ -167,7 +169,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             except ValueError:
                 lowerbound_value = MINIMAL_SCORE
             notify_observers(
-                observers.Signals.PreprocessingStopped
+                Signals.PreprocessingStopped
             )
 
             #########################
@@ -287,7 +289,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 new_poweredge_count = atom_counter['poweredge']
                 remain_edges = tuple(a for a in best_model if a.startswith('edge('))
 
-                # notify_observers: first gives them the data
+                # notify_observers: provide the data
                 notify_observers(
                     model_found=result_atoms,
                     step_data_generated=(new_powernode_count,
@@ -295,8 +297,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                                          remain_edges_global),
                 )
             # notify_observers:
-            notify_observers(observers.Signals.StepStopped)
-            notify_observers(observers.Signals.StepFinalized)
+            notify_observers(Signals.StepStopped)
+            notify_observers(Signals.StepFinalized)
 
         # END while model_found_at_last_iteration
         # Here, all models was processed in the connected component
@@ -318,7 +320,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             notify_observers(final_edge_generated=remain_edges)
 
         notify_observers(
-            observers.Signals.ConnectedComponentStopped,
+            Signals.ConnectedComponentStopped,
             final_edge_count_generated=len(remain_edges),
         )
 
@@ -335,7 +337,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('#################')
     # compute a human readable final results string,
     # and put it in the output and in level info.
-    notify_observers(observers.Signals.CompressionStopped)
-    notify_observers(observers.Signals.CompressionFinalized)
+    notify_observers(Signals.CompressionStopped)
+    notify_observers(Signals.CompressionFinalized)
 
 
