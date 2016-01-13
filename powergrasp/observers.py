@@ -257,27 +257,33 @@ class TimeCounter(CompressionObserver):
                 else:
                     LOGGER.warning('TimeCounter: the process '
                                    + TimeCounter.prettified(prop)
-                                   + ' stopped but not started.')
+                                   + ' is stopped but not started.')
+
+    def __get_property_or_none(self, prop):
+        """Return given property value for self (use getattr), or None
+        in case of AttributeError"""
+        try:
+            return getattr(self, prop)
+        except AttributeError:
+            return None
 
     @property
     def compression_time(self):
-        return getattr(self, TimeCounter.property_named_from(
-            Signals.CompressionStarted.value,
-            prefix=TimeCounter.LAST_PREFIX
-        ))
+        prop = TimeCounter.property_named_from(Signals.CompressionStarted.value,
+                                               prefix=TimeCounter.LAST_PREFIX)
+        return self.__get_property_or_none(prop)
 
     @property
     def extraction_time(self):
-        return getattr(self, TimeCounter.property_named_from(
-            Signals.ExtractionStarted.value,
-            prefix=TimeCounter.LAST_PREFIX
-        ))
+        prop = TimeCounter.property_named_from(Signals.ExtractionStarted.value,
+                                               prefix=TimeCounter.LAST_PREFIX)
+        return self.__get_property_or_none(prop)
 
     @property
     def last_step_time(self):
         prop = TimeCounter.property_named_from(Signals.StepStarted.value,
                                                prefix=TimeCounter.LAST_PREFIX)
-        return getattr(self, prop)
+        return self.__get_property_or_none(prop)
 
     def log_timer(self, property_name):
         "Perform the logging output for the given property"
