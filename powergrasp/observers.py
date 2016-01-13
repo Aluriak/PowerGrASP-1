@@ -263,8 +263,9 @@ class TimeCounter(CompressionObserver):
 
     @property
     def last_step_time(self):
-        return getattr(self, TimeCounter.property_named_from(
-                       Signals.StepStarted.value, prefix=TimeCounter.LAST_PREFIX))
+        prop = TimeCounter.property_named_from(Signals.StepStarted.value,
+                                               prefix=TimeCounter.LAST_PREFIX)
+        return getattr(self, prop)
 
     def log_timer(self, property_name):
         "Perform the logging output for the given property"
