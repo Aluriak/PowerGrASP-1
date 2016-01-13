@@ -50,11 +50,6 @@ class Signals(Enum):
     CompressionTimeGenerated  = 'compression_time_generated'
     AllEdgeGenerated          = 'all_edge_generated'
     RemainEdgeGenerated       = 'remain_edge_generated'
-    RemainEdgeGlobalGenerated = 'remain_edge_global_generated'
-    FinalEdgeCountGenerated   = 'final_edge_count_generated'
-    FinalEdgeGenerated        = 'final_edge_generated'
-    PowernodeGenerated        = 'powernode_generated'
-    PoweredgeGenerated        = 'poweredge_generated'
     StepDataGenerated         = 'step_data_generated'
 
 
@@ -181,8 +176,8 @@ class OutputWriter(CompressionObserver):
             self.output.write(self.converter.finalized())
             self.converter.reset_containers()
             LOGGER.debug('Final data saved in file ' + self.output.name)
-        if Signals.FinalEdgeGenerated in signals:
-            remain_edges = signals[Signals.FinalEdgeGenerated]
+        if Signals.RemainEdgeGenerated in signals:
+            remain_edges = signals[Signals.RemainEdgeGenerated]
             self.converter.convert(remain_edges)
         if Signals.CompressionStopped in signals:
             if self.output is not sys.stdout: self.output.close()
