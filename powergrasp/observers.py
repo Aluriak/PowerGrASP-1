@@ -163,8 +163,9 @@ class OutputWriter(CompressionObserver):
     """Manage the output file, and conversion into expected output format"""
 
     def __init__(self, output_filename, output_format):
+        format = OutputWriter.format_deduced_from(output_filename, output_format)
         self.output = open(output_filename, 'w') if output_filename else sys.stdout
-        self.converter = converter.output_converter_for(output_format)
+        self.converter = converter.output_converter_for(format)
 
     def _update(self, signals):
         # print('Output Writer:', signals)
@@ -191,6 +192,21 @@ class OutputWriter(CompressionObserver):
     @property
     def priority(self):
         return MINIMAL_PRIORITY
+
+    @staticmethod
+    def format_deduced_from(output_file, output_format):
+        """Return the most likely expected output format by looking at given args"""
+        # look at the output_file extension if output_format is unusable
+        if not output_format or output_format not in converter.OUTPUT_FORMATS:
+            try:
+                output_format = output_file.split('.')[-1]  # extension of the file
+            except (IndexError, AttributeError):
+                output_format = converter.DEFAULT_OUTPUT_FORMAT  # use BBL
+        # verifications
+        assert output_format in converter.OUTPUT_FORMATS
+        if output_file:
+            assert output_file.endswith(output_format)
+        return output_format
 
 
 class TimeCounter(CompressionObserver):
