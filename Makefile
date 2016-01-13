@@ -112,7 +112,7 @@ troll:
 
 
 plot:
-	$(PYTHON) $(PLOT) $(STATFILE)
+	$(PYTHON) --plot-stats $(STATFILE)
 
 
 # this is a way to treat multiple files
