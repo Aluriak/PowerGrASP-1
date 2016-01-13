@@ -16,13 +16,13 @@ OUTPUT=--output-format="bbl"
 FOUT=--output-file="$(DATA)output"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
-LOGLEVEL=--loglevel=warning
+#LOGLEVEL=--loglevel=warning
 #LOGLEVEL=--loglevel=critical
 #INTERACTIVE=--interactive
 #LBOUND=--lbound-cutoff=-1
 CCCOUNT=--count-cc
 MODELCOUNT=--count-model
-PROFILING=--profiling
+#PROFILING=--profiling
 #THREAD=--thread=4
 #PRE=--show-pre
 
