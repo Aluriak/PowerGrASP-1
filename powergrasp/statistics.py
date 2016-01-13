@@ -141,7 +141,7 @@ class DataExtractor(observers.CompressionObserver, dict):
                 self[GENR_PWED] += int(poweredge_count)
                 self[GENR_PWND] += int(powernode_count)
                 self[FINL_EDGE]  = int(remain_edges_global)
-        if Signals.StepFinalized in signals:
+        if Signals.StepStopped in signals:
             if self.time_counter:
                 gentime = self.time_counter.last_step_time
             else:
