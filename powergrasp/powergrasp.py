@@ -130,11 +130,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
             'PREPROCESSED DATA: '
         ))
     if count_model:
-        pass
-        # instanciated_observers.append(observers.ObservedSignalLogger(
-            # observers.Signals.ModelFound,
-            # 'New model found: '
-        # ))
+        instanciated_observers.append(observers.ObjectCounter())
     if count_cc:
         instanciated_observers.append(observers.ConnectedComponentsCounter())
     if interactive:
