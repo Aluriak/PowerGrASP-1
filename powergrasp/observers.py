@@ -150,7 +150,7 @@ class ObjectCounter(CompressionObserver):
             for prop in self.props:
                 LOGGER.info(self.__class__.__name__ + ': '
                             + ObjectCounter.prettified(prop)
-                            + ': ' + getattr(self, prop))
+                            + ': ' + str(getattr(self, prop)))
 
     @staticmethod
     def property_named_from(signal_name):
@@ -172,7 +172,7 @@ class OutputWriter(CompressionObserver):
         self.converter = converter.output_converter_for(output_format)
 
     def _update(self, signals):
-        # print('Ouptup Writer:', signals)
+        # print('Output Writer:', signals)
         if Signals.ModelFound in signals:
             # give new powernodes to converter
             atoms = signals[Signals.ModelFound]
@@ -188,6 +188,10 @@ class OutputWriter(CompressionObserver):
             if self.output is not sys.stdout: self.output.close()
         if Signals.CompressionStarted in signals:
             self.output.write(self.converter.header())
+
+    def comment(self, lines):
+        """Add given lines to output as comments"""
+        self.output.write(self.converter.comment(lines))
 
     @property
     def priority(self):
