@@ -123,7 +123,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
 
     # sort observers, in respect of their priority (smaller is after)
     instanciated_observers.sort(key=lambda o: o.priority, reverse=True)
-    assert instanciated_observers[0].priority > instanciated_observers[1].priority
+    assert instanciated_observers[0].priority >= instanciated_observers[-1].priority
 
     # Launch the compression
     compression.compress_lp_graph(
