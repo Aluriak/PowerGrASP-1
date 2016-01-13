@@ -12,50 +12,47 @@ Statistics information can be printed or saved in files
  in raw or latex tabular format.
 
 """
-
-import powergrasp.commons as commons
 import csv
 
-# Logger
+from powergrasp import observers
+from powergrasp import commons
+from powergrasp.observers import Signals  # shortcut
+
+
 LOGGER = commons.logger()
 
-try:
-    # plotting libraries
-    #  this is just a test for print a warning if there are not present
-    import matplotlib
-    import pandas
-    import numpy
-except ImportError:
-    LOGGER.warning('plotting libraries are not all there. '
-                   'Maybe you will need to install them.')
 
-# INFORMATION KEYS
-INIT_EDGE = 'initial_edge_count'
-FINL_EDGE = 'final_edge_count'
-FINL_PWED = 'poweredge_count'
-FINL_PWND = 'powernode_count'
-CONV_RATE = 'conversion_rate'
-EDGE_RDCT = 'edge_reduction'
-COMP_RTIO = 'compression_ratio'
-GENR_TIME = 'gentime'
-REMN_EDGE = 'edges'
-ALL_FIELD = (CONV_RATE, EDGE_RDCT, COMP_RTIO,
-             INIT_EDGE, FINL_EDGE, FINL_PWND,
-             FINL_PWED, GENR_TIME, REMN_EDGE,
-            )
+# Compression data
+# class CompressionData(Enum):
+# numbers
+INIT_EDGE = 'initial_edge_count'  # number of edges in the input graph
+FINL_EDGE = 'remain_edge_count'   # number of edges not compressed since the compression beginning
+GENR_PWED = 'poweredge_count'     # number of poweredges created since the beginning
+GENR_PWND = 'powernode_count'     # number of powernodes created since the beginning
+CONV_RATE = 'conversion_rate'     # computed conversion rate
+EDGE_RDCT = 'edge_reduction'      # computed edge reduction
+COMP_RTIO = 'compression_ratio'   # computed compression ratio
+GENR_TIME = 'gentime'             # generation time for last iteration
+FINL_TIME = 'final_time'          # final compression time
+# general
+NETW_NAME = 'network_name'        # name of the input graph (name of the file containing input data)
+FILE_DESC = 'file_descriptor'     # file descriptor of the output CSV file, or None if no output expected
+FILE_WRTR = 'file_writer'         # CSV writer on the output CSV file, or None if no output expected
 
-# global data
-NETW_NAME = 'network_name'
-FILE_DESC = 'file_descriptor'
-FILE_WRTR = 'file_writer'
+# All fields that are useful at the end of the compression are put here
+PRINTABLE_FIELD = (
+    INIT_EDGE, GENR_PWED, GENR_PWND, CONV_RATE,
+    EDGE_RDCT, COMP_RTIO, FINL_EDGE, FINL_TIME,
+)
 
-# FORMATS
+
+# Output formats
 FORMAT_TEX = 'tex'
 FORMAT_RAW = 'txt'
 
-# DATA FOR PLOTTING
-MEASURES = (GENR_TIME, REMN_EDGE, FINL_PWED, FINL_PWND)
-COLORS   = ('black'  , 'green'  , 'blue'   , 'red'    )
+# Data for plotting
+MEASURES = (GENR_TIME, FINL_EDGE, GENR_PWED, GENR_PWND)
+COLORS   = ('black', 'green', 'blue', 'red')
 LABELS   = (
     'time per step',
     'remaining edges',
@@ -64,136 +61,147 @@ LABELS   = (
 )
 
 
-# MAIN API FUNCTIONS
-
-def container(network_name='network', statistics_filename=None):
-    """Return a new container of statistics information
-
-    The statistics_filename, if not None, must be a valid name of file
-    that will be overrided, and will contains some data in csv format."""
-    statistics_file, statistics_writer = None, None
-    # open file of statistics in csv if asked
-    if statistics_filename:
-        try:
-            statistics_file = open(statistics_filename, 'w')
-            statistics_writer = csv.DictWriter(statistics_file,
-                                               fieldnames=MEASURES)
-            statistics_writer.writeheader()
-        except IOError as e:
-            LOGGER.warning('The file ' + statistics_filename
-                           + ' can\'t be opened. No statistics will be saved.')
-    else:
-        statistics_writer = None
-    return {
-        NETW_NAME: network_name,
-        INIT_EDGE: 0,
-        FINL_EDGE: 0,
-        FINL_PWED: 0,
-        FINL_PWND: 0,
-        REMN_EDGE: 0,
-        GENR_TIME: 0,
-        FILE_DESC: statistics_file,
-        FILE_WRTR: statistics_writer,
-    }
-
-
-def add(stats, initial_edge_count=None, poweredge_count=None,
-        powernode_count=None, gentime=None,
-        final_edges_count=None, remain_edges_count=None):
-    """set to given stats the given values.
-
-    if a value is None, it will be not modified.
-    stats is modified in place.
-
-    values:
-        initial_edge_count -- number of edges at the beginning
-        poweredge_count    -- number of poweredge created at last iteration
-        powernode_count    -- number of powernode created at last iteration
-        gentime            -- time necessary for last iteration
-        final_edges_count  -- number of edges at the end
-        remain_edges_count -- number of remaining edges at last iteration
+class DataExtractor(observers.CompressionObserver, dict):
     """
-    assert(stats.__class__ == dict)
+    DataExtractor is a repository of various data, used for statistical analysis
+     of the compression and other treatments.
 
-    # treats all accumulative values
-    accumulative_values = {
-        INIT_EDGE: initial_edge_count,
-        FINL_EDGE: final_edges_count,
-        FINL_PWED: poweredge_count,
-        FINL_PWND: powernode_count,
-    }
-    for info, value in accumulative_values.items():
-        if value is not None:
-            stats[info] += value
+    """
+    GENERATED_PREFIX = '_generated_'
 
-    # write the data in csv file
-    if stats[FILE_DESC] and gentime and remain_edges_count:
-        assert(MEASURES[0] == GENR_TIME) # verification of plotting consistency
-        assert(MEASURES[1] == REMN_EDGE)
-        assert(MEASURES[2] == FINL_PWED)
-        assert(MEASURES[3] == FINL_PWND)
-        stats[FILE_WRTR].writerow({
-            GENR_TIME: gentime,
-            REMN_EDGE: remain_edges_count,
-            FINL_PWED: stats[FINL_PWED],
-            FINL_PWND: stats[FINL_PWND],
+    def __init__(self, statistics_filename=None, network_name='network',
+                 output_converter=None, time_counter=None):
+        """The statistics_filename, if not None, must be a valid name of file
+        that will be overrided, and will contains some data in csv format.
+
+        The output converter, if given, is used at the end for add comments
+         containing the final statistic report in the output file.
+        Moreover, if the time_counter object is given, the final statistics
+         will contains information about compression time.
+
+        """
+        if statistics_filename:
+            try:
+                statistics_file = open(statistics_filename, 'w')
+                statistics_writer = csv.DictWriter(statistics_file,
+                                                   fieldnames=MEASURES)
+                statistics_writer.writeheader()
+            except IOError as e:
+                LOGGER.warning("The file "
+                               + statistics_filename + " can't be opened."
+                               + " No statistics will be saved.")
+        else:
+            statistics_writer = None
+        self.output_converter = output_converter
+        self.time_counter = time_counter
+
+        dict.__init__(self, {
+            NETW_NAME: network_name,
+            INIT_EDGE: 0,
+            FINL_EDGE: 0,
+            FINL_TIME: 0,
+            GENR_PWED: 0,
+            GENR_PWND: 0,
+            GENR_TIME: 0,
+            FILE_DESC: statistics_file,
+            FILE_WRTR: statistics_writer,
         })
 
+    def _update(self, signals):
+        if Signals.CompressionFinalized in signals:
+            final_results = (
+                "All cc have been performed "
+                + ("in " + str(round(self.time_counter.compression_time, 3))
+                   if self.time_counter else '')
+                + 's '
+                + ('(extraction in ' + str(round(self.time_counter.extraction_time, 3)) + ')'
+                   if self.time_counter else '')
+                + "\nGrounder options: " + commons.ASP_GRINGO_OPTIONS
+                + "\nSolver options: "   + commons.ASP_CLASP_OPTIONS
+                + "\nNow, statistics on "
+                + self.stats_output()
+            )
+            LOGGER.info(final_results)
+            if self.output_converter:
+                self.output_converter.comment(final_results.split('\n'))
+            self.finalize()
 
-def save(filename, stats, format=FORMAT_TEX, erase=False):
-    """Saves given stats in given filename in given format.
-
-    format can be one of available format. Default is tabular in tex.
-    if erase is True, existing content of filename will be erased.
-    """
-    # produce and save data
-    with open(filename, ('w' if erase else 'a')) as fd:
-        f.write(output(stats, format))
-
-
-def output(stats, format=FORMAT_RAW):
-    """Return given stats as string in given format.
-
-    format can be one of available format. Default is raw text.
-    """
-    return _final_data(stats, format)
-
-def conversion_rate(stats):
-    """Accessor on data"""
-    return stats[CONV_RATE]
-
-def edge_reduction(stats):
-    """Accessor on data"""
-    return stats[EDGE_RDCT]
-
-def finalize(stats):
-    """Close files"""
-    if stats[FILE_DESC]:
-        stats[FILE_DESC].close()
-        stats[FILE_WRTR] = None
-
-
-
-def _final_data(stats, format):
-    """Compute and produce all given stats in string."""
-    assert(stats[INIT_EDGE] is not None)
-    assert(stats[FINL_EDGE] is not None)
-    assert(stats[FINL_PWND] is not None)
-    assert(stats[FINL_PWED] is not None)
-
-    stats[CONV_RATE] = _conversion_rate(
-        stats[INIT_EDGE], stats[FINL_EDGE], stats[FINL_PWED], stats[FINL_PWND]
-    )
-    stats[EDGE_RDCT] = _edge_reduction(
-        stats[INIT_EDGE], stats[FINL_EDGE], stats[FINL_PWED]
-    )
-    stats[COMP_RTIO] = _compression_ratio(
-        stats[INIT_EDGE], stats[FINL_EDGE], stats[FINL_PWED]
-    )
-
-    return _formatted(dict(stats), format)
+        if Signals.CompressionTimeGenerated in signals:
+            self[FINL_TIME] = float(signals[Signals.CompressionTimeGenerated])
+        if Signals.AllEdgeGenerated in signals:
+            self[INIT_EDGE] = int(signals[Signals.AllEdgeGenerated])
+        if Signals.FinalEdgeCountGenerated in signals:
+            self[FINL_EDGE] = int(signals[Signals.FinalEdgeCountGenerated])
+        if Signals.StepDataGenerated in signals:
+            powernode_count, poweredge_count, remain_edges_global = (
+                signals[Signals.StepDataGenerated])
+            # defense against a no-data case
+            if remain_edges_global is None:
+                print('STATISTICS: None Data generated')
+                assert powernode_count is None
+                assert poweredge_count is None
+            else:  # all data is given
+                self[GENR_PWED] += int(poweredge_count)
+                self[GENR_PWND] += int(powernode_count)
+                self[FINL_EDGE]  = int(remain_edges_global)
+        if Signals.StepFinalized in signals:
+            if self.time_counter:
+                gentime = self.time_counter.last_step_time
+            else:
+                gentime = 0.
+            self.write_csv_data(self[GENR_PWED], self[GENR_PWND],
+                                gentime, self[FINL_EDGE])
 
 
+    def stats_output(self, format=FORMAT_RAW):
+        """Return self as string in given format.
+
+        format can be one of available format. Default is raw text.
+        """
+        assert self[INIT_EDGE] is not None
+        assert self[FINL_EDGE] is not None
+        assert self[GENR_PWND] is not None
+        assert self[GENR_PWED] is not None
+        self[CONV_RATE] = conversion_rate(
+            self[INIT_EDGE], self[FINL_EDGE], self[GENR_PWED], self[GENR_PWND]
+        )
+        self[EDGE_RDCT] = edge_reduction(
+            self[INIT_EDGE], self[FINL_EDGE], self[GENR_PWED]
+        )
+        self[COMP_RTIO] = compression_ratio(
+            self[INIT_EDGE], self[FINL_EDGE], self[GENR_PWED]
+        )
+        return _formatted(dict(self), format)
+
+
+    def finalize(self):
+        """Close files"""
+        if self[FILE_DESC]:
+            self[FILE_WRTR] = None
+            self[FILE_DESC].close()
+
+
+    def save(self, filename, format=FORMAT_TEX, erase=False):
+        """Saves itself in given filename in given format.
+
+        format can be one of available format. Default is tabular in tex.
+        if erase is True, existing content of filename will be erased.
+        """
+        # produce and save data
+        with open(filename, ('w' if erase else 'a')) as fd:
+            f.write(self.output(format))
+
+
+    def write_csv_data(self, poweredge_count, powernode_count,
+                       gentime, remain_edges_count):
+        """Write data in the csv file, if exists, else do nothing"""
+        if self[FILE_DESC]:
+            self[FILE_WRTR].writerow({
+                GENR_TIME: gentime,
+                FINL_EDGE: remain_edges_count,
+                GENR_PWED: poweredge_count,
+                GENR_PWND: powernode_count,
+            })
 
 
 def _formatted(data, format):
@@ -203,12 +211,12 @@ def _formatted(data, format):
     fdata = ''
     if format == FORMAT_RAW:
         fdata = data[NETW_NAME] + ':'
-        for field in ALL_FIELD:
+        for field in PRINTABLE_FIELD:
             fdata += '\n\t' + field + ': ' + str(data[field])
     elif format == FORMAT_TEX:
         header  = 'network'
         payload = data[NETW_NAME]
-        for field in ALL_FIELD:
+        for field in PRINTABLE_FIELD:
             header  += ' & ' + field
             payload += ' & ' + str(data[field])
         header  += '\\\\'
@@ -219,9 +227,8 @@ def _formatted(data, format):
     return fdata
 
 
-
 # DATA COMPUTATION
-def _conversion_rate(initial_edge, final_edge, poweredge, powernode):
+def conversion_rate(initial_edge, final_edge, poweredge, powernode):
     """Compute conversion rate"""
     try:
         edge = initial_edge
@@ -230,7 +237,7 @@ def _conversion_rate(initial_edge, final_edge, poweredge, powernode):
     except ZeroDivisionError:
         return 1.
 
-def _edge_reduction(initial_edge, final_edge, poweredge):
+def edge_reduction(initial_edge, final_edge, poweredge):
     """Compute edge reduction (percentage)"""
     try:
         edge = initial_edge
@@ -239,92 +246,9 @@ def _edge_reduction(initial_edge, final_edge, poweredge):
     except ZeroDivisionError:
         return 100.
 
-def _compression_ratio(initial_edge, final_edge, poweredge):
+def compression_ratio(initial_edge, final_edge, poweredge):
     """Compute data compression ratio"""
     try:
         return initial_edge / (final_edge + poweredge)
     except ZeroDivisionError:
         return 1.
-
-
-
-
-# PLOTTING
-def plots(filename, title="Compression statistics", xlabel='Iterations',
-          ylabel='{Power,} {node,edge}s counters', savefile=None, dpi=400):
-    """Generate the plot that show all the data generated by the compression
-
-    if savefile is not None and is a filename, the figure will be saved
-    in png in given file, with given dpi."""
-    try:
-        # plotting libraries
-        from matplotlib import rc
-        rc('text', usetex=True)
-        import matplotlib.pyplot as plt
-        import numpy as np
-        import pandas as pd
-        from matplotlib.pyplot import savefig
-    except ImportError:
-        LOGGER.error('plotting libraries are not all there. '
-                     'Please install matplotlib and pandas modules. '
-                     'Plotting aborted.')
-        return  # end of plotting
-
-
-    # GET DATA
-    try:
-        data = np.genfromtxt(
-            filename,
-            delimiter=',',
-            skip_header=0,
-            skip_footer=0,
-            names=True,  # read names from header
-        )
-    except IOError as e:
-        LOGGER.warning('The file '
-                       + statistics_filename
-                       + ' can\'t be opened. No statistics will be saved.')
-
-
-    # Label conversion
-    def key2label(key):
-        """Convert given string in label printable by matplotlib"""
-        return '$\#$' + key.strip('count').replace('_', ' ')
-
-    # PLOTTING
-    try:
-        data_size = len(data[MEASURES[0]])
-    except TypeError:
-        LOGGER.error('Plotting compression statistics require more than one compression iteration')
-        LOGGER.error('Plotting aborted')
-        return
-
-    # convert in pandas data frame for allow plotting
-    gx = pd.DataFrame(data, columns=MEASURES)
-    # {black dotted,red,yellow,blue} line with marker o
-    styles = ['ko--','ro-','yo-','bo-']
-
-    # get plot, and sets the labels for the axis and the right axis (time)
-    plot = gx.plot(style=styles, secondary_y=[GENR_TIME])
-    lines, labels = plot.get_legend_handles_labels()
-    rines, rabels = plot.right_ax.get_legend_handles_labels()
-    labels = [key2label(l) for l in labels] + ['concept generation time']
-
-    plot.legend(lines + rines, labels)
-    plot.set_xlabel(xlabel)
-    plot.set_ylabel(ylabel)
-    plot.right_ax.set_ylabel('Time (s)')
-
-    # axis limits : show the 0
-    plot.right_ax.set_ylim(0, max(gx[GENR_TIME])*2)
-    plot.set_ylim(0, gx[REMN_EDGE][0]*1.1)
-
-    # print or save
-    if savefile:
-        plt.savefig(savefile, dpi=dpi)
-        LOGGER.info('Plot of statistics data saved in file ' + savefile + ' (' + str(dpi) + ' dpi)')
-    else:
-        plt.show()
-
-
-
