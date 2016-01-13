@@ -141,7 +141,7 @@ class ObjectCounter(CompressionObserver):
             if name.endswith(SIGNAL_FOUND):
                 prop = ObjectCounter.property_named_from(name)
                 setattr(self, prop, getattr(self, prop) + 1)
-        if Signals.StepFinalized in signals:
+        if Signals.CompressionFinalized in signals:
             for prop in self.props:
                 LOGGER.info(self.__class__.__name__ + ': '
                             + ObjectCounter.prettified(prop)
