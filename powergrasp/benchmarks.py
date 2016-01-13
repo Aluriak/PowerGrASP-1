@@ -22,7 +22,7 @@ Generate a CSV file as output.
 
 from docopt     import docopt
 from powergrasp import compress
-from info       import __version__, STUDYNAMES
+from info       import PACKAGE_VERSION, STUDYNAMES
 from converter  import OUTPUT_FORMATS
 from functools  import partial
 import os
@@ -112,7 +112,7 @@ def launch_compression(input_file, compress, writer):
 
 if __name__ == '__main__':
     # read options
-    options = docopt(__doc__, version=__version__)
+    options = docopt(__doc__, version=PACKAGE_VERSION)
 
     # parse them
     lbound_cutoff = int(options['--lbound-cutoff'])
