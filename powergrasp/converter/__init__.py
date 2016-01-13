@@ -36,8 +36,8 @@ DEFAULT_OUTPUT_FORMAT = 'bbl'
 
 
 # converters access
-def output_converter_for(format): return converter_for(format,  True)
-def  input_converter_for(format): return converter_for(format, False)
+def output_converter_for(format): return converter_for(format, is_output=True)
+def  input_converter_for(format): return converter_for(format, is_output=False)
 def delete_temporary_file(): return InConverter.delete_temporary_file()
 
 
@@ -53,9 +53,9 @@ def converter_for(format, is_output):
 def __non_valid_format_handling(format, formats, is_output):
     """Return instance of converter if format is valid, else None"""
     if format not in formats:
-        LOGGER.error("given extension " + format + " not recognized. "
+        LOGGER.error("given extension " + str(format) + " not recognized. "
                      + 'Supported ' + ('output' if is_output else 'input')
-                     + (' formats are ' + ', '.join(formats) + '.')
+                     + (' formats are ' + ', '.join(str(_) for _ in formats) + '.')
                     )
         return None
     else:
