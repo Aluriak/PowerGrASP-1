@@ -7,33 +7,45 @@ Moreover, some generalist functions are defined,
 """
 
 # IMPORTS
-from pkg_resources import resource_filename
-from functools     import partial
-
-from powergrasp    import info
 import logging, logging.handlers
+import pkg_resources  # packaging facilies
 import os
 
+from functools   import partial
+from collections import ChainMap
 
-# DIRECTORIES, FILENAMES
-PACKAGE_NAME    = info.__name__.lower()
-ACCESS_FILE     = partial(resource_filename, PACKAGE_NAME)
-LOGGER_NAME     = PACKAGE_NAME
-DIR_LOGS        = 'logs/'
+from docopt import docopt
+
+from powergrasp.info import PACKAGE_NAME, PACKAGE_VERSION
+
+
+# Constants
+ASP_FILE_EXTENSION = '.lp'
+BUBBLE_FORMAT_ID   = 'bbl'
+
+# Directories (starting from the package level)
+DIR_SOURCES     = ''  # sources are inside the package
 DIR_DATA        = 'data/'
 DIR_TEST_CASES  = 'tests/'
-DIR_SOURCES     = ''
-DIR_ASP_SOURCES = DIR_SOURCES + 'ASPsources/'
-ASP_FILE_EXT    = '.lp'
+DIR_LOGS        = 'logs/'
+DIR_ASP_SOURCES = 'ASPsources/'
+
+# Packaging: access to the file, inside the package,
+#   independently of the installation directory
+access_packaged_file = partial(pkg_resources.resource_filename, PACKAGE_NAME)
 
 # LOGGING VALUES
+LOGGER_NAME       = PACKAGE_NAME
+DEFAULT_LOG_FILE  = access_packaged_file(DIR_LOGS + LOGGER_NAME + '.log')
 DEFAULT_LOG_LEVEL = logging.DEBUG
-DEFAULT_LOG_FILE  = ACCESS_FILE(DIR_LOGS + LOGGER_NAME + '.log')
 
+# Optimization values
+OPT_LOWERBOUND_CUTOFF = 2  # minimal value for the lowerbound optimization
 
 # ASP SOURCES
 def __asp_file(name):
-    return ACCESS_FILE(DIR_ASP_SOURCES + name + ASP_FILE_EXT)
+    "path to given asp source file name"
+    return access_packaged_file(DIR_ASP_SOURCES + name + ASP_FILE_EXTENSION)
 ASP_SRC_EXTRACT   = __asp_file('extract')
 ASP_SRC_PREPRO    = __asp_file('preprocessing')
 ASP_SRC_FINDCC    = __asp_file('findbestclique')
@@ -47,7 +59,7 @@ ASP_ARG_STEP = 'k'
 ASP_ARG_UPPERBOUND = 'upperbound'
 ASP_ARG_LOWERBOUND = 'lowerbound'
 
-# ASP SOLVER OPTIONS
+# ASP Solver options
 ASP_GRINGO_OPTIONS = ''  # no default options
 ASP_CLASP_OPTIONS  = ''  # options of solving heuristics
 ASP_CLASP_OPTIONS += ' -Wno-atom-undefined'
@@ -72,7 +84,33 @@ ASP_CLASP_OPTIONS += ' --heuristic=Vsids'
 # ASP_CLASP_OPTIONS.append('--heuristic=None')
 
 
-# FUNCTIONS
+# Definition of the default program options
+PROGRAM_OPTIONS = {
+    'graph_data'      : None,
+    'extracting'      : ASP_SRC_EXTRACT,
+    'preprocessing'   : ASP_SRC_PREPRO,
+    'findingbiclique' : ASP_SRC_FINDBC,
+    'findingclique'   : ASP_SRC_FINDCC,
+    'postprocessing'  : ASP_SRC_POSTPRO,
+    'output_file'     : None,
+    'output_format'   : BUBBLE_FORMAT_ID,
+    'interactive'     : False,
+    'show_pre'        : False,
+    'count_model'     : True,
+    'count_cc'        : True,
+    'timers'          : True,
+    'lbound_cutoff'   : OPT_LOWERBOUND_CUTOFF,
+    'loglevel'        : DEFAULT_LOG_LEVEL,
+    'logfile'         : DEFAULT_LOG_FILE,
+    'stats_file'      : None,
+    'plot_stats'      : False,
+    'plot_file'       : False,
+    'profiling'       : False,
+    'thread'          : 1,
+}
+
+
+# Functions
 def basename(filepath):
     """Return the basename of given filepath.
 
@@ -92,6 +130,41 @@ def extension(filepath):
 
     """
     return os.path.splitext(os.path.basename(filepath))[1][1:]
+
+def options_from_cli(documentation):
+    """Parse the arguments with docopt, and return the dictionnary of arguments.
+
+    All None values are put away, and the returned object is a ChainMap that
+    use the default configuration for non given parameters.
+
+    """
+    docopt_args = docopt(documentation, version=PACKAGE_VERSION)
+    IRRELEVANT_CLI_OPTIONS = ('--version', '--help')
+    # filter out cli options not given by user
+    import sys
+    cli_args = set(
+        arg.split('=')[0] if '=' in arg else arg
+        for arg in sys.argv
+    )
+    docopt_args = {
+        name: value
+        for name, value in docopt_args.items()
+        if name in cli_args
+    }
+    cli_args = {
+        arg.lstrip('-').replace('-', '_'): value
+        for arg, value in docopt_args.items()
+        if value is not None and arg not in IRRELEVANT_CLI_OPTIONS
+    }
+    # raise error in case of unexpected argument
+    if any(arg not in PROGRAM_OPTIONS for arg in cli_args):
+        unexpected_args = (arg for arg in cli_args
+                           if arg not in PROGRAM_OPTIONS)
+        raise ValueError(
+            'ERROR: ' + str(tuple(unexpected_args)) + ' arguments is not in '
+            + str(tuple(PROGRAM_OPTIONS.keys()))
+        )
+    return ChainMap(cli_args, PROGRAM_OPTIONS)
 
 def thread(number):
     """Set ASP options for use n thread, or only one if set to None"""
@@ -114,29 +187,32 @@ def logger(name=LOGGER_NAME):
     return logging.getLogger(name)
 
 
-def configure_logger(log_filename=None, term_log_level=None):
+def configure_logger(log_filename=DEFAULT_LOG_FILE,
+                     term_log_level=DEFAULT_LOG_LEVEL):
     """Operate the logger configuration for the package"""
-    print('configure_logger')
-    _logger = logger()
+    # put given log level in upper case
+    try:
+        term_log_level = term_log_level.upper()
+    except AttributeError:  # term_log_level is an integer, not a string
+        pass  # nothing to do, lets keep the log level as an int
+
     # remove any previous configuration
     _logger = logging.getLogger(LOGGER_NAME)
     _logger.handlers.clear()
     _logger.setLevel(DEFAULT_LOG_LEVEL)
 
-    # terminal log
+    # setup terminal log
     stream_handler = logging.StreamHandler()
     formatter      = logging.Formatter('%(levelname)s: %(message)s')
     stream_handler.setFormatter(formatter)
-    stream_handler.setLevel(term_log_level.upper())
+    stream_handler.setLevel(term_log_level)
     _logger.addHandler(stream_handler)
 
-    # log file
-    formatter = logging.Formatter(
-        '%(asctime)s :: %(levelname)s :: %(message)s'
-    )
+    # setup log file (or log the failure)
     try:
+        formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
         file_handler = logging.handlers.RotatingFileHandler(
-            log_filename if log_filename else DEFAULT_LOG_FILE, 'a', 2**16, 1)
+            log_filename, 'a', 2**16, 0)
         file_handler.setLevel(logging.DEBUG)  # get always all data
         file_handler.setFormatter(formatter)
         _logger.addHandler(file_handler)
