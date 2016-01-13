@@ -89,6 +89,10 @@ single:
 	$(COMMAND) --graph-data="$(TESTS)singlenode.lp"
 star:
 	$(COMMAND) --graph-data="$(TESTS)star.lp"
+testgml:
+	$(COMMAND) --graph-data="$(TESTS)test.gml"
+testlp:
+	$(COMMAND) --graph-data="$(TESTS)test.lp"
 three:
 	$(COMMAND) --graph-data="$(TESTS)threenode.lp"
 tree:
