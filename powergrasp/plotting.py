@@ -84,7 +84,7 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
     # convert in pandas data frame for allow plotting
     gx = pd.DataFrame(data, columns=MEASURES)
     # {black dotted,red,yellow,blue} line with marker o
-    styles = ['ko--','ro-','yo-','bo-']
+    styles = ['ko--', 'ro-', 'yo-', 'bo-']
 
     # get plot, and sets the labels for the axis and the right axis (time)
     plot = gx.plot(style=styles, secondary_y=[statistics.GENR_TIME])
