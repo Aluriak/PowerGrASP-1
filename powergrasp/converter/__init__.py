@@ -64,6 +64,5 @@ def __non_valid_format_handling(format, formats, is_output):
 def converted_to_asp_file(input_filename):
     """Return a filename that contains data in input file,
     formatted in ASP readable format"""
-    LOGGER.warning('Converter module: no implementation of non-ASP input '
-                   'management in the __init__.converter_to_asp_file(1) function.')
-    return input_filename
+    format = commons.extension(input_filename)
+    return input_converter_for(format).convert(input_filename)
