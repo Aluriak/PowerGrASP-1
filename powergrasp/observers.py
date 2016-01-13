@@ -217,16 +217,28 @@ class TimeCounter(CompressionObserver):
     TIMER_PREFIX = '_timer_'  # used for generated attributes
     LAST_PREFIX = '_last_time_'  # used for generated attributes
 
-    def __init__(self, round_ndigits=3, log_times=True):
-        "Wait for the ndigits parameter of the builtin round function"
+    def __init__(self, round_ndigits=3, log_times=True, ignore=[]):
+        """Wait for the ndigits parameter of the builtin round function.
+        If log_times is False, no time will be logged.
+        Ignore must be an iterable of Signals *Started to ignore.
+
+        """
         self.log_times = log_times
         if round_ndigits:
             self.round = partial(round, ndigits=round_ndigits)
         else:
             self.round = round
+        self.ignored = set(ignore)
+        self.ignored |= set(  # add stopped signals
+            Signals(s.value[:-len(SIGNAL_STARTED)] + SIGNAL_STOPPED)
+            for s in self.ignored
+        )
+        assert all(s in Signals for s in self.ignored)
+
 
     def _update(self, signals):
         for signal in signals:
+            if signal in self.ignored: continue
             name = signal.value
             if name.endswith(SIGNAL_STARTED):
                 prop = TimeCounter.property_named_from(name)
