@@ -14,6 +14,7 @@ import itertools
 from builtins           import input
 from collections        import defaultdict
 
+from powergrasp.observers import Signals  # shortcut
 from powergrasp.commons import basename
 from powergrasp.commons import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from powergrasp.commons import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
@@ -26,6 +27,7 @@ from powergrasp import converter
 from powergrasp import solving
 from powergrasp import commons
 from powergrasp import atoms
+
 
 
 LOGGER = commons.logger()
@@ -101,7 +103,9 @@ def compress(graph_data_or_file=None, output_file=None, *,
     ]
     # Add the optional observers
     if timers:
-        time_counter = observers.TimeCounter()
+        time_counter = observers.TimeCounter(ignore=[
+            Signals.IterationStarted, Signals.PreprocessingStarted,
+        ])
         instanciated_observers.append(time_counter)
     if statistics_filename:
         instanciated_observers.append(statistics.DataExtractor(
