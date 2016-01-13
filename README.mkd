@@ -12,11 +12,14 @@ PowerGrASP results, compared to the existing BIOTEC tool, can be found in the [r
     pip install powergrasp
 
 Just be sure that, in the library installation directory, for pyasp, you have the binaries *gringo4* and *clasp* installed.
-In case of a system-wide installation, these binaries can be found in */usr/lib/python3.5/site-packages/pyasp/bin/*.
+In case of a system-wide installation, these binaries are generally correctly installed and can be found in */usr/lib/python3.5/site-packages/pyasp/bin/*.
 The binaries, if not properly installed by pip, can be found on the sourceforge website:
 - [gringo4](http://sourceforge.net/projects/potassco/files/gringo/4.5.3/), in version 4.5.3, that probably needs to be renamed from *gringo* to *gringo4*.
 - [clasp](http://sourceforge.net/projects/potassco/files/clasp/3.1.3/), in version 3.1.3.
 
+A magical workaround is to use the *--no-cache-dir* option of pip for get the binaries properly installed, even in local or with a virtualenv:
+
+    pip install powergrasp --no-cache-dir
 
 
 ## Basic use
@@ -40,8 +43,44 @@ Used ASP source code can be changed, interactive mode can be set,… Please look
     python3 -m powergrasp --help
     # in python
     >>> help(powergrasp)
-    # or, in terminal with make
+    # or, in the PowerGrASP git directory, with make
     make help
+
+
+
+### I/O
+NB: Create another output or input format support is possible by implement a new Converter class (see *powergrasp/converter/*).
+
+#### Input file
+PowerGrASP doesn't generate logging for pleasure : it actually perform a treatment on input data, if provided.
+The supported input file formats are currently :
+- ASP: atoms edge/2, with edge(X,Y) describing a link between nodes X and Y.
+- SBML: a regular SBML file, when species and reactions will be treated as nodes.
+- GML: a regular Graph Modeling Language file, readable by networkx python module.
+
+Other formats will be supported in the future.
+
+#### Output
+
+##### Bubble formatted file
+The output of PowerGrASP is a *Bubble* formatted file. This file can be used for get a visualization of the compressed graph.
+The format *Bubble* is an endemic format designed by Royer et Al for power graph describing.
+
+Bubble files can be used in several ways:
+
+##### Cytoscape
+Print a power graph through Cytoscape is made possible by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin,
+which handle the format *Bubble*.
+Cytoscape, in order to using the CyOog plugin, must be in version __[2.x](http://www.cytoscape.org/download_old_versions.html)__.
+
+##### Oog Command line tool
+BIOTEC team also released a [command line tool](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-command-line-tool.html) for power graph analysis.
+This tool allow to print a bubble file without Cytoscape usage, with something like:
+
+    java -jar Oog.jar -inputfiles=path/to/bubble.bbl -img -f=png
+
+Add *&>/dev/null* for prevent any logging output.
+
 
 
 ### Standard output management
@@ -62,7 +101,7 @@ Available levels comes from logging API:
     debug            | trackable with __high__ verbosity
     notset           | kraken released
 
-Please note that some options (notabily *count-models*) are completely independant of this logging management.
+Please note that some options (notabily *count-models* and *count-cc*) are completely independant of this logging management, as they work with the standard output.
 
 
 ### Statistics
@@ -82,23 +121,6 @@ ASP is a declarative and logic language, designed for the treatment of combinato
 The implementation used in this project is the [*Potsdam Answer Set Solving Collection*](http://potassco.sourceforge.net/index.html).
 
 All ASP source codes necessary for the PowerGrASP program can be found in *powergrasp/ASPsources/* directory.
-
-
-### I/O
-
-#### Input file
-PowerGrASP doesn't generate logging for pleasure : it actually perform a treatment on input data, if provided.
-The supported input file formats are currently :
-- ASP: atoms edge/2, with edge(X,Y) describing a link between nodes X and Y.
-- SBML: a regular SBML file, when species and reactions will be treated as nodes.
-- GML: a regular Graph Modeling Language file, readable by networkx python module.
-
-Other formats will be supported in the future.
-
-#### Output file
-While the only way to print a power graph is provided by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin of Cytoscape, output format is limited to *Bubble*, which seems to be an endemic format.
-Another output format support is possible by create a new Converter class (see *powergrasp/converter/*).
-Cytoscape, for using the CyOog plugin, must be in version __[2.x](http://www.cytoscape.org/download_old_versions.html)__.
 
 
 
