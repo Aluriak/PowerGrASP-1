@@ -104,5 +104,5 @@ class OutConverter(object):
         return self.finalized()
 
     def comment(self, lines):
-        """Add lines in given iterable as comments"""
+        """Add given iterable of lines as comments"""
         return '\n# ' + '\n# '.join(lines)

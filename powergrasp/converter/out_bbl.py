@@ -72,21 +72,21 @@ class OutBBL(OutConverter):
 
     Because of the complexity of the format,
      the complexity is higher than NNFConverter.
-     The convert operation stores many data,
+     The convert operation stores all atoms without treatment,
       and, for big graphs, performed treatments could be heavy.
     An ASP solver is used for perform complex treatments.
 
     """
     META_DATA = (
         "File written by the " + info.__name__
-        + " module (" + info.__version__ + ")"
+        + " module (" + info.PACKAGE_VERSION + ")"
     )
 
     def __init__(self):
         super().__init__()
-        self.release_memory()  # initialize the containers
+        self.reset_containers()
 
-    def release_memory(self):
+    def reset_containers(self):
         """When the data is generated, all containers can be freed
         for memory occupation optimization.
 
@@ -161,9 +161,9 @@ class OutBBL(OutConverter):
         Metadata will be used by finalized method.
         """
         # get additionnal data
-        powernodes, poweredges, cliques, edges, tops, topnodes, trivials, inclusions_powernode, inclusions_node = (
-            self._additionnal_data_from()
-        )
+        (powernodes, poweredges, cliques,
+         edges, tops, topnodes, trivials,
+         inclusions_powernode, inclusions_node) = self._additionnal_data_from()
 
         # cliques cc, step (powernode cc,step is a clique)
         for cc, step in cliques:
