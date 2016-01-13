@@ -115,6 +115,18 @@ class InteractiveCompression(CompressionObserver):
         return MINIMAL_PRIORITY
 
 
+class ConnectedComponentsCounter(CompressionObserver):
+    """Counter of connected components"""
+
+    def _update(self, signals):
+        if Signals.ConnectedComponentsFound in signals:
+            ccs = signals[Signals.ConnectedComponentsFound]
+            self._nb_ccs      = len(ccs)
+        if Signals.ConnectedComponentStarted in signals:
+            cc_num, cc_name = signals[Signals.ConnectedComponentStarted]
+            LOGGER.info('#### CC ' + cc_name + ' ' + str(cc_num+1)
+                        + '/' + str(self._nb_ccs))
+
 
 class ObjectCounter(CompressionObserver):
     """Counter of objects, based on received signals ending with '_found'"""
