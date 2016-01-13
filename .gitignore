@@ -17,3 +17,4 @@ share/
 PowerGrASP.egg-info/
 dist/
 .zcache/
+oog/
