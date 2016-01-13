@@ -194,6 +194,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                     score,
                 )
                 atom_counter = atoms.count(model)
+                notify_observers(Signals.CliqueFound)
 
             #########################
             LOGGER.debug('FIND BEST BICLIQUE' + printable_bounds())
@@ -213,6 +214,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 best_model = model
                 # printings
                 LOGGER.debug('BICLIQUE SEARCH: best model found')
+                notify_observers(Signals.BicliqueFound)
                 LOGGER.debug('\tOUTPUT: ' + atoms.to_str(
                     model, separator='.\n\t'
                 ))
