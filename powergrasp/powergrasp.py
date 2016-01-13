@@ -48,25 +48,9 @@ def asp_file_from(data):
         file_to_be_converted = tempfile.NamedTemporaryFile('w', delete=False)
         file_to_be_converted.write(data)
         file_to_be_converted.close()
-        graph_data_file = converter.converted_to_asp_file(file_to_be_converted)
+        graph_data_file = file_to_be_converted.name
     # convert graph data into ASP-readable format, if necessary
-    graph_data_file = converter.converted_to_asp_file(data)
-    return graph_data_file
-
-
-def deduced_output_format_from(output_file, output_format):
-    "Return the most likely expected output format by looking at given args"
-    # look at the output_file extension output_format is unusable
-    if not output_format or output_format not in converter.OUTPUT_FORMATS:
-        try:
-            output_format = output_file.split('.')[-1]  # extension of the file
-        except (IndexError, AttributeError):
-            output_format = converter.DEFAULT_OUTPUT_FORMAT  # use BBL
-    # verifications
-    assert output_format in converter.OUTPUT_FORMATS
-    if output_file:
-        assert output_file.endswith(output_format)
-    return output_format
+    return converter.converted_to_asp_file(graph_data_file)
 
 
 def compress(graph_data_or_file=None, output_file=None, *,
@@ -108,7 +92,8 @@ def compress(graph_data_or_file=None, output_file=None, *,
     """
     # get data from parameters
     graph_file = asp_file_from(graph_data_or_file)
-    output_format = deduced_output_format_from(output_file, output_format)
+    LOGGER.info('Input file is not in ASP format. The converted data is '
+                'stored in temporary file ' + graph_file)
     # Create the default observers
     output_converter = observers.OutputWriter(output_file, output_format)
     instanciated_observers = [
