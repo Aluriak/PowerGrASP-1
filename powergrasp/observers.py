@@ -24,20 +24,16 @@ class Signals(Enum):
     # Steps signals
     StepStarted               = 'step_started'
     StepStopped               = 'step_stopped'
-    ModelStarted              = 'model_started'
-    ModelStopped              = 'model_stopped'
     CompressionStarted        = 'compression_started'
     CompressionStopped        = 'compression_stopped'
     ConnectedComponentStarted = 'connected_component_started'
     ConnectedComponentStopped = 'connected_component_stopped'
-    IterationStarted          = 'iteration_started'
-    IterationStopped          = 'iteration_stopped'
+    IterationStarted          = 'iteration_started'  # send before all iterations
+    IterationStopped          = 'iteration_stopped'  # send at the end of all iterations
     ExtractionStarted         = 'extraction_started'
     ExtractionStopped         = 'extraction_stopped'
     PreprocessingStarted      = 'preprocessing_started'
     PreprocessingStopped      = 'preprocessing_stopped'
-    PostprocessingStarted     = 'postprocessing_started'
-    PostprocessingStopped     = 'postprocessing_stopped'
     # Finalizations
     StepFinalized             = 'step_finalized'         # send after the StepStopped signal
     CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
