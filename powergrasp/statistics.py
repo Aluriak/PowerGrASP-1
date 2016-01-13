@@ -108,7 +108,7 @@ class DataExtractor(observers.CompressionObserver, dict):
         })
 
     def _update(self, signals):
-        if Signals.CompressionFinalized in signals:
+        if Signals.CompressionStopped in signals:
             final_results = (
                 "All cc have been performed "
                 + ("in " + str(round(self.time_counter.compression_time, 3))
@@ -137,7 +137,6 @@ class DataExtractor(observers.CompressionObserver, dict):
                 signals[Signals.StepDataGenerated])
             # defense against a no-data case
             if remain_edges_global is None:
-                print('STATISTICS: None Data generated')
                 assert powernode_count is None
                 assert poweredge_count is None
             else:  # all data is given
