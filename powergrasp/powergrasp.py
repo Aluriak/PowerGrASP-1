@@ -62,7 +62,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
              output_format=None, lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
              show_preprocessed=False, timers=False, logfile=None, loglevel=None,
-             thread=1):
+             thread=None):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc, findbc
@@ -95,9 +95,11 @@ def compress(graph_data_or_file=None, output_file=None, *,
     """
     # define the log file and the log level, if necessary
     commons.configure_logger(logfile, loglevel)
+    # clasp options construction:
+    gringo_options = commons.ASP_GRINGO_OPTIONS
+    clasp_options = commons.ASP_CLASP_OPTIONS
     # set thread option if necessary
-    if int(thread) > 1:
-        commons.thread(thread)
+    clasp_options += ' ' + commons.thread(thread)
     # get data from parameters
     graph_file = asp_file_from(graph_data_or_file)
     LOGGER.info('Input file is not in ASP format. The converted data is '
@@ -143,5 +145,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
         asp_ccfinding=ccfinding,
         asp_bcfinding=bcfinding,
         asp_postprocessing=postprocessing,
+        gringo_options=gringo_options,
+        clasp_options=clasp_options,
         all_observers=tuple(instanciated_observers)
     )

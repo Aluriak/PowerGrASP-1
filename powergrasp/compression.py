@@ -4,6 +4,7 @@ Implementation of the compression routine.
 """
 import time
 import itertools
+import functools
 
 from powergrasp.commons import ASP_ARG_UPPERBOUND, ASP_ARG_CC
 from powergrasp.commons import ASP_ARG_LOWERBOUND, ASP_ARG_STEP
@@ -25,6 +26,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                       asp_extracting=None, asp_preprocessing=None,
                       asp_ccfinding=None, asp_bcfinding=None,
                       asp_postprocessing=None, interactive=False,
+                      gringo_options=commons.ASP_GRINGO_OPTIONS,
+                      clasp_options=commons.ASP_CLASP_OPTIONS,
                       lowerbound_cut_off=commons.OPT_LOWERBOUND_CUTOFF):
     """apply the compression algorithm on given graph. Yield lines of
     bubble file.
@@ -45,7 +48,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         "Notify observers with given signals"
         for observer in all_observers:
             observer.update(*args, **kwargs)
-
+    solving_model_from = functools.partial(solving.model_from,
+                                           gringo_options=gringo_options,
+                                           clasp_options=clasp_options)
     # INIT
     # Extract graph data
     LOGGER.info('#################')
@@ -53,10 +58,11 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('#################')
     notify_observers(
         Signals.CompressionStarted,
-        Signals.ExtractionStarted
+        Signals.ExtractionStarted,
+        solver_options_updated=(gringo_options, clasp_options)
     )
     # creat a solver that get all information about the graph
-    graph_atoms = solving.model_from('', [graph_lp, asp_extracting])
+    graph_atoms = solving_model_from('', [graph_lp, asp_extracting])
     if graph_atoms is None:
         LOGGER.error('Extraction: no atoms found by graph data extraction.')
         assert(graph_atoms is not None)
@@ -131,7 +137,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             notify_observers(
                 Signals.PreprocessingStarted
             )
-            model = solving.model_from(
+            model = solving_model_from(
                 base_atoms=(graph_atoms + previous_coverage
                             + previous_blocks + lowerbound_atom),
                 aspfiles=asp_preprocessing,
@@ -167,7 +173,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             #########################
             LOGGER.debug('FIND BEST CLIQUE ' + printable_bounds())
             #########################
-            model = solving.model_from(
+            model = solving_model_from(
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
                 aspfiles=(asp_ccfinding, asp_postprocessing),
@@ -193,7 +199,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             #########################
             LOGGER.debug('FIND BEST BICLIQUE' + printable_bounds())
             #########################
-            model = solving.model_from(
+            model = solving_model_from(
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
                 aspfiles=(asp_bcfinding, asp_postprocessing),
