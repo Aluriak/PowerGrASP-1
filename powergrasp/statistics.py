@@ -126,8 +126,8 @@ class DataExtractor(observers.CompressionObserver, dict):
                 + 's '
                 + ('(extraction in ' + str(round(extraction_time, 3)) + ')'
                    if extraction_time else '')
-                + "\nGrounder options: " + commons.ASP_GRINGO_OPTIONS
-                + "\nSolver options: "   + commons.ASP_CLASP_OPTIONS
+                + "\nGrounder options: " + self.gringo_options
+                + "\nSolver options: "   + self.clasp_options
                 + "\nNow, statistics on "
                 + self.stats_output()
             )
@@ -136,6 +136,9 @@ class DataExtractor(observers.CompressionObserver, dict):
                 self.output_converter.comment(final_results.split('\n'))
             self.finalize()
 
+        if Signals.SolverOptionsUpdated in signals:
+            payload = signals[Signals.SolverOptionsUpdated]
+            self.gringo_options, self.clasp_options = payload
         if Signals.CompressionTimeGenerated in signals:
             self[FINL_TIME] = float(signals[Signals.CompressionTimeGenerated])
         if Signals.AllEdgeGenerated in signals:

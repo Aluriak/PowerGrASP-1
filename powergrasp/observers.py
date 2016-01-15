@@ -47,6 +47,7 @@ class Signals(Enum):
     AllEdgeGenerated          = 'all_edge_generated'
     RemainEdgeGenerated       = 'remain_edge_generated'
     StepDataGenerated         = 'step_data_generated'
+    SolverOptionsUpdated      = 'solver_options_updated'
 
 
 # Priorities: observers are called with respect to their priority (smaller is after)
