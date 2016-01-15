@@ -17,7 +17,8 @@ LOGGER = commons.logger()
 
 
 def model_from(base_atoms, aspfiles, aspargs={},
-               gringo_options='', clasp_options=''):
+               gringo_options=commons.ASP_GRINGO_OPTIONS,
+               clasp_options=commons.ASP_CLASP_OPTIONS):
     """Compute a model from ASP source code in aspfiles, with aspargs
     given as grounding arguments and base_atoms given as input atoms.
 
@@ -38,8 +39,9 @@ def model_from(base_atoms, aspfiles, aspargs={},
     constants = ' -c '.join(str(k)+'='+str(v) for k,v in aspargs.items())
     if len(aspargs) > 0:  # must begin by a -c for announce the first constant
         constants = '-c ' + constants
-    gringo_options = ' '.join((constants, commons.ASP_GRINGO_OPTIONS, gringo_options))
-    clasp_options += ' ' + ' '.join(commons.ASP_CLASP_OPTIONS)
+    gringo_options = constants + ' ' + gringo_options
+    # print('OPTIONS:', gringo_options)
+    # print('OPTIONS:', clasp_options)
 
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
