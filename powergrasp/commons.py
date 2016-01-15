@@ -8,6 +8,7 @@ Moreover, some generalist functions are defined,
 
 # IMPORTS
 import logging, logging.handlers
+import multiprocessing  # get number of available CPU
 import pkg_resources  # packaging facilies
 import os
 
@@ -167,17 +168,16 @@ def options_from_cli(documentation):
     return ChainMap(cli_args, PROGRAM_OPTIONS)
 
 def thread(number):
-    """Set ASP options for use n thread, or only one if set to None"""
-    global ASP_CLASP_OPTIONS
-    assert number is None or int(number) > 0
-    assert number is None or int(number) <= 64
-    if '--parallel-mode=' in ASP_CLASP_OPTIONS:  # already present
-        ASP_CLASP_OPTIONS = ' '.join(
-            option for option in ASP_CLASP_OPTIONS.strip().split(' ')
-            if '--parallel-mode=' not in option
-        )
-    if number is not None:
-        ASP_CLASP_OPTIONS += ' --parallel-mode=' + str(number)
+    """Return Clasp options for use n thread, or if n is invalid, use the
+    number of CPU available"""
+    if number is not None and 1 <= int(number) <= 64:
+        return ' --parallel-mode=' + str(number)
+    else:
+        nb_cpu = str(multiprocessing.cpu_count())
+        # nb_cpu = '1'
+        logger().info('Threading: No valid number of CPU given ([1;64]). '
+                      + nb_cpu + ' CPU will be used by Clasp.')
+        return ' --parallel-mode=' + nb_cpu
 
 
 # logging functions
