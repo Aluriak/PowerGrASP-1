@@ -26,7 +26,7 @@ options:
     --plot-stats            plot stats found in stats-file if exist
     --plot-file=FILE        instead of show it, save plot in png FILE
     --profiling             print graph info before compress it
-    --thread=INT            use n thread for ASP solving
+    --thread=INT            use INT thread for ASP solving
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
