@@ -109,14 +109,17 @@ class InteractiveCompression(CompressionObserver):
 class ConnectedComponentsCounter(CompressionObserver):
     """Counter of connected components"""
 
+    def __init__(self):
+        self._nb_ccs = '?'
+
     def _update(self, signals):
         if Signals.ConnectedComponentsFound in signals:
             ccs = signals[Signals.ConnectedComponentsFound]
-            self._nb_ccs      = len(ccs)
+            self._nb_ccs = str(len(ccs))
         if Signals.ConnectedComponentStarted in signals:
             cc_num, cc_name = signals[Signals.ConnectedComponentStarted]
             LOGGER.info('#### CC ' + cc_name + ' ' + str(cc_num+1)
-                        + '/' + str(self._nb_ccs))
+                        + '/' + self._nb_ccs)
 
 
 class ObjectCounter(CompressionObserver):
