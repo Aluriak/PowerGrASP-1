@@ -88,8 +88,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('####   CC    ####')
     LOGGER.info('#################')
     for cc_nb, cc in atom_ccs:
-        notify_observers(connected_component_started=(cc_nb, cc),
-                         connected_components_found=cc)
+        notify_observers(connected_component_started=(cc_nb, cc))
         assert any(isinstance(cc, cls) for cls in (str, int))
         # contains interesting atoms and the non covered edges at last step
         model_found_at_last_iteration = True  # False when no model found
