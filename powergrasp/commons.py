@@ -168,13 +168,16 @@ def options_from_cli(documentation):
 
 def thread(number):
     """Set ASP options for use n thread, or only one if set to None"""
-    _logger.warning('Threading optimization is currently not implemented.'
-                    'PowerGrASP will run with only one thread.')
-    return
     global ASP_CLASP_OPTIONS
-    assert(number is None or number > 0)
+    assert number is None or int(number) > 0
+    assert number is None or int(number) <= 64
+    if '--parallel-mode=' in ASP_CLASP_OPTIONS:  # already present
+        ASP_CLASP_OPTIONS = ' '.join(
+            option for option in ASP_CLASP_OPTIONS.strip().split(' ')
+            if '--parallel-mode=' not in option
+        )
     if number is not None:
-        ASP_CLASP_OPTIONS += '--parallel-mode=' + str(number) + ',split'
+        ASP_CLASP_OPTIONS += ' --parallel-mode=' + str(number)
 
 
 # logging functions
