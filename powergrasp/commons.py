@@ -63,7 +63,6 @@ ASP_ARG_LOWERBOUND = 'lowerbound'
 # ASP Solver options
 ASP_GRINGO_OPTIONS = ''  # no default options
 ASP_CLASP_OPTIONS  = ''  # options of solving heuristics
-ASP_CLASP_OPTIONS += ' -Wno-atom-undefined'
 ASP_CLASP_OPTIONS += ' --configuration=frumpy'
 ASP_CLASP_OPTIONS += ' --heuristic=Vsids'
 # ASP_CLASP_OPTIONS.append('--opt-mode=opt')
