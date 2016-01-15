@@ -193,6 +193,9 @@ def logger(name=LOGGER_NAME):
 def configure_logger(log_filename=DEFAULT_LOG_FILE,
                      term_log_level=DEFAULT_LOG_LEVEL):
     """Operate the logger configuration for the package"""
+    # defensive cases: use defaults if None given
+    if log_filename is None: log_filename = DEFAULT_LOG_FILE
+    if term_log_level is None: term_log_level = DEFAULT_LOG_LEVEL
     # put given log level in upper case
     try:
         term_log_level = term_log_level.upper()
