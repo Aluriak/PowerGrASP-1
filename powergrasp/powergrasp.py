@@ -61,7 +61,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
              statistics_filename='data/statistics.csv',
              output_format=None, lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
-             show_preprocessed=False, timers=False):
+             show_preprocessed=False, timers=False, logfile=None, loglevel=None):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc, findbc
@@ -92,6 +92,8 @@ def compress(graph_data_or_file=None, output_file=None, *,
      that contains statistics about the compression.
 
     """
+    # define the log file and the log level, if necessary
+    commons.configure_logger(logfile, loglevel)
     # get data from parameters
     graph_file = asp_file_from(graph_data_or_file)
     LOGGER.info('Input file is not in ASP format. The converted data is '
