@@ -23,7 +23,7 @@ LOGLEVEL=--loglevel=info
 CCCOUNT=--count-cc
 MODELCOUNT=--count-model
 #PROFILING=--profiling
-THREAD=--thread=4
+#THREAD=--thread=4
 #PRE=--show-pre
 
 ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING)
