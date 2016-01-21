@@ -29,6 +29,6 @@ edge(b,f).
 edge(c,f).
 
 % biclique of three elements of previous biclique and one external element
-edge(k,f).
-edge(k,g).
-edge(k,h).
+edge(l,f).
+edge(l,g).
+edge(l,h).
