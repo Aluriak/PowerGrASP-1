@@ -27,7 +27,16 @@ MODELCOUNT=--count-model
 #PRE=--show-pre
 LATTICE=--draw_lattice=$(DATA)
 
-ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING)
+
+# PDF OUPUT PIPELINE
+powerlattice:
+	#java -jar oog/Oog.jar -inputdir=$(DATA) -inputfiles=output.bbl -img -f=png -outputdir=$(DATA) &> /dev/null
+	#convert $(DATA)output.bbl.png $(DATA)output.bbl.pdf
+	cd $(DATA) && ls | grep lattice_.*\.pdf | xargs -i pdfunite output.bbl.pdf {} powerlattice.pdf
+	evince $(DATA)powerlattice.pdf
+
+
+ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING) $(LATTICE)
 ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) $(PRE)
 COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
