@@ -148,6 +148,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 # break # no more models !
                 model_found_at_last_iteration = False
                 notify_observers(step_data_generated=[None] * 3)
+                notify_observers(preprocessing_stopped='')
                 notify_observers(Signals.StepStopped)
                 notify_observers(Signals.StepFinalized)
                 continue
@@ -169,7 +170,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 lowerbound_value = int(lowerbound_value)
             except ValueError:
                 lowerbound_value = MINIMAL_SCORE
-            notify_observers(Signals.PreprocessingStopped)
+            notify_observers(preprocessing_stopped=preprocessed_graph_atoms)
 
             #########################
             LOGGER.debug('FIND BEST CLIQUE ' + printable_bounds())
