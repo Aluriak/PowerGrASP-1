@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Main source file of the package, containing tho compress function.
 

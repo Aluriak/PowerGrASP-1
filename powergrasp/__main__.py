@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 usage:
     __main__.py [options]

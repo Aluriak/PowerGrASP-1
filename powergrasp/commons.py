@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Definition of numerous constants, for paths, names, arguments for ASP solvers.
 Moreover, some generalist functions are defined,

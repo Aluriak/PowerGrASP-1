@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Definitions of model_from(5) that encapsulate
  the ASP grounder and solver calls.
