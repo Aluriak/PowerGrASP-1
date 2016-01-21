@@ -40,6 +40,9 @@ LOGGER_NAME       = PACKAGE_NAME
 DEFAULT_LOG_FILE  = access_packaged_file(DIR_LOGS + LOGGER_NAME + '.log')
 DEFAULT_LOG_LEVEL = logging.DEBUG
 
+# PATH INSIDE PACKAGE
+PACKAGE_DIR_DATA = access_packaged_file('data/')
+
 # Optimization values
 OPT_LOWERBOUND_CUTOFF = 2  # minimal value for the lowerbound optimization
 
