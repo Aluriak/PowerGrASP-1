@@ -296,7 +296,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                                          new_poweredge_count,
                                          remain_edges_global),
                 )
-                assert(remain_edges_global > 0)
+                assert(remain_edges_global >= 0)
             # notify_observers:
             notify_observers(Signals.StepStopped)
             notify_observers(Signals.StepFinalized)
