@@ -1,7 +1,3 @@
-edge("m","f").
-edge("m","b").
-edge("c","d").
-edge("c","b").
-edge("d","b").
-edge("s","d").
-edge("b","f").
+edge(a,(b;c;d;g;h)).
+edge(e,(c;d)).
+edge(e,f).
