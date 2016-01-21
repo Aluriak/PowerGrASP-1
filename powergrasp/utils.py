@@ -26,8 +26,8 @@ def asp2graph(asp_atoms):
     edges = (atom for atom in asp_atoms.split('.') if atom.startswith('inter('))
     for atom, args in (atoms.split(atom) for atom in edges):
         x, y = args
-        graph[x.upper()].add(y)
-        graph[y.upper()].add(x)
+        graph[x].add(y.upper())
+        graph[y].add(x.upper())
     return graph
 
 def line_diagram(graph, filename=LATTICE_FILENAME):
