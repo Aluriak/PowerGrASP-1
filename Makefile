@@ -148,6 +148,8 @@ benchmarks:
 clr: clear
 clear:
 	rm */*.pyc
+	rm asp_py_lextab.py asp_py_parsetab.py
+
 help:
 	$(PYTHON) --help
 
