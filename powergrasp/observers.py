@@ -11,6 +11,7 @@ from functools import partial
 
 from powergrasp import converter
 from powergrasp import commons
+from powergrasp import utils
 
 
 LOGGER = commons.logger()
@@ -207,6 +208,27 @@ class OutputWriter(CompressionObserver):
         if output_file:
             assert output_file.endswith(output_format)
         return output_format
+
+
+class LatticeDrawer(CompressionObserver):
+    """Draw a lattice of all connected component"""
+
+    def __init__(self, directory=commons.PACKAGE_DIR_DATA,
+                 prefix='lattice_'):
+        self.basename = directory + prefix + '{}'
+        self.last_cc = None
+
+    def _update(self, signals):
+        if Signals.ConnectedComponentStarted in signals:
+            _, self.last_cc = signals[Signals.ConnectedComponentStarted]
+        if self.last_cc is not None and Signals.PreprocessingStopped in signals:
+            atoms = signals[Signals.PreprocessingStopped]
+            graphdict = utils.asp2graph(atoms)
+            cc_filename = self.basename.format(self.last_cc)
+            utils.line_diagram(graphdict, filename=cc_filename)
+            LOGGER.info('Line diagram of CC ' + str(self.last_cc)
+                        + ' saved in ' + cc_filename)
+            self.last_cc = None  # don't react next iteration of the same connected component
 
 
 class TimeCounter(CompressionObserver):

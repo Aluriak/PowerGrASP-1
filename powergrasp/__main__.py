@@ -27,6 +27,7 @@ options:
     --plot-file=FILE        instead of show it, save plot in png FILE
     --profiling             print graph info before compress it
     --thread=INT            use INT thread for ASP solving
+    --draw_lattice=DIR      draw in DIR the concept lattice for each connected component
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -100,6 +101,7 @@ if __name__ == '__main__':
             logfile            = options['logfile'        ],
             loglevel           = options['loglevel'       ],
             thread             = options['thread'         ],
+            draw_lattice       = options['draw_lattice'   ],
         )
 
     # plotting if statistics csv file given, and showing or saving requested

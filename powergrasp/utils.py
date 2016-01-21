@@ -5,14 +5,40 @@ or the compression.
 
 """
 
+import os.path
 import itertools
+import concepts
+from collections import defaultdict
 
 from powergrasp import atoms
 from powergrasp import solving
 from powergrasp.commons import basename
 
 
+LATTICE_FILENAME   = 'powergrasp/data/lattice'  # extension is added by graphviz
 ASP_FILE_INTEGRITY = 'powergrasp/ASPsources/integrity.lp'
+
+
+def asp2graph(asp_atoms):
+    """Convert string containing edge(X,Y) to dict {node: {succs}}"""
+    graph = defaultdict(set)
+    print(asp_atoms)
+    edges = (atom for atom in asp_atoms.split('.') if atom.startswith('inter('))
+    for atom, args in (atoms.split(atom) for atom in edges):
+        x, y = args
+        graph[x.upper()].add(y)
+        graph[y.upper()].add(x)
+    return graph
+
+def line_diagram(graph, filename=LATTICE_FILENAME):
+    diag = concepts.Definition()
+    for node in sorted(graph.keys()):
+        diag.add_object(node, graph[node])
+    context = concepts.Context(*diag)
+    context.lattice.graphviz().render(filename=os.path.basename(filename),
+                                      directory=os.path.dirname(filename),
+                                      cleanup=True)  # cleanup the dot file
+    assert os.path.exists(filename + '.pdf')  # output is pdf
 
 
 def test_integrity(asp_graph_data_filename,

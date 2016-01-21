@@ -13,6 +13,7 @@ from powergrasp import observers
 from powergrasp import solving
 from powergrasp import commons
 from powergrasp import atoms
+from powergrasp import utils
 
 from powergrasp.observers import Signals  # shortcut
 

@@ -62,7 +62,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
              output_format=None, lowerbound_cut_off=2,
              interactive=False, count_model=False, count_cc=False,
              show_preprocessed=False, timers=False, logfile=None, loglevel=None,
-             thread=None):
+             thread=None, draw_lattice=False):
     """Performs the graph compression with data found in graph file.
 
     Use ASP source code found in extract, findcc, findbc
@@ -132,6 +132,8 @@ def compress(graph_data_or_file=None, output_file=None, *,
         instanciated_observers.append(observers.ConnectedComponentsCounter())
     if interactive:
         instanciated_observers.append(observers.InteractiveCompression())
+    if draw_lattice:
+        instanciated_observers.append(observers.LatticeDrawer(draw_lattice))
 
     # sort observers, in respect of their priority (smaller is after)
     instanciated_observers.sort(key=lambda o: o.priority, reverse=True)
