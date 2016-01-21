@@ -110,6 +110,7 @@ PROGRAM_OPTIONS = {
     'plot_file'       : False,
     'profiling'       : False,
     'thread'          : 1,
+    'draw_lattice'    : '.',  # current directory
 }
 
 
