@@ -30,8 +30,8 @@ LATTICE=--draw_lattice=$(DATA)
 
 # PDF OUPUT PIPELINE
 powerlattice:
-	#java -jar oog/Oog.jar -inputdir=$(DATA) -inputfiles=output.bbl -img -f=png -outputdir=$(DATA) &> /dev/null
-	#convert $(DATA)output.bbl.png $(DATA)output.bbl.pdf
+	java -jar oog/Oog.jar -inputdir=$(DATA) -inputfiles=output.bbl -img -f=png -outputdir=$(DATA) &> /dev/null
+	convert $(DATA)output.bbl.png $(DATA)output.bbl.pdf
 	cd $(DATA) && ls | grep lattice_.*\.pdf | xargs -i pdfunite output.bbl.pdf {} powerlattice.pdf
 	evince $(DATA)powerlattice.pdf
 
