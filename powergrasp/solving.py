@@ -5,7 +5,7 @@ Definitions of model_from(5) that encapsulate
 """
 import os
 from functools   import partial
-from collections import deque
+from collections import deque, Counter
 
 from powergrasp import commons
 from powergrasp import atoms
@@ -45,12 +45,12 @@ def model_from(base_atoms, aspfiles, aspargs={},
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=clasp_options)
-    print('SOLVING:', aspfiles, constants)
-    print('INPUT:', base_atoms.__class__, base_atoms)
+    # print('SOLVING:', aspfiles, constants)
+    # print('INPUT:', base_atoms.__class__, base_atoms)
     answers = solver.run(aspfiles, additionalProgramText=base_atoms)
-    for idx, answer in enumerate(answers):
-        print('ANSWER ' + str(idx) + ':', answer)
-        print('ATOM(S):', Counter(atoms.split(a)[0] for a in answer))
+    # for idx, answer in enumerate(answers):
+        # print('ANSWER ' + str(idx) + ':', answer)
+        # print('ATOM(S):', Counter(atoms.split(a)[0] for a in answer))
 
     # return the last solution (which is the best), or None if no solution
     try:
@@ -58,8 +58,6 @@ def model_from(base_atoms, aspfiles, aspargs={},
         # print('LAST_SOLUTION: ', len(last_solution), ' "', last_solution, '"', sep='')
         # a solution is valid if at least one atom is returned
         return last_solution if len(last_solution) > 0 else None
-        LOGGER.debug(title + ' OUTPUT: ' + atoms.to_str(model))
-        LOGGER.debug(title + ' OUTPUT: ' + str(atoms.count(model)))
     except IndexError:
         # no valid model
         return None
