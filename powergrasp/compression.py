@@ -75,10 +75,13 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     notify_observers(connected_components_found=atom_ccs)
     atom_ccs = enumerate(atom_ccs)
     # save atoms as ASP-readable string
-    all_edges    = atoms.to_str(graph_atoms, names = 'ccedge')
-    first_blocks = atoms.to_str(graph_atoms, names = 'block')
-    graph_atoms  = atoms.to_str(graph_atoms, names = ('ccedge', 'membercc'))
-    remain_edges_global = all_edges.count('ccedge(')
+    all_edges    = atoms.to_str(graph_atoms, names='ccedge')
+    first_blocks = atoms.to_str(graph_atoms, names='block')
+    nb_edges     = atoms.to_str(graph_atoms, names='nb_edge')
+    graph_atoms  = atoms.to_str(graph_atoms, names=('ccedge', 'membercc',
+                                                    'equiv', 'weight'))
+    assert nb_edges.count('.') == 1
+    remain_edges_global = int(atoms.split(nb_edges.rstrip('.')).args[0])
     # notifications about the extraction
     notify_observers(
         Signals.ExtractionStopped,
@@ -296,7 +299,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                                          new_poweredge_count,
                                          remain_edges_global),
                 )
-                assert(remain_edges_global >= 0)
+                if remain_edges_global < 0:
+                    print('REMAIN_EDGES_GLOBAL:', remain_edges_global)
+                    assert(remain_edges_global >= 0)
             # notify_observers:
             notify_observers(Signals.StepStopped)
             notify_observers(Signals.StepFinalized)
