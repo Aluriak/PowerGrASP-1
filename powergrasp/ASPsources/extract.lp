@@ -12,6 +12,7 @@
 %       - cc(CC): CC is the minimal element of a connected component.
 %       - ccedge(CC,X,Y): there exists an edge between X and Y in CC.
 %       - block(0,CC,X): X is in the block cc a step 0
+%       - powernode(CC,0,1,X): X is the member of the initial shadow concept.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -44,8 +45,14 @@ ccedge(CC,X,Y):- membercc(CC,Y) ;  edge(X,Y).
 % initial ccstate of blocks : each node is in its cc
 block(0,CC,X):- membercc(CC,X).
 
+% all nodes are in a global shadow powernode
+% this is needed for later treatments
+powernode(CC,0,1,X):- membercc(CC,X).
+
+
 #show cc/1.
 #show inter/2.
 #show block/3.
 #show ccedge/3.
 #show membercc/2.
+#show powernode/4.
