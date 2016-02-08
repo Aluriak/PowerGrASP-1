@@ -19,6 +19,7 @@
 %
 % Input (from findbestclique or findbestbiclique):
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
+%       - powernode(CC,K,T,X): X is the member of the set T in the concept CC at step K.
 %       - clique(cc,k): concept is a clique.
 %       - star(cc,k,T): set T of concept is a star.
 % Output:
@@ -41,17 +42,29 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  BLOCKS  %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% B is a parent block of P if it contains it and no other block contained in B contains P.
-parent_block(B,T):- block_contains_newconcept(k,B,T) ;
-                      B!=b(k,p(cc,k,T)) ;
-                      not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
+% ancestor blocks are all blocks containing all elements of the newconcept
+ancestor_block(p(cc,K2,T2),T):- newconcept(cc,k,T,_) ; powernode(cc,K2,T2,_) ;
+                                powernode(cc,K2,T2,X) : newconcept(cc,k,T,X).
+
+% the parent block is the ancestor block containing no other ancestor block
+parent_block(Parent,T):- ancestor_block(Parent,T) ;
+                         %include_block(k-1,Parent,Inter) ; ancestor_block(Inter,T).
+                         not include_block(k-1,Parent,Inter) : ancestor_block(Inter,T) .
+
 % it can't have more than 2 parent_block, because there is at most two newconcepts.
 :- 3 { parent_block(_,_) }.
 :- 0 { parent_block(_,_) } 1.
 
-% a block contains a newconcept if at least one point of it is in block at current step
-block_contains_newconcept(k,p(cc,L,U),T):- block(k-1,p(cc,L,U),X) ; newconcept(cc,k,T,X).
-block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
+% debug: newconcept T fit perfectly with the powernode cc,L,U
+%perfectfit(p(cc,L,U),T):- block(k-1,p(cc,L,U),X) : newconcept(cc,k,T,X) ;
+                          %block(k-1,p(cc,L,U),_) ; not star(cc,k,T) ; T=1..2.
+
+% subblocks are all blocks included in P.
+subblock(T,C):- parent_block(B,T) ;
+                C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
+                newconcept(cc,k,T,E) ; L<k ;
+                include_block(k-1,B,C).
+
 
 % block inclusion : keep trace of block hierarchy
 %  algorithmic for the block P of the new concept, and its parent_block B:
@@ -68,33 +81,29 @@ block_contains_newconcept(k,cc,T):- block(k-1,cc,X) ; newconcept(cc,k,T,X).
 %
 %  in a more logical way:
 %    - P is included in B
-include_block(k,B,p(cc,k,1)):- parent_block(B,1).
+include_block(k,B,p(cc,k,1)):- parent_block(B,1) ; newconcept(cc,k,T,X).
 include_block(k,B,p(cc,k,2)):- parent_block(B,2) ; not clique(cc,k).
 %    - all blocks included in B that are in P are included in P instead of B
-include_block(k,p(cc,k,T),C):- parent_block(B,T) ;
-                            C=p(cc,L,U) ; block(k-1,p(cc,L,U),E) ;
-                            newconcept(cc,k,T,E) ; L<k ;
-                            include_block(k-1,B,C).
-%    - all blocks that aren't in P are kept "as is" for next step
-include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
-                       0 { block(k-1,p(cc,L,U),E) : newconcept(cc,k,T,E) } 0 ;
-                       %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
-                       include_block(k-1,B,C) ;
-                       not include_block(k,p(cc,k,T),C) : T=1..2.
-
-% debug: newconcept T fit perfectly with the powernode cc,L,U
-perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
-                          block(k-1,p(cc,L,U),Anonymous) ; not star(cc,k,T) ; T=1..2 ; L<k.
-#show perfectfit/2.
+include_block(k,p(cc,k,T),C):- subblock(T,C).
+%    - all blocks that aren't related to P are kept "as is" for next step
+include_block(k,B,C):- include_block(k-1,B,C) ;
+                       not subblock(_,B) ;
+                       not subblock(_,C).
 
 
-% nodes covered by a powernode are set in the associated block
-block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not star(cc,k,1).
-block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not star(cc,k,2) ; not clique(cc,k).
+% nodes in sub blocks are kept in their sub block
+block(k,B,X):- newconcept(cc,k,1,X) ; subblock(1,B) ;
+               block(k-1,B,X) ; not star(cc,k,1).
+% idem, for the second part of the concept in case of biclique
+block(k,B,X):- newconcept(cc,k,2,X) ; subblock(2,B) ;
+               block(k-1,B,X) ; not star(cc,k,2) ; not clique(cc,k).
 
-% keep nodes not covered by new concept in their block
-block(k,P,X):- membercc(X) ; not newconcept(cc,k,T,X): T=1..2 ; block(k-1,P,X).
-block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
+% nodes covered by a powernode are set in the associated block, if not in a sub block
+block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not subblock(1,B) ;
+                       block(k-1,B,X) ; not star(cc,k,1).
+% idem, for the second part of the concept in case of biclique
+block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not subblock(2,B) ;
+                       block(k-1,B,X) ; not star(cc,k,2) ; not clique(cc,k).
 
 
 
