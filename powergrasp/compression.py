@@ -77,7 +77,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     # save atoms as ASP-readable string
     all_edges    = atoms.to_str(graph_atoms, names = 'ccedge')
     first_blocks = atoms.to_str(graph_atoms, names = 'block')
-    graph_atoms  = atoms.to_str(graph_atoms, names = ('ccedge', 'membercc'))
+    graph_atoms  = atoms.to_str(graph_atoms, names = ('ccedge', 'membercc', 'powernode'))
     remain_edges_global = all_edges.count('ccedge(')
     # notifications about the extraction
     notify_observers(
@@ -253,7 +253,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 remain_edges_global -= score  # score is equals to edge cover
                 # atoms to be given to the next step
                 previous_coverage += atoms.to_str(
-                    best_model, names=('covered',)
+                    best_model, names=('covered', 'powernode')
                 )
                 previous_blocks = atoms.to_str(
                     best_model, names=('block', 'include_block')
