@@ -42,8 +42,9 @@ cc(CC):- membercc(CC,T).
 %edges of the connected components
 ccedge(CC,X,Y):- membercc(CC,Y) ;  edge(X,Y).
 
-% initial ccstate of blocks : each node is in its cc
-block(0,CC,X):- membercc(CC,X).
+% initial blocks state: each node is in its cc
+%  the cc block is represented as a block created at step 0.
+block(0,p(CC,0,1),X):- membercc(CC,X).
 
 % all nodes are in a global shadow powernode
 % this is needed for later treatments
