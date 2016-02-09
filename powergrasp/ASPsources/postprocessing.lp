@@ -55,6 +55,11 @@ parent_block(Parent,T):- ancestor_block(Parent,T) ;
 :- 3 { parent_block(_,_) }.
 :- 0 { parent_block(_,_) } 1.
 
+% exclusion between blocks and new concept:
+%  it can't be a node in a subblock that is not in the newconcept
+:- not newconcept(cc,k,T,X) ; subblock(T,p(cc,L,U)) ; block(k-1,p(cc,L,U),X).
+
+
 % debug: newconcept T fit perfectly with the powernode cc,L,U
 %perfectfit(p(cc,L,U),T):- block(k-1,p(cc,L,U),X) : newconcept(cc,k,T,X) ;
                           %block(k-1,p(cc,L,U),_) ; not star(cc,k,T) ; T=1..2.
