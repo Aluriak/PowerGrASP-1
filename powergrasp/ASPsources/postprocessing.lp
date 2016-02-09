@@ -105,6 +105,9 @@ block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not subblock(1,B) ;
 block(k,p(cc,k,2),X):- newconcept(cc,k,2,X) ; not subblock(2,B) ;
                        block(k-1,B,X) ; not star(cc,k,2) ; not clique(cc,k).
 
+% all nodes not related to the new concept are kept in their block
+block(k,p(cc,L,U),X):- block(k-1,p(cc,L,U),X) ; not newconcept(cc,k,_,X).
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
