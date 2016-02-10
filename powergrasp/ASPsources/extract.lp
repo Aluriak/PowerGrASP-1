@@ -28,9 +28,6 @@ equiv(X,Y):- inter(X,Z): inter(Y,Z) ; inter(Y,Z): inter(X,Z) ; X<Y ; inter(X,_) 
 % Hidden nodes are nodes with an equivalent. Only the smaller one is kept, thus not hidden.
 hidden(Y):- equiv(_,Y).
 
-% weight of a node is the number of node hidden by the node, plus the node itself.
-weight(X,W+1):- W=#count{1,Y:equiv(X,Y)} ; not hidden(X) ; membercc(_,X).
-
 % Oriented graph
 % an oriented edge go from smaller to bigger :
 % oedge(3, 5) is true, oedge(5, 3) is false.
@@ -66,4 +63,3 @@ nb_edge(N):- N=#count{1,X,Y:edge(X,Y)}.
 #show ccedge/3.
 #show nb_edge/1.
 #show equiv/2.
-#show weight/2.
