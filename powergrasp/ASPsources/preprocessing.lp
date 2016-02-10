@@ -44,5 +44,5 @@ membercc(X):- membercc(cc,X) ; oedge(_,X).
 #show oedge/2.
 #show membercc/1.
 #show inter/2.
-#show equiv/2.
+#show equiv(X,Y): equiv(X,Y), membercc(X).
 #show weight(X,W): membercc(X) , weight(X,W).
