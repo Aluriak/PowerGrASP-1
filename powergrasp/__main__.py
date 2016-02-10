@@ -26,7 +26,7 @@ options:
     --plot-file=FILE        instead of show it, save plot in png FILE
     --profiling             print graph info before compress it
     --thread=INT            use INT thread for ASP solving
-    --draw_lattice=DIR      draw in DIR the concept lattice for each connected component
+    --draw_lattice=DIR      draw in DIR the concept lattice foreach con. comp.
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
