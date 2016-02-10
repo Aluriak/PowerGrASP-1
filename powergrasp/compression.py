@@ -192,7 +192,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             else:
                 best_model = model
                 assert('score' in str(model))
-                score = int(atoms.arg(next(a for a in model if a.startswith('score(')))[0])
+                score = int(atoms.first_arg(next(a for a in model
+                                                 if a.startswith('score('))))
                 assert(isinstance(score, int))
                 lowerbound_value = max(
                     lowerbound_value,
@@ -223,7 +224,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 LOGGER.debug('\tOUTPUT: ' + atoms.to_str(
                     model, separator='.\n\t'
                 ))
-                score = int(atoms.arg(next(
+                score = int(atoms.first_arg(next(
                     atom for atom in model if atom.startswith('score(')
                 )))
                 assert(isinstance(score, int))
@@ -276,7 +277,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 )
 
                 # save the number of generated powernodes and poweredges
-                new_powernode_count = int(atoms.arg(next(
+                new_powernode_count = int(atoms.first_arg(next(
                     a for a in best_model if a.startswith('powernode_count')
                 )))
                 if new_powernode_count not in (0,1,2):
