@@ -45,11 +45,12 @@ def model_from(base_atoms, aspfiles, aspargs={},
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=clasp_options)
-    # print('SOLVING:', aspfiles, constants)
-    # print('INPUT:', base_atoms.__class__, base_atoms)
+    print('SOLVING:', aspfiles, constants)
+    print('INPUT:', base_atoms.__class__, base_atoms)
     answers = solver.run(aspfiles, additionalProgramText=base_atoms)
-    # print('OK !')
-    # print(len(answers), 'ANSWER(S):', '\n'.join(str(_) for _ in answers))
+    for idx, answer in enumerate(answers):
+        print('ANSWER ' + str(idx) + ':', answer)
+        print('ATOM(S):', Counter(atoms.split(a)[0] for a in answer))
 
     # return the last solution (which is the best), or None if no solution
     try:
