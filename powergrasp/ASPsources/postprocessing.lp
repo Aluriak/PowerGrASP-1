@@ -146,6 +146,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 % Discard cases when no score is generated
 :- not score(cc,k,_).
 
+
 %#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
@@ -159,6 +160,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
+#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
 % debug output
 #show parent_block/2.
 #show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
