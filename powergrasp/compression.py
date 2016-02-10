@@ -77,10 +77,11 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     # save atoms as ASP-readable string
     all_edges    = atoms.to_str(graph_atoms, names='ccedge')
     first_blocks = atoms.to_str(graph_atoms, names='block')
+    all_equivs   = atoms.to_str(graph_atoms, names='equiv')
     nb_edges     = atoms.to_str(graph_atoms, names='nb_edge')
     graph_atoms  = atoms.to_str(graph_atoms, names=('ccedge', 'membercc',
-                                                    'equiv', 'weight'))
-    assert nb_edges.count('.') == 1
+                                                    'weight'))
+    assert nb_edges.count('.') == 1  # only one atom in nb_edges
     remain_edges_global = int(atoms.split(nb_edges.rstrip('.')).args[0])
     # notifications about the extraction
     notify_observers(
@@ -106,6 +107,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         remain_edges = None
         previous_coverage = ''  # accumulation of covered/2
         previous_blocks   = first_blocks
+        previous_equivs   = all_equivs
         # main loop
         k = 0
         last_score = remain_edges_global  # score of the previous step
@@ -138,11 +140,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             #########################
             LOGGER.debug('PREPROCESSING')
             #########################
-            notify_observers(
-                Signals.PreprocessingStarted
-            )
+            notify_observers(Signals.PreprocessingStarted)
             model = solving_model_from(
-                base_atoms=(graph_atoms + previous_coverage
+                base_atoms=(graph_atoms + previous_coverage + previous_equivs
                             + previous_blocks + lowerbound_atom),
                 aspfiles=asp_preprocessing,
                 aspargs={ASP_ARG_CC: cc}
@@ -261,6 +261,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 )
                 previous_blocks = atoms.to_str(
                     best_model, names=('block', 'include_block')
+                )
+                previous_equivs = atoms.to_str(
+                    best_model, names=('equiv',)
                 )
 
                 # give new powernodes to converter
