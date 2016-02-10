@@ -95,6 +95,8 @@ prot2:
 	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_2.lp"
 redef:
 	$(COMMAND) --graph-data="$(TESTS)redefedge.lp"
+reduclique:
+	$(COMMAND) --graph-data="$(TESTS)clique_reduction.lp"
 sbind:
 	$(COMMAND) --graph-data="$(TESTS)structural_binding.lp"
 single:
