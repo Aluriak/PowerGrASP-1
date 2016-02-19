@@ -8,7 +8,6 @@
 % Constants:
 %       - cc: treated connected component. (cc/1 gives existing cc)
 %       -  k: current step of treatment (first step is 1)
-%
 % Input:
 %       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
@@ -17,7 +16,6 @@
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - star(cc,k,T): set T of concept is a star.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,24 +28,31 @@ linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
 1{minobj(cc,k,X):membercc(X)}1.
 
 % Choice of elements in part 1
-newconcept(cc,k,1,X):- minobj(cc,k,X).
-{ newconcept(cc,k,1,X): membercc(X), Min<X }:- minobj(cc,k,Min).
+newconcept_nohidden(cc,k,1,X):- minobj(cc,k,X).
+{ newconcept_nohidden(cc,k,1,X): membercc(X), Min<X }:- minobj(cc,k,Min).
 
 % Choice of elements in part 2
-1 { newconcept(cc,k,2,Y): oedge(Min,Y), Min<=Y } :- minobj(cc,k,Min).
+1 { newconcept_nohidden(cc,k,2,Y): oedge(Min,Y), Min<=Y } :- minobj(cc,k,Min).
 
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
-imp(k,3-T,X):- membercc(X); newconcept(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
+imp(k,3-T,X):- membercc(X); newconcept_nohidden(cc,k,T,Y) ; not oedge(X,Y) ; not oedge(Y,X).
 %  a node is impossible if not linked2 to some node of the same part
-imp(k,T,X):- membercc(X); newconcept(cc,k,T,Y) ; not linked2(X,Y); X!=Y.
+imp(k,T,X):- membercc(X); newconcept_nohidden(cc,k,T,Y) ; not linked2(X,Y); X!=Y.
 %  a node is impossible if in a block different from another element in the same set
-imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
+imp(k,T,X):- newconcept_nohidden(cc,k,T,X) ; newconcept_nohidden(cc,k,T,Y) ; parent_block(B,T) ;
              include_block(k-1,B,P) ; not block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
 % Consistency ; no impossible element can be added to the concept
-:- imp(k,T,Y); newconcept(cc,k,T,Y).
+:- imp(k,T,Y); newconcept_nohidden(cc,k,T,Y).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% CONCEPT EXPANSION %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% yield all hidden nodes. These nodes are deduced from previous computation,
+%  and use here for determine the score of the concept.
+newconcept(cc,k,T,X):- newconcept_nohidden(cc,k,T,X).
+newconcept(cc,k,T,Y):- newconcept_nohidden(cc,k,T,X) ; equiv(X,Y) ; not clique(cc,k).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,7 +61,3 @@ imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
 % a star is a biclique with one powernode composed of only one node
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
 :- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
-
-
-
-

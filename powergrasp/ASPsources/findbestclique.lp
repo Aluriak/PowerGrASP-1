@@ -26,23 +26,35 @@
 clique3:- oedge(X,Y); oedge(Y,Z); oedge(X,Z).
 
 % Choice of a  clique of at least 3 elements
-3 {newconcept(cc,k,1,X): membercc(X)}:- clique3.
+3 {newconcept_nohidden(cc,k,1,X): membercc(X)}:- clique3.
 
 % Consistency of the clique
-:- newconcept(cc,k,1,X); newconcept(cc,k,1,Y); X<Y; not oedge(X,Y).
+:- newconcept_nohidden(cc,k,1,X); newconcept_nohidden(cc,k,1,Y); X<Y; not oedge(X,Y).
 
 % Maximality of the clique
-:- membercc(X); not newconcept(cc,k,1,X); inter(X,Y):newconcept(cc,k,1,Y) ; clique3.
+:- membercc(X); not newconcept_nohidden(cc,k,1,X); inter(X,Y):newconcept_nohidden(cc,k,1,Y) ; clique3.
 
-% Compute score as the edge cover of the clique
-edgecover((N*(N-1))/2):- N={newconcept(cc,k,1,X):membercc(X)} ; clique3.
-
-% Compatibility with postprocessing: newconcept(cc,k,2,X) exists
+% Compatibility with postprocessing: newconcept_nohidden(cc,k,2,X) exists
 newconcept(cc,k,2,X):- newconcept(cc,k,1,X).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% CONCEPT EXPANSION %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Choose one hidden node for each node in newconcept that hide other nodes
+1 { hidden_used(X,Y): equiv(X,Y) } 1:-  newconcept_nohidden(cc,k,1,X) ; equiv(X,_).
+
+%% Use an hidden node instead of any node with a weight >= 2.
+%% This will decrease the score of this last.
+newconcept(cc,k,T,X):- newconcept_nohidden(cc,k,T,X) ; not equiv(X,_).
+newconcept(cc,k,T,Y):- newconcept_nohidden(cc,k,T,X) ; equiv(X,Y) ; hidden_used(X,Y).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% CONCEPT PROPERTIES %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% The found concept is a clique.
 clique(cc,k).
+
+% Compute score as the edge cover of the clique
+edgecover((N*(N-1))/2):- N={newconcept_nohidden(cc,k,1,X):membercc(X)} ; clique3.

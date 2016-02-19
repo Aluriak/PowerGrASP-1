@@ -57,26 +57,28 @@ def split(atom):
 
 
 def arg(atom):
-    """Return the argument of given atom, as a tuple if necessary.
-
-    If the atom have only one arg, the arg itself will be used.
+    """Return the argument of given atom, as a tuple
 
     >>>> split('edge(lacA,lacZ)')
     ('lacA', 'lacZ')
     >>>> split('score(13)')
-    '13'
+    ('13',)
     >>>> split('lowerbound')
-    None
+    ()
 
     """
     payload = atom.strip('.').strip(')')
     try:
-        data = tuple(payload.split('(')[1].split(','))
-        if len(data) > 1:
-            return data
-        else:
-            return next(iter(data))
+        return tuple(payload.split('(')[1].split(','))
     except ValueError:  # no args !
+        return tuple()
+
+
+def first_arg(atom):
+    """Return the first argument of given atom, or None if no arg"""
+    try:
+        return arg(atom)[0]
+    except IndexError:
         return None
 
 

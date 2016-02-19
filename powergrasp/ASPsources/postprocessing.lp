@@ -21,6 +21,8 @@
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - clique(cc,k): concept is a clique.
 %       - star(cc,k,T): set T of concept is a star.
+% Input (common data):
+%       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
@@ -125,7 +127,6 @@ score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
 score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
 
-
 % Minimize score
 #minimize{S@1,S:score(cc,k,S)}.
 
@@ -145,12 +146,13 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 % Discard cases when no score is generated
 :- not score(cc,k,_).
 
+
 %#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
-#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(_,_,_,X).
+#show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
 #show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
 #show edge(X,Y): oedge(X,Y) , not covered(X,Y) , not covered(cc,k,X,Y) , X!=Y.
 #show powernode_count(1): clique(cc,k).
@@ -158,7 +160,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
-#show newconcept/3.
+#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
 % debug output
 #show parent_block/2.
 #show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score

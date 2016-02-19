@@ -16,13 +16,14 @@
 %       - include_block(k,B,p(cc,k,T)): block B contains set T of newconcept.
 %       - block(k,B,X): block B contains X.
 %       - include_powernode(cc,K1,T1,K2,T2): powernode K1,T1 contains K2,T2.
+%       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
 % Output:
 %       - oedge(X,Y): there exits a usable edge between X and Y with X<Y
 %       - membercc(Y): Y is a member of cc, and is used by oedge
 %       - maxlowerbound(S): the maximal score lower bound is S
 %       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
+%       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 
 % get oriented edges of the connected component that are not covered
@@ -37,21 +38,10 @@ inter(Y,X):- oedge(X,Y).
 membercc(X):- membercc(cc,X) ; oedge(X,_).
 membercc(X):- membercc(cc,X) ; oedge(_,X).
 
-% compute the output degree of each node
-%   (output degree == number of links to higher nodes that are in the same block)
-%degree(X,D,b(K,B)):- lowerbound ; oedge(X,_) ; block(K,B,Anonymous) ;
-                     %D=#count{r(Y): oedge(X,Y), block(K,B,Y)}.
-%degree(X,D):- inter(X,_) ; D=#count{r(Y): inter(X,Y)}.
-
-% maximize the node score
-%maxlowerbound(S):- S=#max{D:degree(_,D)} ; lowerbound.
-%maxlowerbound(S):- lowerbound ; degree(_,S) ; not degree(_,D): degree(_,D), D>S.
-%maxlowerbound(S):- S=#max{D:degree(_,D,b(_,_))} ; lowerbound.
 
 % outputs preprocessed data
 #show.
 #show oedge/2.
 #show membercc/1.
 #show inter/2.
-%#show maxlowerbound/1.
-%#show degree/2.
+#show equiv(X,Y): equiv(X,Y), membercc(X).

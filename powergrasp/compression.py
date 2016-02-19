@@ -75,10 +75,14 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     notify_observers(connected_components_found=atom_ccs)
     atom_ccs = enumerate(atom_ccs)
     # save atoms as ASP-readable string
-    all_edges    = atoms.to_str(graph_atoms, names = 'ccedge')
-    first_blocks = atoms.to_str(graph_atoms, names = 'block')
-    graph_atoms  = atoms.to_str(graph_atoms, names = ('ccedge', 'membercc'))
-    remain_edges_global = all_edges.count('ccedge(')
+    all_edges    = atoms.to_str(graph_atoms, names='ccedge')
+    first_blocks = atoms.to_str(graph_atoms, names='block')
+    all_equivs   = atoms.to_str(graph_atoms, names='equiv')
+    nb_edges     = atoms.to_str(graph_atoms, names='nb_edge')
+    graph_atoms  = atoms.to_str(graph_atoms, names=('ccedge', 'membercc',
+                                                    'weight'))
+    assert nb_edges.count('.') == 1  # only one atom in nb_edges
+    remain_edges_global = int(atoms.split(nb_edges.rstrip('.')).args[0])
     # notifications about the extraction
     notify_observers(
         Signals.ExtractionStopped,
@@ -103,6 +107,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         remain_edges = None
         previous_coverage = ''  # accumulation of covered/2
         previous_blocks   = first_blocks
+        previous_equivs   = all_equivs
         # main loop
         k = 0
         last_score = remain_edges_global  # score of the previous step
@@ -135,11 +140,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             #########################
             LOGGER.debug('PREPROCESSING')
             #########################
-            notify_observers(
-                Signals.PreprocessingStarted
-            )
+            notify_observers(Signals.PreprocessingStarted)
             model = solving_model_from(
-                base_atoms=(graph_atoms + previous_coverage
+                base_atoms=(graph_atoms + previous_coverage + previous_equivs
                             + previous_blocks + lowerbound_atom),
                 aspfiles=asp_preprocessing,
                 aspargs={ASP_ARG_CC: cc}
@@ -189,7 +192,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             else:
                 best_model = model
                 assert('score' in str(model))
-                score = int(atoms.arg(next(a for a in model if a.startswith('score(')))[0])
+                score = int(atoms.first_arg(next(a for a in model
+                                                 if a.startswith('score('))))
                 assert(isinstance(score, int))
                 lowerbound_value = max(
                     lowerbound_value,
@@ -220,7 +224,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 LOGGER.debug('\tOUTPUT: ' + atoms.to_str(
                     model, separator='.\n\t'
                 ))
-                score = int(atoms.arg(next(
+                score = int(atoms.first_arg(next(
                     atom for atom in model if atom.startswith('score(')
                 )))
                 assert(isinstance(score, int))
@@ -258,6 +262,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 previous_blocks = atoms.to_str(
                     best_model, names=('block', 'include_block')
                 )
+                previous_equivs = atoms.to_str(
+                    best_model, names=('equiv',)
+                )
 
                 # give new powernodes to converter
                 notify_observers(model_found=tuple(
@@ -273,7 +280,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 )
 
                 # save the number of generated powernodes and poweredges
-                new_powernode_count = int(atoms.arg(next(
+                new_powernode_count = int(atoms.first_arg(next(
                     a for a in best_model if a.startswith('powernode_count')
                 )))
                 if new_powernode_count not in (0,1,2):
@@ -296,7 +303,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                                          new_poweredge_count,
                                          remain_edges_global),
                 )
-                assert(remain_edges_global >= 0)
+                if remain_edges_global < 0:
+                    print('REMAIN_EDGES_GLOBAL:', remain_edges_global)
+                    assert(remain_edges_global >= 0)
             # notify_observers:
             notify_observers(Signals.StepStopped)
             notify_observers(Signals.StepFinalized)
