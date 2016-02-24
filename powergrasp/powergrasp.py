@@ -129,10 +129,10 @@ def compress(graph_data_or_file=None, output_file=None, *,
         instanciated_observers.append(observers.ObjectCounter())
     if count_cc:
         instanciated_observers.append(observers.ConnectedComponentsCounter())
-    if interactive:
-        instanciated_observers.append(observers.InteractiveCompression())
     if draw_lattice:
         instanciated_observers.append(observers.LatticeDrawer(draw_lattice))
+    if interactive:
+        instanciated_observers.append(observers.InteractiveCompression())
 
     # sort observers, in respect of their priority (smaller is after)
     instanciated_observers.sort(key=lambda o: o.priority, reverse=True)
