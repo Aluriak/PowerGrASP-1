@@ -62,21 +62,17 @@ def asp_file_from(data):
     # data is a string formatted in an input format.
     # try to access data
     if not commons.is_valid_path(data):
-        LOGGER.info('Input data is not a valid path. This data is assumed as'
-                    ' ASP formated data.')
         file_to_be_converted = tempfile.NamedTemporaryFile('w', delete=False)
         file_to_be_converted.write(data)
         file_to_be_converted.close()
         graph_data_file = file_to_be_converted.name
         data_format = 'asp'
-        LOGGER.info('Input data detected as raw data. Saved in temp file '
-                    + graph_data_file)
+        LOGGER.info('Input data is not a valid path. This data is assumed as'
+                    ' ASP formated data save in tempfile ' + graph_data_file)
     elif not os.path.exists(data):
-        # the file is not existing, raise the error !
-        open(data)
-    # convert graph data into dictionnary
+        open(data)  # the file is not existing, raise the error !
+    # convert reduced graph data into ASP-readable format
     graph = converter.to_asp_file(graph_data_file, format=data_format)
-    # reduce graph and put it ASP-formated in a temp file
     reduced_graph = graph_reduction.reduced(graph)
     final_graph_file = tempfile.NamedTemporaryFile('w', delete=False)
     for atom in atoms.from_graph_dict(reduced_graph):
@@ -85,31 +81,6 @@ def asp_file_from(data):
     LOGGER.info('Input data reduced and converted to ASP data saved in file '
                 + final_graph_file.name)
     return final_graph_file.name
-
-
-def graph_dict_to_asp_file(graph_dict):
-    """convert {node: succs} to ASP atoms edge/2, where edge(X,Y) defines X
-    as node and Y a successor.
-
-    Returns the temp file name where atoms are pushed.
-
-    """
-    # write it in a file, and convert this file in ASP.
-    asp_file = tempfile.NamedTemporaryFile('w', delete=False)
-    def to_asp_value(value):
-        if isinstance(value, int):
-            return str(value)
-        return (  # surround value if necessary
-            ('"' if value[0] != '"' else '')
-            + str(value)
-            + ('"' if value[-1] != '"' else '')
-        )
-    for node, succs in graph_dict.items():
-        for succ in succs:
-            asp_file.write('edge(' + to_asp_value(node) + ','
-                           + to_asp_value(succ) + ').\n')
-    asp_file.close()
-    return asp_file.name
 
 
 def compress(graph_data=None, output_file=None, *,
