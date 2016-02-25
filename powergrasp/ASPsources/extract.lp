@@ -32,9 +32,13 @@ node(X):- inter(X,_).
 oedge(X,Y):- edge(X,Y) ; X<Y.
 oedge(X,Y):- edge(Y,X) ; X<Y.
 
+% Nodes in the set 1 and 2.
+node_set(1,X):- edge(X,_).
+node_set(2,Y):- edge(_,Y).
+
 % Connected paths starting with minimal element X
 % connected(Minimum element,Element connected to the minimum)
-connectedpath(X,Y):- oedge(X,Y).
+connectedpath(X,Y):- edge(X,Y).
 connectedpath(X,Z):- connectedpath(X,Y) ; inter(Y,Z) ; X<Z.
 
 % Connected components are identified by their smaller element.
@@ -57,3 +61,4 @@ block(0,CC,X):- membercc(X) ; cc(CC).
 #show membercc/1.
 #show block/3.
 #show oedge(X,Y): oedge(X,Y), membercc(X).
+#show node_set(N,X): node_set(N,X), membercc(X).
