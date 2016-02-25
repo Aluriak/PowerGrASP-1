@@ -5,7 +5,7 @@ Definitions of model_from(5) that encapsulate
 """
 import os
 from functools   import partial
-from collections import deque, Counter, namedtuple
+from collections import deque, Counter, namedtuple, defaultdict
 
 from powergrasp import commons
 from powergrasp import atoms
