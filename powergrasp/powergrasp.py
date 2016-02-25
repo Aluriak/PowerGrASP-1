@@ -17,6 +17,7 @@ from powergrasp.commons import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from powergrasp.commons import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
 from powergrasp.commons import ASP_ARG_UPPERBOUND, ASP_ARG_CC
 from powergrasp.commons import ASP_ARG_LOWERBOUND, ASP_ARG_STEP
+from powergrasp import graph_reduction
 from powergrasp import compression
 from powergrasp import statistics
 from powergrasp import observers
@@ -24,7 +25,6 @@ from powergrasp import converter
 from powergrasp import solving
 from powergrasp import commons
 from powergrasp import atoms
-
 
 
 LOGGER = commons.logger()
@@ -44,12 +44,16 @@ def network_name_from(data):
 
 
 def asp_file_from(data):
-    """A filename containing the graph data formatted in ASP.
+    """Return a filename containing the graph data formatted in ASP.
 
     Data is a filename, or a string containing the graph data,
     encoded in ASP format.
     Detection of the type of data (filename or graph) is performed by detect
-     a valid path in data. On failure, data is understood as an input graph.
+     a valid path in data. On failure, data is understood as a raw input graph.
+
+    Finally, the graph will be reduced and finally encoded in a temporary file
+    containing the whole reduced graph in ASP.
+    The name of this final file is returned.
 
     """
     # default case: data is a filename
@@ -59,18 +63,28 @@ def asp_file_from(data):
     # try to access data
     if not commons.is_valid_path(data):
         LOGGER.info('Input data is not a valid path. This data is assumed as'
-                    ' ASP formatted data.')
+                    ' ASP formated data.')
         file_to_be_converted = tempfile.NamedTemporaryFile('w', delete=False)
         file_to_be_converted.write(data)
         file_to_be_converted.close()
         graph_data_file = file_to_be_converted.name
         data_format = 'asp'
+        LOGGER.info('Input data detected as raw data. Saved in temp file '
+                    + graph_data_file)
     elif not os.path.exists(data):
         # the file is not existing, raise the error !
         open(data)
-    # convert graph data into ASP-readable format
+    # convert graph data into dictionnary
     graph = converter.to_asp_file(graph_data_file, format=data_format)
-    return graph_dict_to_asp_file(graph)
+    # reduce graph and put it ASP-formated in a temp file
+    reduced_graph = graph_reduction.reduced(graph)
+    final_graph_file = tempfile.NamedTemporaryFile('w', delete=False)
+    for atom in atoms.from_graph_dict(reduced_graph):
+        final_graph_file.write(atom)
+    final_graph_file.close()
+    LOGGER.info('Input data reduced and converted to ASP data saved in file '
+                + final_graph_file.name)
+    return final_graph_file.name
 
 
 def graph_dict_to_asp_file(graph_dict):
