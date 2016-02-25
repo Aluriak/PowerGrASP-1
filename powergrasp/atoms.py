@@ -180,3 +180,28 @@ def to_str(atoms, names=None, separator='.'):
         atoms = atoms.get(names)
     return separator.join(atom.predicate + '(' + ','.join(atom.arguments) + ')'
                           for atom in atoms) + separator
+
+
+def to_asp_value(value):
+    """Return given value as string, suitable for ASP atoms.
+
+    >>>to_asp_string('test')
+    '"test"'
+    >>>to_asp_string('"test"')
+    '"test"'
+    >>>to_asp_string(23)
+    '23'
+
+    """
+    if isinstance(value, int):
+        return str(value)
+    else:  # any other case, cast value to string
+        return '"' + value.strip('"') + '"'
+
+
+def from_graph_dict(graph_dict):
+    """Yield all pairs of nodes in the ASP form edge/2"""
+    for node, succs in graph_dict.items():
+        for succ in succs:
+            yield ('edge(' + to_asp_value(node) + ','
+                   + to_asp_value(succ) + ').')
