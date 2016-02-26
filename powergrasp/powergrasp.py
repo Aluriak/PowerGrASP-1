@@ -55,8 +55,8 @@ def compress(graph_data_or_file=None, output_file=None, *,
              extracting=None, preprocessing=None, ccfinding=None,
              bcfinding=None, postprocessing=None,
              statistics_filename='data/statistics.csv',
-             output_format=None, lowerbound_cut_off=2,
-             interactive=False, count_model=False, count_cc=False,
+             output_format=None, interactive=False,
+             count_model=False, count_cc=False,
              show_preprocessed=False, timers=False, logfile=None, loglevel=None,
              thread=None, draw_lattice=False):
     """Performs the graph compression with data found in graph file.
@@ -70,18 +70,6 @@ def compress(graph_data_or_file=None, output_file=None, *,
      or will be inferred from the output file name, or will be set as bbl.
 
     If output file is None, result will be printed in stdout.
-
-    Notes about the maximal lowerbound optimization:
-      In a linear time, it is possible to compute the
-       maximal degree in the non covered graph.
-      This value correspond to the minimal best concept score.
-      In real life, the blocks (used by ASP for avoid overlapping powernodes)
-       complicate the job.
-      Moreover, as cliques are searched before the biclique, the lowerbound
-       value is increased if a clique with a better score is found.
-      The cut-off value is here for allow client code to control
-       this optimization, by specify the value that disable this optimization
-       when the lowerbound reachs it.
 
     The function itself returns a float that is, in seconds,
      the time necessary for the compression,

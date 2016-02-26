@@ -18,7 +18,6 @@ options:
     --count-model           prints models count in stdout
     --count-cc              prints connected component count in stdout
     --timers                prints times of execution in stdout
-    --lbound-cutoff=INT     cut-off for max lowerbound optimization
     --loglevel=NAME         defines terminal log level
     --logfile=FILE          file where all logs will be put in
     --stats-file=FILE       save csv statistics in FILE
@@ -57,8 +56,6 @@ if __name__ == '__main__':
     options = commons.options_from_cli(__doc__)
 
     # parse them
-    # cut-off
-    options['lbound_cutoff'] = int(options['lbound_cutoff'])
     # output format verification
     assert(options['output_format'] in OUTPUT_FORMATS)
 
@@ -90,7 +87,6 @@ if __name__ == '__main__':
             postprocessing     = options['postprocessing' ],
             output_file        = options['output_file'    ],
             output_format      = options['output_format'  ],
-            lowerbound_cut_off = options['lbound_cutoff'  ],
             interactive        = options['interactive'    ],
             show_preprocessed  = options['show_pre'       ],
             count_model        = options['count_model'    ],

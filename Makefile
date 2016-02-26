@@ -20,7 +20,6 @@ LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=warning
 #LOGLEVEL=--loglevel=critical
 #INTERACTIVE=--interactive
-#LBOUND=--lbound-cutoff=-1
 CCCOUNT=--count-cc
 MODELCOUNT=--count-model
 #PROFILING=--profiling

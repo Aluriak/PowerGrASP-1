@@ -109,33 +109,20 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         previous_blocks   = first_blocks
         previous_equivs   = all_equivs
         # main loop
-        k = 0
+        step = 0
         last_score = remain_edges_global  # score of the previous step
-        # lowerbound value is impossible to now at first 1,
-        #  but will be firstly computed if its better than min score.
-        # If lowerbound value is smaller or than MINIMAL_SCORE,
-        #  the optimization is disabled for avoid a costly treatment while
-        #  search for little concepts.
-        lowerbound_value = (MINIMAL_SCORE + 1) if lowerbound_cut_off > 0 else 0
-        def printable_bounds():
-            return '[' + str(lowerbound_value) + ';' + str(last_score) + ']'
         # iteration
         notify_observers(Signals.IterationStarted)
         while model_found_at_last_iteration:
             # STEP INITIALIZATION
             notify_observers(Signals.StepStarted)
-            k += 1
-            time_iteration = time.time()
+            step += 1
             model = None
             best_model = None
             score = None  # contains the score of the generated concept
-
-            # LOWER BOUND: is it necessary to find it ?
-            if lowerbound_value > MINIMAL_SCORE:
-                #  indicate that the preprocesser must found the max lowerbound
-                lowerbound_atom = 'lowerbound.'
-            else:
-                lowerbound_atom = ''  # no max lowbound search in preprocessing
+            score_lowerbound = MINIMAL_SCORE
+            def printable_bounds():
+                return '[' + str(score_lowerbound) + ';' + str(last_score) + ']'
 
             #########################
             LOGGER.debug('PREPROCESSING')
@@ -143,7 +130,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             notify_observers(Signals.PreprocessingStarted)
             model = solving_model_from(
                 base_atoms=(graph_atoms + previous_coverage + previous_equivs
-                            + previous_blocks + lowerbound_atom),
+                            + previous_blocks),
                 aspfiles=asp_preprocessing,
                 aspargs={ASP_ARG_CC: cc}
             )
@@ -156,23 +143,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 notify_observers(Signals.StepFinalized)
                 continue
             # treatment of the model
-            lowbound = tuple(a for a in model if a.startswith('maxlowerbound'))
-            preprocessed_graph_atoms = atoms.to_str(
-                atom for atom in model
-                if not atom.startswith('maxlowerbound(')
-            )
-            try:
-                assert len(lowbound) <= 1  # multiple maxlowerbound is impossible
-                lowerbound_value = atoms.split(lowbound[0])[1][0]
-            except IndexError:
-                lowerbound_value = MINIMAL_SCORE
-            # the string 'inf' is the ASP type for 'infinitely small'
-            # so, if no lowerbound found, 'inf' will be returned and
-            # can't be converted in integer
-            try:
-                lowerbound_value = int(lowerbound_value)
-            except ValueError:
-                lowerbound_value = MINIMAL_SCORE
+            preprocessed_graph_atoms = atoms.to_str(model)
             notify_observers(preprocessing_stopped=preprocessed_graph_atoms)
 
             #########################
@@ -182,9 +153,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 base_atoms=(preprocessed_graph_atoms
                             + previous_coverage + previous_blocks),
                 aspfiles=(asp_ccfinding, asp_postprocessing),
-                aspargs={ASP_ARG_CC:cc, ASP_ARG_STEP:k,
-                         ASP_ARG_LOWERBOUND:lowerbound_value,
-                         ASP_ARG_UPPERBOUND:last_score}
+                aspargs={ASP_ARG_CC: cc, ASP_ARG_STEP: step,
+                         ASP_ARG_LOWERBOUND: score_lowerbound,
+                         ASP_ARG_UPPERBOUND: last_score}
             )
             # treatment of the model
             if model is None:
@@ -195,8 +166,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 score = int(atoms.first_arg(next(a for a in model
                                                  if a.startswith('score('))))
                 assert(isinstance(score, int))
-                lowerbound_value = max(
-                    lowerbound_value,
+                score_lowerbound = max(
+                    score_lowerbound,
                     score,
                 )
                 atom_counter = atoms.count(model)
@@ -205,14 +176,17 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             #########################
             LOGGER.debug('FIND BEST BICLIQUE' + printable_bounds())
             #########################
-            model = solving_model_from(
-                base_atoms=(preprocessed_graph_atoms
-                            + previous_coverage + previous_blocks),
-                aspfiles=(asp_bcfinding, asp_postprocessing),
-                aspargs={ASP_ARG_CC: cc, ASP_ARG_STEP: k,
-                         ASP_ARG_LOWERBOUND: lowerbound_value,
-                         ASP_ARG_UPPERBOUND: last_score}
-            )
+            if score_lowerbound <= last_score:
+                model = solving_model_from(
+                    base_atoms=(preprocessed_graph_atoms
+                                + previous_coverage + previous_blocks),
+                    aspfiles=(asp_bcfinding, asp_postprocessing),
+                    aspargs={ASP_ARG_CC: cc, ASP_ARG_STEP: step,
+                             ASP_ARG_LOWERBOUND: score_lowerbound,
+                             ASP_ARG_UPPERBOUND: last_score}
+                )
+            else:  # its impossible to find a better model
+                model = None
             # treatment of the model
             if model is None:
                 LOGGER.debug('BICLIQUE SEARCH: no model found')
