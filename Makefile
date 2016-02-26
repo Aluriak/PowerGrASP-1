@@ -55,6 +55,10 @@ abn:
 	$(COMMAND) --graph-data="$(TESTS)abnormal.lp"
 bbind:
 	$(COMMAND) --graph-data="$(TESTS)structural_binding_no_bridge.lp"
+big_biclique:
+	$(COMMAND) --graph-data="$(TESTS)big_biclique.lp"
+big_clique:
+	$(COMMAND) --graph-data="$(TESTS)big_clique.lp"
 bintree:
 	$(COMMAND) --graph-data="$(TESTS)bintree.lp"
 bip:
@@ -65,8 +69,6 @@ cdiam:
 	$(COMMAND) --graph-data="$(TESTS)double_biclique_and_clique.lp"
 clique:
 	$(COMMAND) --graph-data="$(TESTS)cliques.lp"
-cclique:
-	$(COMMAND) --graph-data="$(TESTS)big_clique.lp"
 cc:
 	$(COMMAND) --graph-data="$(TESTS)concomp.lp"
 coli:
