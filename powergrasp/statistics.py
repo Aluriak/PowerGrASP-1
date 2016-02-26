@@ -33,7 +33,6 @@ CONV_RATE = 'conversion_rate'     # computed conversion rate
 EDGE_RDCT = 'edge_reduction'      # computed edge reduction
 COMP_RTIO = 'compression_ratio'   # computed compression ratio
 GENR_TIME = 'gentime'             # generation time for last iteration
-FINL_TIME = 'final_time'          # final compression time
 # general
 NETW_NAME = 'network_name'        # name of the input graph (name of the file containing input data)
 FILE_DESC = 'file_descriptor'     # file descriptor of the output CSV file, or None if no output expected
@@ -42,7 +41,7 @@ FILE_WRTR = 'file_writer'         # CSV writer on the output CSV file, or None i
 # All fields that are useful at the end of the compression are put here
 PRINTABLE_FIELD = (
     INIT_EDGE, GENR_PWED, GENR_PWND, CONV_RATE,
-    EDGE_RDCT, COMP_RTIO, FINL_EDGE, FINL_TIME,
+    EDGE_RDCT, COMP_RTIO, FINL_EDGE,
 )
 
 
@@ -99,7 +98,6 @@ class DataExtractor(observers.CompressionObserver, dict):
             NETW_NAME: network_name,
             INIT_EDGE: 0,
             FINL_EDGE: 0,
-            FINL_TIME: 0,
             GENR_PWED: 0,
             GENR_PWND: 0,
             GENR_TIME: 0,
@@ -107,24 +105,27 @@ class DataExtractor(observers.CompressionObserver, dict):
             FILE_WRTR: statistics_writer,
         })
 
+    @property
+    def compression_time(self):
+        if self.time_counter:
+            return self.time_counter.compression_time
+        return 0.
+
+    @property
+    def extraction_time(self):
+        if self.time_counter:
+            return self.time_counter.extraction_time
+        return 0.
+
     def _update(self, signals):
         if Signals.CompressionStopped in signals:
-            # get compression time or None
-            compression_time = None
-            if self.time_counter:
-                compression_time = self.time_counter.compression_time
-            # get extraction time or None
-            extraction_time = None
-            if self.time_counter:
-                extraction_time = self.time_counter.extraction_time
-            compression_time = self.time_counter.compression_time
             # create the final result render
             final_results = (
                 "All cc have been performed"
-                + ((' in ' + str(round(compression_time, 3)) + 's.')
-                   if compression_time else '.')
-                + (' (extraction in ' + str(round(extraction_time, 3)) + ')'
-                   if extraction_time else '')
+                + ((' in ' + str(round(self.compression_time, 3)) + 's.')
+                   if self.compression_time else '.')
+                + ((' (extraction in ' + str(round(self.extraction_time, 3)) + ')')
+                   if self.extraction_time else '')
                 + "\nGrounder options: " + self.gringo_options
                 + "\nSolver options: "   + self.clasp_options
                 + "\nNow, statistics on "
@@ -138,8 +139,6 @@ class DataExtractor(observers.CompressionObserver, dict):
         if Signals.SolverOptionsUpdated in signals:
             payload = signals[Signals.SolverOptionsUpdated]
             self.gringo_options, self.clasp_options = payload
-        if Signals.CompressionTimeGenerated in signals:
-            self[FINL_TIME] = float(signals[Signals.CompressionTimeGenerated])
         if Signals.AllEdgeGenerated in signals:
             self[INIT_EDGE] = int(signals[Signals.AllEdgeGenerated])
         if Signals.StepDataGenerated in signals:
