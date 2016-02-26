@@ -10,27 +10,32 @@ The compression, performed with the help of Formal Concept Analysis and Logic Pr
 have a visualization interest: the compressed graph is easier to read, even in case of big graphs, and,
 in the case of biological data, have some interesting properties for data interpretation.
 
-Some papers are given at the end.
+Some references are given at the end.
 
 
 ## Architecture
 PowerGrASP mainly uses the Python language and Clingo, an Answer Set Programming implementation by *Potassco*.
-All is packaged in a pythonic way for allows the upload on pypi as soon as [*python-gringo*](https://github.com/lxsli/python-gringo), the bridge between Python and ASP, will be uploaded there itself.
+All is packaged in a pythonic way for allows the upload on pypi. One of the main dependance is [pyasp](https://github.com/sthiele/pyasp),
+the module making the bridge between ASP and Python.
 With the help of the *docopt* module, PowerGrASP can be interfaced with the command-line as with another Python program.
 
 The program us basically a Python code that call Clingo multiple times, until the input graph have a compressible motif,
 and finally perform a traduction of the concepts (biclique, clique, star) in the output format.
 
-This output format is readable by Cytoscape, once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
+This output format is notabily readable by Cytoscape, once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
 
 ### Modules
 Les modules suivants représentent l'intégralité des modules python composant PowerGrASP.
 - *\_\_main\_\_*: interface between the command line and the compression procedures.
 - *atoms*: provides many functions for manipulating atoms objects, output of ASP solvers.
 - *commons*: global definitions of constants, various generalist functions and logging management.
+- *compression*: implementation of the compression algorithm.
 - *converter*: converter library, that allows the transformation of input and output data in treatable formats.
+- *graph_reduction*: implementation of a graph reduction algorithm (see optimizations).
 - *info*: informations on the package itself.
-- *powergrasp*: definition of the main compression procedure.
+- *observers*: implementations of various compression observers, with different roles.
+- *plotting*: routines for plotting the statistics data.
+- *powergrasp*: main API, a wrapper around the compression routines.
 - *solving*: provides functions abstracting solving treatment like solver construction and best solution access.
 - *statistics*: defines way to do compression statistics, and how print/stock them.
 - *utils*: definition of functions that have been used one time ; not important, but can be useful for generate data.
@@ -40,14 +45,16 @@ that contains all ASP source code used by PowerGrASP.
 
 
 ## Algorithm
-While the more important part of the compression is performed in the ASP side, the compression algorithm can't be detailed without description of Clingo heuristics and behavior. This is not the goal of this document. Altough some tips on the implementation will be described below.  
+While the more important part of the compression is performed in the ASP side, the compression algorithm can't be detailed
+without description of Clingo heuristics and behavior. This is not the goal of this document.
+Altough some tips on the implementation will be described below.
 
 ### Python side
 It needs to be well understood.
 
 1. determination of the connected component (ASP solver used (*extraction.lp*)).
 2. for each connected component:
-    1. preprocessing of the data, and determination of a minimal score based on the nodes degree (ASP solver used (*preprocessing.lp*)).
+    1. preprocessing of the data, yielding only nodes necessary for current step (ASP solver used (*preprocessing.lp*)).
     2. search for the best clique (ASP solver used) (ASP solver used (*findbestclique.lp* and *postprocessing.lp*)).
     3. search for the best biclique, that must be better than the clique (ASP solver used (*findbestbiclique.lp* and *postprocessing.lp*)).
     4. if a model is found (either clique or biclique):
@@ -88,30 +95,98 @@ This principle, implemented in the branch *enhancement#15*, seems to be slower. 
 
 
 ## Implementation details
-TODO: logging, converter lib, CLI.
+
+### Converter
+
+### Observer
+
+### Logging
+
+### Optimizations
+The following parts are about the various optimizations implemented.
 
 
-## Usage
+#### Score bounds  (since 0.3.X)
+The score bounds (inclusives) are computed before any concept search, as follow:
+- the initial best score is the number of edges in the graph
+- the initial minimal score is 2
+- after successful clique search, the minimal score is set to the score of the clique
+- if a better score is possible (score of the clique is lower than the maximal score), a biclique is searched
+- the score of the best found concept is set as the best score for the next step.
+
+Another part of the score bound is the determination of a minimal lowerbound. This is not interesting,
+while the benchmarks shows a slower compression.
+The minimal score is 2, or equals to the score of the clique found (if any) at the same step for any biclique search.
+
+
+#### Reduction of equivalent nodes  (since 0.4.X)
+Nodes with exactly the same attributes (== linked to the same other nodes) are always handled together in cases of bicliques.
+If N nodes have the same attributes, then the smaller lexicographically will be choosen as the normal node. The others are named «hidden» nodes.
+The data extraction in *extract.lp* yields an equiv/2 atom, where equiv(X,Y) define Y as an hidden node, and X as a normal node.
+In *findbestbiclique.lp* the equiv/2 atoms are used for define the content of each set of the biclique: if X is embed in the set 2, then all hidden nodes Y such as equiv(X,Y) will be added to the set.
+The score can finally be computed.
+
+However, cliques needs a better treatment. When a clique use a node X such as equiv(X,Y) exist, one hidden node Y is choosen and is no longer marked as hidden, as the equiv(X,Y) atom is not yielded by the postprocessing step.
+The choosen Y node is put in the clique.
+
+
+##### commits
+preprocessing: a110480e4b0b3da00fdeb520239cf09b7aeb6c00  
+postprocessing: 2faae7614d9eb8b0b9e943f542cb6ebc196a2214  
+compression: 3dc32cc80664c4ae0c179b324726312ba2e125ae  
+findbestclique: 403d7c7f18ff9724c0f0323b98b4c3fe19594b35  
+clique test case: 2a8e21d2fede030fa4e5bf43f23f23ba2d236ee3  
+main commit: 209d191f628fca4152893c9dc1aa1677205fa923  
+
+
+### CLI & API
+The CLI usage is described through the help:
+
+    python -m powergrasp --help
+
+
+The API is defined by the powergrasp module:
+
+    import powergrasp
+    help(powergrasp.compress)
+    powergrasp.compress('graph.lp', 'output.bbl')
+
 Cf *README.mkd* and *Makefile* for exact PowerGrASP command line or python usage.
 
 
 
 ## Visualization
-PowerGrASP ultimate goal is to provide a tool that allows anyone to compress a graph.
-And the compressed graph is not only a new version of the same data: it's also a new look on it.
+PowerGrASP main goal is data visualization. There is some ways for perform that.
 
-The only way known by PowerGrASP author for Power Graph visualization is a Cytoscape plugin named *CyOog*,
-developed by BIOTEC in 2012.
-This plugin is the result of their work on graph compression, and embeds their compression program.
-Interestingly, the plugin use an endemic file format, *bubble*, that describes the compressed graph.
-This file format is close to the Nested Network Format (NNF), is human readable,
-and (thankfully) can be loaded by CyOog for print the compressed graph.
+### Cytoscape
+Print a power graph through Cytoscape is made possible by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin,
+which handle the endemic format *Bubble* developed by the BIOTEC team in 2012. (cf references)
+Cytoscape, in order to using the CyOog plugin, must be in version __[2.x](http://www.cytoscape.org/download_old_versions.html)__.
+
+This plugin is the result of their work on graph compression, and embeds BIOTEC compression program.
+The bubble format describes the compressed graph, is close to the Nested Network Format (NNF), is human readable,
+and can be loaded by CyOog for print the compressed graph.
 
 PowerGrASP is only a bubble file generator: it works independantly of Cytoscape,
 and use other technics for reach a comparable result with CyOog.
 As a consequence, while showing the compressed graph is not PowerGrASP's job,
 it lets Cytoscape (and CyOog) perform the final printings.
 
+### Oog Command line tool
+BIOTEC team also released a [command line tool](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-command-line-tool.html) for power graph analysis.
+This tool allow to print a bubble file without Cytoscape usage, with something like:
+
+    java -jar Oog.jar -inputfiles=path/to/bubble.bbl -img -f=png
+
+Add *&>/dev/null* for prevent any logging output.
+Some problems can appears, notabily the edges that are not displayed.
+
+
+### DOT file format
+A layout engine of graphviz named *fdp* starts to handle graph clusters.
+According to this [demonstration](http://www.graphviz.org/content/fdpclust), clusters are exactly what the powernodes are.
+
+This needs to be implemented, but it can be an interesting alternative to others visualization tools.
 
 
 ## I/O formats
@@ -138,13 +213,13 @@ In fact, formal concepts used by Power Graph analysis have a sens in biology, es
 All graphs can be compressed through Power Graph, and will be more readable once compressed,
 but interactomes, at least, also gain in interpretability.
 
-The main inspiration of PowerGrASP : PowerGraph Analysis:
+The main inspiration of PowerGrASP: PowerGraph Analysis:
 
     Loïc Royer, Matthias Reimann, Bill Andreopoulos, and Michael Schroeder.
     Unraveling Protein Networks with Power Graph Analysis.
     PLoS Comput Biol, 4(7):e1000108, July 2008.
 
-Usage of the PowerGraph Analysis :
+Usage of the PowerGraph Analysis:
 
     Loic Royer, Matthias Reimann, A. Francis Stewart, and Michael Schroeder.
     Network Compression as a Quality Measure for Protein Interaction Networks.
@@ -155,11 +230,8 @@ Usage of the PowerGraph Analysis :
     its application to the integration of diverse biological data types.
     BMC Bioinformatics, 15(1):110, 2014.
 
-ASP through Potassco implementation :
+ASP through Potassco implementation:
 
     M. Gebser, R. Kaminski, B. Kaufmann, M. Ostrowski, T. Schaub, and M. Schneider.
     Potassco: The Potsdam answer set solving collection.
     AI Communications, 24(2):107–124, 2011.
-
-
-
