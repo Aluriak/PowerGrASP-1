@@ -29,6 +29,19 @@ from powergrasp import atoms
 LOGGER = commons.logger()
 
 
+def network_name_from(data):
+    """A string describing the graph data received.
+
+    if data is a valid filepath, the filepath will be returned.
+    Else, the string 'network' will be returned.
+
+    """
+    if os.path.isfile(data):
+        return data
+    else:
+        return 'network'
+
+
 def asp_file_from(data):
     """A filename containing the graph data formatted in ASP.
 
@@ -107,6 +120,7 @@ def compress(graph_data_or_file=None, output_file=None, *,
             statistics_filename,
             output_converter=output_converter,
             time_counter=time_counter,
+            network_name=network_name_from(graph_data_or_file)
         ))
 
     if show_preprocessed:
