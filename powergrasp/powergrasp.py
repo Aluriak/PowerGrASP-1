@@ -142,6 +142,10 @@ def compress(graph_data_or_file=None, output_file=None, *,
     # sort observers, in respect of their priority (smaller is after)
     instanciated_observers.sort(key=lambda o: o.priority.value, reverse=True)
     assert instanciated_observers[0].priority.value >= instanciated_observers[-1].priority.value
+    LOGGER.debug('OBSERVERS:' + str('\n\t'.join(
+        str((obs.__class__, obs))
+        for obs in instanciated_observers
+    )))
 
     # Launch the compression
     compression.compress_lp_graph(
