@@ -23,7 +23,7 @@ LOGLEVEL=--loglevel=info
 CCCOUNT=--count-cc
 MODELCOUNT=--count-model
 #PROFILING=--profiling
-#THREAD=--thread=4
+#THREAD=--thread=0
 #PRE=--show-pre
 #LATTICE=--draw_lattice=$(DATA)
 

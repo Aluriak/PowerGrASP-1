@@ -169,16 +169,19 @@ def options_from_cli(documentation):
         )
     return ChainMap(cli_args, PROGRAM_OPTIONS)
 
-def thread(number):
+def thread(number=None):
     """Return Clasp options for use n thread, or if n is invalid, use the
     number of CPU available"""
-    if number is not None and 1 <= int(number) <= 64:
-        return ' --parallel-mode=' + str(number)
-    else:
+    if number is not None and 1 <= int(number):
+        if int(number) == 1:
+            return ''
+        else:
+            return ' --parallel-mode=' + str(number)
+    else:  # number is None, or invalid
         nb_cpu = str(multiprocessing.cpu_count())
-        # nb_cpu = '1'
-        logger().info('Threading: No valid number of CPU given ([1;64]). '
-                      + nb_cpu + ' CPU will be used by Clasp.')
+        logger().info('Threading: Non valid number of CPU given ('
+                      + str(number) + '). ' + nb_cpu
+                      + ' CPU will be used by Clasp.')
         return ' --parallel-mode=' + nb_cpu
 
 

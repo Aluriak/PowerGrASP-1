@@ -24,7 +24,7 @@ options:
     --plot-stats            plot stats found in stats-file if exist
     --plot-file=FILE        instead of show it, save plot in png FILE
     --profiling             print graph info before compress it
-    --thread=INT            use INT thread for ASP solving
+    --thread=INT            use INT thread for ASP solving (0 for automatic detection)
     --draw_lattice=DIR      draw in DIR the concept lattice foreach con. comp.
 
 output formats:
