@@ -79,9 +79,12 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     first_blocks = atoms.to_str(graph_atoms, names='block')
     all_equivs   = atoms.to_str(graph_atoms, names='equiv')
     nb_edges     = atoms.to_str(graph_atoms, names='nb_edge')
-    graph_atoms  = atoms.to_str(graph_atoms, names=('ccedge', 'membercc',
-                                                    'weight'))
+    graph_atoms  = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
     assert nb_edges.count('.') == 1  # only one atom in nb_edges
+    LOGGER.info('Optimization on node equivalences: '
+                + str(all_equivs.count('.')) + ' equiv/2 atoms yielded.')
+    LOGGER.info('Blocks: ' + str(first_blocks.count('.')) + ' block/3 found.')
+    LOGGER.info('Edges: ' + str(all_edges.count('.')) + ' ccedge/3 found.')
     remain_edges_global = int(atoms.split(nb_edges.rstrip('.')).args[0])
     # notifications about the extraction
     notify_observers(
@@ -90,7 +93,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         step_data_generated=(0, 0, remain_edges_global)
     )
     # printings
-    LOGGER.debug('EXTRACTED: ' + graph_atoms + '\n')
+    LOGGER.debug('EXTRACTED: ' + graph_atoms + first_blocks
+                 + nb_edges + all_equivs + '\n')
     LOGGER.debug('CCEDGES  : ' + all_edges + '\n')
 
     # ITERATIVE TREATMENT
