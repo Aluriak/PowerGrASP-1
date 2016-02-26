@@ -57,6 +57,8 @@ bbind:
 	$(COMMAND) --graph-data="$(TESTS)structural_binding_no_bridge.lp"
 big_biclique:
 	$(COMMAND) --graph-data="$(TESTS)big_biclique.lp"
+big_biclique_merged:
+	$(COMMAND) --graph-data="$(TESTS)big_biclique_merged.lp"
 big_clique:
 	$(COMMAND) --graph-data="$(TESTS)big_clique.lp"
 bintree:
