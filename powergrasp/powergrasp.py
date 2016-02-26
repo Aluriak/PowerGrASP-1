@@ -6,10 +6,7 @@ The compress function get numerous arguments,
 
 """
 import os
-import sys
-import time
 import tempfile
-import itertools
 from builtins           import input
 from collections        import defaultdict
 
@@ -113,30 +110,36 @@ def compress(graph_data_or_file=None, output_file=None, *,
         time_counter = observers.TimeCounter(ignore=[
             Signals.IterationStarted, Signals.PreprocessingStarted,
         ])
-        instanciated_observers.append(time_counter)
+    else:  # no timers asked, but others modules may want to have a ref to
+        time_counter = observers.NullTimeCounter()
+    instanciated_observers.append(time_counter)
+
     if statistics_filename:
         instanciated_observers.append(statistics.DataExtractor(
             statistics_filename,
             output_converter=output_converter,
             time_counter=time_counter,
         ))
+
     if show_preprocessed:
         instanciated_observers.append(observers.ObservedSignalLogger(
             observers.Signals.StepPerformed,
             'PREPROCESSED DATA: '
         ))
+
     if count_model:
         instanciated_observers.append(observers.ObjectCounter())
     if count_cc:
         instanciated_observers.append(observers.ConnectedComponentsCounter())
+
     if draw_lattice:
         instanciated_observers.append(observers.LatticeDrawer(draw_lattice))
     if interactive:
         instanciated_observers.append(observers.InteractiveCompression())
 
     # sort observers, in respect of their priority (smaller is after)
-    instanciated_observers.sort(key=lambda o: o.priority, reverse=True)
-    assert instanciated_observers[0].priority >= instanciated_observers[-1].priority
+    instanciated_observers.sort(key=lambda o: o.priority.value, reverse=True)
+    assert instanciated_observers[0].priority.value >= instanciated_observers[-1].priority.value
 
     # Launch the compression
     compression.compress_lp_graph(
