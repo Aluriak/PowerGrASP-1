@@ -120,11 +120,10 @@ class DataExtractor(observers.CompressionObserver, dict):
             compression_time = self.time_counter.compression_time
             # create the final result render
             final_results = (
-                "All cc have been performed "
-                + ("in " + str(round(compression_time, 3))
-                   if compression_time else '')
-                + 's '
-                + ('(extraction in ' + str(round(extraction_time, 3)) + ')'
+                "All cc have been performed"
+                + ((' in ' + str(round(compression_time, 3)) + 's.')
+                   if compression_time else '.')
+                + (' (extraction in ' + str(round(extraction_time, 3)) + ')'
                    if extraction_time else '')
                 + "\nGrounder options: " + self.gringo_options
                 + "\nSolver options: "   + self.clasp_options
