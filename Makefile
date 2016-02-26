@@ -9,6 +9,7 @@ TARGET=powergrasp/__main__.py
 TESTS=powergrasp/tests/
 DATA=powergrasp/data/
 
+TIMERS=--timers
 STATFILE=--stats-file=$(DATA)statistics.csv
 #PLOTFILE=--plot-file=$(DATA)statistics.png
 #PLOT=--plot-stats
@@ -36,7 +37,7 @@ powerlattice:
 	evince $(DATA)powerlattice.pdf
 
 
-ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING) $(LATTICE)
+ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(TIMERS) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING) $(LATTICE)
 ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) $(PRE)
 COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
 
