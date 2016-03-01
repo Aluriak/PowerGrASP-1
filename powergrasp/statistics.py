@@ -124,7 +124,7 @@ class DataExtractor(observers.CompressionObserver, dict):
                 "All cc have been performed"
                 + ((' in ' + str(round(self.compression_time, 3)) + 's.')
                    if self.compression_time else '.')
-                + ((' (extraction in ' + str(round(self.extraction_time, 3)) + ')')
+                + ((' (including extraction in ' + str(round(self.extraction_time, 3)) + ')')
                    if self.extraction_time else '')
                 + "\nGrounder options: " + self.gringo_options
                 + "\nSolver options: "   + self.clasp_options
