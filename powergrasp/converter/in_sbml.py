@@ -40,10 +40,10 @@ class InSBML(InConverter):
 def sbml_to_atom_generator(filename):
     from libsbml import readSBML
 
-    document = readSBML(filename);
+    document = readSBML(filename)
     level    = document.getLevel()
     version  = document.getVersion()
-    model    = document.getModel();
+    model    = document.getModel()
 
     if (model == None):
         print("No model present." )
