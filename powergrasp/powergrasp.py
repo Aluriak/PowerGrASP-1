@@ -39,7 +39,7 @@ def network_name_from(data):
     if os.path.isfile(data):
         return data
     else:
-        return 'network'
+        return 'stdin network'
 
 
 def asp_file_from(data):
