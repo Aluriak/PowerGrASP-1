@@ -18,3 +18,4 @@ PowerGrASP.egg-info/
 dist/
 .zcache/
 oog/
+benchmarks/
