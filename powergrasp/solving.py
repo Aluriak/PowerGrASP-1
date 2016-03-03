@@ -48,9 +48,12 @@ def model_from(base_atoms, aspfiles, aspargs={},
     # print('SOLVING:', aspfiles, constants)
     # print('INPUT:', base_atoms.__class__, base_atoms)
     answers = solver.run(aspfiles, additionalProgramText=base_atoms)
-    # for idx, answer in enumerate(answers):
-        # print('ANSWER ' + str(idx) + ':', answer)
-        # print('ATOM(S):', Counter(atoms.split(a)[0] for a in answer))
+    # if len(answers) > 0:
+        # for idx, answer in enumerate(answers):
+            # print('ANSWER ' + str(idx) + ':', answer)
+            # print('ATOM(S):', atoms.count(answer))
+    # else:
+        # print('NO MODEL FOUND !')
 
     # return the last solution (which is the best), or None if no solution
     try:
