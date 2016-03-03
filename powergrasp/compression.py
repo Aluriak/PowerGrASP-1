@@ -85,7 +85,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 + str(all_equivs.count('.')) + ' equiv/2 atoms yielded.')
     LOGGER.info('Blocks: ' + str(first_blocks.count('.')) + ' block/3 found.')
     LOGGER.info('Edges: ' + str(all_edges.count('.')) + ' ccedge/3 found.')
-    remain_edges_global = int(atoms.split(nb_edges.rstrip('.')).args[0])
+    remain_edges_global = int(atoms.first_arg(nb_edges))
     # notifications about the extraction
     notify_observers(
         Signals.ExtractionStopped,
