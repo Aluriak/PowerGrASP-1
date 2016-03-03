@@ -23,6 +23,7 @@
 %       - star(cc,k,T): set T of concept is a star.
 % Input (common data):
 %       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
+%       - weight(X,W): node X hides W-1 nodes.
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
@@ -87,7 +88,6 @@ include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
 % debug: newconcept T fit perfectly with the powernode cc,L,U
 perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
                           block(k-1,p(cc,L,U),Anonymous) ; not star(cc,k,T) ; T=1..2 ; L<k.
-#show perfectfit/2.
 
 
 % nodes covered by a powernode are set in the associated block
@@ -118,8 +118,10 @@ poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 % Are covered all edges of concept that link two nodes of different sets.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
-% Edge cover, the number of edge covered by the concept
-edgecover(cc,k,T,N):- N={newconcept(cc,k,T,Y)} ; T=1..2.
+% Node count in each set of the biclique is given by summing weights of all nodes.
+% Edge cover is the number of node covered by the set.
+edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
+%edgecover(cc,k,T,N):- newconcept(cc,k,T,_) ; N=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)}.
 
 % Concept score, equal to maximal score - edge cover.
 score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
@@ -150,22 +152,25 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 %#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
+%#show powernode(cc,k,T,Y): newconcept(cc,k,T,X) ; equiv(X,Y) ; not clique(cc,k) ; not star(cc,k,T).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
 #show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
-#show edge(X,Y): oedge(X,Y) , not covered(X,Y) , not covered(cc,k,X,Y) , X!=Y.
+#show edge(X,Y): inter(X,Y), X<Y, not covered(X,Y), not covered(cc,k,X,Y).
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
 #show covered(X,Y): covered(cc,k,X,Y).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
-#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
-% debug output
-#show parent_block/2.
 #show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
+% weights outputs: things are complicated by the clique case where an hidden node is used.
+%#show weight(X,W): weight(X,W), not hidden_used(X,_).  % keep same score for node
+%#show weight(X,W-1): weight(X,W), hidden_used(X,_).  % if model is a clique, weight is decrease of 1
+%% equiv outputs: don't yield equiv(X,Y) if Y was used by a clique.
+%#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
+% debug output
 #show clique/2.
-#show upper(upperbound).
-#show lower(lowerbound).
 %#show star/3.
-%#show imp/3.
+%#show upper(upperbound).
+%#show lower(lowerbound).

@@ -51,5 +51,5 @@ top(A):- node(A) ; not include(_,A).
 #show top(CC,K,T): top(CC,K,T).
 #show topnode(A): top(A).
 #show trivial/3.
-#show edge/2.
-#show edge(X,Y): ccedge(_,X,Y).
+#show edge/2.  % edges in cc handled by compression
+#show edge(X,Y): ccedge(_,X,Y).  % edges in cc not handled by compression

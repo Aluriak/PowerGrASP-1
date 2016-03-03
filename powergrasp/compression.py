@@ -77,7 +77,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     # save atoms as ASP-readable string
     all_edges    = atoms.to_str(graph_atoms, names='ccedge')
     first_blocks = atoms.to_str(graph_atoms, names='block')
-    all_equivs   = atoms.to_str(graph_atoms, names='equiv')
+    all_equivs   = atoms.to_str(graph_atoms, names=('equiv', 'weight'))
     nb_edges     = atoms.to_str(graph_atoms, names='nb_edge')
     graph_atoms  = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
     assert nb_edges.count('.') == 1  # only one atom in nb_edges

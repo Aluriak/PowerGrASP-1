@@ -12,17 +12,17 @@
 %                         subgraph corresponding to connected component cc
 %       - membercc(cc,Y): Y is a member of cc, but not its root.
 %       - covered(X,Y): edge(X,Y) is already covered.
-%       - lowbound: exits iff the maxlowerbound must be computed
 %       - include_block(k,B,p(cc,k,T)): block B contains set T of newconcept.
 %       - block(k,B,X): block B contains X.
 %       - include_powernode(cc,K1,T1,K2,T2): powernode K1,T1 contains K2,T2.
 %       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
+%       - weight(X,W): node X hides W-1 nodes.
 % Output:
-%       - oedge(X,Y): there exits a usable edge between X and Y with X<Y
-%       - membercc(Y): Y is a member of cc, and is used by oedge
-%       - maxlowerbound(S): the maximal score lower bound is S
-%       - degree(X,D): node X have a degree of D (=there is D nodes linked to X)
+%       - block(k,B,X): block B contains X.
+%       - inter(X,Y): there exits an edge between X and Y
+%       - membercc(Y): Y is a member of cc, and is connected to at least one other node
 %       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
+%       - weight(X,W): node X hides W-1 nodes.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -39,9 +39,9 @@ membercc(X):- membercc(cc,X) ; oedge(X,_).
 membercc(X):- membercc(cc,X) ; oedge(_,X).
 
 
-% outputs preprocessed data
+% Outputs preprocessed data.
 #show.
-#show oedge/2.
-#show membercc/1.
 #show inter/2.
+#show membercc/1.
 #show equiv(X,Y): equiv(X,Y), membercc(X).
+%#show weight(X,W): weight(X,W), membercc(X).

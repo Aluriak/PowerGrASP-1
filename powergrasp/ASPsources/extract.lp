@@ -23,10 +23,15 @@ inter(X,Y):- edge(Y,X).
 % Equivalent nodes: nodes having edges to the same others nodes
 %  (same place in the concept lattice). Only the smaller is kept,
 %  all the others will be automatically generated when necessary.
-equiv(X,Y):- inter(X,Z): inter(Y,Z) ; inter(Y,Z): inter(X,Z) ; X<Y ; inter(X,_) ; inter(Y,_).
+%differ(X,Y):- inter(X,Z); not inter(Y,Z) ; inter(Y,_).
+%equiv(X,Y):-  inter(X,_) ; inter(Y,_) ; X<Y ;  not differ(X,Y) ;  not differ(Y,X) ; not equiv(_,X).
 
-% Hidden nodes are nodes with an equivalent. Only the smaller one is kept, thus not hidden.
-hidden(Y):- equiv(_,Y).
+%% Hidden nodes are nodes with an equivalent. Only the smaller one is kept, thus not hidden.
+%hidden(Y):- equiv(_,Y).
+
+%% weight of a node is the number of node hidden by it, including itself
+%weight(X,W+1):- W={equiv(X,_)} ; equiv(X,_) ; not hidden(X).
+%weight(X,1):- not equiv(X,_) ; not hidden(X) ; membercc(_,X).
 
 % Oriented graph
 % an oriented edge go from smaller to bigger :
@@ -62,4 +67,5 @@ nb_edge(N):- N=#count{1,X,Y:edge(X,Y)}.
 #show block/3.
 #show ccedge/3.
 #show nb_edge/1.
-#show equiv/2.
+%#show weight/2.
+%#show equiv(X,Y): equiv(X,Y), not hidden(X).

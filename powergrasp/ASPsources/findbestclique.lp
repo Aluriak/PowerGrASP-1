@@ -9,7 +9,6 @@
 %       -  k: current step of treatment (first step is 1)
 %
 % Input:
-%       - oedge(X,Y): there exist an oriented edge linking X to Y in cc.
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
 % Output:
@@ -23,13 +22,13 @@
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Clique of 3 elements
-clique3:- oedge(X,Y); oedge(Y,Z); oedge(X,Z).
+clique3:- inter(X,Y); inter(Y,Z); inter(X,Z).
 
 % Choice of a  clique of at least 3 elements
 3 {newconcept_nohidden(cc,k,1,X): membercc(X)}:- clique3.
 
 % Consistency of the clique
-:- newconcept_nohidden(cc,k,1,X); newconcept_nohidden(cc,k,1,Y); X<Y; not oedge(X,Y).
+:- newconcept_nohidden(cc,k,1,X); newconcept_nohidden(cc,k,1,Y); X<Y; not inter(X,Y).
 
 % Maximality of the clique
 :- membercc(X); not newconcept_nohidden(cc,k,1,X); inter(X,Y):newconcept_nohidden(cc,k,1,Y) ; clique3.
@@ -56,5 +55,5 @@ newconcept(cc,k,T,Y):- newconcept_nohidden(cc,k,T,X) ; equiv(X,Y) ; hidden_used(
 % The found concept is a clique.
 clique(cc,k).
 
-% Compute score as the edge cover of the clique
-edgecover((N*(N-1))/2):- N={newconcept_nohidden(cc,k,1,X):membercc(X)} ; clique3.
+%% Compute score as the edge cover of the clique
+%edgecover((N*(N-1))/2):- N={newconcept_nohidden(cc,k,1,X):membercc(X)} ; clique3.
