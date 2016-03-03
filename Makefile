@@ -69,6 +69,8 @@ blo:
 	$(COMMAND) --graph-data="$(TESTS)testblocks.lp"
 cdiam:
 	$(COMMAND) --graph-data="$(TESTS)double_biclique_and_clique.lp"
+chr:
+	$(COMMAND) --graph-data="$(TESTS)rrel_chr1_chr38.lp"
 clique:
 	$(COMMAND) --graph-data="$(TESTS)cliques.lp"
 cc:
