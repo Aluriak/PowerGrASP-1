@@ -17,7 +17,7 @@ from powergrasp.commons import ASP_SRC_EXTRACT, ASP_SRC_PREPRO , ASP_SRC_FINDCC
 from powergrasp.commons import ASP_SRC_FINDBC , ASP_SRC_POSTPRO, ASP_SRC_POSTPRO
 from powergrasp.commons import ASP_ARG_UPPERBOUND, ASP_ARG_CC
 from powergrasp.commons import ASP_ARG_LOWERBOUND, ASP_ARG_STEP
-from powergrasp import graph_reduction
+from powergrasp import graph_manipulation
 from powergrasp import compression
 from powergrasp import statistics
 from powergrasp import observers
@@ -73,7 +73,8 @@ def asp_file_from(data):
         open(data)  # the file is not existing, raise the error !
     # convert reduced graph data into ASP-readable format
     graph = converter.to_asp_file(graph_data_file, format=data_format)
-    reduced_graph = graph_reduction.reduced(graph)
+    reduced_graph = graph_manipulation.reduced(graph)
+    # reduced_graph = graph
     final_graph_file = tempfile.NamedTemporaryFile('w', delete=False)
     for atom in atoms.from_graph_dict(reduced_graph):
         final_graph_file.write(atom)
