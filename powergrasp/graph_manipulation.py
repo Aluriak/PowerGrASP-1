@@ -140,9 +140,9 @@ def reduced(graph):
 
 def reduction_ratio(graph, reduced_graph):
     """Return the reduction ratio, size of reduced over size of inital"""
+    graph = completed(graph)
     graph_a = set(chain.from_iterable(graph.values()))
     graph_b = set(graph.keys())
     reduced_a = set(chain.from_iterable(reduced_graph.values()))
     reduced_b = set(reduced_graph.keys())
-    assert len(tuple(chain.from_iterable(graph.values()))) == len(tuple(chain.from_iterable(reduced_graph.values())))
     return (len(reduced_a) * len(reduced_b)) / (len(graph_a) * len(graph_b))
