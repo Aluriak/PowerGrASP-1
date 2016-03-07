@@ -121,7 +121,6 @@ covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..
 % Node count in each set of the biclique is given by summing weights of all nodes.
 % Edge cover is the number of node covered by the set.
 edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
-%edgecover(cc,k,T,N):- newconcept(cc,k,T,_) ; N=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)}.
 
 % Concept score, equal to maximal score - edge cover.
 score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
