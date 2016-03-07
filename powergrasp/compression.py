@@ -82,7 +82,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     graph_atoms = atoms.to_str(graph_atoms, names=('ccedge', 'membercc'))
     assert nb_edges.count('.') == 1  # only one atom in nb_edges
     LOGGER.info('Optimization on node equivalences: '
-                + str(all_equivs.count('.')) + ' equiv/2 atoms yielded.')
+                + str(all_equivs.count('.equiv(')) + ' equiv/2 atoms yielded.')
     LOGGER.info('Blocks: ' + str(all_blocks.count('.')) + ' block/3 found.')
     LOGGER.info('Edges: ' + str(all_edges.count('.')) + ' ccedge/3 found.')
     remain_edges_global = int(atoms.first_arg(nb_edges))
