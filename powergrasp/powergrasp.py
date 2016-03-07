@@ -84,7 +84,11 @@ def graph_dict_to_asp_file(graph_dict):
     def to_asp_value(value):
         if isinstance(value, int):
             return str(value)
-        return '"' + str(value) + '"'
+        return (  # surround value if necessary
+            ('"' if value[0] != '"' else '')
+            + str(value)
+            + ('"' if value[-1] != '"' else '')
+        )
     for node, succs in graph_dict.items():
         for succ in succs:
             asp_file.write('edge(' + to_asp_value(node) + ','
