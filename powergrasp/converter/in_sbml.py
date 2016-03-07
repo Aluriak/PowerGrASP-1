@@ -48,8 +48,18 @@ def sbml_to_atom_generator(filename:str) -> dict:
     version  = document.getVersion()
     model    = document.getModel()
 
+    LOGGER.info('libsbml found a SBML data of level ' + str(level)
+                + ' and of version ' + str(version) + '.')
+
+    # print lib fatal error of the libsbml
+    errors = (document.getError(idx) for idx in itertools.count())
+    errors = (err for err in itertools.takewhile(lambda e: e is not None, errors)
+              if err.isError() or err.isFatal())
+    for error in errors:
+        LOGGER.error('libsbml error on input file: ' + error.getMessage().strip())
+
     if (model == None):
-        LOGGER.error("No model present." )
+        LOGGER.error('libsbml: No model found in file ' + filename + '.' )
         exit(1)
 
     # build dictionnary that link species id with its name
