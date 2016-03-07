@@ -129,10 +129,26 @@ def extension(filepath):
 
     >>> import os
     >>> basename('~/ASP/serious/business/fly.lp')
-    lp
+    'lp'
+    >>> basename('whatisthat')
+    ''
+    >>> basename('whatis.that')
+    'that'
 
     """
     return os.path.splitext(os.path.basename(filepath))[1][1:]
+
+def is_valid_path(filepath):
+    """True iff given filepath is a valid one (a file exists, or could exists)"""
+    if not os.access(filepath, os.W_OK):
+        try:
+            open(filepath, 'w').close()
+            os.unlink(filepath)
+            return True
+        except OSError:
+            return False
+    else:  # path is accessible
+        return True
 
 def options_from_cli(documentation):
     """Parse the arguments with docopt, and return the dictionnary of arguments.
