@@ -8,36 +8,39 @@ The data is used as follow:
     - an edge is created between each reaction node and each species involved in it;
 
 """
-from powergrasp.converter.input_converter import InConverter
 import itertools
-import powergrasp.commons as commons
+
+from powergrasp import commons
+from powergrasp.converter.input_converter import InConverter
 
 
-logger = commons.logger()
+LOGGER = commons.logger()
 NAME_PREFIX = 'metacyc:'
-
-
 
 
 class InSBML(InConverter):
     """Convert given SBML file in ASP file"""
     FORMAT_NAME = 'sbml'
+    FORMAT_EXTENSIONS = ('sbml',)
 
-    def _convert_to(self, filedesc_asp, filename_sbml):
-        """Write in filedesc_asp the ASP version of the file named filename_sbml"""
+    def _gen_edges(self, filename_sbml:str) -> dict:
+        """Yields pair (node, successor), representing the data contained
+        in input sbml file.
+        """
         try:
-            [filedesc_asp.write(line)
-             for line in sbml_to_atom_generator(filename_sbml)
-            ]
-        except IOError:
-            return self.error_input_file(inputfilename)
+            yield from sbml_to_atom_generator(filename_sbml)
+        except IOError as e:
+            LOGGER.error(self.error_input_file(filename_sbml, e))
         except ImportError:
-            return 'libsbml python module is necessary for use SBML as input format'
+            LOGGER.error("libsbml module is necessary for use SBML as input"
+                         " format. 'pip install libsbml' should do the job."
+                         " Compression aborted.")
+            exit(1)
+        return  # empty generator pattern
+        yield
 
 
-
-
-def sbml_to_atom_generator(filename):
+def sbml_to_atom_generator(filename:str) -> dict:
     from libsbml import readSBML
 
     document = readSBML(filename)
@@ -46,22 +49,18 @@ def sbml_to_atom_generator(filename):
     model    = document.getModel()
 
     if (model == None):
-        print("No model present." )
-        exit()
-
-
+        LOGGER.error("No model present." )
+        exit(1)
 
     # build dictionnary that link species id with its name
     species_name = {}
     for specie in model.getListOfSpecies():
         species_name[specie.getId()] = specie.getName().lstrip(NAME_PREFIX)
-    # get reactions, produces all edges
+
+    # get reactions, produces all edges in the outputed dict
     for reaction in model.getListOfReactions():
         name = reaction.getName().lstrip(NAME_PREFIX)
         products  = (species_name[p.getSpecies()] for p in reaction.getListOfProducts() )
         reactants = (species_name[p.getSpecies()] for p in reaction.getListOfReactants())
         for node in itertools.chain(products, reactants):
-            yield 'edge("' + name + '","' + node + '").'
-
-
-
+            yield name, node

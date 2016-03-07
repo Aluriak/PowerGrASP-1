@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 definition of the GML input format converter.
 
@@ -12,23 +11,23 @@ LOGGER = commons.logger()
 
 
 class InGML(InConverter):
-    """Convert given GML file in ASP file"""
+    """Convert given GML file in uniformized data"""
     FORMAT_NAME = 'gml'
+    FORMAT_EXTENSIONS = ('gml',)
 
-    def _convert_to(self, filedesc_asp, filename_gml):
-        """Write in filedesc_asp the ASP version of the file named filename_gml"""
+    def _gen_edges(self, filename_gml):
+        """Yields pair (node, successor), representing the data contained
+        in input gml file.
+        """
         try:
-            [filedesc_asp.write(line)
-             for line in gml_to_atom_generator(filename_gml)
-            ]
-        except IOError:
-            return self.error_input_file(inputfilename)
+            from networkx import read_gml
+            graph = read_gml(filename_gml)
+            for node1, node2 in graph.edges():
+                yield node1, node2
+        except IOError as e:
+            LOGGER.error(self.error_input_file(filename_sbml, e))
+            exit(1)
         except ImportError:
-            return 'networkx python module is necessary for use GML as input format'
-
-
-def gml_to_atom_generator(filename):
-    from networkx import read_gml
-    graph = read_gml(filename)
-    for node1, node2 in graph.edges():
-        yield 'edge("' + node1 + '","' + node2 + '").'
+            LOGGER.critical('networkx python module is necessary to'
+                            ' use GML as input format')
+            exit(1)

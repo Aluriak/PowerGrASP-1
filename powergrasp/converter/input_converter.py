@@ -11,12 +11,14 @@ Supported formats :
 - bbl: bubble format, used by Powergraph for printings;
 
 """
-from powergrasp.commons import basename
-import powergrasp.commons as commons
 import itertools
 import tempfile
 import re
 import os
+from collections import defaultdict
+
+import powergrasp.commons as commons
+from powergrasp.commons import basename
 
 
 LOGGER = commons.logger()
@@ -25,54 +27,57 @@ LOGGER = commons.logger()
 class InConverter(object):
     """Base class for Converters.
 
-    Converters take an input format, and convert it in ASP atoms (gringo.Fun).
+    Converters take an input format, and convert it in internal representation
+    of the graph.
+    InConverter returns empty graph by default.
 
-    InConverter is useless as is :
-     it reads ASP output.
+    Subclasses should:
+        define a class constant FORMAT_NAME giving the format name
+        define a class constant FORMAT_EXTENSIONS giving an iterable of file
+            extensions readable by the subclass.
+        redefine the _gen_edges method.
 
     """
     FORMAT_NAME = 'asp'
+    FORMAT_EXTENSIONS = ()
 
-    def convert(self, filename:str) -> str:
-        """Read the given file, and put in the returned file
-        the equivalent asp data.
+    def convert(self, filename:str) -> dict:
+        """Return a dict {node: successors}, representing the data contained
+        in input file.
         """
         try:
-            output_file = tempfile.NamedTemporaryFile(mode='w', delete=False)
-            # NB: opening the filename is performed by the subclass, while some
-            #  format use an external module that opens itself the file
-            #  for extract data.
-            error = self._convert_to(output_file, filename)
-            if error is not None:
-                LOGGER.error(error)
+            graph = defaultdict(set)
+            for node, succ in self._gen_edges(filename):
+                graph[node].add(succ)
+            return dict(graph)
         except (IOError, PermissionError):
             LOGGER.critical('File ' + outputfile + " can't be opened."
-                            + ' Convertion to ASP data need this file.'
+                            + ' Graph data retrieving needs this file.'
                             + ' Compression aborted')
-            return None
-        return output_file.name
+            return {}
+
+    def _gen_edges(self, input_file:str) -> dict:
+        """Yields pair (node, successor), representing the data contained
+        in input file.
+
+        The input file should have an extension defined
+        in self.__class__.FORMAT_EXTENSIONS.
+
+        This method is the only one that needs to be overrided
+        by subclasses.
+
+        """
+        LOGGER.error('The InConverter._convert_to_dict method was called.'
+                     ' Subclasses of InConverter should redefine this method.'
+                     ' No data generated.')
+        return  # empty generator pattern
+        yield
 
     @classmethod
-    def error_input_file(cls, filename):
+    def error_input_file(cls, filename:str, exception:Exception=None) -> str:
         """return string error for not openable input file"""
+        print(exception, dir(exception))
+        exit()
         return ('File ' + filename + ' can\'t be opened as an '
                 + self.FORMAT_NAME + ' file.'
                 + ' Compression aborted')
-
-    def _convert_to(self, filedesc_asp, inputfilename):
-        """Write in filedesc_asp the ASP version of filedesc_input
-
-        Return None, or a logging string if something bad happens.
-
-        This method is the only one that needs to be overrided
-        by other converters.
-        """
-        try:
-            with open(inputfilename, 'r') as fd:
-                [filedesc_asp.write(line) for line in fd]
-        except IOError:
-            return self.error_input_file(inputfilename)
-
-
-
-

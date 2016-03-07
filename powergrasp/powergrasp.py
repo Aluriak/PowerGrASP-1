@@ -46,22 +46,51 @@ def asp_file_from(data):
     """A filename containing the graph data formatted in ASP.
 
     Data is a filename, or a string containing the graph data,
-    encoded in any valid input.
+    encoded in ASP format.
     Detection of the type of data (filename or graph) is performed by detect
      a valid path in data. On failure, data is understood as an input graph.
 
     """
     # default case: data is a filename
     graph_data_file = data
+    data_format = None
     # data is a string formatted in an input format.
-    if not os.path.isfile(data):
-        # write it in a file, and convert this file in ASP.
+    # try to access data
+    if not commons.is_valid_path(data):
+        LOGGER.info('Input data is not a valid path. This data is assumed as'
+                    ' ASP formatted data.')
         file_to_be_converted = tempfile.NamedTemporaryFile('w', delete=False)
         file_to_be_converted.write(data)
         file_to_be_converted.close()
         graph_data_file = file_to_be_converted.name
-    # convert graph data into ASP-readable format, if necessary
-    return converter.converted_to_asp_file(graph_data_file)
+        data_format = 'asp'
+    elif not os.path.exists(data):
+        # the file is not existing, raise the error !
+        open(data)
+    # convert graph data into ASP-readable format
+    graph = converter.to_asp_file(graph_data_file, format=data_format)
+    return graph_dict_to_asp_file(graph)
+
+
+def graph_dict_to_asp_file(graph_dict):
+    """convert {node: succs} to ASP atoms edge/2, where edge(X,Y) defines X
+    as node and Y a successor.
+
+    Returns the temp file name where atoms are pushed.
+
+    """
+    # write it in a file, and convert this file in ASP.
+    asp_file = tempfile.NamedTemporaryFile('w', delete=False)
+    def to_asp_value(value):
+        if isinstance(value, int):
+            return str(value)
+        return '"' + str(value) + '"'
+    for node, succs in graph_dict.items():
+        for succ in succs:
+            asp_file.write('edge(' + to_asp_value(node) + ','
+                           + to_asp_value(succ) + ').\n')
+    asp_file.close()
+    return asp_file.name
 
 
 def compress(graph_data_or_file=None, output_file=None, *,
@@ -99,8 +128,6 @@ def compress(graph_data_or_file=None, output_file=None, *,
     clasp_options += ' ' + commons.thread(thread)
     # get data from parameters
     graph_file = asp_file_from(graph_data_or_file)
-    LOGGER.info('Input file is not in ASP format. The converted data is '
-                'stored in temporary file ' + graph_file)
     # Create the default observers
     output_converter = observers.OutputWriter(output_file, output_format)
     instanciated_observers = [
