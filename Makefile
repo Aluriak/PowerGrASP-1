@@ -127,8 +127,10 @@ uvg:
 	$(COMMAND) --graph-data="$(TESTS)umlsvg.lp"
 gml:
 	$(COMMAND) --graph-data="$(TESTS)gml_test.gml"
-troll:
+troll_format:
 	$(COMMAND) --graph-data="$(TESTS)notsupportedformat.troll"
+troll_file:
+	$(COMMAND) --graph-data="$(TESTS)thisfiledoesnt.exists"
 
 
 plot:
