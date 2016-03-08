@@ -12,23 +12,12 @@ edge(c,e).
 edge(d,e).
 
 % external clique 2
-edge(f,g).
-edge(f,h).
-edge(f,i).
-edge(f,j).
-edge(g,h).
-edge(g,i).
-edge(g,j).
-edge(h,i).
-edge(h,j).
-edge(i,j).
+edge((f;g;h;i;j;k),(f;g;h;i;j;k)).
 
 % biclique of 4 elements of clique 1 and 2
-edge(a,f).
-edge(b,f).
-edge(c,f).
+edge(f,(a;b;c;d)).
 
-% biclique of three elements of previous biclique and one external element
+% biclique of 4 elements of previous biclique and one external element
 edge(l,f).
 edge(l,g).
 edge(l,h).
