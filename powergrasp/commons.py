@@ -97,11 +97,9 @@ PROGRAM_OPTIONS = {
     'output_file'     : None,
     'output_format'   : BUBBLE_FORMAT_ID,
     'interactive'     : False,
-    'show_pre'        : False,
     'count_model'     : False,
     'count_cc'        : False,
     'timers'          : False,
-    'lbound_cutoff'   : OPT_LOWERBOUND_CUTOFF,
     'loglevel'        : DEFAULT_LOG_LEVEL,
     'logfile'         : DEFAULT_LOG_FILE,
     'stats_file'      : None,
@@ -150,30 +148,47 @@ def is_valid_path(filepath):
     else:  # path is accessible
         return True
 
-def options_from_cli(documentation):
-    """Parse the arguments with docopt, and return the dictionnary of arguments.
+def options(*, cli_doc=None, parameters={}):
+    """Return the default compression options, enriched with result of CLI
+    parsing if docopt documentation is given, and with parameters if given.
 
     All None values are put away, and the returned object is a ChainMap that
     use the default configuration for non given parameters.
 
+    If documentation is None, CLI will not be parsed. Else docopt will be used.
+
+    Parameters have precedence over CLI in returned options.
+
     """
-    docopt_args = docopt(documentation, version=PACKAGE_VERSION)
     IRRELEVANT_CLI_OPTIONS = ('--version', '--help')
-    # filter out cli options not given by user
-    import sys
+    if cli_doc:
+        docopt_args = docopt(cli_doc, version=PACKAGE_VERSION)
+    else:
+        docopt_args = {}
+    # get set of CLI parameters
     cli_args = set(
         arg.split('=')[0] if '=' in arg else arg
         for arg in sys.argv
     )
+    # filter out None values
+    parameters = {k: v for k, v in parameters.items() if v is not None}
+    # get docopt result only for args effectively present in CLI
     docopt_args = {
         name: value
         for name, value in docopt_args.items()
         if name in cli_args
     }
+    # CLI args are those returned by docopt, but corrected and filtered
     cli_args = {
         arg.lstrip('-').replace('-', '_'): value
         for arg, value in docopt_args.items()
         if value is not None and arg not in IRRELEVANT_CLI_OPTIONS
+    }
+    # get arguments given by parameters
+    parameters = {
+        arg: value
+        for arg, value in parameters.items()
+        if value is not None
     }
     # raise error in case of unexpected argument
     if any(arg not in PROGRAM_OPTIONS for arg in cli_args):
@@ -183,7 +198,7 @@ def options_from_cli(documentation):
             'ERROR: ' + str(tuple(unexpected_args)) + ' arguments is not in '
             + str(tuple(PROGRAM_OPTIONS.keys()))
         )
-    return ChainMap(cli_args, PROGRAM_OPTIONS)
+    return ChainMap(parameters, cli_args, PROGRAM_OPTIONS)
 
 def thread(number=None):
     """Return Clasp options for use n thread, or if n is invalid, use the

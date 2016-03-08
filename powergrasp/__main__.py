@@ -52,8 +52,8 @@ from powergrasp import info
 if __name__ == '__main__':
     LOGGER = commons.logger()
 
-    # read CLI options
-    options = commons.options_from_cli(__doc__)
+    # get options, including CLI
+    options = commons.options(cli_doc=__doc__)
 
     # parse them
     # output format verification
@@ -79,24 +79,23 @@ if __name__ == '__main__':
 
         # compression itself
         compress(
-            graph_data_or_file = options['graph_data'     ],
-            extracting         = options['extracting'     ],
-            preprocessing      = options['preprocessing'  ],
-            ccfinding          = options['findingclique'  ],
-            bcfinding          = options['findingbiclique'],
-            postprocessing     = options['postprocessing' ],
-            output_file        = options['output_file'    ],
-            output_format      = options['output_format'  ],
-            interactive        = options['interactive'    ],
-            show_preprocessed  = options['show_pre'       ],
-            count_model        = options['count_model'    ],
-            count_cc           = options['count_cc'       ],
-            timers             = options['timers'         ],
-            statistics_filename= options['stats_file'     ],
-            logfile            = options['logfile'        ],
-            loglevel           = options['loglevel'       ],
-            thread             = options['thread'         ],
-            draw_lattice       = options['draw_lattice'   ],
+            graph_data      = options['graph_data'     ],
+            extracting      = options['extracting'     ],
+            preprocessing   = options['preprocessing'  ],
+            findingclique   = options['findingclique'  ],
+            findingbiclique = options['findingbiclique'],
+            postprocessing  = options['postprocessing' ],
+            output_file     = options['output_file'    ],
+            output_format   = options['output_format'  ],
+            interactive     = options['interactive'    ],
+            count_model     = options['count_model'    ],
+            count_cc        = options['count_cc'       ],
+            timers          = options['timers'         ],
+            stats_file      = options['stats_file'     ],
+            logfile         = options['logfile'        ],
+            loglevel        = options['loglevel'       ],
+            thread          = options['thread'         ],
+            draw_lattice    = options['draw_lattice'   ],
         )
 
     # plotting if statistics csv file given, and showing or saving requested

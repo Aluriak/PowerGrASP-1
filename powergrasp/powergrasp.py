@@ -6,6 +6,7 @@ The compress function get numerous arguments,
 
 """
 import os
+import inspect
 import tempfile
 from builtins           import input
 from collections        import defaultdict
@@ -97,20 +98,16 @@ def graph_dict_to_asp_file(graph_dict):
     return asp_file.name
 
 
-def compress(graph_data_or_file=None, output_file=None, *,
-             extracting=None, preprocessing=None, ccfinding=None,
-             bcfinding=None, postprocessing=None,
-             statistics_filename='data/statistics.csv',
-             output_format=None, interactive=False,
-             count_model=False, count_cc=False,
-             show_preprocessed=False, timers=False, logfile=None, loglevel=None,
-             thread=None, draw_lattice=False):
+def compress(graph_data=None, output_file=None, *,
+             extracting=None, preprocessing=None, findingclique=None,
+             findingbiclique=None, postprocessing=None,
+             output_format=None, interactive=None,
+             count_model=None, count_cc=None,
+             stats_file=None, timers=None, logfile=None, loglevel=None,
+             thread=None, draw_lattice=None):
     """Performs the graph compression with data found in graph file.
 
-    Use ASP source code found in extract, findcc, findbc
-     and {pre,post}processing files for perform the computations,
-     or the default ones if None is provided.
-     (which is probably what client code want in 99.99% of cases)
+    Any not given argument will be overriden by default values.
 
     Output format must be a valid string,
      or will be inferred from the output file name, or will be set as bbl.
@@ -123,22 +120,31 @@ def compress(graph_data_or_file=None, output_file=None, *,
      that contains statistics about the compression.
 
     """
+    # gives default value for each parameter that needs it
+    _, _, _, func_args = inspect.getargvalues(inspect.currentframe())
+    func_args = dict(func_args)  # copy data, keep only the
+    option = commons.options(parameters=func_args)
+    # all parameters should be in program options
+    assert set(commons.PROGRAM_OPTIONS) == set(option)
+    assert option['extracting'] is not None
+
     # define the log file and the log level, if necessary
     commons.configure_logger(logfile, loglevel)
     # clasp options construction:
     gringo_options = commons.ASP_GRINGO_OPTIONS
     clasp_options = commons.ASP_CLASP_OPTIONS
     # set thread option if necessary
-    clasp_options += ' ' + commons.thread(thread)
+    clasp_options += ' ' + commons.thread(option['thread'])
     # get data from parameters
-    graph_file = asp_file_from(graph_data_or_file)
+    graph_file = asp_file_from(option['graph_data'])
     # Create the default observers
-    output_converter = observers.OutputWriter(output_file, output_format)
+    output_converter = observers.OutputWriter(option['output_file'],
+                                              option['output_format'])
     instanciated_observers = [
         output_converter,
     ]
     # Add the optional observers
-    if timers:
+    if option['timers']:
         time_counter = observers.TimeCounter(ignore=[
             Signals.IterationStarted, Signals.PreprocessingStarted,
         ])
@@ -146,28 +152,22 @@ def compress(graph_data_or_file=None, output_file=None, *,
         time_counter = observers.NullTimeCounter()
     instanciated_observers.append(time_counter)
 
-    if statistics_filename:
+    if option['stats_file']:
         instanciated_observers.append(statistics.DataExtractor(
-            statistics_filename,
+            stats_file,
             output_converter=output_converter,
             time_counter=time_counter,
-            network_name=network_name_from(graph_data_or_file)
+            network_name=network_name_from(graph_data)
         ))
 
-    if show_preprocessed:
-        instanciated_observers.append(observers.ObservedSignalLogger(
-            observers.Signals.StepPerformed,
-            'PREPROCESSED DATA: '
-        ))
-
-    if count_model:
+    if option['count_model']:
         instanciated_observers.append(observers.ObjectCounter())
-    if count_cc:
+    if option['count_cc']:
         instanciated_observers.append(observers.ConnectedComponentsCounter())
 
-    if draw_lattice:
+    if option['draw_lattice']:
         instanciated_observers.append(observers.LatticeDrawer(draw_lattice))
-    if interactive:
+    if option['interactive']:
         instanciated_observers.append(observers.InteractiveCompression())
 
     # sort observers, in respect of their priority (smaller is after)
@@ -181,11 +181,11 @@ def compress(graph_data_or_file=None, output_file=None, *,
     # Launch the compression
     compression.compress_lp_graph(
         graph_file,
-        asp_extracting=extracting,
-        asp_preprocessing=preprocessing,
-        asp_ccfinding=ccfinding,
-        asp_bcfinding=bcfinding,
-        asp_postprocessing=postprocessing,
+        asp_extracting=option['extracting'],
+        asp_preprocessing=option['preprocessing'],
+        asp_ccfinding=option['findingclique'],
+        asp_bcfinding=option['findingbiclique'],
+        asp_postprocessing=option['postprocessing'],
         gringo_options=gringo_options,
         clasp_options=clasp_options,
         all_observers=tuple(instanciated_observers)
