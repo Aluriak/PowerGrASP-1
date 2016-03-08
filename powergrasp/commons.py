@@ -6,9 +6,10 @@ Moreover, some generalist functions are defined,
 """
 
 # IMPORTS
-import logging, logging.handlers
+import logging, logging.config
 import multiprocessing  # get number of available CPU
 import pkg_resources  # packaging facilies
+import sys
 import os
 
 from functools   import partial
@@ -226,47 +227,72 @@ def logger(name=LOGGER_NAME):
     return logging.getLogger(name)
 
 
-def configure_logger(log_filename=DEFAULT_LOG_FILE,
-                     term_log_level=DEFAULT_LOG_LEVEL):
+def configure_logger(log_filename=None, term_loglevel=None, loglevel=None):
     """Operate the logger configuration for the package"""
-    # defensive cases: use defaults if None given
-    if log_filename is None: log_filename = DEFAULT_LOG_FILE
-    if term_log_level is None: term_log_level = DEFAULT_LOG_LEVEL
-    # put given log level in upper case
+    # use defaults if None given
+    log_filename = DEFAULT_LOG_FILE if log_filename is None else log_filename
+    term_loglevel = DEFAULT_LOG_LEVEL if term_loglevel is None else term_loglevel
+    loglevel = DEFAULT_LOG_LEVEL if loglevel is None else loglevel
+    # put given log level in upper case, or keep it as integer
     try:
-        term_log_level = term_log_level.upper()
-    except AttributeError:  # term_log_level is an integer, not a string
+        loglevel = loglevel.upper()
+    except AttributeError:  # loglevel is an integer, not a string
         pass  # nothing to do, lets keep the log level as an int
-
-    # remove any previous configuration
-    _logger = logging.getLogger(LOGGER_NAME)
-    _logger.handlers.clear()
-    _logger.setLevel(DEFAULT_LOG_LEVEL)
-
-    # setup terminal log
-    stream_handler = logging.StreamHandler()
-    formatter      = logging.Formatter('%(levelname)s: %(message)s')
-    stream_handler.setFormatter(formatter)
-    stream_handler.setLevel(term_log_level)
-    _logger.addHandler(stream_handler)
-
-    # setup log file (or log the failure)
     try:
-        formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
-        file_handler = logging.handlers.RotatingFileHandler(
-            log_filename, 'a', 2**16, 0)
-        file_handler.setLevel(logging.DEBUG)  # get always all data
-        file_handler.setFormatter(formatter)
-        _logger.addHandler(file_handler)
+        term_loglevel = term_loglevel.upper()
+    except AttributeError:  # term_loglevel is an integer, not a string
+        pass  # nothing to do, lets keep the log level as an int
+    assert isinstance(term_loglevel, int) or isinstance(term_loglevel, str)
+    assert isinstance(loglevel, int) or isinstance(loglevel, str)
+
+    # define the configuration
+    logging_config = {
+        'version': 1,
+        'disable_existing_loggers': True,
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s',
+            },
+            'simple': {
+                'format': '%(levelname)s %(message)s',
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': term_loglevel,
+                'class': 'logging.StreamHandler',
+                'formatter': 'simple',
+            },
+            'logfile': {
+                'level': loglevel,
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': log_filename,
+                'mode': 'w',
+                'maxBytes': 2**16,
+                'formatter': 'verbose',
+            },
+        },
+        'loggers': {
+            PACKAGE_NAME: {
+                'handlers':['console', 'logfile'],
+                'propagate': True,
+                'level': loglevel,
+            },
+        }
+    }
+
+    # apply the configuration
+    try:
+        # free possible previous configuration
+        handlers = logger().handlers[:]
+        for handler in handlers:
+            handler.close()
+            logger().removeHandler(handler)
+        logging.config.dictConfig(logging_config)
     except PermissionError:
-        _logger.warning(os.path.abspath(DIR_LOGS + LOGGER_NAME + '.log')
+        logger().warning(os.path.abspath(DIR_LOGS + LOGGER_NAME + '.log')
                         + "can't be written because of a permission error."
                         + "No logs will be saved in file.")
-
-
-def log_file(filename):
-    """Set the log file"""
-    configure_logger(log_filename=filename)
 
 
 def log_level(level):
@@ -277,6 +303,3 @@ def log_level(level):
                )
     for handler in handlers:
         handler.setLevel(level.upper())
-
-
-
