@@ -174,6 +174,8 @@ class OutBBL(OutConverter):
         # edges a, b (there is an edge between a and b)
         for a, b in edges:
             assert(a.__class__ is str and b.__class__ is str)
+            if a > b:
+                a, b = b, a
             self.edges[a].add(b)
             logger.debug('EDGE:' + a + ' to ' + b)
 
