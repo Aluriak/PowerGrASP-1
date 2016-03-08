@@ -87,6 +87,8 @@ diam:
 	$(COMMAND) --graph-data="$(TESTS)diamond.lp"
 ddiam:
 	$(COMMAND) --graph-data="$(TESTS)double_biclique.lp"
+ddiamun:
+	$(COMMAND) --graph-data="$(TESTS)double_biclique_unambiguous.lp"
 inc:
 	$(COMMAND) --graph-data="$(TESTS)inclusions.lp"
 pfc:
