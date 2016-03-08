@@ -28,3 +28,6 @@ class InASP(InConverter):
                     yield node, succ
         except IOError as e:
             LOGGER.error(self.error_input_file(filename_sbml, e))
+        except TypeError:  # file is probably empty… so do the graph
+            return
+            yield
