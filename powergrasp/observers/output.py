@@ -93,7 +93,6 @@ class OutputWriter(CompressionObserver):
             except (IndexError, AttributeError):
                 output_format = converter.DEFAULT_OUTPUT_FORMAT  # use BBL
         # verifications
-        assert output_format in converter.OUTPUT_FORMATS
-        if output_file:
-            assert output_file.endswith(output_format)
+        if output_format not in converter.OUTPUT_FORMATS:
+            output_format = converter.DEFAULT_OUTPUT_FORMAT
         return output_format
