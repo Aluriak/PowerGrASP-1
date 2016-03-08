@@ -27,6 +27,7 @@ INPUT_FORMAT_CONVERTERS = {
     'gml'  : InGML,
 }
 OUTPUT_FORMAT_CONVERTERS = {
+    ''    : OutBBL,  # if no extension, assume that is Bubble
     'asp' : OutConverter,
     'bbl' : OutBBL,
     'nnf' : OutBBL,
