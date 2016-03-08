@@ -1,10 +1,15 @@
 """
-Implementation of an algo of graph reduction.
+Implementation of routines about dictionnary representation of graphs.
+Main API is:
+    reduced(1), perform the reduction shown below
+    reduction_ratio(2), return the compression ratio between two graphs
+    integerised_id(1), simplify keys to integers
+    completed(1), return the completed graph
+    reversed_graph(1), return the same graph where keys and values are reversed
+    columns(1), return set of successors in the graph
 
-Input data:
-    - dict {node: (linked nodes)}
-Output data:
-    - dict {node: (linked nodes)}
+
+Notes about the reduction algorithm:
 
 The outputed version of the graph minimize the number of keys in the dictionnary.
 This reduction is essentially a reorganization of the graph.
@@ -30,8 +35,7 @@ Initial graph dict: {'a': {'b', 'c'}, 'b': {'c', 'd'}, 'd': {'c'}}
 Reduced graph dict: {'b': {'a', 'c', 'd'}, 'c': {'a', 'd'}}
 
 set 1 = {b, c}  (dictionnary keys)
-set 2 = {a, c, d} (values in dictionnary values)
-
+set 2 = {a, c, d} (values in dictionnary values, given by columns(1) function)
 
 """
 import sys
