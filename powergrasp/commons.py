@@ -41,7 +41,8 @@ DEFAULT_LOG_FILE  = access_packaged_file(DIR_LOGS + LOGGER_NAME + '.log')
 DEFAULT_LOG_LEVEL = logging.DEBUG
 
 # PATH INSIDE PACKAGE
-PACKAGE_DIR_DATA = access_packaged_file('data/')
+PACKAGE_DIR_DATA = access_packaged_file(DIR_DATA)
+PACKAGE_DIR_TESTS = access_packaged_file(DIR_TEST_CASES)
 
 # Optimization values
 OPT_LOWERBOUND_CUTOFF = 2  # minimal value for the lowerbound optimization
@@ -148,6 +149,14 @@ def is_valid_path(filepath):
             return False
     else:  # path is accessible
         return True
+
+
+def test_case(filename):
+    """Return path to given filename in test case, or None if the test case
+    doesn't exists"""
+    path = PACKAGE_DIR_TESTS + filename
+    return path if os.path.exists(path) else None
+
 
 def options(*, cli_doc=None, parameters={}):
     """Return the default compression options, enriched with result of CLI
