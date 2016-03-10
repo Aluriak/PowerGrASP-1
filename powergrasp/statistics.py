@@ -79,6 +79,7 @@ class DataExtractor(observers.CompressionObserver, dict):
          will contains information about compression time.
 
         """
+        statistics_file = None
         if statistics_filename:
             try:
                 statistics_file = open(statistics_filename, 'w')
