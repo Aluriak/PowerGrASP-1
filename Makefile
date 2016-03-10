@@ -143,7 +143,7 @@ plot:
 
 t: test
 test:
-	python3 -m unittest discover -v
+	py.test-3.4 powergrasp --doctest-module --failed-first --exitfirst
 
 
 # this is a way to treat multiple files
