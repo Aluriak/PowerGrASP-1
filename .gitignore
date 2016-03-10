@@ -19,3 +19,4 @@ dist/
 .zcache/
 oog/
 benchmarks/
+.cache/
