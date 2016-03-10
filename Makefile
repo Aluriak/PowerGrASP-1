@@ -196,3 +196,8 @@ install:
 	yes y | pip uninstall powergrasp
 	pip install powergrasp
 
+pg:
+	python3 -m cProfile -o out profiling.py
+	gprof2dot -f pstats out | dot -Tpng -o $(DATA)profiling_graph.png
+	- rm out
+	feh $(DATA)profiling_graph.png
