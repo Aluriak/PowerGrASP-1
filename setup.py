@@ -21,8 +21,8 @@ with open(INFO_FILE) as fd:
     code = compile(fd.read(), INFO_FILE, 'exec')
     local_vars = {}
     exec(code, {}, local_vars)  # don't use global vars, save local_vars
-    __pkg_name__ = local_vars['__name__']  # save the interesting data
-    __version__ = local_vars['__version__']
+    __pkg_name__ = local_vars['PACKAGE_NAME']  # save the interesting data
+    __version__ = local_vars['PACKAGE_VERSION']
 
 
 # access to the file at the package top level (like README)
