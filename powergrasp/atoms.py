@@ -185,11 +185,11 @@ def to_str(atoms, names=None, separator='.'):
 def to_asp_value(value):
     """Return given value as string, suitable for ASP atoms.
 
-    >>>to_asp_string('test')
+    >>> to_asp_value('test')
     '"test"'
-    >>>to_asp_string('"test"')
+    >>> to_asp_value('"test"')
     '"test"'
-    >>>to_asp_string(23)
+    >>> to_asp_value(23)
     '23'
 
     """
