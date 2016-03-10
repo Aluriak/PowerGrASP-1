@@ -6,8 +6,8 @@ Some meta informations about the package.
 
 PROGRAM_NAME    = 'PowerGrASP'
 PACKAGE_NAME    = PROGRAM_NAME.lower()
-__fix           = '22'
-__minor         = '3'
+__fix           = '0'
+__minor         = '4'
 __major         = '0'
 PACKAGE_VERSION = '.'.join((__major, __minor, __fix))
 
