@@ -117,9 +117,8 @@ PROGRAM_OPTIONS = {
 def basename(filepath):
     """Return the basename of given filepath.
 
-    >>> import os
     >>> basename('~/ASP/serious/business/fly.lp')
-    fly
+    'fly'
 
     """
     return os.path.splitext(os.path.basename(filepath))[0]
@@ -127,12 +126,11 @@ def basename(filepath):
 def extension(filepath):
     """Return the extension of given filepath.
 
-    >>> import os
-    >>> basename('~/ASP/serious/business/fly.lp')
+    >>> extension('~/ASP/serious/business/fly.lp')
     'lp'
-    >>> basename('whatisthat')
+    >>> extension('whatisthat')
     ''
-    >>> basename('whatis.that')
+    >>> extension('whatis.that')
     'that'
 
     """
