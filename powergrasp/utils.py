@@ -6,7 +6,6 @@ or the compression.
 
 import os.path
 import itertools
-import concepts
 from collections import defaultdict
 
 from powergrasp import atoms
@@ -30,6 +29,7 @@ def asp2graph(asp_atoms):
     return graph
 
 def line_diagram(graph, filename=LATTICE_FILENAME):
+    import concepts
     diag = concepts.Definition()
     for node in sorted(graph.keys()):
         diag.add_object(node, graph[node])
