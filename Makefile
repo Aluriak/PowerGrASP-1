@@ -141,6 +141,7 @@ plot:
 	$(PYTHON) --plot-stats $(STATFILE)
 
 
+t: test
 test:
 	python3 -m unittest discover -v
 
