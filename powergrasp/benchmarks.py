@@ -20,19 +20,20 @@ Generate a CSV file as output.
 """
 
 
-from docopt     import docopt
-from powergrasp import compress
-from info       import PACKAGE_VERSION, STUDYNAMES
-from converter  import OUTPUT_FORMATS
-from functools  import partial
 import os
 import csv
-import utils
 import timeit
-import commons
 import tempfile
-import converter
-import statistics
+from docopt     import docopt
+from functools  import partial
+
+from powergrasp import utils
+from powergrasp import commons
+from powergrasp import converter
+from powergrasp import statistics
+from powergrasp import compress
+from powergrasp.info import PACKAGE_VERSION, STUDYNAMES
+from powergrasp.converter import OUTPUT_FORMATS
 
 
 LOGGER = commons.logger()
