@@ -104,7 +104,7 @@ def compress(graph_data=None, output_file=None, *,
              output_format=None, interactive=None,
              count_model=None, count_cc=None,
              stats_file=None, timers=None, logfile=None, loglevel=None,
-             thread=None, draw_lattice=None):
+             thread=None, draw_lattice=None, instanciated_observers=None):
     """Performs the graph compression with data found in graph file.
 
     Any not given argument will be overriden by default values.
@@ -125,7 +125,6 @@ def compress(graph_data=None, output_file=None, *,
     func_args = dict(func_args)  # copy data, keep only the
     option = commons.options(parameters=func_args)
     # all parameters should be in program options
-    assert set(commons.PROGRAM_OPTIONS) == set(option)
     assert option['extracting'] is not None
 
     # define the log file and the log level, if necessary
@@ -140,7 +139,9 @@ def compress(graph_data=None, output_file=None, *,
     # Create the default observers
     output_converter = observers.OutputWriter(option['output_file'],
                                               option['output_format'])
-    instanciated_observers = [
+    if instanciated_observers is None:  # default value handling
+        instanciated_observers = []
+    instanciated_observers += [
         output_converter,
     ]
     # Add the optional observers
