@@ -9,9 +9,17 @@ Main API is:
     columns(1), return set of successors in the graph
 
 
+Notes about the dictionnary representation for graphs:
+
+Dictionnary {1: {2, 3}} describes a graph where a node 1 is linked
+to nodes 2 and 3.
+In this module, graphs are assumed non-oriented.
+
+
 Notes about the reduction algorithm:
 
-The outputed version of the graph minimize the number of keys in the dictionnary.
+The outputed version of the graph minimize the size of the table
+representation of the dictionnary.
 This reduction is essentially a reorganization of the graph.
 All nodes are put in at least one of the two created sets.
 (the set of dictionnary keys, and the set of values in the dictionnary values)
