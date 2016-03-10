@@ -29,12 +29,12 @@ linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
 1{minobj(cc,k,T,X): node_set(T,X)}1.
 
 
-% Choice of elements in part 1
+% Choice of elements in first part
 newconcept(cc,k,T,X):- minobj(cc,k,T,X).
 { newconcept(cc,k,T,X): node_set(T,X), Min<X }:- minobj(cc,k,T,Min).
 
-% Choice of elements in part 2
-1 { newconcept(cc,k,T,Y): inter(Min,Y), node_set(T,Y), Min<Y } :- minobj(cc,k,T,Min).
+% Choice of elements in second part
+1 { newconcept(cc,k,T,Y): inter(Min,Y), node_set(T,Y), Min<Y } :- minobj(cc,k,3-T,Min).
 
 
 % An element in a set can't be in the other set.
