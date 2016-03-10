@@ -33,14 +33,14 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 % Choice of elements in part 2
 1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<=Y } :- minobj(cc,k,Min).
 
+% An element in a set can't be in the other set.
+:- newconcept(cc,k,1,X) ; newconcept(cc,k,2,X).
+
 % Impossible element in a concept
 %  a node is impossible if not linked to some node of other part
 imp(k,3-T,X):- membercc(X); newconcept(cc,k,T,Y) ; not inter(X,Y) ; not inter(Y,X).
 %  a node is impossible if not linked2 to some node of the same part
 imp(k,T,X):- membercc(X); newconcept(cc,k,T,Y) ; not linked2(X,Y); X!=Y.
-%  a node is impossible if in a block different from another element in the same set
-imp(k,T,X):- newconcept(cc,k,T,X) ; newconcept(cc,k,T,Y) ; parent_block(B,T) ;
-             include_block(k-1,B,P) ; not block(k-1,P,X) ; block(k-1,P,Y) ; X!=Y.
 % Consistency ; no impossible element can be added to the concept
 :- imp(k,T,Y); newconcept(cc,k,T,Y).
 
