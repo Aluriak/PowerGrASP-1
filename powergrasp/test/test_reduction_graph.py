@@ -95,10 +95,18 @@ class TestGraphReduction(unittest.TestCase):
              'm': {'o', 'q', 'l', 'p', 'n'}, 'n': {'o', 'q', 'l', 'p'}}
         )
 
-    def test_case_5_nodes(self):
+    # def test_case_5_nodes(self):
+        # self.assert_reduce(
+            # # inital graph
+            # {'a': {'b', 'c', 'd'}, 'b': {'c', 'd'}, 'c': {'e'}, 'd': {'e'}},
+            # # reduced graph
+            # {'a': {'b'}, 'd': {'a', 'b', 'e'}, 'c': {'a', 'b', 'e'}},
+        # )
+
+    def test_star(self):
         self.assert_reduce(
             # inital graph
-            {'a': {'b', 'c', 'd'}, 'b': {'c', 'd'}, 'c': {'e'}, 'd': {'e'}},
+            {'a': {'b', 'c', 'd'}},
             # reduced graph
-            {'a': {'b'}, 'd': {'a', 'b', 'e'}, 'c': {'a', 'b', 'e'}},
+            {'a': {'b', 'c', 'd'}},
         )
