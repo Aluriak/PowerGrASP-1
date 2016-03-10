@@ -138,7 +138,7 @@ def extension(filepath):
 
 def is_valid_path(filepath):
     """True iff given filepath is a valid one (a file exists, or could exists)"""
-    if not os.access(filepath, os.W_OK):
+    if filepath and not os.access(filepath, os.W_OK):
         try:
             open(filepath, 'w').close()
             os.unlink(filepath)
