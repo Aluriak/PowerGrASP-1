@@ -35,47 +35,52 @@ def split(atom):
         only one will be returned.
     If given atom is not valid, None is returned.
 
-    >>>> split('edge(lacA,lacZ)')
+    >>> split('edge(lacA,lacZ)')
     Atom(name='edge', args=('lacA', 'lacZ'))
-    >>>> split('edge(42,12))
-    Atom(name='edge', args=('42','12'))
-    >>>> split('edge("ASX38","MER(HUMAN)")')
-    Atom(name='edge', args=('"ASX38"','"MER(HUMAN)"'))
-    >>>> split('lowerbound.')
-    Atom(name='lowerbound', args=[])
-    >>>> split('lowerbound.upperbound')
-    (Atom(name='lowerbound', args=[]), Atom(name='upperbound', args=[]))
-    >>>> split('this is not a valid atom')
-    None
+    >>> split('edge(42,12)')
+    Atom(name='edge', args=('42', '12'))
+    >>> split('edge("ASX38","MER(HUMAN)")')
+    Atom(name='edge', args=('"ASX38"', '"MER(HUMAN)"'))
+    >>> split('lowerbound.')
+    Atom(name='lowerbound', args=())
+    >>> split('')
 
     """
     try:
-        parsed = next(iter(PARSER.parse(atom)))
+        parsed = next(iter(PARSER.parse(atom.rstrip('.'))))
         return ATOM(parsed.predicate, tuple(parsed.args()))
-    except TypeError:
+    except StopIteration:
         return None
 
 
 def arg(atom):
     """Return the argument of given atom, as a tuple
 
-    >>>> split('edge(lacA,lacZ)')
+    >>> arg('edge(lacA,lacZ)')
     ('lacA', 'lacZ')
-    >>>> split('score(13)')
+    >>> arg('score(13)')
     ('13',)
-    >>>> split('lowerbound')
+    >>> arg('lowerbound')
     ()
 
     """
     payload = atom.strip('.').strip(')')
     try:
         return tuple(payload.split('(')[1].split(','))
-    except ValueError:  # no args !
+    except IndexError:  # no args !
         return tuple()
 
 
 def first_arg(atom):
-    """Return the first argument of given atom, or None if no arg"""
+    """Return the first argument of given atom, or None if no arg
+
+    >>> first_arg('edge(lacA,lacZ)')
+    'lacA'
+    >>> first_arg('score(13)')
+    '13'
+    >>> first_arg('lowerbound')
+
+    """
     try:
         return arg(atom)[0]
     except IndexError:
