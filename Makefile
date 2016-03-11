@@ -93,6 +93,8 @@ empty:
 	$(COMMAND) --graph-data="$(TESTS)empty.lp"
 inc:
 	$(COMMAND) --graph-data="$(TESTS)inclusions.lp"
+onedge:
+	$(COMMAND) --graph-data="$(TESTS)one_edge.lp"
 pfc:
 	$(COMMAND) --graph-data="$(TESTS)perfectfit.lp"
 phos:
