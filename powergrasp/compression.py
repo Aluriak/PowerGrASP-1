@@ -23,9 +23,7 @@ LOGGER = commons.logger()
 MINIMAL_SCORE = 2
 
 
-def search_concept(input_atoms, asp_preprocessing, asp_postprocessing,
-                   asp_ccfinding, asp_bcfinding, score_min, score_max, cc, step,
-                   solving_func=solving.model_from, search_clique:bool=False):
+def search_concept(input_atoms, score_min, score_max, cc, step, aspconfig):
     """Return the concept found and its score.
 
     if no concept found: return (None, None)
@@ -33,16 +31,16 @@ def search_concept(input_atoms, asp_preprocessing, asp_postprocessing,
 
     """
     if score_min > score_max: return None, None
+    search_clique = commons.ASP_SRC_FINDCC in aspconfig.files
     CONCEPT_NAME = ('' if search_clique else 'BI') + 'CLIQUE'
     LOGGER.debug('FIND BEST ' + CONCEPT_NAME
                  + ' [' + str(score_min) + ';' + str(score_max) + ']')
-    model = solving_func(
+    model = solving.model_from(
         base_atoms=input_atoms,
-        aspfiles=(asp_preprocessing, asp_postprocessing,
-                  (asp_ccfinding if search_clique else asp_bcfinding)),
         aspargs={ASP_ARG_CC: cc, ASP_ARG_STEP: step,
                  ASP_ARG_LOWERBOUND: score_min,
                  ASP_ARG_UPPERBOUND: score_max},
+        aspconfig=aspconfig,
     )
     # treatment of the model
     if model is None:
@@ -68,25 +66,20 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     clique_config: ASP configuration for the clique search.
 
     """
+    # None to default value
+    if extract_config is None:
+        extract_config = solving.CONFIG_EXTRACTION()
+    if biclique_config is None:
+        biclique_config = solving.CONFIG_BICLIQUE_SEARCH()
+    if clique_config is None:
+        clique_config = solving.CONFIG_CLIQUE_SEARCH()
     # Shortcuts and curried functions
     def notify_observers(*args, **kwargs):
         "Notify observers with given signals"
         for observer in all_observers:
             observer.update(*args, **kwargs)
-    solving_model_from = partial(solving.model_from,
-                                 gringo_options=gringo_options,
-                                 clasp_options=clasp_options)
-    solving_all_models_from = partial(solving.all_models_from,
-                                      gringo_options=gringo_options,
-                                      clasp_options=clasp_options)
-    concept_search_func = partial(search_concept,
-                                  solving_func=solving_model_from,
-                                  asp_preprocessing=asp_preprocessing,
-                                  asp_ccfinding=asp_ccfinding,
-                                  asp_bcfinding=asp_bcfinding,
-                                  asp_postprocessing=asp_postprocessing)
-    search_clique = partial(concept_search_func, search_clique=True)
-    search_biclique = partial(concept_search_func, search_clique=False)
+    search_clique = partial(search_concept, aspconfig=clique_config)
+    search_biclique = partial(search_concept, aspconfig=biclique_config)
 
     # INIT
     # Extract graph data
@@ -95,10 +88,12 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('#################')
     notify_observers(
         Signals.CompressionStarted,
-        solver_options_updated=(gringo_options, clasp_options)
+        asp_config_updated=(extract_config, clique_config, biclique_config)
     )
     # creat a solver that get all information about the graph
-    connected_components = tuple(solving_all_models_from('', [graph_lp, asp_extracting]))
+    connected_components = tuple(solving.all_models_from(
+        '', aspfiles=[graph_lp], aspconfig=extract_config,
+    ))
 
     # ITERATIVE TREATMENT
     # Find connected components
