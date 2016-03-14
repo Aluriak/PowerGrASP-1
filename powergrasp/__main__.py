@@ -6,11 +6,6 @@ options:
     --help, -h
     --version, -v
     --graph-data=FILE       filepath to input graph definition
-    --extracting=FILE       filepath to custom ASP extraction program
-    --preprocessing=FILE    filepath to custom ASP preprocessing program
-    --findingbiclique=FILE  filepath to custom ASP biclique finder program
-    --findingclique=FILE    filepath to custom ASP clique finder program
-    --postprocessing=FILE   filepath to custom ASP postprocessing program
     --output-file=NAME      output file or dir
     --output-format=NAME    output format (see below for formats)
     --interactive           program ask user for next step
@@ -80,11 +75,6 @@ if __name__ == '__main__':
         # compression itself
         compress(
             graph_data      = options['graph_data'     ],
-            extracting      = options['extracting'     ],
-            preprocessing   = options['preprocessing'  ],
-            findingclique   = options['findingclique'  ],
-            findingbiclique = options['findingbiclique'],
-            postprocessing  = options['postprocessing' ],
             output_file     = options['output_file'    ],
             output_format   = options['output_format'  ],
             interactive     = options['interactive'    ],

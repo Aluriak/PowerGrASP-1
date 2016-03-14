@@ -99,12 +99,11 @@ def graph_dict_to_asp_file(graph_dict):
 
 
 def compress(graph_data=None, output_file=None, *,
-             extracting=None, preprocessing=None, findingclique=None,
-             findingbiclique=None, postprocessing=None,
              output_format=None, interactive=None,
              count_model=None, count_cc=None,
              stats_file=None, timers=None, logfile=None, loglevel=None,
-             thread=None, draw_lattice=None, instanciated_observers=None):
+             thread=None, draw_lattice=None, instanciated_observers=None,
+             extract_config=None, biclique_config=None, clique_config=None):
     """Performs the graph compression with data found in graph file.
 
     Any not given argument will be overriden by default values.
@@ -120,20 +119,37 @@ def compress(graph_data=None, output_file=None, *,
      that contains statistics about the compression.
 
     """
-    # gives default value for each parameter that needs it
-    _, _, _, func_args = inspect.getargvalues(inspect.currentframe())
-    func_args = dict(func_args)  # copy data, keep only the
-    option = commons.options(parameters=func_args)
-    # all parameters should be in program options
-    assert option['extracting'] is not None
-
     # define the log file and the log level, if necessary
     commons.configure_logger(logfile, loglevel)
-    # clasp options construction:
-    gringo_options = commons.ASP_GRINGO_OPTIONS
-    clasp_options = commons.ASP_CLASP_OPTIONS
-    # set thread option if necessary
-    clasp_options += ' ' + commons.thread(option['thread'])
+
+    # None to default
+    if extract_config is None:
+        extract_config = solving.CONFIG_EXTRACTION()
+    if biclique_config is None:
+        biclique_config = solving.CONFIG_BICLIQUE_SEARCH()
+    if clique_config is None:
+        clique_config = solving.CONFIG_CLIQUE_SEARCH()
+
+    # gives default value for each parameter that needs it
+    _, _, _, func_args = inspect.getargvalues(inspect.currentframe())
+    func_args = dict(func_args)  # copy data structure
+    option = commons.options(parameters=func_args)
+    # just an assertion that never fail:
+    assert option['extracting'] is not None
+
+    # configs enrichment
+    thread_option = commons.thread(option['thread'])
+    if thread_option:
+        extract_config = solving.ASPConfig(extract_config.files,
+                                           extract_config.clasp_options + thread_option,
+                                           extract_config.gringo_options)
+        clique_config = solving.ASPConfig(clique_config.files,
+                                          clique_config.clasp_options + thread_option,
+                                           clique_config.gringo_options)
+        biclique_config = solving.ASPConfig(biclique_config.files,
+                                            biclique_config.clasp_options + thread_option,
+                                            biclique_config.gringo_options)
+
     # get data from parameters
     graph_file = asp_file_from(option['graph_data'])
     # Create the default observers
@@ -183,13 +199,9 @@ def compress(graph_data=None, output_file=None, *,
     LOGGER.info('COMPRESSION STARTED !')
     compression.compress_lp_graph(
         graph_file,
-        asp_extracting=option['extracting'],
-        asp_preprocessing=option['preprocessing'],
-        asp_ccfinding=option['findingclique'],
-        asp_bcfinding=option['findingbiclique'],
-        asp_postprocessing=option['postprocessing'],
-        gringo_options=gringo_options,
-        clasp_options=clasp_options,
-        all_observers=tuple(instanciated_observers)
+        all_observers=tuple(instanciated_observers),
+        extract_config=extract_config,
+        clique_config=clique_config,
+        biclique_config=biclique_config,
     )
     LOGGER.info('COMPRESSION FINISHED !')

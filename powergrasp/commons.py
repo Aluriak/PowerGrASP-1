@@ -92,11 +92,6 @@ ASP_CLASP_OPTIONS += ' -n 0'
 # Definition of the default program options
 PROGRAM_OPTIONS = {
     'graph_data'      : None,
-    'extracting'      : ASP_SRC_EXTRACT,
-    'preprocessing'   : ASP_SRC_PREPRO,
-    'findingbiclique' : ASP_SRC_FINDBC,
-    'findingclique'   : ASP_SRC_FINDCC,
-    'postprocessing'  : ASP_SRC_POSTPRO,
     'output_file'     : None,
     'output_format'   : BUBBLE_FORMAT_ID,
     'interactive'     : False,
