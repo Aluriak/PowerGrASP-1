@@ -9,6 +9,7 @@
 %       - cc: treated connected component. (cc/1 gives existing cc)
 %       -  k: current step of treatment (first step is 1)
 % Input:
+%       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - oedge(X,Y): there exist an oriented edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
 % Output:
@@ -20,7 +21,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% share at least one neighbor
 linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
 
 % Choice of the minimum of the concept
