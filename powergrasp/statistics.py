@@ -25,23 +25,24 @@ LOGGER = commons.logger()
 # Compression data
 # class CompressionData(Enum):
 # numbers
-INIT_EDGE = 'initial_edge_count'  # number of edges in the input graph
-FINL_EDGE = 'remain_edge_count'   # number of edges not compressed since the compression beginning
-GENR_PWED = 'poweredge_count'     # number of poweredges created since the beginning
-GENR_PWND = 'powernode_count'     # number of powernodes created since the beginning
-CONV_RATE = 'conversion_rate'     # computed conversion rate
-EDGE_RDCT = 'edge_reduction'      # computed edge reduction
-COMP_RTIO = 'compression_ratio'   # computed compression ratio
-GENR_TIME = 'gentime'             # generation time for last iteration
+INIT_EDGE = 'initial_edge_count'     # number of edges in the input graph
+FINL_EDGE = 'remain_edge_count'      # number of edges not compressed since the compression beginning
+GENR_PWED = 'poweredge_count'        # number of poweredges created since the beginning
+GENR_PWND = 'powernode_count'        # number of powernodes created since the beginning
+COMP_EDGE = 'compressed_edge_count'  # number of compressed edge since the beginning
+CONV_RATE = 'conversion_rate'        # computed conversion rate
+EDGE_RDCT = 'edge_reduction'         # computed edge reduction
+COMP_RTIO = 'compression_ratio'      # computed compression ratio
+GENR_TIME = 'gentime'                # generation time for last iteration
 # general
-NETW_NAME = 'network_name'        # name of the input graph (name of the file containing input data)
-FILE_DESC = 'file_descriptor'     # file descriptor of the output CSV file, or None if no output expected
-FILE_WRTR = 'file_writer'         # CSV writer on the output CSV file, or None if no output expected
+NETW_NAME = 'network_name'     # name of the input graph (name of the file containing input data)
+FILE_DESC = 'file_descriptor'  # file descriptor of the output CSV file, or None if no output expected
+FILE_WRTR = 'file_writer'      # CSV writer on the output CSV file, or None if no output expected
 
 # All fields that are useful at the end of the compression are put here
 PRINTABLE_FIELD = (
     INIT_EDGE, GENR_PWED, GENR_PWND, CONV_RATE,
-    EDGE_RDCT, COMP_RTIO, FINL_EDGE,
+    EDGE_RDCT, COMP_RTIO, FINL_EDGE, COMP_EDGE
 )
 
 
@@ -50,7 +51,7 @@ FORMAT_TEX = 'tex'
 FORMAT_RAW = 'txt'
 
 # Data for plotting
-MEASURES = (GENR_TIME, FINL_EDGE, GENR_PWED, GENR_PWND)
+MEASURES = (GENR_TIME, COMP_EDGE, GENR_PWED, GENR_PWND)
 COLORS   = ('black', 'green', 'blue', 'red')
 LABELS   = (
     'time per step',
@@ -102,6 +103,7 @@ class DataExtractor(observers.CompressionObserver, dict):
             GENR_PWED: 0,
             GENR_PWND: 0,
             GENR_TIME: 0,
+            COMP_EDGE: 0,
             FILE_DESC: statistics_file,
             FILE_WRTR: statistics_writer,
         })
@@ -158,20 +160,24 @@ class DataExtractor(observers.CompressionObserver, dict):
         if Signals.FinalRemainEdgeCountGenerated in signals:
             self[FINL_EDGE] = int(signals[Signals.FinalRemainEdgeCountGenerated])
         if Signals.StepDataGenerated in signals:
-            powernode_count, poweredge_count = signals[Signals.StepDataGenerated]
+            (powernode_count,
+             poweredge_count,
+             compressed_edge_count) = signals[Signals.StepDataGenerated]
             # defense against a no-data case
             if powernode_count is None:
                 assert poweredge_count is None
+                assert compressed_edge_count is None
             else:  # all data is given
                 self[GENR_PWED] += int(poweredge_count)
                 self[GENR_PWND] += int(powernode_count)
+                self[COMP_EDGE] += int(compressed_edge_count)
         if Signals.StepStopped in signals:
             if self.time_counter:
                 gentime = self.time_counter.last_step_time
             else:
                 gentime = 0.
             self.write_csv_data(self[GENR_PWED], self[GENR_PWND],
-                                gentime, self[FINL_EDGE])
+                                gentime, self[COMP_EDGE])
 
 
     def stats_output(self, format=FORMAT_RAW):
@@ -214,14 +220,14 @@ class DataExtractor(observers.CompressionObserver, dict):
 
 
     def write_csv_data(self, poweredge_count, powernode_count,
-                       gentime, remain_edges_count):
+                       gentime, compressed_edge_count):
         """Write data in the csv file, if exists, else do nothing"""
         if self[FILE_DESC]:
             self[FILE_WRTR].writerow({
                 GENR_TIME: gentime,
-                FINL_EDGE: remain_edges_count,
                 GENR_PWED: poweredge_count,
                 GENR_PWND: powernode_count,
+                COMP_EDGE: compressed_edge_count,
             })
 
 

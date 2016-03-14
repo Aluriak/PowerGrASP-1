@@ -161,7 +161,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 # the final result cannot show one iteration per connected
                 # component, while for each of them the last step will not
                 # produce any model. Next line handle the model inexistence.
-                notify_observers(step_data_generated=[None] * 2)
+                notify_observers(step_data_generated=[None] * 3)
                 model_found_at_last_iteration = False
             else:  # at least one model was found, and the best is best_model
                 # debug printing
@@ -211,7 +211,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 # notify_observers: provide the data
                 notify_observers(
                     model_found=final_concept,
-                    step_data_generated=(new_powernode_count, new_poweredge_count)
+                    step_data_generated=(new_powernode_count,
+                                         new_poweredge_count, best_score)
                 )
                 if nb_cc_edges() < 0:
                     print('REMAIN_EDGES_GLOBAL:', nb_cc_edges())
