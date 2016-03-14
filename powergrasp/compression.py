@@ -57,10 +57,9 @@ def search_concept(input_atoms, asp_preprocessing, asp_postprocessing,
 def compress_lp_graph(graph_lp, *, all_observers=[],
                       asp_extracting=None, asp_preprocessing=None,
                       asp_ccfinding=None, asp_bcfinding=None,
-                      asp_postprocessing=None, interactive=False,
+                      asp_postprocessing=None,
                       gringo_options=commons.ASP_GRINGO_OPTIONS,
-                      clasp_options=commons.ASP_CLASP_OPTIONS,
-                      lowerbound_cut_off=commons.OPT_LOWERBOUND_CUTOFF):
+                      clasp_options=commons.ASP_CLASP_OPTIONS):
     """apply the compression algorithm on given graph. Yield lines of
     bubble file.
 
@@ -72,7 +71,6 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     asp_ccfinding: filename of ASP code for clique finding.
     asp_bcfinding: filename of ASP code for biclique finding..
     asp_postprocessing: filename of ASP code for step postprocessing.
-    lowerbound_cut_off: minimal value for the lowerbound optimization.
 
     """
     # Shortcuts and curried functions
