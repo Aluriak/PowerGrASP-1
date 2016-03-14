@@ -134,8 +134,6 @@ def compress(graph_data=None, output_file=None, *,
     _, _, _, func_args = inspect.getargvalues(inspect.currentframe())
     func_args = dict(func_args)  # copy data structure
     option = commons.options(parameters=func_args)
-    # just an assertion that never fail:
-    assert option['extracting'] is not None
 
     # configs enrichment
     thread_option = commons.thread(option['thread'])
