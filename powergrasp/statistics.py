@@ -118,6 +118,16 @@ class DataExtractor(observers.CompressionObserver, dict):
             return self.time_counter.extraction_time
         return 0.
 
+    def prettified_configs(self):
+        """Yield lines of a prettified view of solvers config"""
+        for name, config in self.configs:
+            yield from (
+                name + ' configuration: ',
+                '\tfiles   : ' + ', '.join(commons.basename(_) for _ in config.files),
+                '\tgrounder: ' + config.gringo_options,
+                '\tsolver  : ' + config.clasp_options,
+            )
+
     def _update(self, signals):
         if Signals.CompressionStopped in signals:
             # create the final result render
@@ -127,8 +137,7 @@ class DataExtractor(observers.CompressionObserver, dict):
                    if self.compression_time else '.')
                 + ((' (including extraction in ' + str(round(self.extraction_time, 3)) + ')')
                    if self.extraction_time else '')
-                + "\nGrounder options: " + self.gringo_options
-                + "\nSolver options: "   + self.clasp_options
+                + '\n' + '\n'.join(self.prettified_configs())
                 + "\nNow, statistics on "
                 + self.stats_output()
             )
@@ -137,9 +146,13 @@ class DataExtractor(observers.CompressionObserver, dict):
                 self.output_converter.comment(final_results.split('\n'))
             self.finalize()
 
-        if Signals.SolverOptionsUpdated in signals:
-            payload = signals[Signals.SolverOptionsUpdated]
-            self.gringo_options, self.clasp_options = payload
+        if Signals.ASPConfigUpdated in signals:
+            extract, clique, biclique = signals[Signals.ASPConfigUpdated]
+            self.configs = (
+                ('Extraction', extract),
+                ('Find best clique', clique),
+                ('Find best biclique', biclique),
+            )
         if Signals.FinalEdgeCountGenerated in signals:
             self[INIT_EDGE] = int(signals[Signals.FinalEdgeCountGenerated])
         if Signals.FinalRemainEdgeCountGenerated in signals:
