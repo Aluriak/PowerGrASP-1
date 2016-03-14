@@ -50,14 +50,10 @@ membercc(X):- cc(CC) ; node(X) ; connectedpath(CC,X).
 membercc(CC):- cc(CC).
 
 % initial ccstate of blocks : each node is in its cc
-block(0,CC,X):- membercc(CC,X).
-
-% total count of edges in the graph
-nb_edge(N):- N=#count{1,X,Y: oedge(X,Y), membercc(X)}.
+block(0,CC,X):- membercc(X) ; cc(CC).
 
 % outputs
 #show cc/1.
 #show membercc/1.
 #show block/3.
-#show inter(X,Y): inter(X,Y), membercc(X).
-#show nb_edge/1.
+#show oedge(X,Y): oedge(X,Y), membercc(X).

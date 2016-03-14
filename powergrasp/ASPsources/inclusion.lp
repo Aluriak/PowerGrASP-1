@@ -13,7 +13,7 @@
 %       - powernode(cc,k,1..2,Y):- element Y is in powernode cc,k,1 or cc,k,2 ;
 %                               if cc,k,t is a clique, only cc,k,2 will be generated ;
 %                               if cc,k,t is trivial, it will not be generated.
-%       - edge(X,Y):- there is an edge between (power)nodes X and Y.
+%       - oedge(X,Y):- there is an edge between (power)nodes X and Y.
 %       - include_node(C,K,T,X):- powernode C,K,T contains node X.
 %       - include_pwrn(C,K,T,D,L,R):- powernode C,K,T contains powernode D,L,R.
 %       - include(X,Y):- {power,}node Y is directly included in {power,}node X.
@@ -52,4 +52,4 @@ top(A):- node(A) ; not include(_,A).
 #show topnode(A): top(A).
 #show trivial/3.
 #show edge/2.  % edges in cc handled by compression
-#show edge(X,Y): ccedge(_,X,Y).  % edges in cc not handled by compression
+#show edge(X,Y): oedge(X,Y).  % edges in cc not handled by compression

@@ -9,7 +9,7 @@
 %       -  k: current step of treatment (first step is 1)
 %
 % Input:
-%       - inter(X,Y): there exist an edge linking X and Y in cc.
+%       - oedge(X,Y): there exist an oriented edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,1,X): X is the member of the clique cc at step k.
@@ -17,10 +17,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Symetric edges.
+inter(X,Y):- oedge(X,Y).
+inter(X,Y):- inter(Y,X).
+
 % Clique of 3 elements
 clique3:- inter(X,Y); inter(Y,Z); inter(X,Z).
 
@@ -31,7 +34,7 @@ clique3:- inter(X,Y); inter(Y,Z); inter(X,Z).
 :- newconcept_nohidden(cc,k,1,X); newconcept_nohidden(cc,k,1,Y); X<Y; not inter(X,Y).
 
 % Maximality of the clique
-:- membercc(X); not newconcept_nohidden(cc,k,1,X); inter(X,Y):newconcept_nohidden(cc,k,1,Y) ; clique3.
+:- membercc(X); not newconcept_nohidden(cc,k,1,X) ; inter(X,Y):newconcept_nohidden(cc,k,1,Y) ; clique3.
 
 % Compatibility with postprocessing: newconcept_nohidden(cc,k,2,X) exists
 newconcept(cc,k,2,X):- newconcept(cc,k,1,X).

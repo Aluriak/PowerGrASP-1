@@ -9,7 +9,7 @@
 %       - cc: treated connected component. (cc/1 gives existing cc)
 %       -  k: current step of treatment (first step is 1)
 % Input:
-%       - inter(X,Y): there exist an edge linking X and Y in cc.
+%       - oedge(X,Y): there exist an oriented edge linking X and Y in cc.
 %       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
@@ -20,6 +20,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Symetric edges.
+inter(X,Y):- oedge(X,Y).
+inter(X,Y):- inter(Y,X).
+
 % share at least one neighbor
 linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
 
