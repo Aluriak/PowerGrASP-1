@@ -143,6 +143,8 @@ plot:
 
 t: test
 test:
+	python3 -m unittest discover -v
+pest:
 	py.test-3.4 powergrasp --doctest-module --failed-first --exitfirst
 
 
