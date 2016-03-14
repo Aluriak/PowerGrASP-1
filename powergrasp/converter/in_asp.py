@@ -21,8 +21,9 @@ class InASP(InConverter):
         """Yields pair (node, successor), representing the data contained
         in input ASP file.
         """
+        models = solving.model_from('', filename)
         try:
-            for atom in solving.model_from('', filename):
+            for atom in models:
                 if atom.predicate == 'edge' and atom.nb_args() == 2:
                     node, succ = atom.arguments
                     yield node, succ
