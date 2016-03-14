@@ -70,7 +70,7 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
     # Label conversion
     def key2label(key):
         """Convert given string in label printable by matplotlib"""
-        return '$\#$' + key.strip('count').replace('_', ' ')
+        return '$\#$' + key.replace('count', '').replace('_', ' ')
 
     # PLOTTING
     try:
