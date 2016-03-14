@@ -5,7 +5,7 @@ Definitions of model_from(5) that encapsulate
 """
 import os
 from functools   import partial
-from collections import deque, Counter
+from collections import deque, Counter, namedtuple
 
 from powergrasp import commons
 from powergrasp import atoms
@@ -13,6 +13,32 @@ from pyasp import asp
 
 
 LOGGER = commons.logger()
+
+
+# ASP Configuration class
+ASPConfig = namedtuple('ASPConfig', 'files clasp_options gringo_options')
+ASPConfig.__new__.__defaults__ = None, '', ''  # constructor default values
+
+# shortcuts for solvers options
+ASP_DEFAULT_CLASP_OPTION = ' --heuristic=Vsids --configuration=frumpy '
+
+# default configs
+CONFIG_DEFAULT = lambda: ASPConfig([])
+CONFIG_EXTRACTION = lambda: ASPConfig(
+    [commons.ASP_SRC_EXTRACT],
+    ' --heuristic=Vsids --configuration=frumpy -n 0',
+)
+CONFIG_BICLIQUE_SEARCH = lambda: ASPConfig(
+    [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDBC],
+    ASP_DEFAULT_CLASP_OPTION,
+)
+CONFIG_CLIQUE_SEARCH = lambda: ASPConfig(
+    [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDCC],
+    ASP_DEFAULT_CLASP_OPTION,
+)
+CONFIG_INCLUSION = lambda: ASPConfig(
+    [commons.ASP_SRC_INCLUSION],
+)
 
 
 class Atoms(asp.TermSet):
@@ -29,41 +55,52 @@ class Atoms(asp.TermSet):
         return next(atom for atom in self if atom.predicate == atom_name)
 
 
-def all_models_from(base_atoms, aspfiles, aspargs={},
-                    gringo_options=commons.ASP_GRINGO_OPTIONS,
-                    clasp_options=commons.ASP_CLASP_OPTIONS):
+def all_models_from(base_atoms, aspfiles=None, aspargs=None,
+                    aspconfig=None, parsed=True):
     """Compute all models from ASP source code in aspfiles, with aspargs
     given as grounding arguments and base_atoms given as input atoms.
 
     base_atoms -- string, ASP-readable atoms
     aspfiles -- (list of) filename, contains the ASP source code
     aspargs -- dict of constant:value that will be set as constants in aspfiles
-    gringo_options -- string of command-line options given to gringo
-    clasp_options -- string of command-line options given to clasp
+    aspconfig -- an ASPConfig object giving more files and solvers options
+    parsed -- set to True for get already parsed atoms of model, False for str
     yield -- Atoms instance, containing atoms produced by solving
 
     """
-    # use the right basename and use list of aspfiles in all cases
+    if aspfiles is None:
+        aspfiles = []
+    if aspargs is None:
+        aspargs = {}
+    if aspconfig is None:
+        aspconfig = CONFIG_DEFAULT()
+    # use list of aspfiles in all cases
+    assert aspfiles.__class__ in (tuple, list, str)
+    assert aspconfig.__class__ is ASPConfig
     if isinstance(aspfiles, str):
         aspfiles = [aspfiles]
     elif isinstance(aspfiles, tuple):  # solver take only list, not tuples
         aspfiles = list(aspfiles)
+    if aspconfig.files is not None:
+        aspfiles.extend(aspconfig.files)
+    assert aspfiles.__class__ is list
 
     # define the command line options for gringo and clasp
     constants = ' -c '.join(str(k)+'='+str(v) for k,v in aspargs.items())
     if len(aspargs) > 0:  # must begin by a -c for announce the first constant
         constants = '-c ' + constants
-    gringo_options = constants + ' ' + gringo_options
+    gringo_options = constants + ' ' + aspconfig.gringo_options
     # print('OPTIONS:', gringo_options)
-    # print('OPTIONS:', clasp_options)
+    # print('OPTIONS:', aspconfig.clasp_options)
+    # print('OPTIONS:', aspconfig)
 
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
-                              clasp_options=clasp_options)
+                              clasp_options=aspconfig.clasp_options)
     # print('SOLVING:', aspfiles, constants)
     # print('INPUT:', base_atoms.__class__, base_atoms)
     answers = solver.run(aspfiles, additionalProgramText=base_atoms,
-                         collapseTerms=True, collapseAtoms=False)
+                         collapseAtoms=not parsed)
     # if len(answers) > 0:
         # for idx, answer in enumerate(answers):
             # print('ANSWER ' + str(idx) + ':', answer)
@@ -73,22 +110,22 @@ def all_models_from(base_atoms, aspfiles, aspargs={},
     yield from (Atoms(answer) for answer in answers)
 
 
-def model_from(base_atoms, aspfiles, aspargs={},
-               gringo_options=commons.ASP_GRINGO_OPTIONS,
-               clasp_options=commons.ASP_CLASP_OPTIONS):
+def model_from(base_atoms, aspfiles=None, aspargs=None, aspconfig=None,
+               parsed=True):
     """Compute the last model from ASP source code in aspfiles, with aspargs
     given as grounding arguments and base_atoms given as input atoms.
 
     base_atoms -- string, ASP-readable atoms
     aspfiles -- (list of) filename, contains the ASP source code
     aspargs -- dict of constant:value that will be set as constants in aspfiles
-    gringo_options -- string of command-line options given to gringo
-    clasp_options -- string of command-line options given to clasp
+    aspconfig -- an ASPConfig object giving more files and solvers options
+    parsed -- set to True for get already parsed atoms of model, False for str
     return -- an Atoms instance containing atoms of the last produced model
 
     """
-    answers = all_models_from(base_atoms, aspfiles, aspargs,
-                              gringo_options, clasp_options)
+    answers = all_models_from(base_atoms=base_atoms, aspfiles=aspfiles,
+                              aspargs=aspargs, aspconfig=aspconfig,
+                              parsed=parsed)
     try:
         return deque(answers, maxlen=1)[0]
     except IndexError:  # no valid model
