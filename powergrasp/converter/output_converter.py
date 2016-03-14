@@ -47,7 +47,7 @@ def matched_splits(atoms, separator, regex):
 
 
 
-class OutConverter(object):
+class OutConverter:
     """Base class for Converters.
 
     Converters take ASP atoms (gringo.Fun), and,
@@ -97,7 +97,7 @@ class OutConverter(object):
 
     def finalized(self):
         """Return converted data"""
-        return '\n' + '\n'.join(self.converted)
+        return '\n' + '\n'.join(self.atoms)
 
     def __str__(self):
         """str version of a converter is the finalized string of data"""
