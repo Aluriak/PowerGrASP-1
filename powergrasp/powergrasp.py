@@ -180,6 +180,7 @@ def compress(graph_data=None, output_file=None, *,
     )))
 
     # Launch the compression
+    LOGGER.info('COMPRESSION STARTED !')
     compression.compress_lp_graph(
         graph_file,
         asp_extracting=option['extracting'],
@@ -191,3 +192,4 @@ def compress(graph_data=None, output_file=None, *,
         clasp_options=clasp_options,
         all_observers=tuple(instanciated_observers)
     )
+    LOGGER.info('COMPRESSION FINISHED !')
