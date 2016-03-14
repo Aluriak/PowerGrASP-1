@@ -23,8 +23,8 @@ class InASP(InConverter):
         """
         try:
             for atom in solving.model_from('', filename):
-                if atom.startswith('edge('):
-                    node, succ = atoms.arg(atom)
+                if atom.predicate == 'edge' and atom.nb_args() == 2:
+                    node, succ = atom.arguments
                     yield node, succ
         except IOError as e:
             LOGGER.error(self.error_input_file(filename_sbml, e))
