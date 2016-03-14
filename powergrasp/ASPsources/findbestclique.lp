@@ -20,10 +20,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Symetric edges.
-inter(X,Y):- oedge(X,Y).
-inter(X,Y):- inter(Y,X).
-
 % Clique of 3 elements
 clique3:- inter(X,Y); inter(Y,Z); inter(X,Z).
 

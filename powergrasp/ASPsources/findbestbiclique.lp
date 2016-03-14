@@ -20,10 +20,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Symetric edges.
-inter(X,Y):- oedge(X,Y).
-inter(X,Y):- inter(Y,X).
-
 % share at least one neighbor
 linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
 
