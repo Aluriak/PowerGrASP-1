@@ -20,12 +20,12 @@ except ImportError:
 
 
 # Data for plotting
-MEASURES = (statistics.GENR_TIME, statistics.FINL_EDGE,
+MEASURES = (statistics.GENR_TIME, statistics.COMP_EDGE,
             statistics.GENR_PWED, statistics.GENR_PWND)
 COLORS   = ('black', 'green', 'blue', 'red')
 LABELS   = (
     'time per step',
-    'remaining edges',
+    'edge compressed',
     'generated poweredge',
     'generated powernode',
 )
@@ -99,7 +99,7 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
 
     # axis limits : show the 0
     plot.right_ax.set_ylim(0, max(gx[statistics.GENR_TIME]) * 2)
-    plot.set_ylim(0, max(gx[statistics.FINL_EDGE]) * 1.1)
+    plot.set_ylim(0, max(gx[statistics.COMP_EDGE]) * 1.1)
 
     # print or save
     if savefile:
