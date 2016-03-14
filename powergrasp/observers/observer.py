@@ -43,7 +43,7 @@ class Signals(Enum):
     FinalRemainEdgeCountGenerated = 'final_remain_edge_count_generated'
     RemainEdgeGenerated       = 'remain_edge_generated'
     StepDataGenerated         = 'step_data_generated'
-    SolverOptionsUpdated      = 'solver_options_updated'
+    ASPConfigUpdated          = 'asp_config_updated'
 
 
 # Priorities: observers are called with respect to their priority (smaller is after)
