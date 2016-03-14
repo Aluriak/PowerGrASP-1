@@ -140,19 +140,18 @@ class DataExtractor(observers.CompressionObserver, dict):
         if Signals.SolverOptionsUpdated in signals:
             payload = signals[Signals.SolverOptionsUpdated]
             self.gringo_options, self.clasp_options = payload
-        if Signals.AllEdgeGenerated in signals:
-            self[INIT_EDGE] = int(signals[Signals.AllEdgeGenerated])
+        if Signals.FinalEdgeCountGenerated in signals:
+            self[INIT_EDGE] = int(signals[Signals.FinalEdgeCountGenerated])
+        if Signals.FinalRemainEdgeCountGenerated in signals:
+            self[FINL_EDGE] = int(signals[Signals.FinalRemainEdgeCountGenerated])
         if Signals.StepDataGenerated in signals:
-            powernode_count, poweredge_count, remain_edges_global = (
-                signals[Signals.StepDataGenerated])
+            powernode_count, poweredge_count = signals[Signals.StepDataGenerated]
             # defense against a no-data case
-            if remain_edges_global is None:
-                assert powernode_count is None
+            if powernode_count is None:
                 assert poweredge_count is None
             else:  # all data is given
                 self[GENR_PWED] += int(poweredge_count)
                 self[GENR_PWND] += int(powernode_count)
-                self[FINL_EDGE]  = int(remain_edges_global)
         if Signals.StepStopped in signals:
             if self.time_counter:
                 gentime = self.time_counter.last_step_time

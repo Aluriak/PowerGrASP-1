@@ -39,7 +39,8 @@ class Signals(Enum):
     CliqueFound               = 'clique_found'
     # Data signals
     CompressionTimeGenerated  = 'compression_time_generated'
-    AllEdgeGenerated          = 'all_edge_generated'
+    FinalEdgeCountGenerated   = 'final_edge_count_generated'
+    FinalRemainEdgeCountGenerated = 'final_remain_edge_count_generated'
     RemainEdgeGenerated       = 'remain_edge_generated'
     StepDataGenerated         = 'step_data_generated'
     SolverOptionsUpdated      = 'solver_options_updated'
