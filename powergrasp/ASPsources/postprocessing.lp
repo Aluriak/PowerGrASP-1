@@ -139,38 +139,42 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 %  in the connected component and the size of the previous concept.
 :- score(cc,k,S) ; S>upperbound-lowerbound.
 
+% Discard cases when no score is generated
+:- not score(cc,k,_).
+
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Discard cases when no score is generated
-:- not score(cc,k,_).
 
 
-%#show maxnewedge(N): N=(upperbound-lowerbound)+1.
 #show.
+
+% powernodes and poweredge
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
-%#show powernode(cc,k,T,Y): newconcept(cc,k,T,X) ; equiv(X,Y) ; not clique(cc,k) ; not star(cc,k,T).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
-#show include_powernode(cc,K1,T1,K2,T2): include_block(k,b(_,p(cc,K1,T1)),b(_,p(cc,K2,T2))).
-#show edge(X,Y): inter(X,Y), X<Y, not covered(X,Y), not covered(cc,k,X,Y).
+
+% statistics
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
-#show covered(X,Y): covered(cc,k,X,Y).
+#show poweredge_count(K): K={poweredge(_,_)}.
+#show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
+
+% next step data
+keeped_oedge(X,Y):- oedge(X,Y) ; X<Y ; not covered(X,Y) ; not covered(cc,k,X,Y).
+keeped_membercc(X):- keeped_oedge(X,_).
+keeped_membercc(Y):- keeped_oedge(_,Y).
+#show oedge(X,Y): keeped_oedge(X,Y).
+#show membercc(X): keeped_membercc(X).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
-#show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
-% weights outputs: things are complicated by the clique case where an hidden node is used.
-%#show weight(X,W): weight(X,W), not hidden_used(X,_).  % keep same score for node
-%#show weight(X,W-1): weight(X,W), hidden_used(X,_).  % if model is a clique, weight is decrease of 1
-%% equiv outputs: don't yield equiv(X,Y) if Y was used by a clique.
-%#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
+
 % debug output
-#show clique/2.
+%#show clique/2.
 %#show star/3.
 %#show upper(upperbound).
 %#show lower(lowerbound).
