@@ -128,7 +128,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             concept_score, best_model = None, None
             score_lowerbound = MINIMAL_SCORE
 
-            best_model, best_score = search_clique(
+            clique_model, clique_score = search_clique(
                 previous_atoms,
                 score_min=score_lowerbound,
                 score_max=last_score,
@@ -136,17 +136,16 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 step=step,
             )
 
-            if not best_model or score_lowerbound <= best_score:
+            if not clique_model or score_lowerbound <= clique_score:
                 model, score = search_biclique(
                     previous_atoms,
-                    score_min=best_score if best_score else score_lowerbound,
+                    score_min=clique_score if clique_score else score_lowerbound,
                     score_max=last_score,
                     cc=cc_name,
                     step=step,
                 )
-                if model:
-                    best_model = model
-                    best_score = score
+            best_model = model if model else clique_model
+            best_score = score if score else clique_score
 
             # best_model is computed
             last_score = best_score
