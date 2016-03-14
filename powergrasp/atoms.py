@@ -107,7 +107,7 @@ def prettified(atoms, names=None, sizes=None,
 
     """
     atoms, hashs_values = itertools.tee(atoms)
-    atoms = (split(a) for a in atoms)
+    atoms = ((atom.predicate, atom.arguments) for atom in atoms)
     if hashs:
         hashs_values = (a.__hash__() for a in hashs_values)
     # filter results
@@ -150,7 +150,7 @@ def prettified(atoms, names=None, sizes=None,
     return source if joiner is None else joiner.join(source)
 
 
-def count(atoms, names=None):
+def count(atoms, names=None) -> Counter:
     """Return a dict atom:count that describes
     how many atoms given atoms_dict have.
 
@@ -158,12 +158,12 @@ def count(atoms, names=None):
     if names is an iterable of atoms names,
      only founded atoms will be returned.
     """
-    if atoms is None: atoms = []
-    counts = Counter(split(a)[0] for a in atoms).items()
     if names is None:
-        return {n:c for n, c in counts}
-    else:
-        return {n:c for n, c in counts if a.name() in names}
+        return Counter(atom.predicate for atom in atoms)
+
+    if isinstance(names, str):
+        names = set([names])
+    return Counter(atom.predicate for atom in atoms if atom.predicate in names)
 
 
 def to_str(atoms, names=None, separator='.'):
@@ -176,18 +176,7 @@ def to_str(atoms, names=None, separator='.'):
      and at the end of the atoms.
 
     """
-    if atoms is None: return ''
-    if names is None:
-        atoms = (str(a) for a in atoms)
-    else: # names is provided
-        # cast in tuple for allow usage of 'in' keyword
-        if names.__class__ is str:
-            names = (names,)
-        # get only atoms that are requested
-        atoms = (str(a) for a in atoms if a[:a.find('(')] in names)
-    # output construction
-    output = separator.join(atoms)
-    if len(output) > 0:
-        output += separator
-    return output
-
+    if names:
+        atoms = atoms.get(names)
+    return separator.join(atom.predicate + '(' + ','.join(atom.arguments) + ')'
+                          for atom in atoms) + separator
