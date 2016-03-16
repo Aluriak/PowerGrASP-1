@@ -15,6 +15,7 @@ pip-selfcheck.json
 man/
 share/
 PowerGrASP.egg-info/
+powergrasp.egg-info/
 dist/
 .zcache/
 oog/
