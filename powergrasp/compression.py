@@ -158,7 +158,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
 
 
             #########################
-            LOGGER.debug('BEST MODEL TREATMENT\n\n\n')
+            LOGGER.debug('BEST MODEL TREATMENT')
             #########################
             # stop cc compression if no model found
             if best_model is None:
