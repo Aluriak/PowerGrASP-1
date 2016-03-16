@@ -111,8 +111,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         assert any(isinstance(cc_name, cls) for cls in (str, int))
         remain_edges_cc = tuple(atom for atom in cc_atoms
                                 if atom.predicate == 'oedge')
-        def nb_cc_edges(): return len(remain_edges_cc)
-        total_edges_counter += nb_cc_edges()
+        nb_cc_edges = int(cc_atoms.get_first('nb_edge').arguments[0])
+        total_edges_counter += nb_cc_edges
         previous_atoms = atoms.to_str(cc_atoms)
         cc_atoms = atoms.to_str(cc_atoms)
         # treatment of the connected_components stated
@@ -121,7 +121,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         model_found_at_last_iteration = True  # False when no model found
         # main loop
         step = 0
-        last_score = nb_cc_edges()  # score of the previous step, or maximal score
+        last_score = nb_cc_edges  # score of the previous step, or maximal score
         # iteration
         notify_observers(Signals.IterationStarted)
         while model_found_at_last_iteration:
@@ -130,14 +130,17 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
             step += 1
             concept_score, best_model = None, None
             score_lowerbound = MINIMAL_SCORE
-
-            clique_model, clique_score = search_clique(
-                previous_atoms,
-                score_min=score_lowerbound,
-                score_max=last_score,
-                cc=cc_name,
-                step=step,
-            )
+            allow_clique = True
+            if allow_clique:
+                clique_model, clique_score = search_clique(
+                    previous_atoms,
+                    score_min=score_lowerbound,
+                    score_max=last_score,
+                    cc=cc_name,
+                    step=step,
+                )
+            else:
+                clique_model, clique_score = None, None
 
             if not clique_model or score_lowerbound <= clique_score:
                 model, score = search_biclique(
@@ -170,7 +173,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 # debug printing
                 LOGGER.debug('POWERNODES:\n\t' + atoms.prettified(
                     best_model,
-                    names=('powernode', 'poweredge', 'score'),
+                    names=('powernode', 'poweredge', 'score', 'clique', 'star'),
                     joiner='\n\t',
                     sort=True
                 ))
@@ -178,20 +181,12 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 assert(isinstance(best_score, int))
                 assert(best_score >= MINIMAL_SCORE)
                 last_score = best_score
+                nb_cc_edges -= best_score  # score equals number of edges compressed
                 remain_edges_cc = tuple(best_model.get('oedge'))
                 previous_atoms = atoms.to_str(best_model.get(
-                    ('oedge', 'membercc', 'block', 'include_block')
+                    ('oedge', 'membercc', 'block', 'include_block',
+                     'equiv', 'weight')
                 ))
-
-                # give new powernodes to converter
-                notify_observers(model_found=tuple(
-                    atom for atom in best_model
-                    if atom.predicate in ('powernode', 'clique', 'poweredge')
-                ))
-
-                final_concept = tuple(atom for atom in best_model
-                                      if atom.predicate in ('powernode',
-                                                            'poweredge'))
 
                 # save the number of generated powernodes and poweredges
                 new_powernode_count = next(
@@ -200,6 +195,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 new_poweredge_count = next(
                     int(atom.arguments[0]) for atom in best_model
                     if atom.predicate == 'poweredge_count')
+
                 if new_powernode_count not in (0, 1, 2):
                     LOGGER.error('Error of Powernode generation: '
                                  + str(new_powernode_count) + 'generated.'
@@ -211,15 +207,19 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                                  + ' itself will not be compromised.'
                                 )
 
-                # notify_observers: provide the data
+                # notify_observers: provide the step data & results
+                final_concept = tuple(
+                    atom for atom in best_model
+                    if atom.predicate in ('powernode', 'poweredge', 'clique'))
+
                 notify_observers(
                     model_found=final_concept,
                     step_data_generated=(new_powernode_count,
                                          new_poweredge_count, best_score)
                 )
-                if nb_cc_edges() < 0:
-                    print('REMAIN_EDGES_GLOBAL:', nb_cc_edges())
-                    assert(nb_cc_edges() >= 0)
+                if nb_cc_edges < 0:
+                    print('REMAIN_EDGES_GLOBAL:', nb_cc_edges)
+                    assert(nb_cc_edges >= 0)
             # notify_observers:
             notify_observers(Signals.StepStopped)
             notify_observers(Signals.StepFinalized)
@@ -229,11 +229,11 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         # Here, all models was processed in the connected component
 
         # Management of remain data in the connected component
-        assert(nb_cc_edges() >= 0)
+        assert(nb_cc_edges >= 0)
 
         # Remain edges in cc
         notify_observers(cc_remain_edge_generated=remain_edges_cc)
-        total_remain_edges_counter += nb_cc_edges()
+        total_remain_edges_counter += nb_cc_edges
 
 
         notify_observers(Signals.ConnectedComponentStopped)
