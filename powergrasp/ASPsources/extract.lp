@@ -20,8 +20,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Symetric graph
-inter(X,Y):- edge(X,Y).
-inter(X,Y):- edge(Y,X).
+inter(X,Y):- edge(X,Y) ; X!=Y.
+inter(X,Y):- inter(Y,X).
 
 % Node access.
 node(X):- inter(X,_).
