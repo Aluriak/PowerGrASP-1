@@ -184,7 +184,7 @@ keeped_membercc(Y):- keeped_oedge(_,Y).
 #show equiv(X,Y): equiv(X,Y) ; not clique(cc,k) ; not newconcept(cc,k,_,X).
 
 % debug output
-%#show clique/2.
-%#show star/3.
+#show clique/3.
+#show star/3.
 %#show upper(upperbound).
 %#show lower(lowerbound).
