@@ -120,14 +120,16 @@ covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..
 
 % Node count in each set of the biclique is given by summing weights of all nodes.
 % Edge cover is the number of node covered by the set.
-edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
-%edgecover(cc,k,T,N):- newconcept(cc,k,T,_) ; N=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)}.
+edgecover(cc,k,T,NN+NW):- newconcept(cc,k,T,_) ;
+                          NW=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)} ;
+                          NN={newconcept(cc,k,T,X)}.
 
 % Concept score, equal to maximal score - edge cover.
 score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
 score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
+
 
 % Minimize score
 #minimize{S@1,S:score(cc,k,S)}.
@@ -154,6 +156,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 
 % powernodes and poweredge
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
+#show powernode(cc,k,T,Y): newconcept(cc,k,T,X) ; equiv(X,Y) ; not clique(cc,k).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
@@ -172,6 +175,13 @@ keeped_membercc(Y):- keeped_oedge(_,Y).
 #show membercc(X): keeped_membercc(X).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
+
+% weights outputs: things are complicated by the clique case where an hidden node is used.
+#show weight(X,W): weight(X,W), not hidden_used(X,_).  % keep same score for unused nodes
+#show weight(X,W-1): weight(X,W), hidden_used(X,_), W>0.  % if model is a clique, weight is decrease of 1
+% equiv outputs: don't yield equiv(X,Y) if Y was used by a clique, or by a biclique
+#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
+#show equiv(X,Y): equiv(X,Y) ; not clique(cc,k) ; not newconcept(cc,k,_,X).
 
 % debug output
 %#show clique/2.
