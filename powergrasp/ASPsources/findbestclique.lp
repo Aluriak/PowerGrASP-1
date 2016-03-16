@@ -34,9 +34,6 @@ clique3:- inter(X,Y); inter(Y,Z); inter(X,Z).
 :- clique3 ; membercc(X); not newconcept_nohidden(cc,k,1,X) ;
    inter(X,Y): newconcept_nohidden(cc,k,1,Y).
 
-% Compatibility with postprocessing: newconcept_nohidden(cc,k,2,X) exists
-newconcept(cc,k,2,X):- newconcept(cc,k,1,X).
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% CONCEPT EXPANSION %%%%%%%%%
@@ -44,10 +41,13 @@ newconcept(cc,k,2,X):- newconcept(cc,k,1,X).
 % Choose one hidden node for each node in newconcept that hide other nodes
 1 { hidden_used(X,Y): equiv(X,Y) } 1:-  newconcept_nohidden(cc,k,1,X) ; equiv(X,_).
 
-% Use an hidden node instead of any node with a weight >= 2.
+% Use an hidden node instead of any node with a weight >= 1.
 % This will decrease the score of this last.
 newconcept(cc,k,T,X):- newconcept_nohidden(cc,k,T,X) ; not equiv(X,_).
 newconcept(cc,k,T,Y):- newconcept_nohidden(cc,k,T,X) ; equiv(X,Y) ; hidden_used(X,Y).
+
+% Compatibility with postprocessing: newconcept(cc,k,2,X) exists
+newconcept(cc,k,2,X):- newconcept(cc,k,1,X).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
