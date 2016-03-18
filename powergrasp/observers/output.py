@@ -67,8 +67,8 @@ class OutputWriter(CompressionObserver):
             self.output.write(self.converter.finalized())
             self.converter.reset_containers()
             LOGGER.debug('Final data saved in file ' + self.output.name)
-        if Signals.RemainEdgeGenerated in signals:
-            remain_edges = signals[Signals.RemainEdgeGenerated]
+        if Signals.CCRemainEdgeGenerated in signals:
+            remain_edges = signals[Signals.CCRemainEdgeGenerated]
             self.converter.convert(remain_edges)
         if Signals.CompressionStopped in signals:
             if self.output is not sys.stdout: self.output.close()

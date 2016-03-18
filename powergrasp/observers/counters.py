@@ -13,7 +13,7 @@ class ConnectedComponentsCounter(CompressionObserver):
     """Counter of connected components"""
 
     def __init__(self):
-        self._nb_ccs = '?'
+        self._nb_ccs = '?'  # number of cc, printed after current cc number
 
     def _update(self, signals):
         if Signals.ConnectedComponentsFound in signals:

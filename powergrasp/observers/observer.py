@@ -33,7 +33,6 @@ class Signals(Enum):
     StepFinalized             = 'step_finalized'         # send after the StepStopped signal
     CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
     # Objects signals
-    ConnectedComponentsFound  = 'connected_components_found'
     ModelFound                = 'model_found'
     BicliqueFound             = 'biclique_found'
     CliqueFound               = 'clique_found'
@@ -41,7 +40,8 @@ class Signals(Enum):
     CompressionTimeGenerated  = 'compression_time_generated'
     FinalEdgeCountGenerated   = 'final_edge_count_generated'
     FinalRemainEdgeCountGenerated = 'final_remain_edge_count_generated'
-    RemainEdgeGenerated       = 'remain_edge_generated'
+    CCRemainEdgeGenerated     = 'cc_remain_edge_generated'
+    CCCountGenerated          = 'cc_count_generated'
     StepDataGenerated         = 'step_data_generated'
     ASPConfigUpdated          = 'asp_config_updated'
 
