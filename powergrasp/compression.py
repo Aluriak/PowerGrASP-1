@@ -114,9 +114,18 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         nb_cc_edges = int(cc_atoms.get_first('nb_edge').arguments[0])
         total_edges_counter += nb_cc_edges
         previous_atoms = atoms.to_str(cc_atoms)
+
+        # STATISTICS
+        nb_cc_nodes = int(cc_atoms.get_first('nb_node').arguments[0])
+        LOGGER.info('OPT: NODE REDUCTION: '
+                    + str((1 - (nb_cc_nodes - cc_atoms.count('equiv'))
+                             / nb_cc_nodes)))
+        # END STATISTICS
+
         cc_atoms = atoms.to_str(cc_atoms)
         # treatment of the connected_components stated
         notify_observers(connected_component_started=(cc_nb, cc_name))
+
         # contains interesting atoms and the non covered edges at last step
         model_found_at_last_iteration = True  # False when no model found
         # main loop

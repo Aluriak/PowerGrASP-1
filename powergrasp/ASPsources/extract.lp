@@ -74,6 +74,8 @@ block(0,CC,X):- membercc(X) ; cc(CC).
 
 % Count of edges in the connected component.
 nb_edge(N):- N={ccedge(CC,X,Y)} ; cc(CC).
+
+% Count of node in the graph.
 ccnode(CC,X):- cc(CC) ; connectedpath(CC,X).
 ccnode(CC,CC):- cc(CC).
 nb_node(N):- N={ccnode(CC,X)} ; cc(CC).
