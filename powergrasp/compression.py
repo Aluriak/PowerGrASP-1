@@ -92,7 +92,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         asp_config_updated=(extract_config, clique_config, biclique_config)
     )
     # creat a solver that get all information about the graph
-    connected_components = (solving.all_models_from(
+    connected_components = tuple(solving.all_models_from(
         '', aspfiles=[graph_lp], aspconfig=extract_config,
     ))
     notify_observers(Signals.ExtractionStopped)
