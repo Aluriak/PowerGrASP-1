@@ -105,6 +105,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     for cc_nb, cc_atoms in enumerate(connected_components):
         # get data from cc_atoms
         cc_name = cc_atoms.get_first('cc').arguments[0]
+        notify_observers(cc_count_generated=int(cc_atoms.get_first('nb_cc').arguments[0]))
         assert any(isinstance(cc_name, cls) for cls in (str, int))
         remain_edges_cc = tuple(atom for atom in cc_atoms
                                 if atom.predicate == 'oedge')
@@ -229,13 +230,8 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         assert(nb_cc_edges() >= 0)
 
         # Remain edges in cc
-        if nb_cc_edges() == 0:
-            LOGGER.info('No remaining edge')
-        else:
-            LOGGER.info(str(nb_cc_edges()) + ' remaining edge(s)')
-            # send them to observers (including the output converter)
-            notify_observers(remain_edge_generated=remain_edges_cc)
-            total_remain_edges_counter += nb_cc_edges()
+        notify_observers(cc_remain_edge_generated=remain_edges_cc)
+        total_remain_edges_counter += nb_cc_edges()
 
 
         notify_observers(Signals.ConnectedComponentStopped)
