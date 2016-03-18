@@ -69,6 +69,16 @@ class Atoms(asp.TermSet):
     def get_first(self, atom_name):
         return next(atom for atom in self if atom.predicate == atom_name)
 
+    def counter(self):
+        if not hasattr(self, '_counter'):
+            self._counter = Counter(atom.predicate for atom in self)
+        return self._counter
+
+    def count(self, name:str):
+        if not hasattr(self, '_counter'):
+            self.counter()
+        return self._counter[name]
+
 
 def all_models_from(base_atoms, aspfiles=None, aspargs=None,
                     aspconfig=None, parsed=True):
