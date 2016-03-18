@@ -16,12 +16,18 @@ class ConnectedComponentsCounter(CompressionObserver):
         self._nb_ccs = '?'  # number of cc, printed after current cc number
 
     def _update(self, signals):
-        if Signals.ConnectedComponentsFound in signals:
-            ccs = signals[Signals.ConnectedComponentsFound]
-            self._nb_ccs = str(len(ccs))
+        if Signals.CCCountGenerated in signals:
+            self._nb_ccs = str(signals[Signals.CCCountGenerated])
+        if Signals.CCRemainEdgeGenerated in signals:
+            count = len(signals[Signals.CCRemainEdgeGenerated])
+            if count > 0:
+                LOGGER.info(self.cc_name + ': ' + str(count)
+                            + ' remaining edge(s)')
+            else:
+                LOGGER.info(self.cc_name + ': ' + 'No remaining edge')
         if Signals.ConnectedComponentStarted in signals:
-            cc_num, cc_name = signals[Signals.ConnectedComponentStarted]
-            LOGGER.info('#### CC ' + cc_name + ' ' + str(cc_num+1)
+            self.cc_num, self.cc_name = signals[Signals.ConnectedComponentStarted]
+            LOGGER.info('#### CC ' + self.cc_name + ' ' + str(self.cc_num+1)
                         + '/' + self._nb_ccs)
 
 
