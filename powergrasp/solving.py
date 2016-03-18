@@ -4,6 +4,7 @@ Definitions of model_from(5) that encapsulate
 
 """
 import os
+import itertools
 from functools   import partial
 from collections import deque, Counter, namedtuple
 
@@ -20,7 +21,21 @@ ASPConfig = namedtuple('ASPConfig', 'files clasp_options gringo_options')
 ASPConfig.__new__.__defaults__ = None, '', ''  # constructor default values
 
 # shortcuts for solvers options
+HEURISTICS = ('Berkmin', 'Vmtf', 'Vsids', 'Unit', 'None', 'Domain')
+CONFIGURATIONS = ('frumpy', 'jumpy', 'tweety', 'trendy', 'crafty', 'handy')
+STRATEGIES = ('bb,1', 'bb,2', 'bb,3', 'usc,1', 'usc,2', 'usc,3')
+FLAGS = ('', '--restart-on-model')
+
+def gen_configs():
+    return itertools.product(HEURISTICS, CONFIGURATIONS, STRATEGIES, FLAGS)
+NB_CONFIG = len(tuple(gen_configs()))
+
+ASP_CONF_OPTIONS = ' --heuristic={} --configuration={} --opt-strategy={} {} -n 0'
 ASP_DEFAULT_CLASP_OPTION = ' --heuristic=Vsids --configuration=frumpy '
+
+def gen_extract_configs():
+    for heur, conf, strat, flag in gen_configs():
+        yield ASPConfig([commons.ASP_SRC_EXTRACT], ASP_CONF_OPTIONS.format(heur, conf, strat, flag))
 
 # default configs
 CONFIG_DEFAULT = lambda: ASPConfig([])
