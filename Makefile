@@ -109,6 +109,10 @@ redef:
 	$(COMMAND) --graph-data="$(TESTS)redefedge.lp"
 reduclique:
 	$(COMMAND) --graph-data="$(TESTS)clique_reduction.lp"
+rna_pi_lnc:
+	$(COMMAND) --graph-data="$(TESTS)piRNA_lncRNA.lp"
+rna_pi_msg:
+	$(COMMAND) --graph-data="$(TESTS)piRNA_mRNA.lp"
 sbind:
 	$(COMMAND) --graph-data="$(TESTS)structural_binding.lp"
 single:
