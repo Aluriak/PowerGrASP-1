@@ -57,3 +57,4 @@ block(0,CC,X):- membercc(X) ; cc(CC).
 #show membercc/1.
 #show block/3.
 #show oedge(X,Y): oedge(X,Y), membercc(X).
+#show nb_cc(N): N={node(X): node(X), not connectedpath(_,X)}.
