@@ -88,12 +88,14 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('#################')
     notify_observers(
         Signals.CompressionStarted,
+        Signals.ExtractionStarted,
         asp_config_updated=(extract_config, clique_config, biclique_config)
     )
     # creat a solver that get all information about the graph
     connected_components = (solving.all_models_from(
         '', aspfiles=[graph_lp], aspconfig=extract_config,
     ))
+    notify_observers(Signals.ExtractionStopped)
 
     # ITERATIVE TREATMENT
     # Find connected components
