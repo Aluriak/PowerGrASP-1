@@ -174,8 +174,12 @@ benchmarks:
 
 clr: clear
 clear:
-	rm */*.pyc
-	rm asp_py_lextab.py asp_py_parsetab.py
+	- rm */*.pyc
+	- rm __pycache__/ */__pycache__/ -r
+	- rm powergrasp.egg-info/ -r
+	- rm asp_py_lextab.py asp_py_parsetab.py
+	- rm powergrasp/logs/*.logs*
+	- rm unittest.logs
 
 help:
 	$(PYTHON) --help
