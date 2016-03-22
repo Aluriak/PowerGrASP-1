@@ -207,17 +207,18 @@ def options(*, cli_doc=None, parameters={}):
 def thread(number=None):
     """Return Clasp options for use n thread, or if n is invalid, use the
     number of CPU available"""
+    option = ' --parallel-mode={},split'
     if number is not None and 1 <= int(number):
         if int(number) == 1:
             return ''
         else:
-            return ' --parallel-mode=' + str(number)
+            return option.format(str(number))
     else:  # number is None, or invalid
         nb_cpu = str(multiprocessing.cpu_count())
         logger().info('Threading: Non valid number of CPU given ('
                       + str(number) + '). ' + nb_cpu
                       + ' CPU will be used by Clasp.')
-        return ' --parallel-mode=' + nb_cpu
+        return option.format(nb_cpu)
 
 
 # logging functions
