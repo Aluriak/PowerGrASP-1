@@ -1,6 +1,6 @@
 # PowerGrASP
 This documentation is dedicated to PowerGrASP users who want to know more and contributors,
-while the README is sufficient for understand how PowerGrASP works, and how perform a compression.
+while the README is sufficient to understand how PowerGrASP works, and how perform a compression.
 Moreover, an heavy use of internal docstring have been performed: doc inside the code is the most up-to-date ressource about PowerGrASP functionnalities, behavior and usage.
 Don't forget that Python allows an access to the docstring without browsing the code with the help(1) function.
 
@@ -15,18 +15,21 @@ Some references are given at the end.
 
 ## Architecture
 PowerGrASP mainly uses the Python language and Clingo, an Answer Set Programming implementation by *Potassco*.
-All is packaged in a pythonic way for allows the upload on pypi. One of the main dependance is [pyasp](https://github.com/sthiele/pyasp),
+All is packaged in a pythonic way for allows the upload on pypi. One of the main dependance is [pyasp](http://github.com/sthiele/pyasp),
 the module making the bridge between ASP and Python.
-With the help of the *docopt* module, PowerGrASP can be interfaced with the command-line as with another Python program.
+With the help of the [docopt](http://docopt.org) module, PowerGrASP can be interfaced with the command-line as with another Python program.
+The [matplotlib](http://matplotlib.org/) and [pandas](http://pandas.pydata.org/) modules are used for compression statistics plotting (see *plotting*).
 
-The program us basically a Python code that call Clingo multiple times, until the input graph have a compressible motif,
+The program us basically a Python code that call Clingo multiple times, while the input graph has a compressible motif,
 and finally perform a traduction of the concepts (biclique, clique, star) in the output format.
 
-This output format is notabily readable by Cytoscape, once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
+This output format, named bubble, is notabily readable by Cytoscape, once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
+
 
 ### Modules
-Les modules suivants représentent l'intégralité des modules python composant PowerGrASP.
-- *\_\_main\_\_*: interface between the command line and the compression procedures.
+The followings modules compose the important parts in the PowerGrASP source code.
+
+- *\__main__*: interface between the command line and the compression procedures.
 - *atoms*: provides many functions for manipulating atoms objects, output of ASP solvers.
 - *commons*: global definitions of constants, various generalist functions and logging management.
 - *compression*: implementation of the compression algorithm.
@@ -38,6 +41,8 @@ Les modules suivants représentent l'intégralité des modules python composant 
 - *powergrasp*: main API, a wrapper around the compression routines.
 - *solving*: provides functions abstracting solving treatment like solver construction and best solution access.
 - *statistics*: defines way to do compression statistics, and how print/stock them.
+- *test*: unit test subpackage.
+- *tests*: repository of biological and non-biological data, used for testing and demonstration on compression.
 - *utils*: definition of functions that have been used one time ; not important, but can be useful for generate data.
 
 Moreover, inside the PowerGrASP module is a *ASPSources* subdirectory,
@@ -54,7 +59,6 @@ It needs to be well understood.
 
 1. determination of the connected component (ASP solver used (*extraction.lp*)).
 2. for each connected component:
-    1. preprocessing of the data, yielding only nodes necessary for current step (ASP solver used (*preprocessing.lp*)).
     2. search for the best clique (ASP solver used) (ASP solver used (*findbestclique.lp* and *postprocessing.lp*)).
     3. search for the best biclique, that must be better than the clique (ASP solver used (*findbestbiclique.lp* and *postprocessing.lp*)).
     4. if a model is found (either clique or biclique):
@@ -68,12 +72,14 @@ It needs to be well understood.
 
 Note that at each iteration, grounding and solving is performed three times.
 
+
 ### Scoring
 The score of generated concepts (clique, biclique, star) are equals to the number of edge it covered.
 At each step, the best concept, choosen for being produced, is one of the concept with the higher edge cover.
 
 NB: in the *postprocessing.lp* ASP source, the score is inverted for being minimized by the solver.
 The main reason is because the solver deals best with minimization than maximization.
+
 
 ### Blocks and alternatives
 With blocks, PowerGrASP avoid creation of overlapping power nodes.
@@ -92,6 +98,8 @@ instead of keep all concepts, and scores them after discard those that overlaps,
 it is possible to generate only the maximum ones, and reduce them until they overlaps,
 and finally score the reduced ones.
 This principle, implemented in the branch *enhancement#15*, seems to be slower. (2.4 times the time needed for the *structural binding* test case with blocks)
+
+
 
 
 ## Implementation details
@@ -119,15 +127,15 @@ while the benchmarks shows a slower compression.
 The minimal score is 2, or equals to the score of the clique found (if any) at the same step for any biclique search.
 
 
-#### Reduction of equivalent nodes  (since 0.4.X)
+#### Reduction of equivalent nodes  (currently tested)
 Nodes with exactly the same attributes (== linked to the same other nodes) are always handled together in cases of bicliques.
 If N nodes have the same attributes, then the smaller lexicographically will be choosen as the normal node. The others are named «hidden» nodes.
 The data extraction in *extract.lp* yields an equiv/2 atom, where equiv(X,Y) define Y as an hidden node, and X as a normal node.
-In *findbestbiclique.lp* the equiv/2 atoms are used for define the content of each set of the biclique: if X is embed in the set 2, then all hidden nodes Y such as equiv(X,Y) will be added to the set.
+In *findbestbiclique.lp* the equiv/2 atoms are used for define the content of each set of the biclique: if X is embed in a set, then all hidden nodes Y such as equiv(X,Y) will be added to the set.
 The score can finally be computed.
 
-However, cliques needs a better treatment. When a clique use a node X such as equiv(X,Y) exist, one hidden node Y is choosen and is no longer marked as hidden, as the equiv(X,Y) atom is not yielded by the postprocessing step.
-The choosen Y node is put in the clique.
+However, cliques needs a special treatment. When a clique use a node X such as equiv(X,Y) exist, one hidden node Y is choosen and is no longer marked as hidden, as the equiv(X,Y) atom is not yielded by the postprocessing step.
+The choosen Y node is put in the clique, and the node X score is decremented.
 
 
 ##### commits
@@ -179,7 +187,7 @@ This tool allow to print a bubble file without Cytoscape usage, with something l
     java -jar Oog.jar -inputfiles=path/to/bubble.bbl -img -f=png
 
 Add *&>/dev/null* for prevent any logging output.
-Some problems can appears, notabily the edges that are not displayed.
+Some problems can appears, notabily the normal edges that are not displayed.
 
 
 ### DOT file format
@@ -187,6 +195,12 @@ A layout engine of graphviz named *fdp* starts to handle graph clusters.
 According to this [demonstration](http://www.graphviz.org/content/fdpclust), clusters are exactly what the powernodes are.
 
 This needs to be implemented, but it can be an interesting alternative to others visualization tools.
+
+
+### Statistics about compression
+Using the `--stats-file=filename` option, PowerGrASP will generate statistical data about the compression for each step, and store it in CSV format in given *filename*. With the `--plot-stats` flag, or the `--plot-file=plot.png` option, PowerGrASP will look for the data in *filename* and plot it using matplotlib.
+
+
 
 
 ## I/O formats
@@ -202,6 +216,8 @@ The converter library embedded in PowerGrASP can perform conversion after the co
 This is, however, not an important feature, while the only way for printing power graphs
 is Cytoscape and the module CyOog, which use exclusively the Bubble format.
 Like for inputs, managed output files are detailed in internal docstring and README.
+
+As for inputs, PowerGrASP can be extended in order to provides new output formats.
 
 
 
