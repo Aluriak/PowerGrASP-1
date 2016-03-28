@@ -14,7 +14,7 @@ Some references are given at the end.
 
 
 ## Architecture
-PowerGrASP mainly uses the Python language and Clingo, an Answer Set Programming implementation by *Potassco*.
+PowerGrASP mainly uses CPython and Clingo, an Answer Set Programming implementation by *Potassco*.
 All is packaged in a pythonic way for allows the upload on pypi. One of the main dependance is [pyasp](http://github.com/sthiele/pyasp),
 the module making the bridge between ASP and Python.
 With the help of the [docopt](http://docopt.org) module, PowerGrASP can be interfaced with the command-line as with another Python program.
