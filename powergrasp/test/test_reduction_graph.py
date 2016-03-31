@@ -98,6 +98,14 @@ class TestGraphReduction(unittest.TestCase):
     # def test_case_5_nodes(self):
         # self.assert_reduce(
             # # inital graph
+            # {'a': {'c', 'd', 'e'}, 'b': {'c', 'd', 'e'}, 'c': {'d'}},
+            # # reduced graph
+            # {'a': {'c', 'd', 'e'}, 'b': {'c', 'd', 'e'}, 'c': {'d'}},
+        # )
+
+    # def test_case_5_nodes_desordered(self):
+        # self.assert_reduce(
+            # # inital graph
             # {'a': {'b', 'c', 'd'}, 'b': {'c', 'd'}, 'c': {'e'}, 'd': {'e'}},
             # # reduced graph
             # {'a': {'b'}, 'd': {'a', 'b', 'e'}, 'c': {'a', 'b', 'e'}},
