@@ -25,7 +25,7 @@ MODELCOUNT=--count-model
 #PROFILING=--profiling
 #THREAD=--thread=0
 #PRE=--show-pre
-#LATTICE=--draw_lattice=$(DATA)
+LATTICE=--draw_lattice=$(DATA)
 
 
 # PDF OUPUT PIPELINE
