@@ -150,6 +150,7 @@ def compress(graph_data=None, output_file=None, *,
 
     # get data from parameters
     graph_file = asp_file_from(option['graph_data'])
+    network_name = network_name_from(graph_data)
     # Create the default observers
     output_converter = observers.OutputWriter(option['output_file'],
                                               option['output_format'])
@@ -172,13 +173,17 @@ def compress(graph_data=None, output_file=None, *,
             stats_file,
             output_converter=output_converter,
             time_counter=time_counter,
-            network_name=network_name_from(graph_data)
+            network_name=network_name
         ))
 
     if option['count_model']:
         instanciated_observers.append(observers.ObjectCounter())
     if option['count_cc']:
         instanciated_observers.append(observers.ConnectedComponentsCounter())
+
+    if True:  # find something better
+        instanciated_observers.append(observers.TimeComparator(commons.basename(network_name),
+                                                               time_counter))
 
     if option['draw_lattice']:
         instanciated_observers.append(observers.LatticeDrawer(draw_lattice))

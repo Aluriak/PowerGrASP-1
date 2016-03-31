@@ -3,6 +3,7 @@ Definition of various output-related compression observers.
 
 """
 import sys
+import statistics
 
 from .observer  import CompressionObserver, Signals, Priorities
 from powergrasp import commons
@@ -96,3 +97,48 @@ class OutputWriter(CompressionObserver):
         if output_format not in converter.OUTPUT_FORMATS:
             output_format = converter.DEFAULT_OUTPUT_FORMAT
         return output_format
+
+
+class TimeComparator(CompressionObserver):
+    """Maintain a list whole compression time, give the result"""
+
+    def __init__(self, network_name, time_counter=None):
+        self.time_counter = time_counter
+        self.filename = commons.access_packaged_file(
+            commons.DIR_DATA + 'compression_time_{}.txt'.format(network_name)
+        )
+        try:
+            with open(self.filename, 'a') as fd:
+                pass  # create it if necessary
+            with open(self.filename) as fd:
+                self.time_mean = statistics.mean(float(line) for line in fd)
+        except statistics.StatisticsError:
+            self.time_mean = None
+
+    def save_time(self, new_time):
+        with open(self.filename, 'a') as fd:
+            fd.write(str(new_time) + '\n')
+
+    def _update(self, signals):
+        if Signals.CompressionStopped in signals:
+            if self.time_counter is None:
+                return
+            time = self.time_counter.compression_time
+            self.save_time(time)
+            self.show(time)
+
+    def show(self, time):
+        if self.time_mean is None:
+            mean_diff = float(time)
+        else:
+            mean_diff = float(time) - float(self.time_mean)
+        diff_msg = ('+' if mean_diff > 0 else '')
+        LOGGER.info('Time Comparator: ' + str(time) + 's ('
+                    + diff_msg + str(mean_diff) + ')')
+
+
+
+    @property
+    def priority(self):
+        """After the statistical observer"""
+        return Priorities.Minimal
