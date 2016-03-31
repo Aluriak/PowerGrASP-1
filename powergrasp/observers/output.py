@@ -35,19 +35,16 @@ class LatticeDrawer(CompressionObserver):
     def __init__(self, directory=commons.PACKAGE_DIR_DATA,
                  prefix='lattice_'):
         self.basename = directory + prefix + '{}'
-        self.last_cc = None
 
     def _update(self, signals):
         if Signals.ConnectedComponentStarted in signals:
-            _, self.last_cc = signals[Signals.ConnectedComponentStarted]
-        if self.last_cc is not None and Signals.PreprocessingStopped in signals:
-            atoms = signals[Signals.PreprocessingStopped]
+            _, cc, atoms = signals[Signals.ConnectedComponentStarted]
             graphdict = utils.asp2graph(atoms)
-            cc_filename = self.basename.format(self.last_cc)
-            utils.line_diagram(graphdict, filename=cc_filename)
-            LOGGER.info('Line diagram of CC ' + str(self.last_cc)
-                        + ' saved in ' + cc_filename)
-            self.last_cc = None  # don't react next iteration of the same connected component
+            filename = self.basename.format(cc)
+            # print('DEBUG:', filename, atoms, graphdict)
+            utils.draw_lattice(graphdict, filename)
+            LOGGER.info('Line diagram of CC ' + str(cc)
+                        + ' saved in ' + filename)
 
 
 class OutputWriter(CompressionObserver):

@@ -26,7 +26,7 @@ class ConnectedComponentsCounter(CompressionObserver):
             else:
                 LOGGER.info(self.cc_name + ': ' + 'No remaining edge')
         if Signals.ConnectedComponentStarted in signals:
-            self.cc_num, self.cc_name = signals[Signals.ConnectedComponentStarted]
+            self.cc_num, self.cc_name, _ = signals[Signals.ConnectedComponentStarted]
             LOGGER.info('#### CC ' + self.cc_name + ' ' + str(self.cc_num+1)
                         + '/' + self._nb_ccs)
 

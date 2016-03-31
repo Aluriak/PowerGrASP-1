@@ -116,7 +116,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
         previous_atoms = atoms.to_str(cc_atoms)
         cc_atoms = atoms.to_str(cc_atoms)
         # treatment of the connected_components stated
-        notify_observers(connected_component_started=(cc_nb, cc_name))
+        notify_observers(connected_component_started=(cc_nb, cc_name, cc_atoms))
         # contains interesting atoms and the non covered edges at last step
         model_found_at_last_iteration = True  # False when no model found
         # main loop
