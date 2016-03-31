@@ -10,22 +10,34 @@ from collections import defaultdict
 
 from powergrasp import atoms
 from powergrasp import solving
-from powergrasp.commons import basename
+from powergrasp import commons
 
+
+LOGGER = commons.logger()
 
 LATTICE_FILENAME   = 'powergrasp/data/lattice'  # extension is added by graphviz
 ASP_FILE_INTEGRITY = 'powergrasp/ASPsources/integrity.lp'
 
 
+def draw_lattice(graph_dict, filename):
+    line_diagram(
+        {k.lower(): {_.upper() for _ in v} for k, v in graph_dict.items()},
+        filename=filename
+    )
+
 def asp2graph(asp_atoms):
-    """Convert string containing edge(X,Y) to dict {node: {succs}}"""
+    """Convert string containing (o)edge(X,Y) or inter(X,Y)
+    to dict {node: {succs}}"""
     graph = defaultdict(set)
-    print(asp_atoms)
-    edges = (atom for atom in asp_atoms.split('.') if atom.startswith('inter('))
+    edges = (atom for atom in asp_atoms.split('.')
+             if any(atom.startswith(prefix) for prefix in ('edge', 'oedge', 'inter')))
     for atom, args in (atoms.split(atom) for atom in edges):
         x, y = args
-        graph[x].add(y.upper())
-        graph[y].add(x.upper())
+        ux, uy = x.upper(), y.upper()
+        ux = ('attr_' + ux) if ux == x else ux
+        uy = ('attr_' + uy) if uy == y else uy
+        graph[x].add(uy)
+        graph[y].add(ux)
     return graph
 
 def line_diagram(graph, filename=LATTICE_FILENAME):
