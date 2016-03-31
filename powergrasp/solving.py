@@ -31,7 +31,7 @@ def gen_configs():
 NB_CONFIG = len(tuple(gen_configs()))
 
 ASP_CONF_OPTIONS = ' --heuristic={} --configuration={} --opt-strategy={} {} -n 0'
-ASP_DEFAULT_CLASP_OPTION = ' --heuristic=Vsids --configuration=frumpy '
+ASP_DEFAULT_CLASP_OPTION = ' --heuristic=Domain --configuration=frumpy '
 
 def gen_extract_configs():
     for heur, conf, strat, flag in gen_configs():
