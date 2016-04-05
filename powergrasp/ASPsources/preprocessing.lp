@@ -16,7 +16,3 @@
 % Symetric edges.
 inter(X,Y):- oedge(X,Y).
 inter(X,Y):- inter(Y,X).
-
-% heuristic should preferabily use nodes with an high degree.
-_heuristic(membercc(X),factor,D) :- membercc(X) ; D={inter(X,_)}.
-_heuristic(inter(X,Y),factor,D) :- inter(X,Y) ; D={inter(X,_)}.

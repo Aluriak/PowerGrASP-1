@@ -18,6 +18,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+% heuristic should preferabily use nodes with an high degree.
+_heuristic(minobj(cc,k,X),factor,D) :- minobj(cc,k,X) ; D={inter(X,_)}.
+#show _heuristic/3.
+#show minobj/3.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
