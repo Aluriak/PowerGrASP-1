@@ -23,6 +23,7 @@ _heuristic(minobj(cc,k,X),factor,D) :- minobj(cc,k,X) ; D={inter(X,_)}.
 #show _heuristic/3.
 #show minobj/3.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
