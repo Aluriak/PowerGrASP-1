@@ -74,9 +74,9 @@ def asp_file_from(data):
     # convert reduced graph data into ASP-readable format
     graph = converter.to_asp_file(graph_data_file, format=data_format)
     # print('GRAPH:', graph)
-    reduced_graph = graph_manipulation.reduced(graph)
+    # reduced_graph = graph_manipulation.reduced(graph)
     # print('REDUCED:', reduced_graph)
-    # reduced_graph = graph
+    reduced_graph = graph
     final_graph_file = tempfile.NamedTemporaryFile('w', delete=False)
     for atom in atoms.from_graph_dict(reduced_graph):
         final_graph_file.write(atom)
