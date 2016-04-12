@@ -49,7 +49,7 @@ set 2 = {a, c, d} (values in dictionnary values, given by columns(1) function)
 import sys
 import itertools
 from itertools import chain
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 
 def integerised_id(graph):
@@ -96,8 +96,51 @@ def repeatitions_filtered(graph):
     return output
 
 
+def node_concept(node, graph, objs=None, attrs=None):
+    """Return a concept (A, B) associated to given node in graph.
+    A can be restricted to objs and B to attrs"""
+    first = {node}
+    second = set(graph[node])
+    all_neis = Counter(chain.from_iterable(graph[n] for n in second))
+    for nei, count in all_neis.items():
+        if count == len(second):
+            first.add(nei)
+    return first & objs & attrs, second & objs & attrs
+
+
+def restricted_repeatitions_filtered(graph):
+    # print('GGRAPH:', graph)
+    output = dict(graph)  # struct copy
+    assert output is not graph
+    graph = completed(graph)
+    rows = set(output.keys())
+    cols = set(columns(output))
+    for node, succs in sorted(tuple(graph.items())):
+        # print('ROWS:', rows)
+        # print('COLS:', cols)
+        concept_first, concept_second = node_concept(node, graph, rows, cols)
+        # print('CONCEPT of ', node, ' is ', concept_first, concept_second)
+        if not concept_first or not concept_second:
+            continue
+        first_in_rows = all(n in rows for n in concept_first)
+        first_in_cols = all(n in cols for n in concept_first)
+        assert first_in_rows and first_in_cols
+        second_in_rows = all(n in rows for n in concept_second)
+        second_in_cols = all(n in cols for n in concept_second)
+        assert second_in_rows and second_in_cols
+        if len(concept_first) < len(concept_second):
+            rows -= concept_second
+            cols |= concept_first
+    # print('ROWS:', rows)
+    # print('COLS:', cols)
+    return {node: cols & succs for node, succs in graph.items() if node in rows}
+
+
 def columns(graph):
     return set(itertools.chain.from_iterable(graph.values()))
+
+def all_nodes(graph):
+    return chain(columns(graph), graph.keys())
 
 
 def finalize(graph):
@@ -133,14 +176,16 @@ def reduced(graph):
 
     # second step: filter out a row if all succs are in rows
     output = repeatitions_filtered(output)
-    # print('AFTER SECOND STEP:', output)
+    # print('AFTER SECOND STEP:', print_table(output))
 
     output = reversed_graph(output)
-    # print('AFTER REVERSION  :', output)
+    # print('AFTER REVERSION  :', print_table(output))
 
     # third step: filter out a row if all succs are in rows
+    # output = repeatitions_filtered(output)
+    output = restricted_repeatitions_filtered(output)
     output = repeatitions_filtered(output)
-    # print('AFTER THIRD STEP :', output)
+    # print('AFTER THIRD STEP :', print_table(output))
 
     # minimize the amount of keys:
     if len(output) > len(columns(output)):
@@ -158,3 +203,18 @@ def reduction_ratio(graph, reduced_graph):
     reduced_a = set(chain.from_iterable(reduced_graph.values()))
     reduced_b = set(reduced_graph.keys())
     return (len(reduced_a) * len(reduced_b)) / (len(graph_a) * len(graph_b))
+
+
+def print_table(graph):
+    """Return given graph as a string describing a 2D table of (objects, attributes)"""
+    if not graph:
+        return 'empty table'
+    graph = {str(k): {str(v) for v in vs} for k, vs in graph.items()}
+    WIDTH = len(str(max(all_nodes(graph), key=lambda x: len(str(x)))))
+    cols = columns(graph)
+    str_cols = lambda c: '|'.join(str(col).rjust(WIDTH) for col in c)
+    str_bool = lambda b: 'X' if b else ' '
+    ret = ''.rjust(WIDTH) + '|' + str_cols(cols) + '\n'
+    for node, succs in graph.items():
+        ret += node.ljust(WIDTH) + '|' + str_cols(str_bool(n in succs) for n in cols) + '\n'
+    return '\n' + ret
