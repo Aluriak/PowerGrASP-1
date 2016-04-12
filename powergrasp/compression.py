@@ -180,7 +180,7 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
                 last_score = best_score
                 remain_edges_cc = tuple(best_model.get('oedge'))
                 previous_atoms = atoms.to_str(best_model.get(
-                    ('oedge', 'membercc', 'block', 'include_block')
+                    ('oedge', 'membercc', 'block', 'include_block', 'node_set')
                 ))
 
                 # give new powernodes to converter

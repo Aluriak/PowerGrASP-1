@@ -171,6 +171,8 @@ keeped_membercc(Y):- keeped_oedge(_,Y).
 #show membercc(X): keeped_membercc(X).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
+#show node_set(N,X): node_set(N,X) , keeped_oedge(X,_).
+#show node_set(N,Y): node_set(N,Y) , keeped_oedge(_,Y).
 
 % debug output
 %#show clique/2.

@@ -38,7 +38,7 @@ node_set(2,Y):- edge(_,Y).
 
 % Connected paths starting with minimal element X
 % connected(Minimum element,Element connected to the minimum)
-connectedpath(X,Y):- edge(X,Y).
+connectedpath(X,Y):- oedge(X,Y).
 connectedpath(X,Z):- connectedpath(X,Y) ; inter(Y,Z) ; X<Z.
 
 % Connected components are identified by their smaller element.
