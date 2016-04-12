@@ -2,11 +2,17 @@
 Test on graph compression.
 
 """
+import re
 import unittest
 import tempfile
 
 import powergrasp
 from powergrasp import commons
+
+
+# Regex keeping the powernode definition in \1, but filtering out the set number.
+#  since this last can change between two run, better delete it.
+REGEX_BUBBLE_SET = re.compile('(PWRN-"[^"]+"-[0-9]+-)[12]')
 
 
 class TestUnambiguousCompression(unittest.TestCase):
@@ -38,8 +44,9 @@ class TestUnambiguousCompression(unittest.TestCase):
 
     def unified_bubble(self, bubble_lines):
         """Return the set of comparable lines found in given bubble lines"""
-        # filter out comments and blank lines
-        return set(line.strip() for line in bubble_lines
+        # filter out set number, comments and blank lines
+        return set(REGEX_BUBBLE_SET.sub(r'\1?', line.strip())
+                   for line in bubble_lines
                    if not line.startswith('#') and len(line.strip()) > 0)
 
     def unified_bubble_from_file(self, bubble_file):
@@ -75,8 +82,11 @@ class TestUnambiguousCompression(unittest.TestCase):
 
 # Expected results of tested cases
 RESULT_DDIAMUN = """
-NODE\t"d"
-NODE\t"i"
+NODE\t"d1"
+NODE\t"d2"
+NODE\t"d3"
+NODE\t"i1"
+NODE\t"i2"
 NODE\t"b"
 NODE\t"a"
 NODE\t"q"
@@ -90,36 +100,37 @@ NODE\t"n"
 NODE\t"e"
 NODE\t"l"
 NODE\t"h"
-NODE\t"d2"
 NODE\t"g"
 NODE\t"j"
-IN\tPWRN-"a"-4-1\tPWRN-"a"-3-2
-IN\t"a"\tPWRN-"a"-1-1
-IN\t"d"\tPWRN-"a"-1-1
-IN\t"d2"\tPWRN-"a"-1-1
-IN\t"m"\tPWRN-"a"-5-1
-IN\t"m2"\tPWRN-"a"-5-1
-IN\t"l"\tPWRN-"a"-3-1
-IN\t"p"\tPWRN-"a"-3-1
-IN\t"b"\tPWRN-"a"-1-2
-IN\t"o"\tPWRN-"a"-1-2
-IN\t"e"\tPWRN-"a"-1-2
-IN\t"q"\tPWRN-"a"-1-2
-IN\t"c"\tPWRN-"a"-1-2
-IN\tPWRN-"a"-3-1\tPWRN-"a"-2-1
-IN\t"f"\tPWRN-"a"-2-1
-IN\t"g"\tPWRN-"a"-2-1
-IN\t"j"\tPWRN-"a"-2-1
-IN\t"h"\tPWRN-"a"-2-2
-IN\t"i"\tPWRN-"a"-2-2
-IN\t"n"\tPWRN-"a"-4-1
-IN\tPWRN-"a"-5-1\tPWRN-"a"-4-1
-EDGE\tPWRN-"a"-1-1\tPWRN-"a"-1-2\t1.0
-EDGE\tPWRN-"a"-5-1\t"n"\t1.0
-EDGE\tPWRN-"a"-3-1\tPWRN-"a"-3-2\t1.0
+IN\tPWRN-"a"-4-?\tPWRN-"a"-3-?
+IN\t"a"\tPWRN-"a"-1-?
+IN\t"d1"\tPWRN-"a"-1-?
+IN\t"d2"\tPWRN-"a"-1-?
+IN\t"d3"\tPWRN-"a"-1-?
+IN\t"m"\tPWRN-"a"-5-?
+IN\t"m2"\tPWRN-"a"-5-?
+IN\t"l"\tPWRN-"a"-3-?
+IN\t"p"\tPWRN-"a"-3-?
+IN\t"b"\tPWRN-"a"-1-?
+IN\t"o"\tPWRN-"a"-1-?
+IN\t"e"\tPWRN-"a"-1-?
+IN\t"q"\tPWRN-"a"-1-?
+IN\t"c"\tPWRN-"a"-1-?
+IN\tPWRN-"a"-3-?\tPWRN-"a"-2-?
+IN\t"f"\tPWRN-"a"-2-?
+IN\t"g"\tPWRN-"a"-2-?
+IN\t"j"\tPWRN-"a"-2-?
+IN\t"h"\tPWRN-"a"-2-?
+IN\t"i1"\tPWRN-"a"-2-?
+IN\t"i2"\tPWRN-"a"-2-?
+IN\t"n"\tPWRN-"a"-4-?
+IN\tPWRN-"a"-5-?\tPWRN-"a"-4-?
+EDGE\tPWRN-"a"-1-?\tPWRN-"a"-1-?\t1.0
+EDGE\tPWRN-"a"-5-?\t"n"\t1.0
+EDGE\tPWRN-"a"-3-?\tPWRN-"a"-3-?\t1.0
 EDGE\t"b"\t"c"\t1.0
-EDGE\tPWRN-"a"-2-1\tPWRN-"a"-2-2\t1.0
-EDGE\tPWRN-"a"-4-1\t"q"\t1.0
+EDGE\tPWRN-"a"-2-?\tPWRN-"a"-2-?\t1.0
+EDGE\tPWRN-"a"-4-?\t"q"\t1.0
 EDGE\t"f"\t"g"\t1.0
 """
 
@@ -136,23 +147,23 @@ NODE\t"g"
 NODE\t"c"
 NODE\t"b"
 NODE\t"j"
-IN\t"e"\tPWRN-"a"-2-1
-IN\tPWRN-"a"-3-1\tPWRN-"a"-2-1
-IN\t"a"\tPWRN-"a"-3-1
-IN\t"c"\tPWRN-"a"-3-1
-IN\t"b"\tPWRN-"a"-3-1
-IN\t"d"\tPWRN-"a"-3-1
-IN\t"g"\tPWRN-"a"-4-1
-IN\t"f"\tPWRN-"a"-4-1
-IN\t"h"\tPWRN-"a"-4-1
-IN\t"i"\tPWRN-"a"-1-1
-IN\t"j"\tPWRN-"a"-1-1
-IN\tPWRN-"a"-4-1\tPWRN-"a"-1-1
-IN\t"k"\tPWRN-"a"-1-1
-EDGE\tPWRN-"a"-2-1\tPWRN-"a"-2-1\t1.0
-EDGE\tPWRN-"a"-3-1\t"f"\t1.0
-EDGE\tPWRN-"a"-4-1\t"l"\t1.0
-EDGE\tPWRN-"a"-1-1\tPWRN-"a"-1-1\t1.0
+IN\t"e"\tPWRN-"a"-2-?
+IN\tPWRN-"a"-3-?\tPWRN-"a"-2-?
+IN\t"a"\tPWRN-"a"-3-?
+IN\t"c"\tPWRN-"a"-3-?
+IN\t"b"\tPWRN-"a"-3-?
+IN\t"d"\tPWRN-"a"-3-?
+IN\t"g"\tPWRN-"a"-4-?
+IN\t"f"\tPWRN-"a"-4-?
+IN\t"h"\tPWRN-"a"-4-?
+IN\t"i"\tPWRN-"a"-1-?
+IN\t"j"\tPWRN-"a"-1-?
+IN\tPWRN-"a"-4-?\tPWRN-"a"-1-?
+IN\t"k"\tPWRN-"a"-1-?
+EDGE\tPWRN-"a"-2-?\tPWRN-"a"-2-?\t1.0
+EDGE\tPWRN-"a"-3-?\t"f"\t1.0
+EDGE\tPWRN-"a"-4-?\t"l"\t1.0
+EDGE\tPWRN-"a"-1-?\tPWRN-"a"-1-?\t1.0
 """
 
 RESULT_BIP = """
@@ -162,15 +173,15 @@ NODE\t"a"
 NODE\t"f"
 NODE\t"e"
 NODE\t"c"
-IN\t"e"\tPWRN-"a"-2-1
-IN\t"c"\tPWRN-"a"-2-1
-IN\t"d"\tPWRN-"a"-2-1
-IN\tPWRN-"a"-2-1\tPWRN-"a"-1-2
-IN\t"a"\tPWRN-"a"-1-1
-IN\t"f"\tPWRN-"a"-1-1
-IN\t"b"\tPWRN-"a"-1-1
-EDGE\tPWRN-"a"-2-1\tPWRN-"a"-2-1\t1.0
-EDGE\tPWRN-"a"-1-1\tPWRN-"a"-1-2\t1.0
+IN\t"e"\tPWRN-"a"-2-?
+IN\t"c"\tPWRN-"a"-2-?
+IN\t"d"\tPWRN-"a"-2-?
+IN\tPWRN-"a"-2-?\tPWRN-"a"-1-?
+IN\t"a"\tPWRN-"a"-1-?
+IN\t"f"\tPWRN-"a"-1-?
+IN\t"b"\tPWRN-"a"-1-?
+EDGE\tPWRN-"a"-2-?\tPWRN-"a"-2-?\t1.0
+EDGE\tPWRN-"a"-1-?\tPWRN-"a"-1-?\t1.0
 """
 
 RESULT_CLIQUE = """
@@ -178,11 +189,11 @@ NODE\t"c"
 NODE\t"b"
 NODE\t"a"
 NODE\t"d"
-IN\t"c"\tPWRN-"a"-1-1
-IN\t"b"\tPWRN-"a"-1-1
-IN\t"a"\tPWRN-"a"-1-1
-IN\t"d"\tPWRN-"a"-1-1
-EDGE\tPWRN-"a"-1-1\tPWRN-"a"-1-1\t1.0
+IN\t"c"\tPWRN-"a"-1-?
+IN\t"b"\tPWRN-"a"-1-?
+IN\t"a"\tPWRN-"a"-1-?
+IN\t"d"\tPWRN-"a"-1-?
+EDGE\tPWRN-"a"-1-?\tPWRN-"a"-1-?\t1.0
 """
 
 RESULT_STAR = """
@@ -190,11 +201,11 @@ NODE\t"c"
 NODE\t"d"
 NODE\t"b"
 NODE\t"e"
-IN\t"c"\tPWRN-"a"-1-2
-IN\t"d"\tPWRN-"a"-1-2
-IN\t"b"\tPWRN-"a"-1-2
-IN\t"e"\tPWRN-"a"-1-2
-EDGE\tPWRN-"a"-1-2\t"a"\t1.0
+IN\t"c"\tPWRN-"a"-1-?
+IN\t"d"\tPWRN-"a"-1-?
+IN\t"b"\tPWRN-"a"-1-?
+IN\t"e"\tPWRN-"a"-1-?
+EDGE\tPWRN-"a"-1-?\t"a"\t1.0
 """
 
 RESULT_CC = """
@@ -205,22 +216,22 @@ NODE\t"3"
 NODE\t"4"
 NODE\t"6"
 NODE\t"1"
-IN\t"1"\tPWRN-"1"-1-1
-IN\t"6"\tPWRN-"1"-1-1
-IN\t"4"\tPWRN-"1"-1-2
-IN\t"2"\tPWRN-"1"-1-2
-IN\t"5"\tPWRN-"1"-1-2
-IN\t"3"\tPWRN-"1"-1-2
-EDGE\tPWRN-"1"-1-1\tPWRN-"1"-1-2\t1.0
+IN\t"1"\tPWRN-"1"-1-?
+IN\t"6"\tPWRN-"1"-1-?
+IN\t"4"\tPWRN-"1"-1-?
+IN\t"2"\tPWRN-"1"-1-?
+IN\t"5"\tPWRN-"1"-1-?
+IN\t"3"\tPWRN-"1"-1-?
+EDGE\tPWRN-"1"-1-?\tPWRN-"1"-1-?\t1.0
 NODE\t"b"
 NODE\t"c"
 NODE\t"d"
 NODE\t"e"
-IN\t"b"\tPWRN-"a"-1-2
-IN\t"c"\tPWRN-"a"-1-2
-IN\t"d"\tPWRN-"a"-1-2
-IN\t"e"\tPWRN-"a"-1-2
-EDGE\tPWRN-"a"-1-2\t"a"\t1.0
+IN\t"b"\tPWRN-"a"-1-?
+IN\t"c"\tPWRN-"a"-1-?
+IN\t"d"\tPWRN-"a"-1-?
+IN\t"e"\tPWRN-"a"-1-?
+EDGE\tPWRN-"a"-1-?\t"a"\t1.0
 """
 
 RESULT_PFC = """
@@ -235,23 +246,23 @@ NODE\t"c"
 NODE\t"e"
 NODE\t"f"
 NODE\t"i"
-IN\tPWRN-"a"-2-1\tPWRN-"a"-1-2
-IN\t"h"\tPWRN-"a"-1-2
-IN\t"i"\tPWRN-"a"-1-2
-IN\t"b"\tPWRN-"a"-1-1
-IN\tPWRN-"a"-3-1\tPWRN-"a"-1-1
-IN\t"a"\tPWRN-"a"-1-1
-IN\t"j"\tPWRN-"a"-3-2
-IN\t"l"\tPWRN-"a"-3-2
-IN\t"d"\tPWRN-"a"-3-1
-IN\t"c"\tPWRN-"a"-3-1
-IN\t"e"\tPWRN-"a"-2-1
-IN\t"g"\tPWRN-"a"-2-1
-IN\t"f"\tPWRN-"a"-2-1
-IN\tPWRN-"a"-3-2\tPWRN-"a"-2-2
-EDGE\tPWRN-"a"-3-1\tPWRN-"a"-3-2\t1.0
-EDGE\tPWRN-"a"-2-1\tPWRN-"a"-2-2\t1.0
-EDGE\tPWRN-"a"-1-1\tPWRN-"a"-1-2\t1.0
+IN\tPWRN-"a"-2-?\tPWRN-"a"-1-?
+IN\t"h"\tPWRN-"a"-1-?
+IN\t"i"\tPWRN-"a"-1-?
+IN\t"b"\tPWRN-"a"-1-?
+IN\tPWRN-"a"-3-?\tPWRN-"a"-1-?
+IN\t"a"\tPWRN-"a"-1-?
+IN\t"j"\tPWRN-"a"-3-?
+IN\t"l"\tPWRN-"a"-3-?
+IN\t"d"\tPWRN-"a"-3-?
+IN\t"c"\tPWRN-"a"-3-?
+IN\t"e"\tPWRN-"a"-2-?
+IN\t"g"\tPWRN-"a"-2-?
+IN\t"f"\tPWRN-"a"-2-?
+IN\tPWRN-"a"-3-?\tPWRN-"a"-2-?
+EDGE\tPWRN-"a"-3-?\tPWRN-"a"-3-?\t1.0
+EDGE\tPWRN-"a"-2-?\tPWRN-"a"-2-?\t1.0
+EDGE\tPWRN-"a"-1-?\tPWRN-"a"-1-?\t1.0
 """
 
 RESULT_ECOLI = """
@@ -311,22 +322,22 @@ NODE\t"v"
 NODE\t"w"
 NODE\t"f"
 NODE\t"c"
-IN\t"d"\tPWRN-"b"-1-1
-IN\t"w"\tPWRN-"b"-1-1
-IN\t"c"\tPWRN-"b"-1-1
-IN\t"s"\tPWRN-"b"-1-1
-IN\t"b"\tPWRN-"b"-1-1
-IN\t"f"\tPWRN-"b"-2-2
-IN\tPWRN-"b"-3-2\tPWRN-"b"-2-2
-IN\t"g"\tPWRN-"b"-2-2
-IN\t"m"\tPWRN-"b"-3-2
-IN\t"v"\tPWRN-"b"-3-2
-EDGE\tPWRN-"b"-3-2\t"l"\t1.0
+IN\t"d"\tPWRN-"b"-1-?
+IN\t"w"\tPWRN-"b"-1-?
+IN\t"c"\tPWRN-"b"-1-?
+IN\t"s"\tPWRN-"b"-1-?
+IN\t"b"\tPWRN-"b"-1-?
+IN\t"f"\tPWRN-"b"-2-?
+IN\tPWRN-"b"-3-?\tPWRN-"b"-2-?
+IN\t"g"\tPWRN-"b"-2-?
+IN\t"m"\tPWRN-"b"-3-?
+IN\t"v"\tPWRN-"b"-3-?
+EDGE\tPWRN-"b"-3-?\t"l"\t1.0
 EDGE\t"l"\t"p"\t1.0
-EDGE\tPWRN-"b"-1-1\tPWRN-"b"-1-1\t1.0
+EDGE\tPWRN-"b"-1-?\tPWRN-"b"-1-?\t1.0
 EDGE\t"m"\t"v"\t1.0
 EDGE\t"c"\t"f"\t1.0
-EDGE\tPWRN-"b"-2-2\t"b"\t1.0
+EDGE\tPWRN-"b"-2-?\t"b"\t1.0
 """
 
 RESULT_ONEDGE = """
