@@ -89,6 +89,8 @@ ddiam:
 	$(COMMAND) --graph-data="$(TESTS)double_biclique.lp"
 ddiamun:
 	$(COMMAND) --graph-data="$(TESTS)double_biclique_unambiguous.lp"
+edgetest:
+	$(COMMAND) --graph-data="$(TESTS)edges_test.lp"
 empty:
 	$(COMMAND) --graph-data="$(TESTS)empty.lp"
 inc:
