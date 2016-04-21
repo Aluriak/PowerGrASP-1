@@ -32,6 +32,7 @@ class TestUnambiguousCompression(unittest.TestCase):
             'concomp.lp'                     : RESULT_CC,
             'ecoli_2896-53.gml'              : RESULT_ECOLI,
             'one_edge.lp'                    : RESULT_ONEDGE,
+            'test.gml'                       : RESULT_TESTGML,
             'empty.lp'                       : '',
         }
 
@@ -331,4 +332,32 @@ EDGE\tPWRN-"b"-2-2\t"b"\t1.0
 
 RESULT_ONEDGE = """
 EDGE\t"a"\t"b"\t1.0
+"""
+
+RESULT_TESTGML = """
+NODE\t"c"
+NODE\t"w"
+NODE\t"f"
+NODE\t"v"
+NODE\t"s"
+NODE\t"b"
+NODE\t"d"
+NODE\t"g"
+NODE\t"m"
+IN\t"c"\tPWRN-"b"-1-1
+IN\t"b"\tPWRN-"b"-1-1
+IN\t"w"\tPWRN-"b"-1-1
+IN\t"d"\tPWRN-"b"-1-1
+IN\t"s"\tPWRN-"b"-1-1
+IN\t"g"\tPWRN-"b"-2-2
+IN\t"f"\tPWRN-"b"-2-2
+IN\tPWRN-"b"-3-2\tPWRN-"b"-2-2
+IN\t"v"\tPWRN-"b"-3-2
+IN\t"m"\tPWRN-"b"-3-2
+EDGE\tPWRN-"b"-2-2\t"b"\t1.0
+EDGE\t"c"\t"f"\t1.0
+EDGE\tPWRN-"b"-1-1\tPWRN-"b"-1-1\t1.0
+EDGE\t"m"\t"v"\t1.0
+EDGE\t"l"\t"p"\t1.0
+EDGE\tPWRN-"b"-3-2\t"l"\t1.0
 """

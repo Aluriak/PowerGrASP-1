@@ -104,9 +104,12 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
     LOGGER.info('#################')
     total_edges_counter = 0  # number of edge in all the graph (for statistics)
     total_remain_edges_counter = 0
+    UNEXPECTED_CC = ('"YAL029C"',)  # debug
+    UNEXPECTED_CC = ()  # debug
     for cc_nb, cc_atoms in enumerate(connected_components):
         # get data from cc_atoms
         cc_name = cc_atoms.get_first('cc').arguments[0]
+        if cc_name in UNEXPECTED_CC: continue  # debug
         notify_observers(cc_count_generated=int(cc_atoms.get_first('nb_cc').arguments[0]))
         assert any(isinstance(cc_name, cls) for cls in (str, int))
         remain_edges_cc = tuple(atom for atom in cc_atoms

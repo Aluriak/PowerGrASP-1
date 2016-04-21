@@ -1,0 +1,8 @@
+edge("04_PODL","RLOC_00023362"). 
+edge("09_PODL","RLOC_00001277"). 
+edge("12_PODL","RLOC_00000428"). 
+edge("01_GRET","RLOC_00001582"). 
+edge("01_GRET","RLOC_00023528"). 
+edge("01_PODL","RLOC_00000177"). 
+edge("01_PODL","RLOC_00000824"). 
+edge("01_PODL","RLOC_00001582"). 
