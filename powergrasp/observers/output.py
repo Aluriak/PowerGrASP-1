@@ -4,6 +4,7 @@ Definition of various output-related compression observers.
 """
 import sys
 import statistics
+from functools import partial
 
 from .observer  import CompressionObserver, Signals, Priorities
 from powergrasp import commons
@@ -97,10 +98,14 @@ class OutputWriter(CompressionObserver):
 
 
 class TimeComparator(CompressionObserver):
-    """Maintain a list whole compression time, give the result"""
+    """Maintain a list of whole compression time, compare with the
+    current compression results."""
+    ROUNDING_DIGIT = 3
 
-    def __init__(self, network_name, time_counter=None):
+    def __init__(self, network_name, time_counter=None,
+                 rounding_order=ROUNDING_DIGIT):
         self.time_counter = time_counter
+        self.rounder = partial(round, ndigits=rounding_order)
         self.filename = commons.access_packaged_file(
             commons.DIR_DATA + 'compression_time_{}.txt'.format(network_name)
         )
@@ -128,11 +133,10 @@ class TimeComparator(CompressionObserver):
         if self.time_mean is None:
             mean_diff = float(time)
         else:
-            mean_diff = float(time) - float(self.time_mean)
+            mean_diff = self.rounder(float(time) - float(self.time_mean))
         diff_msg = ('+' if mean_diff > 0 else '')
-        LOGGER.info('Time Comparator: ' + str(time) + 's ('
-                    + diff_msg + str(mean_diff) + ')')
-
+        LOGGER.info('Time Comparator: ' + str(self.rounder(time))
+                    + 's (' + diff_msg + str(mean_diff) + ')')
 
 
     @property
