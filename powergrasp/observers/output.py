@@ -103,9 +103,10 @@ class TimeComparator(CompressionObserver):
     ROUNDING_DIGIT = 3
 
     def __init__(self, network_name, time_counter=None,
-                 rounding_order=ROUNDING_DIGIT):
+                 rounding_order=ROUNDING_DIGIT, *, save_result=True):
         self.time_counter = time_counter
         self.rounder = partial(round, ndigits=rounding_order)
+        self.save_result = save_result
         self.filename = commons.access_packaged_file(
             commons.DIR_DATA + 'compression_time_{}.txt'.format(network_name)
         )
@@ -118,8 +119,11 @@ class TimeComparator(CompressionObserver):
             self.time_mean = None
 
     def save_time(self, new_time):
-        with open(self.filename, 'a') as fd:
-            fd.write(str(new_time) + '\n')
+        if self.save_result:
+            with open(self.filename, 'a') as fd:
+                fd.write(str(new_time) + '\n')
+        else:
+            pass
 
     def _update(self, signals):
         if Signals.CompressionStopped in signals:

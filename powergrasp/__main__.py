@@ -21,6 +21,7 @@ options:
     --profiling             print graph info before compress it
     --thread=INT            use INT thread for ASP solving (0 for automatic detection)
     --draw_lattice=DIR      draw in DIR the concept lattice foreach con. comp.
+    --no-save-time          don't save the compression time for later comparison
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
@@ -86,6 +87,7 @@ if __name__ == '__main__':
             loglevel        = options['loglevel'       ],
             thread          = options['thread'         ],
             draw_lattice    = options['draw_lattice'   ],
+            no_save_time    = options['no_save_time'   ],
         )
 
     # plotting if statistics csv file given, and showing or saving requested

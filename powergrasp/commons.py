@@ -106,6 +106,7 @@ PROGRAM_OPTIONS = {
     'profiling'       : False,
     'thread'          : 1,
     'draw_lattice'    : None,
+    'no_save_time'    : False,
 }
 
 

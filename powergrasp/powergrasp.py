@@ -103,7 +103,8 @@ def compress(graph_data=None, output_file=None, *,
              count_model=None, count_cc=None,
              stats_file=None, timers=None, logfile=None, loglevel=None,
              thread=None, draw_lattice=None, instanciated_observers=None,
-             extract_config=None, biclique_config=None, clique_config=None):
+             extract_config=None, biclique_config=None, clique_config=None,
+             no_save_time=False):
     """Performs the graph compression with data found in graph file.
 
     Any not given argument will be overriden by default values.
@@ -181,14 +182,16 @@ def compress(graph_data=None, output_file=None, *,
     if option['count_cc']:
         instanciated_observers.append(observers.ConnectedComponentsCounter())
 
-    if True:  # find something better
-        instanciated_observers.append(observers.TimeComparator(commons.basename(network_name),
-                                                               time_counter))
-
     if option['draw_lattice']:
         instanciated_observers.append(observers.LatticeDrawer(draw_lattice))
     if option['interactive']:
         instanciated_observers.append(observers.InteractiveCompression())
+
+    instanciated_observers.append(
+        observers.TimeComparator(commons.basename(network_name),
+                                 time_counter,
+                                 save_result=not no_save_time)
+    )
 
     # sort observers, in respect of their priority (smaller is after)
     instanciated_observers.sort(key=lambda o: o.priority.value, reverse=True)
