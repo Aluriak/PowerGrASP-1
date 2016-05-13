@@ -70,6 +70,9 @@ def completed(graph):
         for succ in succs:
             complete_graph[succ].add(node)
             complete_graph[node].add(succ)
+    for node in complete_graph.keys():
+        if node in complete_graph[node]:
+            complete_graph[node].add(node)
     return complete_graph
 
 
