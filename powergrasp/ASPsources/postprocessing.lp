@@ -115,22 +115,22 @@ poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
 % in all other cases: create a poweredge between the two newconcepts
 poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 
-% Are covered all edges of concept that link two nodes of different sets.
+% Edges covered by the concept, X<=Y.
 covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
 % Node count in each set of the biclique is given by summing weights of all nodes.
 % Edge cover is the number of node covered by the set.
 edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
-%edgecover(cc,k,T,N):- newconcept(cc,k,T,_) ; N=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)}.
 
 % Concept score, equal to maximal score - edge cover.
 score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
 score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
+score(T,N):- N={newconcept(cc,k,T,X)} ; T=1..2.
 
 % Minimize score
-#minimize{S@1,S:score(cc,k,S)}.
+#maximize{N@1,X: score(1,N), newconcept(cc,k,2,X)}.
 
 % Exclusion of concepts with not enough nodes.
 %  The lowerbound is equals to 1 at least,
@@ -140,7 +140,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 :- score(cc,k,S) ; S>upperbound-lowerbound.
 
 % Discard cases when no score is generated
-:- not score(cc,k,_).
+:- not score(_,_).
 
 
 
