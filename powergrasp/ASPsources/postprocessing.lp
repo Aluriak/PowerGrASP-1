@@ -127,10 +127,12 @@ score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
 score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
-score(T,N):- N={newconcept(cc,k,T,X)} ; T=1..2.
+
+% Number of nodes in the first set.
+first_set_size(N):- N={newconcept(cc,k,1,_)}.
 
 % Minimize score
-#maximize{N@1,X: score(1,N), newconcept(cc,k,2,X)}.
+#maximize{N@1,X: first_set_size(N), newconcept(cc,k,2,X)}.
 
 % Exclusion of concepts with not enough nodes.
 %  The lowerbound is equals to 1 at least,
@@ -140,7 +142,7 @@ score(T,N):- N={newconcept(cc,k,T,X)} ; T=1..2.
 :- score(cc,k,S) ; S>upperbound-lowerbound.
 
 % Discard cases when no score is generated
-:- not score(_,_).
+:- not score(_,_,_).
 
 
 
