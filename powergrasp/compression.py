@@ -47,9 +47,31 @@ def search_concept(input_atoms, score_min, score_max, cc, step, aspconfig):
         LOGGER.debug(CONCEPT_NAME + ' SEARCH: no model found')
         concept_score = None
     else:
-        assert('score' in str(model))
-        concept_score = int(model.get_first('score').arguments[0])
-    return model, concept_score
+        first_set_size = int(model.get_first('set_size').args()[1])
+        # print('CLIQUE' if search_clique else 'BICLIQUE', first_set_size)
+        # Compute the score from the outputed data.
+        #  atoms powernode contains as third parameter the set number,
+        #  and there is a powernode for each node.
+        if search_clique:
+            concept_score = int((first_set_size * (first_set_size - 1)) / 2)
+        else:
+            func = lambda a: a.args()[2]
+            groups = itertools.groupby(sorted(model.get('powernode'), key=func), func)
+            try:
+                first = len(tuple(next(groups)[1]))
+            except StopIteration:
+                first = 1
+            try:
+                second = len(tuple(next(groups)[1]))
+            except StopIteration:
+                second = 1
+
+            # first, second = set_sizes
+            concept_score = int(first * second)
+    if concept_score and concept_score < score_min:
+        return None, None
+    else:
+        return model, concept_score
 
 
 def compress_lp_graph(graph_lp, *, all_observers=[],

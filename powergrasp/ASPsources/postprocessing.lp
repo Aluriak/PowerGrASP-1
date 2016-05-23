@@ -103,11 +103,6 @@ block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%% EDGE COVER %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Edge cover is computed as the number of edges replaced by the poweredge.
-%  the score is defined as the upperbound (maximal edge cover) minus edge cover.
-%  bigger is the edge cover, smaller is the score.
-%  solver's job is to minimize the score, thus maximize the edge cover.
-
 % clique: create an edge to powernode itself / don't need to create two powernodes
 poweredge(p(cc,k,1),p(cc,k,1)):- clique(cc,k).
 % star: link directly the alone node to the second powernode
@@ -116,33 +111,25 @@ poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
 poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 
 % Edges covered by the concept, X<=Y.
-covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
+covered(X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
-% Node count in each set of the biclique is given by summing weights of all nodes.
-% Edge cover is the number of node covered by the set.
-edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
-
-% Concept score, equal to maximal score - edge cover.
-score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
-                edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
-score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
-                N1={newconcept(cc,k,1,X)}.
+% Number of elements in the new concept first set.
+edgecover1(N):- N={newconcept(cc,k,1,_)}.
+edgecover2(N):- N={newconcept(cc,k,1,_)}.
 
 % Number of nodes in the first set.
-first_set_size(N):- N={newconcept(cc,k,1,_)}.
+first_set_size(N*2):- edgecover1(N) ; not clique(cc,k).
+first_set_size(N-1):- edgecover1(N) ;     clique(cc,k).
 
-% Minimize score
+% Maximize the edge cover.
 #maximize{N@1,X: first_set_size(N), newconcept(cc,k,2,X)}.
 
-% Exclusion of concepts with not enough nodes.
-%  The lowerbound is equals to 1 at least,
-%  and determined by the scorebound ASP program.
-%  The upperbound is the min between the number of remaining edges
-%  in the connected component and the size of the previous concept.
-:- score(cc,k,S) ; S>upperbound-lowerbound.
+% Discards concepts smaller than lowerbound and bigger than upperbound.
+:- S>upperbound ; S<=lowerbound ; S=N1*N2 ; edgecover1(N1)
+                ; edgecover2(N2) ; not clique(cc,k).
 
 % Discard cases when no score is generated
-:- not score(_,_,_).
+%:- not score(_,_,_).
 
 
 
@@ -161,13 +148,13 @@ first_set_size(N):- N={newconcept(cc,k,1,_)}.
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
 
 % statistics
+#show set_size(1,N): edgecover1(N).
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
 #show poweredge_count(K): K={poweredge(_,_)}.
-#show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
 
 % next step data
-keeped_oedge(X,Y):- oedge(X,Y) ; X<Y ; not covered(X,Y) ; not covered(cc,k,X,Y).
+keeped_oedge(X,Y):- oedge(X,Y) ; X<Y ; not covered(X,Y).
 keeped_membercc(X):- keeped_oedge(X,_).
 keeped_membercc(Y):- keeped_oedge(_,Y).
 #show oedge(X,Y): keeped_oedge(X,Y).
