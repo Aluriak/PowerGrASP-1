@@ -8,7 +8,7 @@ import unittest
 from .. import graph_manipulation
 
 
-class TestGraphReduction(unittest.TestCase):
+class TestBipartiteApproximation(unittest.TestCase):
 
     def test_completed(self):
         self.assertEqual(
