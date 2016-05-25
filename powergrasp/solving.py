@@ -20,6 +20,8 @@ LOGGER = commons.logger()
 ASPConfig = namedtuple('ASPConfig', 'files clasp_options gringo_options')
 ASPConfig.__new__.__defaults__ = None, '', ''  # constructor default values
 
+
+# Benchmarking related options.
 # shortcuts for solvers options
 HEURISTICS = ('Berkmin', 'Vmtf', 'Vsids', 'Unit', 'None', 'Domain')
 CONFIGURATIONS = ('frumpy', 'jumpy', 'tweety', 'trendy', 'crafty', 'handy')
@@ -37,25 +39,50 @@ def gen_extract_configs():
     for heur, conf, strat, flag in gen_configs():
         yield ASPConfig([commons.ASP_SRC_EXTRACT], ASP_CONF_OPTIONS.format(heur, conf, strat, flag))
 
-# default configs
-CONFIG_DEFAULT = lambda: ASPConfig([])
-CONFIG_EXTRACTION = lambda: ASPConfig(
-    [commons.ASP_SRC_EXTRACT],
-    ' --heuristic=Vsids --configuration=frumpy -n 0',
-)
-CONFIG_BICLIQUE_SEARCH = lambda: ASPConfig(
-    [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDBC],
-    ASP_DEFAULT_CLASP_OPTION,
-)
-CONFIG_CLIQUE_SEARCH = lambda: ASPConfig(
-    [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDCC],
-    ASP_DEFAULT_CLASP_OPTION,
-)
-CONFIG_INCLUSION = lambda: ASPConfig(
-    [commons.ASP_SRC_INCLUSION],
-)
+
+# Default configs dedicated to task specific solving.
+def gen_config_default(files=None, sup_clingo_args='', sup_gringo_args=''):
+    """Yield configuration with no file nor parameters"""
+    return ASPConfig(
+        files if files else [],
+        sup_clingo_args,
+        sup_gringo_args
+    )
+
+def gen_config_extraction(sup_clingo_args='', sup_gringo_args=''):
+    """Yield configuration dedicated to graph data extraction"""
+    return ASPConfig(
+        [commons.ASP_SRC_EXTRACT],
+        sup_clingo_args + ' --heuristic=Vsids --configuration=frumpy -n 0',
+        sup_gringo_args,
+    )
+
+def gen_config_biclique(sup_clingo_args='', sup_gringo_args=''):
+    """Yield configuration dedicated to biclique search"""
+    return ASPConfig(
+        [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDBC],
+        sup_clingo_args + ' ' + ASP_DEFAULT_CLASP_OPTION,
+        sup_gringo_args,
+    )
+
+def gen_config_clique(sup_clingo_args='', sup_gringo_args=''):
+    """Yield configuration dedicated to clique search"""
+    return ASPConfig(
+        [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDCC],
+        sup_clingo_args + ' ' + ASP_DEFAULT_CLASP_OPTION,
+        sup_gringo_args,
+    )
+
+def gen_config_inclusion(sup_clingo_args='', sup_gringo_args=''):
+    """Yield configuration dedicated to final powernode inclusion computation"""
+    return ASPConfig(
+        [commons.ASP_SRC_INCLUSION],
+        sup_clingo_args,
+        sup_gringo_args,
+    )
 
 
+# Solving related definitions.
 class Atoms(asp.TermSet):
     """This class is a patching of TermSet, and is returned in place of it
     by the functions of this module."""
@@ -98,7 +125,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     if aspargs is None:
         aspargs = {}
     if aspconfig is None:
-        aspconfig = CONFIG_DEFAULT()
+        aspconfig = gen_config_default()
     # use list of aspfiles in all cases
     assert aspfiles.__class__ in (tuple, list, str)
     assert aspconfig.__class__ is ASPConfig
