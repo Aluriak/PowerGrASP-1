@@ -115,18 +115,18 @@ covered(X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
 % Number of elements in the new concept first set.
 edgecover1(N):- N={newconcept(cc,k,1,_)}.
-%edgecover2(N):- N={newconcept(cc,k,1,_)}.
+edgecover2(N):- N={newconcept(cc,k,2,_)}.
 
 % Number of nodes in the first set.
-first_set_size(N*2):- edgecover1(N) ; not clique(cc,k).
-first_set_size(N-1):- edgecover1(N) ;     clique(cc,k).
+first_set_size(N+N):- edgecover1(N) ; N<= upperbound; not clique(cc,k).
+first_set_size(N-1):- edgecover1(N) ; N<= upperbound;     clique(cc,k).
 
 % Maximize the edge cover.
 #maximize{N@1,X: first_set_size(N), newconcept(cc,k,2,X)}.
 
 % Discards concepts smaller than lowerbound and bigger than upperbound.
-%:- S>upperbound ; S<=lowerbound ; S=N1*N2 ; edgecover1(N1)
-                %; edgecover2(N2) ; not clique(cc,k).
+:- S>(2*upperbound)  ; S=N1*N2 ; first_set_size(N1) ; edgecover2(N2) ; not clique(cc,k).
+:- S<(2*lowerbound) ; S=N1*N2 ; first_set_size(N1) ; edgecover2(N2) ; not clique(cc,k).
 
 % Discard cases when no score is generated
 %:- not score(_,_,_).
