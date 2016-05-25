@@ -104,7 +104,7 @@ def compress(graph_data=None, output_file=None, *,
              stats_file=None, timers=None, logfile=None, loglevel=None,
              thread=None, draw_lattice=None, instanciated_observers=None,
              extract_config=None, biclique_config=None, clique_config=None,
-             no_save_time=False):
+             no_save_time=False, time_limit:int=0):
     """Performs the graph compression with data found in graph file.
 
     Any not given argument will be overriden by default values.
@@ -125,11 +125,11 @@ def compress(graph_data=None, output_file=None, *,
 
     # None to default
     if extract_config is None:
-        extract_config = solving.CONFIG_EXTRACTION()
+        extract_config = solving.gen_config_extraction()
     if biclique_config is None:
-        biclique_config = solving.CONFIG_BICLIQUE_SEARCH()
+        biclique_config = solving.gen_config_biclique(sup_clingo_args='--time-limit=' + str(time_limit))
     if clique_config is None:
-        clique_config = solving.CONFIG_CLIQUE_SEARCH()
+        clique_config = solving.gen_config_clique(sup_clingo_args='--time-limit=' + str(time_limit))
 
     # gives default value for each parameter that needs it
     _, _, _, func_args = inspect.getargvalues(inspect.currentframe())
