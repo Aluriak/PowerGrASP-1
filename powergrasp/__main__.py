@@ -19,6 +19,7 @@ options:
     --plot-stats            plot stats found in stats-file if exist
     --plot-file=FILE        instead of show it, save plot in png FILE
     --profiling             print graph info before compress it
+    --time-limit=INT        maximal number of second to search a concept, or 0
     --thread=INT            use INT thread for ASP solving (0 for automatic detection)
     --draw_lattice=DIR      draw in DIR the concept lattice foreach con. comp.
     --no-save-time          don't save the compression time for later comparison
@@ -85,6 +86,7 @@ if __name__ == '__main__':
             stats_file      = options['stats_file'     ],
             logfile         = options['logfile'        ],
             loglevel        = options['loglevel'       ],
+            time_limit      = options['time_limit'     ],
             thread          = options['thread'         ],
             draw_lattice    = options['draw_lattice'   ],
             no_save_time    = options['no_save_time'   ],

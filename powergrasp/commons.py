@@ -105,6 +105,7 @@ PROGRAM_OPTIONS = {
     'plot_file'       : False,
     'profiling'       : False,
     'thread'          : 1,
+    'time_limit'      : 0,
     'draw_lattice'    : None,
     'no_save_time'    : False,
 }
