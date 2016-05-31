@@ -59,6 +59,9 @@ The supported input file formats are currently :
 - SBML: a regular SBML file, when species and reactions will be treated as nodes.
 - GML: a regular Graph Modeling Language file, readable by networkx python module.
 
+Example of inputs can be found in the [powergrasp/test/](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests) directory.
+Some of these are simple and used for unit testing. Take a look to [ddiam](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests/double_biclique.lp), [coli](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests/ecoli_2896-23.gml) or [star](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests/star.lp).
+
 Other formats will be supported in the future.
 
 #### Output
