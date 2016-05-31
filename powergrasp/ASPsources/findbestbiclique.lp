@@ -17,6 +17,18 @@
 %       - star(cc,k,T): set T of concept is a star.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Dichotomic search of concept: find an anticlique in the graph
+0 { antinode(X): membercc(X) } 10.
+:- antinode(X) ; antinode(Y) ; inter(X,Y).
+
+% Maximize the anticlique size.
+#maximize{1@X: antinode(X)}.
+
+% Only nodes that are not antinodes are usable in the second set.
+o2_node(X):- not antinode(X) ; membercc(X).
+o2_inter(X,Y):- not antinode(X) ; not antinode(Y) ; inter(X,Y).
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
@@ -24,7 +36,7 @@
 linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
 
 % Choice of the minimum of the concept
-1{minobj(cc,k,X):membercc(X)}1.
+1{minobj(cc,k,X):membercc(X) }1.
 
 % Choice of elements in part 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
