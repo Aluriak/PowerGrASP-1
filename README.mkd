@@ -2,8 +2,8 @@
 The Python [Powergraph analysis](https://en.wikipedia.org/wiki/Power_graph_analysis) tool,
 based on [Answer Set Programming](https://en.wikipedia.org/wiki/Answer_set_programming) solving and formal concept analysis.
 
-More technical documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/documentation.mkd).
-PowerGrASP results, compared to the existing BIOTEC tool, can be found in the [results file](https://github.com/Aluriak/PowerGrASP/blob/master/doc/results.mkd).
+More technical documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/doc/documentation.mkd).
+PowerGrASP results, compared to the existing BIOTEC tool, can be found in the [results file](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/doc/results.mkd).
 
 
 
