@@ -11,6 +11,7 @@ from powergrasp.converter.out_nnf          import OutNNF
 from powergrasp.converter.out_bbl          import OutBBL
 from powergrasp.converter.in_sbml          import InSBML
 from powergrasp.converter.in_gml           import InGML
+from powergrasp.converter.in_graphml       import InGraphML
 from powergrasp.converter.in_asp           import InASP
 from powergrasp import commons
 
