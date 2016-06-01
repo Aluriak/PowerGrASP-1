@@ -223,7 +223,7 @@ As for inputs, PowerGrASP can be extended in order to provides new output format
 Both input and output formats can be easily added to the module.
 For input formats, take a look to the following commits:
 
-- core implementation: [574ad7ce6199e4aa7444fc7e80e97336cf0d9bcc](https://github.com/Aluriak/PowerGrASP/commit/574ad7ce6199e4aa7444fc7e80e97336cf0d9bcc)
+- core implementation: [1dbed399b89139a9ce9e8d2ae2cc686a9392e905](https://github.com/Aluriak/PowerGrASP/commit/1dbed399b89139a9ce9e8d2ae2cc686a9392e905)
 - example integration: [c4c95a0964fc999aa0ac92f02fbbd648da638bcd](https://github.com/Aluriak/PowerGrASP/commit/c4c95a0964fc999aa0ac92f02fbbd648da638bcd)
 - unit tests: [2699fd1ec9ba10f5ee8a2617be3269f85dbdcbea](https://github.com/Aluriak/PowerGrASP/commit/2699fd1ec9ba10f5ee8a2617be3269f85dbdcbea)
 
