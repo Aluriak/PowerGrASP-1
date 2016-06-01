@@ -123,6 +123,8 @@ star:
 	$(COMMAND) --graph-data="$(TESTS)star.lp"
 testgml:
 	$(COMMAND) --graph-data="$(TESTS)test.gml"
+testgraphml:
+	$(COMMAND) --graph-data="$(TESTS)test.graphml"
 testlp:
 	$(COMMAND) --graph-data="$(TESTS)test.lp"
 three:
