@@ -12,6 +12,8 @@ logger = commons.logger()
 
 class OutNNF(OutConverter):
     """Convert given atoms in NNF format"""
+    FORMAT_NAME = 'nnf'
+    FORMAT_EXTENSIONS = ('nnf',)
 
     def _convert(self, powernodes, cliques):
         """Operate convertion on given atoms"""

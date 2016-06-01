@@ -1,12 +1,10 @@
 """
 definitions of converter classes.
 
-Supported formats :
-- asp: pure asp;
-- nnf: nested network format;
-- bbl: bubble format, used by Powergraph for printings;
-
 """
+
+import inspect
+
 from powergrasp.converter.output_converter import OutConverter
 from powergrasp.converter.input_converter  import InConverter
 from powergrasp.converter.out_nnf          import OutNNF
@@ -21,16 +19,16 @@ LOGGER = commons.logger()
 
 # Link between format names and atom2format functions
 INPUT_FORMAT_CONVERTERS = {
-    ''     : InASP,  # if no extension, assume that is ASP
-    'lp'   : InASP,
-    'sbml' : InSBML,
-    'gml'  : InGML,
+    ext: cls
+    for cls_id, cls in globals().items()
+    if inspect.isclass(cls) and issubclass(cls, InConverter)
+    for ext in cls.FORMAT_EXTENSIONS
 }
 OUTPUT_FORMAT_CONVERTERS = {
-    ''    : OutBBL,  # if no extension, assume that is Bubble
-    'asp' : OutConverter,
-    'bbl' : OutBBL,
-    'nnf' : OutBBL,
+    ext: cls
+    for cls_id, cls in globals().items()
+    if inspect.isclass(cls) and issubclass(cls, OutConverter)
+    for ext in cls.FORMAT_EXTENSIONS
 }
 
 INPUT_FORMATS  = tuple(INPUT_FORMAT_CONVERTERS.keys())

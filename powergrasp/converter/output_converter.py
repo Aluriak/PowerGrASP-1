@@ -58,6 +58,9 @@ class OutConverter:
      it generates ASP output.
 
     """
+    FORMAT_NAME = ''  # no default format
+    FORMAT_EXTENSIONS = ()  # no default format
+
     def __init__(self):
         # for the first convertion, self.converted must be iterable
         self.atoms = tuple()

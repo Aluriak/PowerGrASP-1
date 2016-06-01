@@ -39,7 +39,7 @@ class InConverter(object):
 
     """
     FORMAT_NAME = 'asp'
-    FORMAT_EXTENSIONS = ()
+    FORMAT_EXTENSIONS = ('',)
 
     def convert(self, filename:str) -> dict:
         """Return a dict {node: successors}, representing the data contained

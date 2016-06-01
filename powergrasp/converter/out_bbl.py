@@ -77,6 +77,8 @@ class OutBBL(OutConverter):
     An ASP solver is used for perform complex treatments.
 
     """
+    FORMAT_NAME = 'bbl'
+    FORMAT_EXTENSIONS = ('', 'bbl')  # if no extension, assume that is Bubble
     META_DATA = (
         "File written by the " + info.__name__
         + " module (" + info.PACKAGE_VERSION + ")"
