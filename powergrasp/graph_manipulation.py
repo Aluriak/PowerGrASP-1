@@ -63,15 +63,15 @@ def integerised_id(graph):
     return output
 
 
-def completed(graph):
+def completed(graph, *, reflexive=False):
     """Return the same graph, with all edges specified"""
     complete_graph = defaultdict(set)
     for node, succs in graph.items():
         for succ in succs:
             complete_graph[succ].add(node)
             complete_graph[node].add(succ)
-    for node in complete_graph.keys():
-        if node in complete_graph[node]:
+    if reflexive:
+        for node in complete_graph.keys():
             complete_graph[node].add(node)
     return complete_graph
 
@@ -115,7 +115,8 @@ def restricted_repeatitions_filtered(graph):
     # print('GGRAPH:', graph)
     output = dict(graph)  # struct copy
     assert output is not graph
-    graph = completed(graph)
+    graph = completed(graph, reflexive=True)
+    print('GRAPH:', graph)
     rows = set(output.keys())
     cols = set(columns(output))
     for node, succs in sorted(tuple(graph.items())):
