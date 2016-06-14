@@ -60,12 +60,13 @@ def test_integrity(asp_graph_data_filename,
     Return a dict property:value.
     """
     with open(asp_graph_data_filename) as fd:
-        graph_atoms = ''.join(l for l in fd.read() if l not in '\n ')
+        graph_atoms = ''.join(fd.read())
     model = solving.model_from(graph_atoms, ASP_FILE_INTEGRITY)
+    print(graph_atoms)
     assert model is not None
     return {
-        name + ' ' + ': '.join(str(_) for _ in args)
-        for name, args in (atoms.split(atom) for atom in model)
+        atom.predicate + ' ' + ': '.join(str(_) for _ in atom.arguments)
+        for atom in model
     }
 
 
