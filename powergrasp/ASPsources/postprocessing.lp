@@ -114,8 +114,12 @@ poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 covered(X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
 
 % Number of elements in the new concept first set.
-edgecover1(N):- N={newconcept(cc,k,1,_)}.
-edgecover2(N):- N={newconcept(cc,k,2,_)}.
+edgecover1(NN+NW):- newconcept(cc,k,1,_) ;
+                    NW=#sum{W,X:weight(X,W), newconcept(cc,k,1,X)} ;
+                    NN={newconcept(cc,k,1,X)}.
+edgecover2(NN+NW):- newconcept(cc,k,2,_) ;
+                    NW=#sum{W,X:weight(X,W), newconcept(cc,k,2,X)} ;
+                    NN={newconcept(cc,k,2,X)}.
 
 % Number of nodes in the first set.
 first_set_size(N+N):- edgecover1(N) ; N<= upperbound; not clique(cc,k).
@@ -143,6 +147,7 @@ first_set_size(N-1):- edgecover1(N) ; N<= upperbound;     clique(cc,k).
 
 % powernodes and poweredge
 #show powernode(cc,k,T,X): newconcept(cc,k,T,X) ; not clique(cc,k) ; not star(cc,k,T).
+#show powernode(cc,k,T,Y): newconcept(cc,k,T,X) ; equiv(X,Y) ; not clique(cc,k).
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
@@ -162,8 +167,15 @@ keeped_membercc(Y):- keeped_oedge(_,Y).
 #show block(k,P,X): block(k,P,X).
 #show include_block(k,B,C): include_block(k,B,C).
 
+% weights outputs: things are complicated by the clique case where an hidden node is used.
+#show weight(X,W): weight(X,W), not hidden_used(X,_).  % keep same score for unused nodes
+#show weight(X,W-1): weight(X,W), hidden_used(X,_), W>0.  % if model is a clique, weight is decrease of 1
+% equiv outputs: don't yield equiv(X,Y) if Y was used by a clique, or by a biclique
+#show equiv(X,Y): equiv(X,Y) ; not hidden_used(X,Y).
+#show equiv(X,Y): equiv(X,Y) ; not clique(cc,k) ; not newconcept(cc,k,_,X).
+
 % debug output
-%#show clique/2.
-%#show star/3.
+#show clique/3.
+#show star/3.
 %#show upper(upperbound).
 %#show lower(lowerbound).
