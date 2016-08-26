@@ -53,6 +53,8 @@ basical:
 
 abn:
 	$(COMMAND) --graph-data="$(TESTS)abnormal.lp"
+atro:
+	$(COMMAND) --graph-data="$(TESTS)atropaPB.graphml"
 bbind:
 	$(COMMAND) --graph-data="$(TESTS)structural_binding_no_bridge.lp"
 big_biclique:
@@ -81,6 +83,8 @@ ccoli:
 	$(COMMAND) --graph-data="$(TESTS)ecoli_2896-53.gml"
 cccoli:
 	$(COMMAND) --graph-data="$(TESTS)ecoli_2391-42.gml"
+cordi:
+	$(COMMAND) --graph-data="$(TESTS)CordiPB.graphml"
 chloro:
 	$(COMMAND) --graph-data="$(TESTS)CHLOROPHYLL-SYN.sbml"
 diam:
