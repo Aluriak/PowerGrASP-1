@@ -38,19 +38,13 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
 
     if savefile is not None and is a filename, the figure will be saved
     in png in given file, with given dpi."""
-    try:
-        # plotting libraries
-        from matplotlib import rc
-        rc('text', usetex=True)
-        import matplotlib.pyplot as plt
-        import numpy as np
-        import pandas as pd
-        from matplotlib.pyplot import savefig
-    except ImportError:
-        LOGGER.error('plotting libraries are not all there. '
-                     'Please install matplotlib and pandas modules. '
-                     'Plotting aborted.')
-        return  # end of plotting
+    # plotting libraries
+    from matplotlib import rc
+    rc('text', usetex=True)
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import pandas as pd
+    from matplotlib.pyplot import savefig
 
     # GET DATA
     try:
