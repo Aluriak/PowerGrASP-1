@@ -86,7 +86,7 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
     rines, rabels = plot.right_ax.get_legend_handles_labels()
     labels = [key2label(l) for l in labels] + ['concept generation time']
 
-    plot.legend(lines + rines, labels)
+    plot.legend(lines + rines, labels, loc='best')
     plot.set_xlabel(xlabel)
     plot.set_ylabel(ylabel)
     plot.right_ax.set_ylabel('Time (s)')
