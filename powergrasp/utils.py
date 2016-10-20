@@ -62,12 +62,17 @@ def test_integrity(asp_graph_data_filename,
     with open(asp_graph_data_filename) as fd:
         graph_atoms = ''.join(fd.read())
     model = solving.model_from(graph_atoms, ASP_FILE_INTEGRITY)
-    print(graph_atoms)
     assert model is not None
-    return {
-        atom.predicate + ' ' + ': '.join(str(_) for _ in atom.arguments)
+    payload = {
+        atom.predicate + ' ' + atom.arguments[0]: atom.arguments[1]
         for atom in model
     }
+    # density is number of edges divide by maximal number of edges,
+    #  which is given by the clique formula (N(N-1)/2), so the density is
+    #  (2 * K) / (N(N-1))
+    nb_edge, nb_node = int(payload['nb edge']), int(payload['nb node'])
+    payload['density'] = (2 * nb_edge) / (nb_node * (nb_node - 1))
+    return payload
 
 
 def dict2atoms(graph, converted_graph_filename):
