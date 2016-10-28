@@ -51,6 +51,8 @@ basical:
 	$(PYTHON3) --graph-data="$(TESTS)abnormal.lp"
 
 
+aci:
+	$(COMMAND) --graph-data="$(TESTS)AcinetoPB.graphml"
 abn:
 	$(COMMAND) --graph-data="$(TESTS)abnormal.lp"
 atro:
@@ -65,6 +67,12 @@ big_clique:
 	$(COMMAND) --graph-data="$(TESTS)big_clique.lp"
 bintree:
 	$(COMMAND) --graph-data="$(TESTS)bintree.lp"
+biog12:
+	$(COMMAND) --graph-data="$(TESTS)biogenouest12.lp"
+biog12NA:
+	$(COMMAND) --graph-data="$(TESTS)biogenouest12NA.lp"
+biog2:
+	$(COMMAND) --graph-data="$(TESTS)biogenouest2.lp"
 bip:
 	$(COMMAND) --graph-data="$(TESTS)bipartite.lp"
 blo:
@@ -87,6 +95,8 @@ cordi:
 	$(COMMAND) --graph-data="$(TESTS)CordiPB.graphml"
 chloro:
 	$(COMMAND) --graph-data="$(TESTS)CHLOROPHYLL-SYN.sbml"
+disjoint:
+	$(COMMAND) --graph-data="$(TESTS)disjoint.lp"
 diam:
 	$(COMMAND) --graph-data="$(TESTS)diamond.lp"
 ddiam:
@@ -99,6 +109,8 @@ empty:
 	$(COMMAND) --graph-data="$(TESTS)empty.lp"
 inc:
 	$(COMMAND) --graph-data="$(TESTS)inclusions.lp"
+matrixdb:
+	$(COMMAND) --graph-data="$(TESTS)matrixdb_160614_CORE27.lp"
 onedge:
 	$(COMMAND) --graph-data="$(TESTS)one_edge.lp"
 pfc:
@@ -121,8 +133,12 @@ rna_pi_msg:
 	$(COMMAND) --graph-data="$(TESTS)piRNA_mRNA.lp"
 sbind:
 	$(COMMAND) --graph-data="$(TESTS)structural_binding.lp"
+simple:
+	$(COMMAND) --graph-data="$(TESTS)simple.lp"
 single:
 	$(COMMAND) --graph-data="$(TESTS)singlenode.lp"
+ssn:
+	$(COMMAND) --graph-data="$(TESTS)ssn.lp"
 star:
 	$(COMMAND) --graph-data="$(TESTS)star.lp"
 testgml:
