@@ -58,9 +58,6 @@ if __name__ == '__main__':
     # launch compression
     if options['graph_data']:
 
-        if options['profiling']:
-            print(utils.test_integrity(options['graph_data']))
-
         if options['output_file'] is None:
             pass
         elif os.path.isdir(options['output_file']):
@@ -88,6 +85,7 @@ if __name__ == '__main__':
             thread          = options['thread'         ],
             draw_lattice    = options['draw_lattice'   ],
             no_save_time    = options['no_save_time'   ],
+            do_profiling    = options['profiling'      ],
         )
 
     # plotting if statistics csv file given, and showing or saving requested

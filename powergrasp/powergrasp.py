@@ -24,7 +24,7 @@ from powergrasp import converter
 from powergrasp import solving
 from powergrasp import commons
 from powergrasp import atoms
-
+from powergrasp import utils
 
 
 LOGGER = commons.logger()
@@ -104,7 +104,7 @@ def compress(graph_data=None, output_file=None, *,
              stats_file=None, timers=None, logfile=None, loglevel=None,
              thread=None, draw_lattice=None, instanciated_observers=None,
              extract_config=None, biclique_config=None, clique_config=None,
-             no_save_time=False):
+             no_save_time=False, do_profiling=False):
     """Performs the graph compression with data found in graph file.
 
     Any not given argument will be overriden by default values.
@@ -203,6 +203,8 @@ def compress(graph_data=None, output_file=None, *,
 
     # Launch the compression
     LOGGER.info('COMPRESSION STARTED !')
+    if do_profiling:
+        print(utils.test_integrity(graph_file))
     compression.compress_lp_graph(
         graph_file,
         all_observers=tuple(instanciated_observers),
