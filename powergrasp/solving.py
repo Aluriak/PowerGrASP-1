@@ -2,6 +2,9 @@
 Definitions of model_from(5) that encapsulate
  the ASP grounder and solver calls.
 
+The system of ASPConfig allows to define different
+configs for different tasks.
+
 """
 import os
 import itertools
@@ -24,11 +27,11 @@ ASPConfig.__new__.__defaults__ = None, '', ''  # constructor default values
 HEURISTICS = ('Berkmin', 'Vmtf', 'Vsids', 'Unit', 'None', 'Domain')
 CONFIGURATIONS = ('frumpy', 'jumpy', 'tweety', 'trendy', 'crafty', 'handy')
 STRATEGIES = ('bb,1', 'bb,2', 'bb,3', 'usc,1', 'usc,2', 'usc,3')
-FLAGS = ('', '--restart-on-model')
+OTHER_FLAGS = ('', '--restart-on-model')
 
 def gen_configs():
     """Yield all possible configurations"""
-    return itertools.product(HEURISTICS, CONFIGURATIONS, STRATEGIES, FLAGS)
+    return itertools.product(HEURISTICS, CONFIGURATIONS, STRATEGIES, OTHER_FLAGS)
 NB_CONFIG = len(tuple(gen_configs()))
 
 ASP_CONF_OPTIONS = ' --heuristic={} --configuration={} --opt-strategy={} {} -n 0'
