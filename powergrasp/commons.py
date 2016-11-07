@@ -13,7 +13,6 @@ import sys
 import os
 
 from functools   import partial
-from collections import ChainMap
 
 from docopt import docopt
 
@@ -90,23 +89,23 @@ ASP_ARG_LOWERBOUND = 'lowerbound'
 
 
 # Definition of the default program options
-PROGRAM_OPTIONS = {
-    'graph_data'      : None,
-    'output_file'     : None,
-    'output_format'   : BUBBLE_FORMAT_ID,
-    'interactive'     : False,
-    'count_model'     : False,
-    'count_cc'        : False,
-    'timers'          : False,
-    'loglevel'        : DEFAULT_LOG_LEVEL,
-    'logfile'         : DEFAULT_LOG_FILE,
-    'stats_file'      : None,
-    'plot_stats'      : False,
-    'plot_file'       : False,
-    'profiling'       : False,
-    'thread'          : 1,
-    'draw_lattice'    : None,
-    'no_save_time'    : False,
+DEFAULT_PROGRAM_OPTIONS = {
+    'infile'       : None,
+    'outfile'      : None,
+    'outformat'    : BUBBLE_FORMAT_ID,
+    'interactive'  : False,
+    'count_model'  : False,
+    'count_cc'     : False,
+    'timers'       : False,
+    'loglevel'     : DEFAULT_LOG_LEVEL,
+    'logfile'      : DEFAULT_LOG_FILE,
+    'stats_file'   : None,
+    'plot_stats'   : False,
+    'plot_file'    : False,
+    'profiling'    : False,
+    'thread'       : 1,
+    'draw_lattice' : None,
+    'save_time'    : False,
 }
 
 
@@ -152,58 +151,6 @@ def test_case(filename):
     path = PACKAGE_DIR_TESTS + filename
     return path if os.path.exists(path) else None
 
-
-def options(*, cli_doc=None, parameters={}):
-    """Return the default compression options, enriched with result of CLI
-    parsing if docopt documentation is given, and with parameters if given.
-
-    All None values are put away, and the returned object is a ChainMap that
-    use the default configuration for non given parameters.
-
-    If documentation is None, CLI will not be parsed. Else docopt will be used.
-
-    Parameters have precedence over CLI in returned options.
-
-    """
-    IRRELEVANT_CLI_OPTIONS = ('--version', '--help')
-    if cli_doc:
-        docopt_args = docopt(cli_doc, version=PACKAGE_VERSION)
-    else:
-        docopt_args = {}
-    # get set of CLI parameters
-    cli_args = set(
-        arg.split('=')[0] if '=' in arg else arg
-        for arg in sys.argv
-    )
-    # filter out None values
-    parameters = {k: v for k, v in parameters.items() if v is not None}
-    # get docopt result only for args effectively present in CLI
-    docopt_args = {
-        name: value
-        for name, value in docopt_args.items()
-        if name in cli_args
-    }
-    # CLI args are those returned by docopt, but corrected and filtered
-    cli_args = {
-        arg.lstrip('-').replace('-', '_'): value
-        for arg, value in docopt_args.items()
-        if value is not None and arg not in IRRELEVANT_CLI_OPTIONS
-    }
-    # get arguments given by parameters
-    parameters = {
-        arg: value
-        for arg, value in parameters.items()
-        if value is not None
-    }
-    # raise error in case of unexpected argument
-    if any(arg not in PROGRAM_OPTIONS for arg in cli_args):
-        unexpected_args = (arg for arg in cli_args
-                           if arg not in PROGRAM_OPTIONS)
-        raise ValueError(
-            'ERROR: ' + str(tuple(unexpected_args)) + ' arguments is not in '
-            + str(tuple(PROGRAM_OPTIONS.keys()))
-        )
-    return ChainMap(parameters, cli_args, PROGRAM_OPTIONS)
 
 def thread(number=None):
     """Return Clasp options for use n thread, or if n is invalid, use the
