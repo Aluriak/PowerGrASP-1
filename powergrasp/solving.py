@@ -9,7 +9,7 @@ configs for different tasks.
 import os
 import itertools
 from functools   import partial
-from collections import deque, Counter, namedtuple
+from collections import deque, Counter
 
 from powergrasp import commons
 from powergrasp import atoms
@@ -19,31 +19,47 @@ from pyasp import asp
 LOGGER = commons.logger()
 
 
-# ASP Configuration class
-ASPConfig = namedtuple('ASPConfig', 'files clasp_options gringo_options')
-ASPConfig.__new__.__defaults__ = None, '', ''  # constructor default values
-
 # shortcuts for solvers options
-HEURISTICS = ('Berkmin', 'Vmtf', 'Vsids', 'Unit', 'None', 'Domain')
-CONFIGURATIONS = ('frumpy', 'jumpy', 'tweety', 'trendy', 'crafty', 'handy')
-STRATEGIES = ('bb,1', 'bb,2', 'bb,3', 'usc,1', 'usc,2', 'usc,3')
-OTHER_FLAGS = ('', '--restart-on-model')
+SOLVER_HEURISTICS = ('Berkmin', 'Vmtf', 'Vsids', 'Unit', 'None', 'Domain')
+SOLVER_CONFIGURATIONS = ('frumpy', 'jumpy', 'tweety', 'trendy', 'crafty', 'handy')
+SOLVER_STRATEGIES = ('bb,1', 'bb,2', 'bb,3', 'usc,1', 'usc,2', 'usc,3')
+SOLVER_FLAGS = ('', '--restart-on-model')
 
-def gen_configs():
-    """Yield all possible configurations"""
-    return itertools.product(HEURISTICS, CONFIGURATIONS, STRATEGIES, OTHER_FLAGS)
-NB_CONFIG = len(tuple(gen_configs()))
-
-ASP_CONF_OPTIONS = ' --heuristic={} --configuration={} --opt-strategy={} {} -n 0'
+SOLVER_CLI_TEMPLATE = ' --heuristic={} --configuration={} --opt-strategy={} {} -n 0'
 ASP_DEFAULT_CLASP_OPTION = ' --heuristic=Vsids --configuration=frumpy '
+ASP_FILES_MOTIF_SEARCH = [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO]
 
-def gen_extract_configs():
-    """Yield all possible ASPConfig objects"""
-    for heur, conf, strat, flag in gen_configs():
-        yield ASPConfig([commons.ASP_SRC_EXTRACT], ASP_CONF_OPTIONS.format(heur, conf, strat, flag))
+
+class ASPConfig:
+    """Context for solvers, used by solving module"""
+    def __init__(self, files:list, clasp_options:str='', gringo_options:str=''):
+        self.files = list(files or [])
+        self.clasp_options = clasp_options
+        self.gringo_options = gringo_options
+
+    @staticmethod
+    def gen_configs(heuristics=SOLVER_HEURISTICS, configs=SOLVER_CONFIGURATIONS,
+                    strategies=SOLVER_STRATEGIES, flags=SOLVER_FLAGS) -> iter:
+        """Yield all possible solver configurations as 4-uplets
+        (heuristic, config, strategies, other flags)
+
+        Example: Berkmin, handy, usc 2, --restart-on-model
+
+        """
+        yield from itertools.product(heuristics, configs, strategies, flags)
+
+    @staticmethod
+    def gen_extract_configs():
+        """Yield all possible ASPConfig objects for extraction"""
+        for heur, conf, strat, flag in gen_configs():
+            yield ASPConfig([commons.ASP_SRC_EXTRACT],
+                            SOLVER_CLI_TEMPLATE.format(heur, conf, strat, flag))
+
+
+SOLVER_NB_CONFIG = len(tuple(ASPConfig.gen_configs()))
 
 # default configs
-CONFIG_DEFAULT = lambda: ASPConfig([])
+CONFIG_DEFAULT = lambda: ASPConfig(None)
 CONFIG_EXTRACTION = lambda: ASPConfig(
     [commons.ASP_SRC_EXTRACT],
     ' --heuristic=Vsids --configuration=frumpy -n 0',
