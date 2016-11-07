@@ -98,12 +98,9 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     yield -- Atoms instance, containing atoms produced by solving
 
     """
-    if aspfiles is None:
-        aspfiles = []
-    if aspargs is None:
-        aspargs = {}
-    if aspconfig is None:
-        aspconfig = CONFIG_DEFAULT()
+    aspfiles = aspfiles or []
+    aspargs = aspargs or {}
+    aspconfig = aspconfig or CONFIG_DEFAULT()
     # use list of aspfiles in all cases
     assert aspfiles.__class__ in (tuple, list, str)
     assert aspconfig.__class__ is ASPConfig
@@ -111,8 +108,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
         aspfiles = [aspfiles]
     elif isinstance(aspfiles, tuple):  # solver take only list, not tuples
         aspfiles = list(aspfiles)
-    if aspconfig.files is not None:
-        aspfiles.extend(aspconfig.files)
+    aspfiles.extend(aspconfig.files or [])
     assert aspfiles.__class__ is list
 
     # define the command line options for gringo and clasp

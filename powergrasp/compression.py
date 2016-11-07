@@ -67,12 +67,9 @@ def compress_lp_graph(graph_lp, *, all_observers=[],
 
     """
     # None to default value
-    if extract_config is None:
-        extract_config = solving.CONFIG_EXTRACTION()
-    if biclique_config is None:
-        biclique_config = solving.CONFIG_BICLIQUE_SEARCH()
-    if clique_config is None:
-        clique_config = solving.CONFIG_CLIQUE_SEARCH()
+    extract_config = extract_config or solving.CONFIG_EXTRACTION()
+    biclique_config = biclique_config or solving.CONFIG_BICLIQUE_SEARCH()
+    clique_config = clique_config or solving.CONFIG_CLIQUE_SEARCH()
     # Shortcuts and curried functions
     def notify_observers(*args, **kwargs):
         "Notify observers with given signals"
