@@ -11,11 +11,13 @@ Main API is parse(2).
 """
 
 
+import os
 import sys
 import argparse
 from collections import ChainMap
 
 from powergrasp import commons
+from powergrasp import converter
 
 
 def parse(parameters={}, args=sys.argv[1:]) -> dict:
@@ -49,6 +51,46 @@ def normalized(arg:str) -> str:
     return arg.lstrip('-').replace('-', '_')
 
 
+def loglevel(level:str) -> str:
+    """Argparse type, raising an error if given loglevel does not exists"""
+    if level.upper() not in commons.LOGLEVELS:
+        raise argparse.ArgumentTypeError(
+            "Given loglevel ({}) doesn't exists. "
+            "Expected: {}.".format(level, ', '.join(commons.LOGLEVELS))
+        )
+    return level
+
+
+def thread_number(nbt:int) -> int:
+    """Argparse type, raising an error if given thread number is non valid"""
+    if float(nbt) != int(nbt):
+        raise argparse.ArgumentTypeError(
+            "Given number of thread ({}) is a float, not an integer.".format(nbt)
+        )
+    if int(nbt) < 1:
+        raise argparse.ArgumentTypeError(
+            "Given number of thread ({}) is not valid.".format(nbt)
+        )
+    return int(nbt)
+
+
+def existant_file(filepath:str) -> str:
+    """Argparse type, raising an error if given file does not exists"""
+    if not os.path.exists(filepath):
+        raise argparse.ArgumentTypeError("file {} doesn't exists".format(filepath))
+    return filepath
+
+
+def output_format(format:str) -> str:
+    """Argparse type, raising an error if given format does not exists"""
+    if format not in converter.OUTPUT_FORMATS:
+        raise argparse.ArgumentTypeError(
+            "Output format {} not handled. "
+            "Expected: {}".format(', '.join(format, converter.OUTPUT_FORMATS))
+        )
+    return format
+
+
 def cli_parser() -> argparse.ArgumentParser:
     """Return the dict of options set by CLI"""
 
@@ -60,19 +102,19 @@ def cli_parser() -> argparse.ArgumentParser:
     parser_pg = subs.add_parser('powergraph', description='Run a regular Powergraph compression.')
 
     # I/O arguments
-    parser_pg.add_argument('infile', type=str,
+    parser_pg.add_argument('infile', type=existant_file,
                            help='file containing the graph data')
-    parser_pg.add_argument('--outfile', '-o', type=str,
+    parser_pg.add_argument('--outfile', '-o', type=existant_file,
                            help='output file. Will be overwritted')
-    parser_pg.add_argument('--outformat', type=str,
+    parser_pg.add_argument('--outformat', type=output_format,
                            help='Format to use for output')
-    parser_pg.add_argument('--loglevel', type=str, default=commons.DEFAULT_LOG_LEVEL,
+    parser_pg.add_argument('--loglevel', type=loglevel,
                            help='Logging level, one of DEBUG, INFO, WARNING, ERROR or CRITICAL')
-    parser_pg.add_argument('--logfile', type=str, default=commons.DEFAULT_LOG_FILE,
+    parser_pg.add_argument('--logfile', type=existant_file,
                            help='Logging file, where all logs are written')
 
     # Compression arguments
-    parser_pg.add_argument('--thread', type=int, default=1,
+    parser_pg.add_argument('--thread', type=thread_number, default=1,
                            help='number of thread to use during solving')
 
     # Observers arguments
@@ -85,18 +127,18 @@ def cli_parser() -> argparse.ArgumentParser:
     parser_pg.add_argument('--save-time', action='store_true', help='Save the compression time for further comparison')
 
     parser_pg.add_argument('--plot-file', help='File used to save the rendered plot')
-    parser_pg.add_argument('--stats-file', help='Log measure of various timers')
+    parser_pg.add_argument('--stats-file', help='File to write for save statistics')
 
 
     # statistic recipe
     parser_stats = subs.add_parser('stats', description='Show statistics of compression.')
-    parser_stats.add_argument('--stats-file', help='Log measure of various timers')
+    parser_stats.add_argument('--stats-file', type=existant_file, help='File to write for save statistics')
     parser_stats.add_argument('--plot-file', help='File used to save the rendered plot')
 
 
     # profiling recipe
     parser_prof = subs.add_parser('profiling', description='Run profiling of input data.')
-    parser_prof.add_argument('infile', type=str,
+    parser_prof.add_argument('infile', type=existant_file,
                            help='file containing the graph data')
 
     return parser
