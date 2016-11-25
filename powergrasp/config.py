@@ -5,6 +5,7 @@ for a compression.
 """
 
 
+import os
 import sys
 import tempfile
 
@@ -110,6 +111,14 @@ class Configuration(metaclass=meta_config):
 
         if self.outfile is None:
             LOGGER.info('No output file to write. Standard output will be used.')
+        elif os.path.isdir(self.outfile):
+            LOGGER.info("Given output file is not a file, but a directory ({})."
+                        " Output file will be placed in it, with the name"
+                        " {}.{}.".format(self.outfile, self.network_name, self.outformat))
+            self.outfile = os.path.join(
+                self.outfile,
+                self.network_name + '.' + self.outformat
+            )
 
         if not isinstance(self.thread, int) or self.thread < 1:
             LOGGER.error('Thread value is not valid (equal to {}). 1 will be used.'.format(self.thread))
