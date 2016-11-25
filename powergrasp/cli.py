@@ -20,7 +20,7 @@ from powergrasp import commons
 from powergrasp import converter
 
 
-def parse(parameters={}, args=sys.argv[1:]) -> dict:
+def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
     """Return the default compression options, enriched with result of CLI
     parsing if args is given, and with parameters if given.
 
@@ -28,7 +28,7 @@ def parse(parameters={}, args=sys.argv[1:]) -> dict:
     use the default configuration for non given parameters.
 
     Parameters have precedence over CLI.
-    CLI have precedence over default parameters.
+    CLI have precedence over default options.
 
     """
     parameters = {k: v for k, v in parameters.items() if v is not None}
@@ -38,7 +38,7 @@ def parse(parameters={}, args=sys.argv[1:]) -> dict:
         for arg, value in vars(cli_parser().parse_args(args)).items()
     } if args else {}
 
-    return ChainMap(parameters, cli_args, commons.DEFAULT_PROGRAM_OPTIONS)
+    return ChainMap(parameters, cli_args, default_options or {})
 
 
 def normalized(arg:str) -> str:
