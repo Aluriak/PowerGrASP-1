@@ -10,6 +10,7 @@ import sys
 import tempfile
 
 from powergrasp import cli
+from powergrasp import motif
 from powergrasp import solving
 from powergrasp import commons
 from powergrasp import converter
@@ -18,21 +19,41 @@ from powergrasp import converter
 LOGGER = commons.logger()
 
 
-# configuration fields mapped with default value or None
-FIELDS = dict(commons.DEFAULT_PROGRAM_OPTIONS)
-FIELDS.update({
-    'biclique_config': solving.DEFAULT_CONFIG_BICLIQUE(),
-    'clique_config': solving.DEFAULT_CONFIG_CLIQUE(),
+# Definition of the configuration fields and their default values
+FIELDS = {  # field: default value
+    'infile'        : None,
+    'outfile'       : None,
+    'outformat'     : commons.BUBBLE_FORMAT_ID,
+    'interactive'   : False,
+    'count_model'   : False,
+    'count_cc'      : False,
+    'timers'        : False,
+    'loglevel'      : commons.DEFAULT_LOG_LEVEL,
+    'logfile'       : commons.DEFAULT_LOG_FILE,
+    'stats_file'    : None,
+    'plot_stats'    : False,
+    'plot_file'     : False,
+    'profiling'     : False,  # profiling of input data
+    'thread'        : 1,  # how many thread to use
+    'draw_lattice'  : None,
+    'save_time'     : False,
+    'motifs'        : (motif.CLIQUE, motif.BICLIQUE),  # iterable of motifs to use to compress
     'extract_config': solving.DEFAULT_CONFIG_EXTRACTION(),
-    # 'do_profiling': False,
+    'signal_profile': False,  # print debug information on received signals
+    'additional_observers': None,  # iterable of observers to add
 
-    # infered data
-    'network_name': 'unknow',
+    # infered data: this should not be written over
+    'network_name': None,  # name used to refer to the input network
     'graph_file': None,
-})
+    'asp_configs': None,  # iterable of asp configs (motifs + others)
+}
 
 
 def meta_config(name, bases, attrs):
+    """Mapping allowing Configuration class to automatically holds properties,
+    according to the content of FIELDS.
+
+    """
     attrs = dict(attrs)
 
     def prop(field):
@@ -72,7 +93,10 @@ class Configuration(metaclass=meta_config):
 
 
     def populate(self):
-        """Compute fields based on existing ones. Modify some existing fields."""
+        """Compute fields based on existing ones. Modify some existing fields
+        in order to provide default values.
+
+        """
         # add threading to ASP configs
         thread_option = commons.thread(self.thread)
         if thread_option:
@@ -97,6 +121,12 @@ class Configuration(metaclass=meta_config):
         # why the setattr form is used.
         setattr(self, '__network_name', commons.network_name(self.infile))
         setattr(self, '__graph_file', converter.to_asp_file(self.infile))
+
+        setattr(self, '__additional_observers',
+                list(getattr(self, '__additional_observers') or []))
+
+        setattr(self, '__asp_configs',
+                list(self.motifs) + [self.extract_config])
 
 
     def validate(self):
@@ -147,7 +177,8 @@ class Configuration(metaclass=meta_config):
         and given parameters.
 
         """
-        params = cli.parse(parameters=parameters, args=args)
+        params = cli.parse(parameters=parameters, args=args,
+                           default_options=FIELDS)
         cfg = Configuration(**params)
         cfg.cli_params = params  # TODO: document it, or delete it
         return cfg

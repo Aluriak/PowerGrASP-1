@@ -62,6 +62,7 @@ ASP_ARG_CC   = 'cc'
 ASP_ARG_STEP = 'k'
 ASP_ARG_UPPERBOUND = 'upperbound'
 ASP_ARG_LOWERBOUND = 'lowerbound'
+ASP_ARGS_NAMES = (ASP_ARG_CC, ASP_ARG_STEP, ASP_ARG_UPPERBOUND, ASP_ARG_LOWERBOUND)
 
 # ASP Solver options
 # ASP_GRINGO_OPTIONS = ''  # no default options
@@ -86,28 +87,6 @@ ASP_ARG_LOWERBOUND = 'lowerbound'
 # ASP_CLASP_OPTIONS.append('--heuristic=Domain')
 # ASP_CLASP_OPTIONS.append('--heuristic=Unit')
 # ASP_CLASP_OPTIONS.append('--heuristic=None')
-
-
-# Definition of the default program options
-DEFAULT_PROGRAM_OPTIONS = {
-    'infile'        : None,
-    'outfile'       : None,
-    'outformat'     : BUBBLE_FORMAT_ID,
-    'interactive'   : False,
-    'count_model'   : False,
-    'count_cc'      : False,
-    'timers'        : False,
-    'loglevel'      : DEFAULT_LOG_LEVEL,
-    'logfile'       : DEFAULT_LOG_FILE,
-    'stats_file'    : None,
-    'plot_stats'    : False,
-    'plot_file'     : False,
-    'profiling'     : False,
-    'thread'        : 1,
-    'draw_lattice'  : None,
-    'save_time'     : False,
-    'signal_profile': False,
-}
 
 
 # Functions
