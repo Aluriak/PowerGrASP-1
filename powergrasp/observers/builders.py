@@ -42,7 +42,7 @@ def built_from(cfg:config.Configuration) -> ObserverBatch:
     output_converter = OutputWriter(cfg.outfile, cfg.outformat)
     instanciated_observers = [
         output_converter,
-    ]
+    ] + list(cfg.additional_observers)
 
     # Add the optional observers
     if cfg.timers:
@@ -73,11 +73,13 @@ def built_from(cfg:config.Configuration) -> ObserverBatch:
     if cfg.signal_profile:
         instanciated_observers.append(SignalProfiler())
 
-    instanciated_observers.append(
-        TimeComparator(commons.basename(cfg.network_name),
-                       time_counter,
-                       save_result=cfg.save_time)
-    )
+    if False:  # TODO make this a config option
+        instanciated_observers.append(
+            TimeComparator(commons.basename(cfg.network_name),
+                           time_counter,
+                           save_result=cfg.save_time)
+        )
+
 
     # sort observers, in respect of their priority (smaller is after)
     instanciated_observers.sort(key=lambda o: o.priority.value, reverse=True)
