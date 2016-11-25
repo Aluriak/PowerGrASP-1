@@ -17,18 +17,10 @@ class InASP(InConverter):
     FORMAT_NAME = 'asp'
     FORMAT_EXTENSIONS = ('lp',)
 
-    def _gen_edges(self, filename):
-        """Yields pair (node, successor), representing the data contained
-        in input ASP file.
+    def convert(self, filename:str) -> str:
+        """If input is ASP, there is no need to convert it.
+        This method skip the edge generation and directly
+        return the given file.
+
         """
-        models = solving.model_from('', filename)
-        try:
-            for atom in models:
-                if atom.predicate == 'edge' and atom.nb_args() == 2:
-                    node, succ = atom.arguments
-                    yield node, succ
-        except IOError as e:
-            LOGGER.error(self.error_input_file(filename_sbml, e))
-        except TypeError:  # file is probably empty… so do the graph
-            return
-            yield
+        return filename
