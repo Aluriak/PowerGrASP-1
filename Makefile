@@ -174,12 +174,11 @@ plot:
 	$(PYTHON) --plot-stats $(STATFILE)
 
 
-t: test
-test:
+unittest:
 	python3 -m unittest discover -v
-pest: pytest
+t: pytest
 pytest:
-	py.test-3.4 powergrasp --doctest-module --failed-first --exitfirst
+	pytest powergrasp --doctest-module --failed-first --exitfirst
 
 
 # this is a way to treat multiple files
