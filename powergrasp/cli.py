@@ -118,14 +118,22 @@ def cli_parser() -> argparse.ArgumentParser:
                            help='number of thread to use during solving')
 
     # Observers arguments
-    parser_pg.add_argument('--count-model', action='store_true', help='Log the number of found models')
-    parser_pg.add_argument('--count-cc', action='store_true', help='Log the number of found connected component')
-    parser_pg.add_argument('--timers', action='store_true', help='Log measure of various timers')
-    parser_pg.add_argument('--interactive', action='store_true', help='Wait for user between two motif search')
-    parser_pg.add_argument('--plot-stats', action='store_true', help='Render the final statistic plot')
-    parser_pg.add_argument('--draw-lattice', action='store_true', help='Render the lattice representing the graph')
-    parser_pg.add_argument('--save-time', action='store_true', help='Save the compression time for further comparison')
-    parser_pg.add_argument('--signal-profile', action='store_true', help='Print information on signals that are raised by compression.')
+    parser_pg.add_argument('--count-model', action='store_true',
+                           help='Log the number of found models')
+    parser_pg.add_argument('--count-cc', action='store_true',
+                           help='Log the number of found connected component')
+    parser_pg.add_argument('--timers', action='store_true',
+                           help='Log measure of various timers')
+    parser_pg.add_argument('--interactive', action='store_true',
+                           help='Wait for user between two motif search')
+    parser_pg.add_argument('--plot-stats', action='store_true',
+                           help='Render the final statistic plot')
+    parser_pg.add_argument('--draw-lattice', action='store_true',
+                           help='Render the lattice representing the graph')
+    parser_pg.add_argument('--save-time', action='store_true',
+                           help='Save the compression time for further comparison')
+    parser_pg.add_argument('--signal-profile', action='store_true',
+                           help='Print information on signals that are raised by compression.')
 
     parser_pg.add_argument('--plot-file', help='File used to save the rendered plot')
     parser_pg.add_argument('--stats-file', help='File to write for save statistics')
@@ -133,13 +141,14 @@ def cli_parser() -> argparse.ArgumentParser:
 
     # statistic recipe
     parser_stats = subs.add_parser('stats', description='Show statistics of compression.')
-    parser_stats.add_argument('--stats-file', type=existant_file, help='File to write for save statistics')
+    parser_stats.add_argument('--stats-file', type=existant_file,
+                              help='File to write for save statistics')
     parser_stats.add_argument('--plot-file', help='File used to save the rendered plot')
 
 
     # profiling recipe
     parser_prof = subs.add_parser('profiling', description='Run profiling of input data.')
     parser_prof.add_argument('infile', type=existant_file,
-                           help='file containing the graph data')
+                             help='file containing the graph data')
 
     return parser
