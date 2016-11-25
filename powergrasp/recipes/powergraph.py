@@ -4,10 +4,9 @@
 import powergrasp as pg
 
 
-def powergraph(infile:str, outfile:str=None, observers=None, cfg=None):
+def powergraph(cfg=None, *, observers:pg.observers.ObserverBatch=None):
     """Implementation of the greedy Power Graph compression.
 
-    Save compressed graph in given file, and return it.
     If observers is not given, pg.observers.all() call will be used.
 
     """
@@ -17,7 +16,7 @@ def powergraph(infile:str, outfile:str=None, observers=None, cfg=None):
         else:
             observers = pg.observers.built_from(cfg)
     elif cfg is None:
-        cfg = pg.config.Configuration(infile=infile, outfile=outfile)
+        cfg = pg.config.Configuration()
     return powergraph_template(cfg, observers=observers)
 
 
@@ -49,11 +48,10 @@ def powergraph_template(cfg, observers:pg.observers.ObserverBatch=None):
     """
     observers = observers or pg.observers.built_from(cfg)
     with pg.Graph(cfg, observers=observers) as graph:
-        motifs = [pg.motif.CLIQUE, pg.motif.BICLIQUE]
         for cc in graph:
             while cc.has_motif:
                 best_motif = None
-                for motif in motifs:
+                for motif in cfg.motifs:
                     best_motif = cc.search_motif(motif, alt=best_motif)
                 cc.compress(best_motif)
         return graph
