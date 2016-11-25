@@ -77,30 +77,6 @@ DEFAULT_CONFIG_INCLUSION = lambda: ASPConfig(
 )
 
 
-class Atoms(asp.TermSet):
-    """This class is a patching of TermSet, and is returned in place of it
-    by the functions of this module."""
-
-    def get(self, atom_names):
-        if isinstance(atom_names, str):
-            return (atom for atom in self if atom.predicate == atom_names)
-        else:
-            return (atom for atom in self if atom.predicate in atom_names)
-
-    def get_first(self, atom_name):
-        return next(atom for atom in self if atom.predicate == atom_name)
-
-    def counter(self):
-        if not hasattr(self, '_counter'):
-            self._counter = Counter(atom.predicate for atom in self)
-        return self._counter
-
-    def count(self, name:str):
-        if not hasattr(self, '_counter'):
-            self.counter()
-        return self._counter.get(name, 0)
-
-
 def all_models_from(base_atoms, aspfiles=None, aspargs=None,
                     aspconfig=None, parsed=True):
     """Compute all models from ASP source code in aspfiles, with aspargs
@@ -140,8 +116,6 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=aspconfig.clasp_options)
-    # print('SOLVING:', aspfiles, constants)
-    # print('INPUT:', base_atoms.__class__, base_atoms)
     answers = solver.run(aspfiles, additionalProgramText=base_atoms,
                          collapseAtoms=not parsed)
     # if len(answers) > 0:
