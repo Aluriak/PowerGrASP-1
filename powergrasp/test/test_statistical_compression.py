@@ -8,6 +8,8 @@ import inspect
 from functools import partial
 
 import powergrasp
+from powergrasp import config
+from powergrasp import recipes
 from powergrasp import commons
 from powergrasp import observers
 from powergrasp.statistics import (INIT_EDGE, FINL_EDGE, GENR_PWED, GENR_PWND,
@@ -84,26 +86,29 @@ class TestStatisticalCompression(unittest.TestCase):
         statistics = DataExtractor(network_name=input_filename)
         tmp = tempfile.NamedTemporaryFile('w')
 
-        powergrasp.compress(
-            input_filename,
-            output_file=tmp.name,
-            output_format='bbl',
-            loglevel='CRITICAL',  # don't show any output, please
-            instanciated_observers=[statistics],
-        )
-        found_stats = self.filtered_extracted_stats(statistics)
-        results = ((field, found_stats[field], expected_stats[field])
-                   for field in STATS_FIELDS)
-        for field, found, expected in results:
-            if isinstance(expected, float):
-                expected = STATS_ROUND(expected)
-            if isinstance(found, float):
-                found = STATS_ROUND(found)
-            with self.subTest(filename=input_filename, field=field):
-                self.assertAlmostEqual(
-                    found,
-                    expected,
-                )
+        with self.subTest(filename=input_filename):
+            cfg = config.Configuration(
+                infile=input_filename,
+                outfile=tmp.name,
+                outformat='bbl',
+                loglevel='CRITICAL',
+                additional_observers=[statistics],
+            )
+            recipes.powergraph(cfg=cfg)
+            found_stats = self.filtered_extracted_stats(statistics)
+            results = ((field, found_stats[field], expected_stats[field])
+                       for field in STATS_FIELDS)
+            for field, found, expected in results:
+                if isinstance(expected, float):
+                    expected = STATS_ROUND(expected)
+                if isinstance(found, float):
+                    found = STATS_ROUND(found)
+                with self.subTest(filename=input_filename, field=field):
+                    self.assertAlmostEqual(
+                        found,
+                        expected,
+                    )
+
         tmp.close()
 
     def test_cases(self):

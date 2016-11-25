@@ -5,8 +5,9 @@ Test on graph compression.
 import unittest
 import tempfile
 
-import powergrasp
 from powergrasp import commons
+from powergrasp import recipes
+from powergrasp import config
 
 
 class TestUnambiguousCompression(unittest.TestCase):
@@ -54,17 +55,17 @@ class TestUnambiguousCompression(unittest.TestCase):
         compressing given graph."""
         tmp = tempfile.NamedTemporaryFile('w', delete=False)
         tmp.close()
-        powergrasp.compress(
-            input_filename,
-            output_file=tmp.name,
-            output_format='bbl',
-            loglevel='CRITICAL',  # don't show any output, please
-        )
         with self.subTest(filename=input_filename):
-            self.assertEqual(
-                self.unified_bubble_from_file(tmp.name),
-                self.unified_bubble(expected_bubble),
+            cfg = config.Configuration(
+                infile=input_filename,
+                outfile=tmp.name,
+                outformat='bbl',
+                loglevel='CRITICAL',
             )
+            recipes.powergraph(cfg=cfg)
+            expected = self.unified_bubble(expected_bubble)
+            found = self.unified_bubble_from_file(tmp.name)
+            self.assertEqual(expected, found)
 
 
     def test_cases(self):
