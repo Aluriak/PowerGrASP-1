@@ -28,7 +28,7 @@ class TestUnambiguousCompression(unittest.TestCase):
             'bipartite.lp'                   : RESULT_BIP,
             'testblocks.lp'                  : RESULT_BLO,
             'perfectfit.lp'                  : RESULT_PFC,
-            'cliques.lp'                     : RESULT_CLIQUE,
+            'clique.lp'                      : RESULT_CLIQUE,
             'star.lp'                        : RESULT_STAR,
             'concomp.lp'                     : RESULT_CC,
             'ecoli_2896-53.gml'              : RESULT_ECOLI,

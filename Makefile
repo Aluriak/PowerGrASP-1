@@ -83,6 +83,8 @@ cdiam:
 chr:
 	$(COMMAND) "$(TESTS)rrel_chr1_chr38.lp"
 clique:
+	$(COMMAND) "$(TESTS)clique.lp"
+cliques:
 	$(COMMAND) "$(TESTS)cliques.lp"
 cc:
 	$(COMMAND) "$(TESTS)concomp.lp"
