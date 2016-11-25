@@ -7,7 +7,12 @@ See recipes submodule in order to get usage examples.
 
 
 from powergrasp import motif
+from powergrasp import commons
 from powergrasp.atoms import AtomsModel
+from powergrasp.observers import Signals
+
+
+LOGGER = commons.logger()
 
 
 class ConnectedComponent:
@@ -18,11 +23,12 @@ class ConnectedComponent:
 
     """
 
-    def __init__(self, cc_id:str, node_number:int, edge_number:int, atoms:str,
+    def __init__(self, cc_id:str, cc_nb:int, node_number:int, edge_number:int, atoms:str,
                  observers:iter, config:dict, minimal_score:int=2):
         """
 
         cc_id -- name of the connected component
+        cc_nb -- index/number of the connected component
         node_number -- number of node in the cc
         edge_number -- number of edge in the cc
         atoms -- name of the file containing the atoms, or the atoms themselves
@@ -30,13 +36,30 @@ class ConnectedComponent:
         config -- a Configuration instance
 
         """
-        self.name = str(cc_id)
+        self.observers = observers
+        self.name, self.number = str(cc_id), int(cc_nb)
         self.score_min, self.score_max = minimal_score, int(edge_number)
         self.config = config
         self._has_motif = True
+        self._last_step = 0
         self.step = 1
         self._atoms = AtomsModel.from_(atoms)
         self.initial_edges_count = sum(1 for _ in self._atoms.get('oedge'))
+        self._first_call = True
+        self.validate()
+
+
+    def validate(self):
+        """Raise errors for different reasons"""
+        def gen_nodes():
+            for _, args in self._atoms.get('oedge'):
+                yield from args
+
+        for node in gen_nodes():
+            if node in commons.ASP_ARGS_NAMES:
+                LOGGER.critical("A node in input data is named <{}>, which is "
+                                "reserved. This is not expected.".format(node))
+                exit(1)
 
 
     @property
@@ -51,7 +74,19 @@ class ConnectedComponent:
         If found, compare it to given alterntative,
         and return the best of the two by comparing their score.
 
+        Increment step number automatically if previous step was finished.
+        (i.e. compressed)
+
         """
+        # this is the first time that search is called since last compression
+        if self._last_step == self.step:
+            self.step += 1
+            self.observers.signal(Signals.StepStarted)
+        assert self._last_step < self.step
+        if self._first_call:
+            self._first_call = False
+            self.observers.signal(connected_component_started=(self.number, self.name, self._atoms))
+
         found_motif = motif.search(
             input_atoms=str(self._atoms),
             score_min=self.score_min,
@@ -59,8 +94,10 @@ class ConnectedComponent:
             step=self.step,
             cc=self.name,
         )
-        self._has_motif = bool(alt and (found_motif.model or alt.model))
-        return found_motif if alt is None else best_motif(found_motif, alt)
+
+        best_model = found_motif if alt is None else best_motif(found_motif, alt)
+        # self._has_motif = bool(best_model)
+        return best_model
 
 
     def search_biclique(self, alt=None, constraints:str=''):
@@ -77,14 +114,45 @@ class ConnectedComponent:
 
 
     def compress(self, found_motif:'FoundMotif'):
-        """Modify self, based on given found motif"""
+        """Modify self, based on given found motif.
+
+        Terminate the step.
+
+        """
         if found_motif.model is None:
             self._has_motif = False
-        else:
-            found_motif.motif.compress(found_motif.model, self._atoms)
+            self.observers.signal(
+                connected_component_stopped=self.remaining_edges,
+                step_data_generated=([None] * 3),
+            )
+        else:  # there is a found model
+            self._has_motif = True
+            SIGNAL_MODEL_ATOMS = {'powernode', 'clique', 'poweredge'}
+            model_data = AtomsModel(found_motif.model.get(SIGNAL_MODEL_ATOMS))
+
+            data = found_motif.motif.compress(found_motif.model, self._atoms)
+            assert len(data['poweredge_count']) == 1, "Multiple poweredge_count/1 atoms were generated."
+            assert len(data['powernode_count']) == 1, "Multiple powernode_count/1 atoms were generated."
+            assert len(data['score']) == 1, "Multiple score/1 atoms were generated."
+
+            self.observers.signal(
+                model_found=model_data,
+                step_data_generated=(int(data['powernode_count'][0]),
+                                     int(data['poweredge_count'][0]),
+                                     int(data['score'][0]))
+            )
+
+        # end current step
+        self._last_step = self.step
+        self.observers.signal(Signals.StepStopped)
+        self.observers.signal(Signals.StepFinalized)
 
 
     @property
     def has_motif(self):
         """True if a motif has been found during last search"""
         return self._has_motif
+
+    @property
+    def remaining_edges(self):
+        return AtomsModel(self._atoms.get('oedge'))
