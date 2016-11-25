@@ -1,27 +1,7 @@
 """
-usage:
-    __main__.py [options]
 
-options:
-    --help, -h
-    --version, -v
-    --graph-data=FILE       filepath to input graph definition
-    --output-file=NAME      output file or dir
-    --output-format=NAME    output format (see below for formats)
-    --interactive           program ask user for next step
-    --show-pre              print preprocessed data in stdout
-    --count-model           prints models count in stdout
-    --count-cc              prints connected component count in stdout
-    --timers                prints times of execution in stdout
-    --loglevel=NAME         defines terminal log level
-    --logfile=FILE          file where all logs will be put in
-    --stats-file=FILE       save csv statistics in FILE
-    --plot-stats            plot stats found in stats-file if exist
-    --plot-file=FILE        instead of show it, save plot in png FILE
-    --profiling             print graph info before compress it
-    --thread=INT            use INT thread for ASP solving (0 for automatic detection)
-    --draw_lattice=DIR      draw in DIR the concept lattice foreach con. comp.
-    --no-save-time          don't save the compression time for later comparison
+For CLI usage, see the help:
+    python -m powergrasp --help
 
 output formats:
     BBL         formated in Bubble format, readable by CyOog plugin of Cytoscape
