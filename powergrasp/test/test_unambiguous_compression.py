@@ -134,7 +134,7 @@ EDGE\t"b1"\t"c"\t1.0
 RESULT_BLO = """
 NODE\t"f"
 NODE\t"d"
-NODE\t"k"
+NODE\t"m"
 NODE\t"i"
 NODE\t"a"
 NODE\t"h"
@@ -155,7 +155,7 @@ IN\t"h"\tPWRN-"a"-4-1
 IN\t"i"\tPWRN-"a"-1-1
 IN\t"j"\tPWRN-"a"-1-1
 IN\tPWRN-"a"-4-1\tPWRN-"a"-1-1
-IN\t"k"\tPWRN-"a"-1-1
+IN\t"m"\tPWRN-"a"-1-1
 EDGE\tPWRN-"a"-2-1\tPWRN-"a"-2-1\t1.0
 EDGE\tPWRN-"a"-3-1\t"f"\t1.0
 EDGE\tPWRN-"a"-4-1\t"l"\t1.0
