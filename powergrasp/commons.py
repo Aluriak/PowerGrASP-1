@@ -94,7 +94,7 @@ def to_asp_value(value) -> str:
     """Return given value as a valid ASP litteral.
 
     >>> to_asp_value(23)
-    "23"
+    '23'
     >>> to_asp_value('hadoken')
     '"hadoken"'
 
@@ -157,7 +157,7 @@ def network_name(input_file:str) -> str:
     Else, the string 'stdin network' will be returned.
 
     >>> network_name('')
-    "stdin network"
+    'stdin network'
 
     """
     return (os.path.splitext(os.path.split(input_file)[1])[0]

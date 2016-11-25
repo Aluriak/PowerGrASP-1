@@ -145,7 +145,7 @@ def atoms_from_aspstr(aspcode:str) -> iter:
     """Yield (name, args) object found in given ASP code.
 
     >>> list(atoms_from_aspstr('b("oh?well.",5).'))
-    [('b', ("oh?well.", '5'))]
+    [('b', ('"oh?well."', '5'))]
 
     """
     for atom in PARSER.parse(aspcode.rstrip('.')):
