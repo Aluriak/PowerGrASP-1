@@ -30,20 +30,7 @@ from powergrasp import utils
 LOGGER = commons.logger()
 
 
-def network_name_from(data):
-    """A string describing the graph data received.
-
-    if data is a valid filepath, the filepath will be returned.
-    Else, the string 'network' will be returned.
-
-    """
-    if os.path.isfile(data):
-        return data
-    else:
-        return 'stdin network'
-
-
-def asp_file_from(data):
+def asp_file_from(data:str) -> str:
     """A filename containing the graph data formatted in ASP.
 
     Data is a filename, or a string containing the graph data,
@@ -82,18 +69,10 @@ def graph_dict_to_asp_file(graph_dict):
     """
     # write it in a file, and convert this file in ASP.
     asp_file = tempfile.NamedTemporaryFile('w', delete=False)
-    def to_asp_value(value):
-        if isinstance(value, int):
-            return str(value)
-        return (  # surround value if necessary
-            ('"' if value[0] != '"' else '')
-            + str(value)
-            + ('"' if value[-1] != '"' else '')
-        )
     for node, succs in graph_dict.items():
         for succ in succs:
-            asp_file.write('edge(' + to_asp_value(node) + ','
-                           + to_asp_value(succ) + ').\n')
+            asp_file.write('edge(' + commons.to_asp_value(node) + ','
+                           + commons.to_asp_value(succ) + ').\n')
     asp_file.close()
     return asp_file.name
 
