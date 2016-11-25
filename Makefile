@@ -78,6 +78,8 @@ bip:
 	$(COMMAND) "$(TESTS)bipartite.lp"
 blo:
 	$(COMMAND) "$(TESTS)testblocks.lp"
+bollo:
+	$(COMMAND) "$(TESTS)bollobas.lp"
 cdiam:
 	$(COMMAND) "$(TESTS)double_biclique_and_clique.lp"
 chr:
