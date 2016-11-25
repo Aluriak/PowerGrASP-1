@@ -17,7 +17,8 @@ import re
 import os
 from collections import defaultdict
 
-import powergrasp.commons as commons
+from powergrasp import commons
+from powergrasp import atoms
 from powergrasp.commons import basename
 
 
@@ -38,9 +39,12 @@ class InConverter(object):
             extensions readable by the subclass.
         redefine the _gen_edges method.
 
+    Another way to go is to redefine the convert method, which should return
+    the filename containing all the input data in ASP-compliant format.
+
     """
     FORMAT_NAME = 'asp'
-    FORMAT_EXTENSIONS = ('',)
+    FORMAT_EXTENSIONS = {''}
 
 
     def __init__(self, predicat_template=PREDICAT_TEMPLATE):
@@ -55,7 +59,7 @@ class InConverter(object):
         try:
             with tempfile.NamedTemporaryFile('w', delete=False) as outfile:
                 for node, succ in self._gen_edges(filename):
-                    outfile.write(self.predicat_name)
+                    outfile.write(atoms.name_args_to_str('edge', (node, succ)))
                 return outfile.name
         except (IOError, PermissionError):
             LOGGER.critical('File ' + outputfile + " can't be opened."

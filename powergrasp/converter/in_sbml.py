@@ -33,8 +33,8 @@ class InSBML(InConverter):
             LOGGER.error(self.error_input_file(filename_sbml, e))
         except ImportError:
             LOGGER.error("libsbml module is necessary for use SBML as input"
-                         " format. 'pip install libsbml' should do the job."
-                         " Compression aborted.")
+                         " format. `pip install python-libsbml` should do "
+                         "the job. Compression aborted.")
             exit(1)
         return  # empty generator pattern
         yield

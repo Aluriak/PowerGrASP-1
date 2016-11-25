@@ -13,7 +13,7 @@ LOGGER = commons.logger()
 class InGML(InConverter):
     """Convert given GML file in uniformized data"""
     FORMAT_NAME = 'gml'
-    FORMAT_EXTENSIONS = ('gml',)
+    FORMAT_EXTENSIONS = {'gml'}
 
     def _gen_edges(self, filename_gml):
         """Yields pair (node, successor), representing the data contained
@@ -25,7 +25,7 @@ class InGML(InConverter):
             for node1, node2 in graph.edges():
                 yield node1, node2
         except IOError as e:
-            LOGGER.error(self.error_input_file(filename_sbml, e))
+            LOGGER.error(self.error_input_file(filename_gml, e))
             exit(1)
         except ImportError:
             LOGGER.critical('networkx python module is necessary to'
