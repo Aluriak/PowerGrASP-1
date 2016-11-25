@@ -49,7 +49,7 @@ BENCHMARK_OUTPUT=$(DATA)benchmarks.csv
 BENCHMARK_RUN=--runs=4
 
 basical:
-	$(PYTHON3) "$(TESTS)abnormal.lp"
+	$(PYTHON3) powergraph "$(TESTS)abnormal.lp"
 
 
 aci:
