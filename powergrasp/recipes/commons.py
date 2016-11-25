@@ -15,7 +15,7 @@ def powergraph(infile:str, outfile:str=None, observers=None, cfg=None):
         if cfg is None:
             cfg, observers = pg.observers.most()
         else:
-            observers = observers.built_from(cfg)
+            observers = pg.observers.built_from(cfg)
     elif cfg is None:
         cfg = pg.config.Configuration(infile=infile, outfile=outfile)
     return powergraph_template(cfg, observers=observers)
