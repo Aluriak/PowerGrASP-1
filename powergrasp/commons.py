@@ -11,7 +11,6 @@ import multiprocessing  # get number of available CPU
 import pkg_resources  # packaging facilies
 import sys
 import os
-
 from functools   import partial
 
 from docopt import docopt
@@ -38,6 +37,7 @@ access_packaged_file = partial(pkg_resources.resource_filename, PACKAGE_NAME)
 LOGGER_NAME       = PACKAGE_NAME
 DEFAULT_LOG_FILE  = access_packaged_file(DIR_LOGS + LOGGER_NAME + '.log')
 DEFAULT_LOG_LEVEL = logging.DEBUG
+LOGLEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
 
 # PATH INSIDE PACKAGE
 PACKAGE_DIR_DATA = access_packaged_file(DIR_DATA)
@@ -110,6 +110,24 @@ DEFAULT_PROGRAM_OPTIONS = {
 
 
 # Functions
+def to_asp_value(value) -> str:
+    """Return given value as a valid ASP litteral.
+
+    >>> to_asp_value(23)
+    "23"
+    >>> to_asp_value('hadoken')
+    '"hadoken"'
+
+    """
+    if isinstance(value, int):
+        return str(value)
+    return (  # surround value if necessary
+        ('' if value.startswith('"') else '"')
+        + str(value)
+        + ('' if value.endswith('"') else '"')
+    )
+
+
 def basename(filepath):
     """Return the basename of given filepath.
 
@@ -152,10 +170,24 @@ def test_case(filename):
     return path if os.path.exists(path) else None
 
 
+def network_name(input_file:str) -> str:
+    """A string describing the graph data received.
+
+    if data is a valid filepath, the filename without path will be returned.
+    Else, the string 'stdin network' will be returned.
+
+    >>> network_name('')
+    "stdin network"
+
+    """
+    return (os.path.splitext(os.path.split(input_file)[1])[0]
+            if os.path.isfile(input_file) else "stdin network")
+
+
 def thread(number=None):
     """Return Clasp options for use n thread, or if n is invalid, use the
     number of CPU available"""
-    if number is not None and 1 <= int(number):
+    if number is not None and int(number) >= 1:
         if int(number) == 1:
             return ''
         else:
@@ -254,3 +286,22 @@ def log_level(level):
                )
     for handler in handlers:
         handler.setLevel(level.upper())
+
+
+def log_level_code(level:str) -> int:
+    """Return the integer code associated to given level.
+
+    >>> log_level_code('DEBUG')
+    10
+    >>> log_level_code('INFO')
+    20
+    >>> log_level_code('WARNING')
+    30
+    >>> log_level_code('ERROR')
+    40
+    >>> log_level_code('CRITICAL')
+    50
+
+    """
+    assert level in LOGLEVELS
+    return getattr(logging, level)
