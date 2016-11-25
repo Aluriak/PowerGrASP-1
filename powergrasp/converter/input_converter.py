@@ -22,6 +22,7 @@ from powergrasp.commons import basename
 
 
 LOGGER = commons.logger()
+PREDICAT_TEMPLATE = 'edge({},{}).'
 
 
 class InConverter(object):
@@ -41,20 +42,27 @@ class InConverter(object):
     FORMAT_NAME = 'asp'
     FORMAT_EXTENSIONS = ('',)
 
-    def convert(self, filename:str) -> dict:
-        """Return a dict {node: successors}, representing the data contained
-        in input file.
+
+    def __init__(self, predicat_template=PREDICAT_TEMPLATE):
+        self.predicat_name = str(predicat_template)
+
+
+    def convert(self, filename:str) -> str:
+        """Return a filename containing the graph found in given file,
+        encoded in valid ASP.
+
         """
         try:
-            graph = defaultdict(set)
-            for node, succ in self._gen_edges(filename):
-                graph[node].add(succ)
-            return dict(graph)
+            with tempfile.NamedTemporaryFile('w', delete=False) as outfile:
+                for node, succ in self._gen_edges(filename):
+                    outfile.write(self.predicat_name)
+                return outfile.name
         except (IOError, PermissionError):
             LOGGER.critical('File ' + outputfile + " can't be opened."
                             + ' Graph data retrieving needs this file.'
-                            + ' Compression aborted')
-            return {}
+                            + ' Compression aborted.')
+            exit(1)
+
 
     def _gen_edges(self, input_file:str) -> dict:
         """Yields pair (node, successor), representing the data contained
@@ -70,13 +78,13 @@ class InConverter(object):
         LOGGER.error('The InConverter._convert_to_dict method was called.'
                      ' Subclasses of InConverter should redefine this method.'
                      ' No data generated.')
-        return  # empty generator pattern
-        yield
+        yield from ()
+
 
     @classmethod
     def error_input_file(cls, filename:str, exception:Exception=None) -> str:
         """return string error for not openable input file"""
-        print(exception, dir(exception))
+        print('BLKQILW:', exception, dir(exception))  # TODO test that case
         exit()
         return ('File ' + filename + ' can\'t be opened as an '
                 + self.FORMAT_NAME + ' file.'

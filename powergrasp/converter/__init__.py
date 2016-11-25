@@ -43,7 +43,7 @@ def  input_converter_for(format): return converter_for(format, is_output=False)
 def delete_temporary_file(): return InConverter.delete_temporary_file()
 
 
-def converter_for(format, is_output):
+def converter_for(format:str, is_output:bool) -> callable:
     """Return function that take atoms and convert them to input format or None
     """
     formats = OUTPUT_FORMAT_CONVERTERS if is_output else INPUT_FORMAT_CONVERTERS
@@ -58,8 +58,29 @@ def converter_for(format, is_output):
         return formats[format]()
 
 
-def to_asp_file(input_filename, format=None):
-    """Return a dictionnary {node: succ} that contains data in input file"""
+def to_asp_file(input_filename:str, format:str=None) -> str:
+    """Return a filename that contains graph found in given filename
+    encoded in ASP.
+    """
     if format is None:
-        format = commons.extension(input_filename)
-    return input_converter_for(format).convert(input_filename)
+        format = commons.extension(input_filename)  # inference
+    outfile = input_converter_for(format).convert(input_filename)
+    assert isinstance(outfile, str)
+    return outfile
+
+
+def graph_dict_to_asp_file(graph_dict):
+    """convert {node: succs} to ASP atoms edge/2, where edge(X,Y) defines X
+    as node and Y a successor.
+
+    Returns the temp file name where atoms are pushed.
+
+    """
+    # write it in a file, and convert this file in ASP.
+    asp_file = tempfile.NamedTemporaryFile('w', delete=False)
+    for node, succs in graph_dict.items():
+        for succ in succs:
+            asp_file.write('edge(' + commons.to_asp_value(node) + ','
+                           + commons.to_asp_value(succ) + ').\n')
+    asp_file.close()
+    return asp_file.name
