@@ -28,7 +28,7 @@ class Graph:
         observers -- iterable of observers to signal during treatments
 
         """
-        self.observers = observers or []
+        self.observers = observers or ()
         self.infile = cfg.infile
         self.config = cfg
         self._ccs = []  # will hold ConnectedComponent instances
@@ -44,6 +44,11 @@ class Graph:
 
 
     def __enter__(self):
+        self.observers.signal(
+            Signals.CompressionStarted,
+            Signals.ExtractionStarted,
+            asp_config_updated=self.config.asp_configs,
+        )
         return self
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.finalize()
@@ -85,18 +90,18 @@ class Graph:
         """
         self.observers.signal(Signals.ExtractionStarted)
 
-        assert self.config.biclique_config.__class__.__name__ != 'function'
-        for model in solving.all_models_from('', aspfiles=[self.config.graph_file],
-                                             aspconfig=self.config.extract_config):
+        cc_gen = solving.all_models_from('', aspfiles=[self.config.graph_file],
+                                         aspconfig=self.config.extract_config)
+        for cc_nb, model in enumerate(cc_gen):
             atom_counts = model.counts
             cc_atom = model.get_only('cc').args
             assert len(cc_atom) == 1, "Extraction yield a cc/{} atom".format(len(cc_atom))
             cc_id = str(cc_atom[0])
             atoms = ('{}({}).'.format(name, ','.join(args))
                      for name, args  in model.atoms)
-            print(self.ccs)
             cc_object = self.build_connected_component(
                 cc_id=cc_id,
+                cc_nb=cc_nb,
                 node_number=int(atom_counts['membercc']),
                 edge_number=int(atom_counts['oedge']),
                 atoms=''.join(atoms),
