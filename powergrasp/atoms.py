@@ -1,12 +1,15 @@
-# -*- coding: utf-8 -*-
 """
+Definition of the atom container model, AtomsModel.
+
 Definitions of many utils functions about gringo atoms manipulation.
 Provides converters, access and printings of atoms.
 
 """
 
-from collections        import defaultdict, Counter, namedtuple
+
+import os
 import itertools
+from collections import defaultdict, namedtuple
 
 from pyasp import asp
 
@@ -23,6 +26,105 @@ RESULTS_PREDICATS = (
     'poweredge',
     'score',
 )
+
+
+class AtomsModel:
+    """Main model of atoms data.
+
+    Support parsing from pyasp models and ASP formatted strings.
+
+    Constructor should not be called by client:
+     static methods from_* are here to ensure the object construction.
+
+    """
+
+    def __init__(self, data):
+        self._payload = defaultdict(set, dict(data))
+
+
+    def remove_atoms(self, atoms:iter):
+        for name, args in atoms:
+            self._payload[name].remove(tuple(args))
+
+    def add_atoms(self, atoms:iter):
+        for name, args in atoms:
+            self._payload[name].remove(tuple(args))
+
+    def get_only(self, atom_name:str) -> ATOM:
+        """Return the only one atom having the given predicate name"""
+        args = self._payload[atom_name]
+        assert len(args) == 1, "given predicate name is shared by multiple predicate"
+        return ATOM(atom_name, next(iter(args)))
+
+    def get(self, atom_name:str) -> iter:
+        """Yield the atoms having the given predicate name"""
+        yield from ((atom_name, args) for args in self._payload[atom_name])
+
+
+    @property
+    def atoms(self):
+        yield from ((name, arg) for name, args in self._payload.items()
+                    for arg in args)
+
+    def __iter__(self):
+        return self.atoms
+
+    @property
+    def counts(self):
+        return {name: len(args) for name, args in self._payload.items()}
+
+    def get(self, names:str or iter):
+        """Yield (predicate, args) for all atoms of of given predicate name"""
+        for name in ([names] if isinstance(names, str) else names):
+            if name not in self._payload:
+                raise ValueError("Given predicate {} is not in {}"
+                                 "container".format(self, name))
+            yield from (ATOM(name, args) for args in self._payload.get(name, ()))
+
+
+
+    @staticmethod
+    def from_asp_string(aspcode:str):
+        """Build an AtomsModel instance from an ASP compliant string"""
+        inrepr = defaultdict(set)
+        atoms = (atom.strip() for atom in aspcode.split('.') if atom.strip())
+        for atom in atoms:
+            name, args = split(atom)
+            inrepr[name].add(tuple(args))
+        return AtomsModel(inrepr)
+
+    @staticmethod
+    def from_pyasp_termset(termset):
+        """Build an AtomsModel instance from an iterable of pyasp Term"""
+        inrepr = defaultdict(set)
+        for atom in termset:
+            inrepr[atom.predicate].add(tuple(atom.args()))
+        return AtomsModel(inrepr)
+
+    @staticmethod
+    def from_asp_file(filename:str):
+        """Build an AtomsModel instance from a filename containing ASP code"""
+        return AtomsModel.from_asp_string(open(filename).read())
+
+
+    @staticmethod
+    def from_(source):
+        """Detect the input form of atoms, and return the properly
+        initialized AtomsModel instance
+
+        """
+        if isinstance(source, str):
+            if os.path.exists(source):
+                 return AtomsModel.from_asp_file(source)
+            else:
+                 return AtomsModel.from_asp_string(source)
+        else:  # should be a pyasp termset
+             return AtomsModel.from_pyasp_termset(source)
+
+    def __str__(self):
+        """ASP compliant representation"""
+        return '.'.join('{}({})'.format(name, ','.join(args))
+                        for name, args in self.atoms) + '.'
 
 
 def split(atom):
@@ -148,22 +250,6 @@ def prettified(atoms, names=None, sizes=None,
 
     # joining if possible
     return source if joiner is None else joiner.join(source)
-
-
-def count(atoms, names=None) -> Counter:
-    """Return a dict atom:count that describes
-    how many atoms given atoms_dict have.
-
-    if names is None, all atoms will be returned.
-    if names is an iterable of atoms names,
-     only founded atoms will be returned.
-    """
-    if names is None:
-        return Counter(atom.predicate for atom in atoms)
-
-    if isinstance(names, str):
-        names = set([names])
-    return Counter(atom.predicate for atom in atoms if atom.predicate in names)
 
 
 def to_str(atoms, names=None, separator='.'):
