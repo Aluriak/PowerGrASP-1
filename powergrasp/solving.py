@@ -107,7 +107,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     given as grounding arguments and base_atoms given as input atoms.
 
     base_atoms -- string, ASP-readable atoms
-    aspfiles -- (list of) filename, contains the ASP source code
+    aspfiles -- (list of) supplementary filenames, contains the ASP source code
     aspargs -- dict of constant:value that will be set as constants in aspfiles
     aspconfig -- an ASPConfig object giving more files and solvers options
     parsed -- set to True for get already parsed atoms of model, False for str
@@ -119,13 +119,14 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     aspconfig = aspconfig or CONFIG_DEFAULT()
     # use list of aspfiles in all cases
     assert aspfiles.__class__ in (tuple, list, str)
-    assert aspconfig.__class__ is ASPConfig
+    assert isinstance(aspconfig, ASPConfig)
     if isinstance(aspfiles, str):
         aspfiles = [aspfiles]
     elif isinstance(aspfiles, tuple):  # solver take only list, not tuples
         aspfiles = list(aspfiles)
     aspfiles.extend(aspconfig.files or [])
     assert aspfiles.__class__ is list
+    assert len(set(aspfiles)) == len(aspfiles), "Given list of aspfiles contains doublons: " + str(aspfiles)
 
     # define the command line options for gringo and clasp
     constants = ' -c '.join(str(k)+'='+str(v) for k,v in aspargs.items())
