@@ -14,7 +14,7 @@ LOGGER = commons.logger()
 class SignalProfiler(CompressionObserver):
     """On the compression end, logs stats about all received signals"""
 
-    TEMPLATE       = "Signal {} receive {} times, with type(s) {}."
+    TEMPLATE       = "Signal {} received {} times, with type(s) {}."
     TEMPLATE_EMPTY = "None of the following signals was received: {}."
 
 
@@ -32,10 +32,11 @@ class SignalProfiler(CompressionObserver):
         """Logs stats about received signals"""
         not_received = set()
         for signal, payload_types in self.counts.items():
+            assert signal in Signals, "Received signal {} is not part of Signals".format(signal)
             if len(payload_types):
                 LOGGER.log(self.loglevel, SignalProfiler.TEMPLATE.format(
-                    str(signal), len(payload_types), ', '.join(str(_) for _ in set(payload_types))
+                    signal.name, len(payload_types), ', '.join(_.__name__ for _ in set(payload_types))
                 ))
             else:
                 not_received.add(signal)
-        LOGGER.log(self.loglevel, SignalProfiler.TEMPLATE_EMPTY.format(', '.join(str(sig) for sig in not_received)))
+        LOGGER.log(self.loglevel, SignalProfiler.TEMPLATE_EMPTY.format(', '.join(sig.name for sig in not_received)))
