@@ -22,12 +22,7 @@ from powergrasp import plotting
 if __name__ == '__main__':
 
     cfg = config.Configuration.from_cli()
-
-    recipes.powergraph(
-        cfg.infile,
-        cfg.outfile,
-        cfg=cfg,
-    )
+    recipes.powergraph(cfg)
 
     # plotting if statistics csv file given, and showing or saving requested
     if (cfg.plot_stats or cfg.plot_file) and cfg.stats_file:
