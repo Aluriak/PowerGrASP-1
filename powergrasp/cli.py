@@ -125,6 +125,7 @@ def cli_parser() -> argparse.ArgumentParser:
     parser_pg.add_argument('--plot-stats', action='store_true', help='Render the final statistic plot')
     parser_pg.add_argument('--draw-lattice', action='store_true', help='Render the lattice representing the graph')
     parser_pg.add_argument('--save-time', action='store_true', help='Save the compression time for further comparison')
+    parser_pg.add_argument('--signal-profile', action='store_true', help='Print information on signals that are raised by compression.')
 
     parser_pg.add_argument('--plot-file', help='File used to save the rendered plot')
     parser_pg.add_argument('--stats-file', help='File to write for save statistics')
