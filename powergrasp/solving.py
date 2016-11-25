@@ -60,19 +60,19 @@ SOLVER_NB_CONFIG = len(tuple(ASPConfig.gen_configs()))
 
 # default configs
 CONFIG_DEFAULT = lambda: ASPConfig(None)
-CONFIG_EXTRACTION = lambda: ASPConfig(
+DEFAULT_CONFIG_EXTRACTION = lambda: ASPConfig(
     [commons.ASP_SRC_EXTRACT],
     ' --heuristic=Vsids --configuration=frumpy -n 0',
 )
-CONFIG_BICLIQUE_SEARCH = lambda: ASPConfig(
+DEFAULT_CONFIG_BICLIQUE = lambda: ASPConfig(
     [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDBC],
     ASP_DEFAULT_CLASP_OPTION,
 )
-CONFIG_CLIQUE_SEARCH = lambda: ASPConfig(
+DEFAULT_CONFIG_CLIQUE = lambda: ASPConfig(
     [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDCC],
     ASP_DEFAULT_CLASP_OPTION,
 )
-CONFIG_INCLUSION = lambda: ASPConfig(
+DEFAULT_CONFIG_INCLUSION = lambda: ASPConfig(
     [commons.ASP_SRC_INCLUSION],
 )
 
@@ -98,7 +98,7 @@ class Atoms(asp.TermSet):
     def count(self, name:str):
         if not hasattr(self, '_counter'):
             self.counter()
-        return self._counter[name]
+        return self._counter.get(name, 0)
 
 
 def all_models_from(base_atoms, aspfiles=None, aspargs=None,
@@ -150,7 +150,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
             # print('ATOM(S):', atoms.count(answer))
     # else:
         # print('NO MODEL FOUND !')
-    yield from (Atoms(answer) for answer in answers)
+    yield from (atoms.AtomsModel.from_pyasp_termset(answer) for answer in answers)
 
 
 def model_from(base_atoms, aspfiles=None, aspargs=None, aspconfig=None,
