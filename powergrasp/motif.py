@@ -22,14 +22,12 @@ LOGGER = commons.logger()
 FoundMotif = namedtuple('FoundMotif', 'model score motif')
 
 # Follows atoms produced by motif solving, splitted in 4 disjoint classes.
-# invalidable atoms are atoms that needs to be deleted from the model
-INVALIDABLE_ATOMS = {'oedge'}
 # incremental atoms replace the existing atoms of same name in the model
-INCREMENTAL_ATOMS = {'block', 'membercc', 'include_block'}
+INCREMENTAL_ATOMS = {'block', 'include_block'}
 # accumulable atoms need to be added to the model
 ACCUMULABLE_ATOMS = {'powernode', 'poweredge'}
-# metadata are used by observers
-METADATA_ATOMS = {'powernode_count', 'poweredge_count', 'score'}
+# metadata are used by observers (or by motif only one time)
+METADATA_ATOMS = {'powernode_count', 'poweredge_count', 'score', 'star'}
 
 
 class Motif(solving.ASPConfig):
@@ -63,7 +61,7 @@ class Motif(solving.ASPConfig):
         """
         assert isinstance(score_min, int)
         assert isinstance(score_max, int)
-        if score_min > score_max: return None, None
+        if score_min > score_max: return FoundMotif(None, 0, self)
         LOGGER.debug('FIND BEST ' + self.name
                      + ' [' + str(score_min) + ';' + str(score_max) + ']')
         model = solving.model_from(
@@ -84,19 +82,19 @@ class Motif(solving.ASPConfig):
         return ret
 
 
-    def compress(self, atoms:str, model:'AtomsModel'):
+    def compress(self, atoms:'AtomsModel', model:'AtomsModel'):
         """Modify self, compressed according to the given motif.
 
-        atoms -- iterable of (name, args)
+        atoms -- AtomsModel instance describing the motif model
         model -- AtomsModel instance that will be updated  *MODIFIED*
         return -- metadata extracted from the compression.
 
         """
-        to_remove, to_replace, data = [], [], []
+        assert atoms.__class__.__name__ == 'AtomsModel'
+        assert model.__class__.__name__ == 'AtomsModel'
+        to_replace, data = [], []
         for name, args in atoms:
-            if name in INVALIDABLE_ATOMS:
-                to_remove.append((name, args))
-            elif name in INCREMENTAL_ATOMS:
+            if name in INCREMENTAL_ATOMS:
                 model._payload[name] = {}
                 to_replace.append((name, args))
             elif name in ACCUMULABLE_ATOMS:
@@ -108,16 +106,72 @@ class Motif(solving.ASPConfig):
         for name, all_args in itertools.groupby(to_replace, operator.itemgetter(0)):
             all_args = (args for _, args in all_args)
             model._payload[name] = set(all_args)
-        for name, all_args in itertools.groupby(to_remove, operator.itemgetter(0)):
-            all_args = (args for _, args in all_args)
-            all_args = frozenset(all_args)
-            model._payload[name] = set(args for args in model._payload[name]
-                                      if args not in all_args)
+
+        covered_edges = frozenset(self.covered_edges_in_found(atoms))
+        # print('COVERED:', len(covered_edges), covered_edges)
+        model._payload['oedge'] = set(edge for edge in model._payload['oedge']
+                                      if edge not in covered_edges)
+        # print('DATA:', dict(data))
         return dict(data)
 
 
-CLIQUE   = Motif('clique',   [ASP_SRC_FINDCC], solving.ASP_DEFAULT_CLASP_OPTION)
-BICLIQUE = Motif('biclique', [ASP_SRC_FINDBC], solving.ASP_DEFAULT_CLASP_OPTION)
+    @staticmethod
+    def covered_edges_in_found(self, model:'AtomsModel'):
+        """Yield edges covered by given ASP model"""
+        raise NotImplementedError("This method should be overwritten by subclasses.")
+
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
+
+
+class CliqueMotif(Motif):
+
+    def __init__(self, clasp_options='', gringo_options=''):
+        super().__init__('clique', [ASP_SRC_FINDCC], clasp_options, gringo_options)
+
+    def covered_edges_in_found(self, model:'AtomsModel'):
+        """Yield edges covered by given clique in ASP model"""
+        nodes = []
+        for name, args in model.get('powernode'):
+            cc, step, setnb, node = args
+            assert setnb == '1'
+            nodes.append(node)
+        # print('SET :', nodes)
+        yield from (((f, s) if f < s else (s, f))
+                    for f, s in itertools.product(nodes, repeat=2))
+
+
+class BicliqueMotif(Motif):
+
+    def __init__(self, clasp_options='', gringo_options=''):
+        super().__init__('biclique', [ASP_SRC_FINDBC], clasp_options, gringo_options)
+
+    def covered_edges_in_found(self, model:'AtomsModel'):
+        """Yield edges covered by given clique in ASP model"""
+        first, secnd = [], []
+        for name, args in model.get('powernode'):
+            cc, step, setnb, node = args
+            assert setnb in '12'
+            (first if setnb == '1' else secnd).append(node)
+        if not first or not secnd:
+            assert model.get_only('star'), "there is no star/1 atom despite empty powernode"
+            assert len(model.get_only('star')[1]) == 1, "star atom is not star/1"
+            star = model.get_only('star')[1][0]
+            empty_set = first if not first else secnd
+            empty_set.append(star)
+        # print('SETS:', first, secnd)
+        assert len(secnd), "The second set of the biclique is empty"
+        assert len(first),  "The first set of the biclique is empty"
+        yield from (((f, s) if f < s else (s, f))
+                    for f, s in itertools.product(first, secnd))
+
+
+CLIQUE   = CliqueMotif(solving.ASP_DEFAULT_CLASP_OPTION)
+BICLIQUE = BicliqueMotif(solving.ASP_DEFAULT_CLASP_OPTION)
 POWERGRAPH = (CLIQUE, BICLIQUE)
 ALL = (CLIQUE, BICLIQUE)
 
