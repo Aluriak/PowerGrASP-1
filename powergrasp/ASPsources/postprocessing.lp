@@ -46,8 +46,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % B is a parent block of P if it contains it and no other block contained in B contains P.
 parent_block(B,T):- block_contains_newconcept(k,B,T) ;
-                      B!=b(k,p(cc,k,T)) ;
-                      not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
+                    B!=b(k,p(cc,k,T)) ;
+                    not { include_block(k-1,B,Z) ; block_contains_newconcept(k,Z,T) }.
 % it can't have more than 2 parent_block, because there is at most two newconcepts.
 :- 3 { parent_block(_,_) }.
 :- 0 { parent_block(_,_) } 1.
@@ -157,21 +157,17 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show powernode(cc,k,1,X): newconcept(cc,k,_,X) ;     clique(cc,k).
 #show poweredge(cc,K1,T1,K2,T2): poweredge(p(cc,K1,T1),p(cc,K2,T2)).
 #show poweredge(cc,K1,T1,X): poweredge(p(cc,K1,T1),X) , newconcept(cc,k,_,X).
+#show star(X): star(cc,k,T) ; newconcept(cc,k,T,X).
+
+% data about new partition
+#show block(k,P,X): block(k,P,X).
+#show include_block(k,B,C): include_block(k,B,C).
 
 % statistics
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
 #show poweredge_count(K): K={poweredge(_,_)}.
 #show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
-
-% next step data
-keeped_oedge(X,Y):- oedge(X,Y) ; X<Y ; not covered(X,Y) ; not covered(cc,k,X,Y).
-keeped_membercc(X):- keeped_oedge(X,_).
-keeped_membercc(Y):- keeped_oedge(_,Y).
-#show oedge(X,Y): keeped_oedge(X,Y).
-#show membercc(X): keeped_membercc(X).
-#show block(k,P,X): block(k,P,X).
-#show include_block(k,B,C): include_block(k,B,C).
 
 % debug output
 %#show clique/2.
