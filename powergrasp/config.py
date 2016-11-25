@@ -99,13 +99,12 @@ class Configuration(metaclass=meta_config):
 
 
     def validate(self):
-        """Logs any inconsistancies in the configuration"""
+        """Logs any inconsistancies in the configuration, and try to fix them."""
 
         if self.infile is None:
             with tempfile.NamedTemporaryFile('w', delete=False) as tmp:
                 LOGGER.info("No input data found. Standard input will be read"
                             " and saved in {}.".format(tmp.name))
-                print(tmp, type(tmp))
                 [tmp.write(line + '\n') for line in sys.stdin]
                 self.__infile = tmp.name
 
