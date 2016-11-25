@@ -39,7 +39,7 @@ powerlattice:
 
 ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(TIMERS) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING) $(LATTICE)
 ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) $(PRE) $(SIGNAL_PROFILER)
-COMMAND=$(PYTHON) $(ARGS) $(ALL_OUTPUTS)
+COMMAND=$(PYTHON) powergraph $(ARGS) $(ALL_OUTPUTS)
 
 
 # BENCHMARKS
@@ -49,123 +49,123 @@ BENCHMARK_OUTPUT=$(DATA)benchmarks.csv
 BENCHMARK_RUN=--runs=4
 
 basical:
-	$(PYTHON3) --graph-data="$(TESTS)abnormal.lp"
+	$(PYTHON3) "$(TESTS)abnormal.lp"
 
 
 aci:
-	$(COMMAND) --graph-data="$(TESTS)AcinetoPB.graphml"
+	$(COMMAND) "$(TESTS)AcinetoPB.graphml"
 abn:
-	$(COMMAND) --graph-data="$(TESTS)abnormal.lp"
+	$(COMMAND) "$(TESTS)abnormal.lp"
 atro:
-	$(COMMAND) --graph-data="$(TESTS)atropaPB.graphml"
+	$(COMMAND) "$(TESTS)atropaPB.graphml"
 bbind:
-	$(COMMAND) --graph-data="$(TESTS)structural_binding_no_bridge.lp"
+	$(COMMAND) "$(TESTS)structural_binding_no_bridge.lp"
 big_biclique:
-	$(COMMAND) --graph-data="$(TESTS)big_biclique.lp"
+	$(COMMAND) "$(TESTS)big_biclique.lp"
 big_biclique_merged:
-	$(COMMAND) --graph-data="$(TESTS)big_biclique_merged.lp"
+	$(COMMAND) "$(TESTS)big_biclique_merged.lp"
 big_clique:
-	$(COMMAND) --graph-data="$(TESTS)big_clique.lp"
+	$(COMMAND) "$(TESTS)big_clique.lp"
 bintree:
-	$(COMMAND) --graph-data="$(TESTS)bintree.lp"
+	$(COMMAND) "$(TESTS)bintree.lp"
 biog12:
-	$(COMMAND) --graph-data="$(TESTS)biogenouest12.lp"
+	$(COMMAND) "$(TESTS)biogenouest12.lp"
 biog12NA:
-	$(COMMAND) --graph-data="$(TESTS)biogenouest12NA.lp"
+	$(COMMAND) "$(TESTS)biogenouest12NA.lp"
 biog2:
-	$(COMMAND) --graph-data="$(TESTS)biogenouest2.lp"
+	$(COMMAND) "$(TESTS)biogenouest2.lp"
 bip:
-	$(COMMAND) --graph-data="$(TESTS)bipartite.lp"
+	$(COMMAND) "$(TESTS)bipartite.lp"
 blo:
-	$(COMMAND) --graph-data="$(TESTS)testblocks.lp"
+	$(COMMAND) "$(TESTS)testblocks.lp"
 cdiam:
-	$(COMMAND) --graph-data="$(TESTS)double_biclique_and_clique.lp"
+	$(COMMAND) "$(TESTS)double_biclique_and_clique.lp"
 chr:
-	$(COMMAND) --graph-data="$(TESTS)rrel_chr1_chr38.lp"
+	$(COMMAND) "$(TESTS)rrel_chr1_chr38.lp"
 clique:
-	$(COMMAND) --graph-data="$(TESTS)cliques.lp"
+	$(COMMAND) "$(TESTS)cliques.lp"
 cc:
-	$(COMMAND) --graph-data="$(TESTS)concomp.lp"
+	$(COMMAND) "$(TESTS)concomp.lp"
 coli:
-	$(COMMAND) --graph-data="$(TESTS)ecoli_2896-23.gml"
+	$(COMMAND) "$(TESTS)ecoli_2896-23.gml"
 ccoli:
-	$(COMMAND) --graph-data="$(TESTS)ecoli_2896-53.gml"
+	$(COMMAND) "$(TESTS)ecoli_2896-53.gml"
 cccoli:
-	$(COMMAND) --graph-data="$(TESTS)ecoli_2391-42.gml"
+	$(COMMAND) "$(TESTS)ecoli_2391-42.gml"
 cordi:
-	$(COMMAND) --graph-data="$(TESTS)CordiPB.graphml"
+	$(COMMAND) "$(TESTS)CordiPB.graphml"
 chloro:
-	$(COMMAND) --graph-data="$(TESTS)CHLOROPHYLL-SYN.sbml"
+	$(COMMAND) "$(TESTS)CHLOROPHYLL-SYN.sbml"
 disjoint:
-	$(COMMAND) --graph-data="$(TESTS)disjoint.lp"
+	$(COMMAND) "$(TESTS)disjoint.lp"
 diam:
-	$(COMMAND) --graph-data="$(TESTS)diamond.lp"
+	$(COMMAND) "$(TESTS)diamond.lp"
 ddiam:
-	$(COMMAND) --graph-data="$(TESTS)double_biclique.lp"
+	$(COMMAND) "$(TESTS)double_biclique.lp"
 ddiamun:
-	$(COMMAND) --graph-data="$(TESTS)double_biclique_unambiguous.lp"
+	$(COMMAND) "$(TESTS)double_biclique_unambiguous.lp"
 edgetest:
-	$(COMMAND) --graph-data="$(TESTS)edges_test.lp"
+	$(COMMAND) "$(TESTS)edges_test.lp"
 empty:
-	$(COMMAND) --graph-data="$(TESTS)empty.lp"
+	$(COMMAND) "$(TESTS)empty.lp"
 inc:
-	$(COMMAND) --graph-data="$(TESTS)inclusions.lp"
+	$(COMMAND) "$(TESTS)inclusions.lp"
 matrixdb:
-	$(COMMAND) --graph-data="$(TESTS)matrixdb_160614_CORE27.lp"
+	$(COMMAND) "$(TESTS)matrixdb_160614_CORE27.lp"
 onedge:
-	$(COMMAND) --graph-data="$(TESTS)one_edge.lp"
+	$(COMMAND) "$(TESTS)one_edge.lp"
 pfc:
-	$(COMMAND) --graph-data="$(TESTS)perfectfit.lp"
+	$(COMMAND) "$(TESTS)perfectfit.lp"
 phos:
-	$(COMMAND) --graph-data="$(TESTS)phosphatase.lp"
+	$(COMMAND) "$(TESTS)phosphatase.lp"
 prol:
-	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_1_letters.lp"
+	$(COMMAND) "$(TESTS)proteome_yeast_1_letters.lp"
 prot:
-	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_1.lp"
+	$(COMMAND) "$(TESTS)proteome_yeast_1.lp"
 prot2:
-	$(COMMAND) --graph-data="$(TESTS)proteome_yeast_2.lp"
+	$(COMMAND) "$(TESTS)proteome_yeast_2.lp"
 redef:
-	$(COMMAND) --graph-data="$(TESTS)redefedge.lp"
+	$(COMMAND) "$(TESTS)redefedge.lp"
 reduclique:
-	$(COMMAND) --graph-data="$(TESTS)clique_reduction.lp"
+	$(COMMAND) "$(TESTS)clique_reduction.lp"
 rna_pi_lnc:
-	$(COMMAND) --graph-data="$(TESTS)piRNA_lncRNA.lp"
+	$(COMMAND) "$(TESTS)piRNA_lncRNA.lp"
 rna_pi_msg:
-	$(COMMAND) --graph-data="$(TESTS)piRNA_mRNA.lp"
+	$(COMMAND) "$(TESTS)piRNA_mRNA.lp"
 sbind:
-	$(COMMAND) --graph-data="$(TESTS)structural_binding.lp"
+	$(COMMAND) "$(TESTS)structural_binding.lp"
 simple:
-	$(COMMAND) --graph-data="$(TESTS)simple.lp"
+	$(COMMAND) "$(TESTS)simple.lp"
 single:
-	$(COMMAND) --graph-data="$(TESTS)singlenode.lp"
+	$(COMMAND) "$(TESTS)singlenode.lp"
 ssn:
-	$(COMMAND) --graph-data="$(TESTS)ssn.lp"
+	$(COMMAND) "$(TESTS)ssn.lp"
 star:
-	$(COMMAND) --graph-data="$(TESTS)star.lp"
+	$(COMMAND) "$(TESTS)star.lp"
 testgml:
-	$(COMMAND) --graph-data="$(TESTS)test.gml"
+	$(COMMAND) "$(TESTS)test.gml"
 testgraphml:
-	$(COMMAND) --graph-data="$(TESTS)test.graphml"
+	$(COMMAND) "$(TESTS)test.graphml"
 testlp:
-	$(COMMAND) --graph-data="$(TESTS)test.lp"
+	$(COMMAND) "$(TESTS)test.lp"
 three:
-	$(COMMAND) --graph-data="$(TESTS)threenode.lp"
+	$(COMMAND) "$(TESTS)threenode.lp"
 tree:
-	$(COMMAND) --graph-data="$(TESTS)tree.lp"
+	$(COMMAND) "$(TESTS)tree.lp"
 triv:
-	$(COMMAND) --graph-data="$(TESTS)trivial.lp"
+	$(COMMAND) "$(TESTS)trivial.lp"
 tiso:
-	$(COMMAND) --graph-data="$(TESTS)tiso_1.0.sbml"
+	$(COMMAND) "$(TESTS)tiso_1.0.sbml"
 uml:
-	$(COMMAND) --graph-data="$(TESTS)uml.lp"
+	$(COMMAND) "$(TESTS)uml.lp"
 uvg:
-	$(COMMAND) --graph-data="$(TESTS)umlsvg.lp"
+	$(COMMAND) "$(TESTS)umlsvg.lp"
 gml:
-	$(COMMAND) --graph-data="$(TESTS)gml_test.gml"
+	$(COMMAND) "$(TESTS)gml_test.gml"
 troll_format:
-	$(COMMAND) --graph-data="$(TESTS)notsupportedformat.troll"
+	$(COMMAND) "$(TESTS)notsupportedformat.troll"
 troll_file:
-	$(COMMAND) --graph-data="$(TESTS)thisfiledoesnt.exists"
+	$(COMMAND) "$(TESTS)thisfiledoesnt.exists"
 
 
 plot:
@@ -185,12 +185,12 @@ pack: FOUT=--output-file="$(DATA)tmp"
 pack:
 	- rm -r mkdir $(DATA)tmp/*
 	mkdir -p $(DATA)tmp
-	$(COMMAND) --graph-data="$(TESTS)pv/2391_12.gml"
-	$(COMMAND) --graph-data="$(TESTS)pv/2391_83.gml"
-	$(COMMAND) --graph-data="$(TESTS)pv/502_56.gml"
-	$(COMMAND) --graph-data="$(TESTS)pv/502_67.gml"
-	$(COMMAND) --graph-data="$(TESTS)pv/502_76.gml"
-	$(COMMAND) --graph-data="$(TESTS)pv/502_83.gml"
+	$(COMMAND) "$(TESTS)pv/2391_12.gml"
+	$(COMMAND) "$(TESTS)pv/2391_83.gml"
+	$(COMMAND) "$(TESTS)pv/502_56.gml"
+	$(COMMAND) "$(TESTS)pv/502_67.gml"
+	$(COMMAND) "$(TESTS)pv/502_76.gml"
+	$(COMMAND) "$(TESTS)pv/502_83.gml"
 	rm $(DATA)tmp/*[^\.bbl]
 	tar acf $(DATA)tmp.tar.gz $(DATA)tmp/
 
