@@ -38,7 +38,21 @@ class AtomsModel:
 
     """
 
-    def __init__(self, data):
+    def __init__(self, data:iter or dict):
+        """Expects an iterable of (name, args), or a properly formatted dict"""
+        if not isinstance(data, dict):  # data is an iterable of 2-uplets
+            assert iter(data)
+            inrepr = defaultdict(set)
+            for name, args in data:
+                assert isinstance(name, str)
+                try:
+                    iter(args)
+                except TypeError:
+                    raise ValueError("Given atom {}({}) has only one parameter"
+                                     " not encapsulated in an iterable, which"
+                                     " is unexpected.".format(name, args))
+                inrepr[name].add(tuple(args))
+            data = inrepr
         self._payload = defaultdict(set, dict(data))
 
 
@@ -53,12 +67,9 @@ class AtomsModel:
     def get_only(self, atom_name:str) -> ATOM:
         """Return the only one atom having the given predicate name"""
         args = self._payload[atom_name]
-        assert len(args) == 1, "given predicate name is shared by multiple predicate"
+        assert len(args) < 2, "given predicate name is shared by multiple predicate"
+        assert len(args) > 0, "given predicate name doesn't exists"
         return ATOM(atom_name, next(iter(args)))
-
-    def get(self, atom_name:str) -> iter:
-        """Yield the atoms having the given predicate name"""
-        yield from ((atom_name, args) for args in self._payload[atom_name])
 
 
     @property
@@ -73,13 +84,16 @@ class AtomsModel:
     def counts(self):
         return {name: len(args) for name, args in self._payload.items()}
 
-    def get(self, names:str or iter):
+
+    def get(self, names:str or iter) -> iter:
         """Yield (predicate, args) for all atoms of of given predicate name"""
         for name in ([names] if isinstance(names, str) else names):
             if name not in self._payload:
-                raise ValueError("Given predicate {} is not in {}"
-                                 "container".format(self, name))
-            yield from (ATOM(name, args) for args in self._payload.get(name, ()))
+                # raise ValueError("Given predicate {} is not in {}"
+                                 # " container".format(name, self))
+                continue
+            all_args = tuple(self._payload.get(name, ()))
+            yield from (ATOM(name, args) for args in all_args)
 
 
 
@@ -87,9 +101,8 @@ class AtomsModel:
     def from_asp_string(aspcode:str):
         """Build an AtomsModel instance from an ASP compliant string"""
         inrepr = defaultdict(set)
-        atoms = (atom.strip() for atom in aspcode.split('.') if atom.strip())
-        for atom in atoms:
-            name, args = split(atom)
+        atoms = atoms_from_aspstr(aspcode)
+        for name, args in atoms:
             inrepr[name].add(tuple(args))
         return AtomsModel(inrepr)
 
@@ -123,11 +136,23 @@ class AtomsModel:
 
     def __str__(self):
         """ASP compliant representation"""
-        return '.'.join('{}({})'.format(name, ','.join(args))
-                        for name, args in self.atoms) + '.'
+        rpr = '.'.join('{}({})'.format(name, ','.join(str(_) for _ in args))
+                       for name, args in self.atoms)
+        return (rpr + '.') if rpr else ''
 
 
-def split(atom):
+def atoms_from_aspstr(aspcode:str) -> iter:
+    """Yield (name, args) object found in given ASP code.
+
+    >>> list(atoms_from_aspstr('b("oh?well.",5).'))
+    [('b', ("oh?well.", '5'))]
+
+    """
+    for atom in PARSER.parse(aspcode.rstrip('.')):
+        yield atom.predicate, tuple(atom.args())
+
+
+def split(atom:str) -> ATOM or None:
     """Return the splitted version of given atom.
 
     atom -- string formatted as an ASP readable atom.
@@ -148,6 +173,7 @@ def split(atom):
     >>> split('')
 
     """
+    assert isinstance(atom, str)
     try:
         parsed = next(iter(PARSER.parse(atom.rstrip('.'))))
         return ATOM(parsed.predicate, tuple(parsed.args()))
@@ -266,3 +292,20 @@ def to_str(atoms, names=None, separator='.'):
         atoms = atoms.get(names)
     return separator.join(atom.predicate + '(' + ','.join(atom.arguments) + ')'
                           for atom in atoms) + separator
+
+
+def name_args_to_str(name:str, args:iter, end:str='.') -> str:
+    """Return an ASP compliant atom based on given name and args
+
+    >>> name_args_to_str('p', (1, 2))
+    'p(1,2).'
+    >>> name_args_to_str('p', ())
+    'p.'
+
+    """
+    if len(args) == 0:
+        return name + end
+    else:
+        args = ((str(arg) if str(arg).isalnum() else ('"' + str(arg) + '"'))
+                for arg in args)
+        return '{}({}){}'.format(name, ','.join(args), end)
