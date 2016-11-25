@@ -61,14 +61,13 @@ class OutputWriter(CompressionObserver):
         if Signals.ModelFound in signals:
             # give new powernodes to converter
             atoms = signals[Signals.ModelFound]
-            self.converter.convert(atoms)
+            self.converter.convert(str(atoms))
         if Signals.ConnectedComponentStopped in signals:
+            remain_edges = signals[Signals.ConnectedComponentStopped]
+            self.converter.convert(str(remain_edges))
             self.output.write(self.converter.finalized())
             self.converter.reset_containers()
-            LOGGER.debug('Final data saved in file ' + self.output.name)
-        if Signals.CCRemainEdgeGenerated in signals:
-            remain_edges = signals[Signals.CCRemainEdgeGenerated]
-            self.converter.convert(remain_edges)
+            LOGGER.debug('Connected component data saved in file ' + self.output.name)
         if Signals.CompressionStopped in signals:
             if self.output is not sys.stdout: self.output.close()
         if Signals.CompressionStarted in signals:

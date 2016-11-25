@@ -40,7 +40,6 @@ class Signals(Enum):
     CompressionTimeGenerated  = 'compression_time_generated'
     FinalEdgeCountGenerated   = 'final_edge_count_generated'
     FinalRemainEdgeCountGenerated = 'final_remain_edge_count_generated'
-    CCRemainEdgeGenerated     = 'cc_remain_edge_generated'
     CCCountGenerated          = 'cc_count_generated'
     StepDataGenerated         = 'step_data_generated'
     ASPConfigUpdated          = 'asp_config_updated'
