@@ -88,9 +88,9 @@ class DataExtractor(observers.CompressionObserver, dict):
                                                    fieldnames=MEASURES)
                 statistics_writer.writeheader()
             except IOError as e:
-                LOGGER.warning("The file "
-                               + statistics_filename + " can't be opened."
-                               + " No statistics will be saved.")
+                LOGGER.error("The file "
+                             + statistics_filename + " can't be opened."
+                             + " No statistics will be saved.")
         else:
             statistics_writer = None
         self.output_converter = output_converter
