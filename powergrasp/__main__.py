@@ -13,6 +13,7 @@ input formats:
 
 """
 
+
 import os
 
 from powergrasp.powergrasp import compress
