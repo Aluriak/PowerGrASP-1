@@ -14,67 +14,21 @@ input formats:
 """
 
 
-import os
-
-from powergrasp.powergrasp import compress
-from powergrasp.converter  import OUTPUT_FORMATS
-from powergrasp import statistics
-from powergrasp import converter
-from powergrasp import commons
-from powergrasp import plots
-from powergrasp import utils
-from powergrasp import info
+from powergrasp import recipes
+from powergrasp import config
+from powergrasp import plotting
 
 
 if __name__ == '__main__':
-    LOGGER = commons.logger()
 
-    # get options, including CLI
-    options = commons.options(cli_doc=__doc__)
+    cfg = config.Configuration.from_cli()
 
-    # parse them
-    # output format verification
-    assert(options['output_format'] in OUTPUT_FORMATS)
-
-    # launch compression
-    if options['graph_data']:
-
-        if options['output_file'] is None:
-            pass
-        elif os.path.isdir(options['output_file']):
-            LOGGER.info('Given output file is not a file, but a directory ('
-                        + options['output_file'] + ').'
-                        + ' Output file will be placed in it, with the name '
-                        + commons.basename(options['graph_data']))
-            options['output_file'] = os.path.join(
-                options['output_file'],
-                commons.basename(options['graph_data'])
-            )
-
-        # compression itself
-        compress(
-            graph_data      = options['graph_data'     ],
-            output_file     = options['output_file'    ],
-            output_format   = options['output_format'  ],
-            interactive     = options['interactive'    ],
-            count_model     = options['count_model'    ],
-            count_cc        = options['count_cc'       ],
-            timers          = options['timers'         ],
-            stats_file      = options['stats_file'     ],
-            logfile         = options['logfile'        ],
-            loglevel        = options['loglevel'       ],
-            thread          = options['thread'         ],
-            draw_lattice    = options['draw_lattice'   ],
-            no_save_time    = options['no_save_time'   ],
-            do_profiling    = options['profiling'      ],
-        )
+    recipes.powergraph(
+        cfg.infile,
+        cfg.outfile,
+        cfg=cfg,
+    )
 
     # plotting if statistics csv file given, and showing or saving requested
-    if((options['plot_stats'] or options['plot_file']) and
-            options['stats_file']):
-        plots(
-            options['stats_file'],
-            savefile=options['plot_file']
-        )
-
-
+    if (cfg.plot_stats or cfg.plot_file) and cfg.stats_file:
+        plotting.plots(cfg.stats_file, savefile=cfg.plot_file)
