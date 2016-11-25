@@ -95,7 +95,7 @@ class OutBBL(OutConverter):
         Initialize all containers.
         """
         # nodes
-        self.atoms      = tuple()
+        self.atoms      = ''
         self.nodes      = set()
         self.pwnds      = set()
         self.cliques    = set()

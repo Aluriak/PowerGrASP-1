@@ -63,9 +63,9 @@ class OutConverter:
 
     def __init__(self):
         # for the first convertion, self.converted must be iterable
-        self.atoms = tuple()
+        self.atoms = ''
 
-    def convert(self, atoms):
+    def convert(self, atoms:str):
         """Operate convertion on given atoms.
 
         Atoms are expecting to be powernodes like:
@@ -79,12 +79,10 @@ class OutConverter:
          in the finalize method.
 
         """
-        self.atoms = itertools.chain(
-            self.atoms,
-            self._convert(atoms)
-        )
+        assert isinstance(atoms, str)
+        self.atoms += atoms
 
-    def _convert(self, atoms):
+    def _convert(self, atoms:str) -> str:
         """Perform the convertion and return its results
 
         Wait for atoms powernode(cc,k,num_set,X)
