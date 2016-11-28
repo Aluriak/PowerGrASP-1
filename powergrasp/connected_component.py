@@ -85,10 +85,9 @@ class ConnectedComponent:
         assert self._last_step < self.step
         if self._first_call:
             self._first_call = False
-            self.observers.signal(
-                Signals.IterationStarted,
-                connected_component_started=(self.number, self.name, self._atoms)
-            )
+            self.observers.signal(connected_component_started=(self.number,
+                                                               self.name,
+                                                               self._atoms))
 
         found_motif = motif.search(
             input_atoms=str(self._atoms),
@@ -125,7 +124,6 @@ class ConnectedComponent:
         if found_motif.model is None:
             self._has_motif = False
             self.observers.signal(
-                Signals.IterationStopped,
                 connected_component_stopped=self.remaining_edges,
                 step_data_generated=([None] * 3),
             )
