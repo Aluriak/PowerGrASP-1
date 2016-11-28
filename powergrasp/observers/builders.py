@@ -9,7 +9,8 @@ from powergrasp import converter
 from powergrasp import config
 from . import (ObserverBatch, CompressionObserver, OutputWriter, TimeCounter,
                Signals, ObjectCounter, ConnectedComponentsCounter,
-               NullTimeCounter, TimeComparator, SignalProfiler)
+               InteractiveCompression, SignalProfiler,
+               NullTimeCounter, TimeComparator)
 
 
 LOGGER = commons.logger()
@@ -46,9 +47,7 @@ def built_from(cfg:config.Configuration) -> ObserverBatch:
 
     # Add the optional observers
     if cfg.timers:
-        time_counter = TimeCounter(ignore=[
-            Signals.IterationStarted, Signals.PreprocessingStarted,
-        ])
+        time_counter = TimeCounter(ignore=[])
     else:  # no timers asked, but others modules may want to have a ref to
         time_counter = NullTimeCounter()
     instanciated_observers.append(time_counter)
