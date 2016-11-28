@@ -55,7 +55,6 @@ def powernode(cc, step, num_set):
         PWRN-<cc>-<step>-<num_set>
 
     """
-    print(cc, step, num_set)
     return 'PWRN-{}-{}-{}'.format(cc, step, num_set)
 
 
