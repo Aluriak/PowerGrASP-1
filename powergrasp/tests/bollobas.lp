@@ -1,3 +1,8 @@
+% Bollobas graph: density roughly equals (3/2) * |V| ^ (3/2)
+% These graph are complex to compress, mainly because
+% of their high density showing a very little number of concepts.
+% see https://gist.github.com/Aluriak/78b9f65cd92e039b012d66c4099947e6
+% for generation.
 edge(9,8).
 edge(1,4).
 edge(7,3).
