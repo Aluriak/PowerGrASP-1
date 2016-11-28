@@ -105,11 +105,43 @@ This principle, implemented in the branch *enhancement#15*, seems to be slower. 
 
 # Implementation details
 
-## Converter
+## Converters
+[Converters](powergrasp/converter/__init__.py) are a set of functions allowing (1) conversion of input data from various formats
+to the internal format (for the record, edge/2 ASP atoms),
+(2) conversion of generated bubble data to various formats with the help of [bubbletools](http://github.com/aluriak/bubbletools)
+and (3) easy and straighforward implementation of other converters.
 
-## Observer
+Both [input](powergrasp/converter/inconverter.py) and [output](powergrasp/converter/outconverter.py) converters
+are documented toward their extensions with other convertion methods.
+
+
+## Observers
+Observers are here to implement a wide range of additional features.
+They react on *signals*, that are defined in the [observers package](powergrasp/observers.observers.py),
+that allow them to access a particular part of the data.
+Some examples follows.
+
+### Output Writer
+[This one](powergrasp/observers/output.py) wait for information about compressed motifs in the graph,
+and take care of the bubble writing in the output file, and even of its conversion to another file format if user ask to.
+It basically reacts to signals *ModelFound* to extract data about found motifs,
+*ConnectedComponentStopped* to know when a connected component have been finished (so the bubble file can be written),
+and *CompressionStopped* in order to close the file descriptors and operate the conversion at the end of the compression.
+
+### Statistics
+
+### Counters
+[code](powergrasp/observers/counters.py)
+
+
 
 ## Logging
+Logging is fully configurable and primarily designed for debug. Although, higher more of logging like INFO are useful for users who like to watch their computers work.
+WARNING and higher modes are good for production environnment, while they don't pollute the stderr unless a serious problem appears.
+
+Note that, whatever is the stdout loglevel given in CLI, all logs will be written to logfiles.
+
+
 
 ## Optimizations
 The following parts are about the various optimizations implemented.
