@@ -47,31 +47,34 @@ def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
 
 def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
     """Convert input using bubbletools, return the new filename"""
-    from bubbletools import convert
     if validate:
         validate_bubble(bubblefile)
-    convert.to_dot(open(bubblefile), dotfile=outfile)
+    get_bubbletools().convert.to_dot(open(bubblefile), dotfile=outfile)
 
 
 def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
     """Convert input using bubbletools, return the new filename"""
-    from bubbletools import convert
     if validate:
         validate_bubble(bubblefile)
-    convert.to_gexf(open(bubblefile), dotfile=outfile)
+    get_bubbletools().convert.to_gexf(open(bubblefile), dotfile=outfile)
 
 
 def validate_bubble(bubblefile:str):
     """Perform a validation of given bubble file"""
+    LOGGER.info("Validation of output bubble file…")
+    for log in get_bubbletools().validate(open(bubblefile), profiling=True):
+        LOGGER.info('\t' + log)
+    LOGGER.info("Finished.")
+
+
+def get_bubbletools():
+    """Return the bubble tool package, or fails gracefully if not available"""
     try:
-        from bubbletools import validate
+        import bubbletools
+        return bubbletools
     except ImportError:
         LOGGER.error("Package bubbletools is not installed, thus bubble "
                      "validation and conversion to other output formats are "
                      "not available. Bubbletools is available on pypi: "
                      "pip install bubbletools.")
         exit(1)
-    LOGGER.info("Validation of output bubble file…")
-    for log in validate(open(bubblefile), profiling=True):
-        LOGGER.info('\t' + log)
-    LOGGER.info("Finished.")
