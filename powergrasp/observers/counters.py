@@ -18,8 +18,8 @@ class ConnectedComponentsCounter(CompressionObserver):
     def _update(self, signals):
         if Signals.CCCountGenerated in signals:
             self._nb_ccs = str(signals[Signals.CCCountGenerated])
-        if Signals.CCRemainEdgeGenerated in signals:
-            count = len(signals[Signals.CCRemainEdgeGenerated])
+        if Signals.ConnectedComponentStopped in signals:
+            count = signals[Signals.ConnectedComponentStopped].counts['oedge']
             if count > 0:
                 LOGGER.info(self.cc_name + ': ' + str(count)
                             + ' remaining edge(s)')
