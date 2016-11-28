@@ -28,10 +28,8 @@ class Signals(Enum):
     # Finalizations
     StepFinalized             = 'step_finalized'         # send after the StepStopped signal
     CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
-    # Objects signals
-    ModelFound                = 'model_found'  # associated with the motif class
     # Data signals
-    CompressionTimeGenerated  = 'compression_time_generated'
+    ModelFound                = 'model_found'  # associated with the motif class
     FinalEdgeCountGenerated   = 'final_edge_count_generated'
     FinalRemainEdgeCountGenerated = 'final_remain_edge_count_generated'
     CCCountGenerated          = 'cc_count_generated'
