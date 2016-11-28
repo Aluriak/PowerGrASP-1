@@ -16,6 +16,7 @@ class SignalProfiler(CompressionObserver):
 
     TEMPLATE       = "Signal {} received {} times, with type(s) {}."
     TEMPLATE_EMPTY = "None of the following signals was received: {}."
+    TEMPLATE_ALL_DISPATCH = "All signals was dispatched at least once."
 
 
     def __init__(self, loglevel:str='INFO'):
@@ -39,4 +40,8 @@ class SignalProfiler(CompressionObserver):
                 ))
             else:
                 not_received.add(signal)
-        LOGGER.log(self.loglevel, SignalProfiler.TEMPLATE_EMPTY.format(', '.join(sig.name for sig in not_received)))
+        if not_received:
+            LOGGER.log(self.loglevel, SignalProfiler.TEMPLATE_EMPTY.format(
+                ', '.join(sig.name for sig in not_received)))
+        else:
+            LOGGER.log(self.loglevel, SignalProfiler.TEMPLATE_ALL_DISPATCH)
