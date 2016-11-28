@@ -105,7 +105,6 @@ class OutputWriter(CompressionObserver):
 
     def comment(self, lines):
         """Add given lines to output as comments"""
-        assert False
         self.writer.write_comment(lines)
 
 
