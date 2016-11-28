@@ -42,7 +42,7 @@ class ConnectedComponent:
         self.config = config
         self._has_motif = True
         self._last_step = 0
-        self.step = 1
+        self.step = 0
         self._atoms = AtomsModel.from_(atoms)
         self.initial_edges_count = sum(1 for _ in self._atoms.get('oedge'))
         self._first_call = True
