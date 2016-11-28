@@ -22,13 +22,14 @@ except ImportError:
 # Data for plotting
 MEASURES = (statistics.GENR_TIME, statistics.COMP_EDGE,
             statistics.GENR_PWED, statistics.GENR_PWND)
-COLORS   = ('black', 'green', 'blue', 'red')
-LABELS   = (
+COLORS = ('black', 'green', 'blue', 'red')
+LABELS = (
     'time per step',
     'edge compressed',
     'generated poweredge',
     'generated powernode',
 )
+INDEX = {label: idx for idx, label in enumerate(LABELS)}
 
 
 # PLOTTING
@@ -60,6 +61,10 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
                        + statistics_filename
                        + ' can\'t be opened. No statistics will be saved.')
 
+    # time could be inexistant, if no timer has been used for compression
+    TIME = any(float(time) != 0. for time, _, _, _ in data)
+    if not TIME: LOGGER.info("Statistics don't provides times.")
+
 
     # Label conversion
     def key2label(key):
@@ -68,7 +73,7 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
 
     # PLOTTING
     try:
-        data_size = len(data[MEASURES[0]])
+        data_size = len(data[MEASURES[INDEX['time per step']]])
     except TypeError:
         LOGGER.error('Plotting compression statistics require'
                      ' more than one compression iteration')
@@ -76,23 +81,29 @@ def plots(filename, title="Compression statistics", xlabel='Iterations',
         return
 
     # convert in pandas data frame for allow plotting
-    gx = pd.DataFrame(data, columns=MEASURES)
+    gx = pd.DataFrame(data, columns=MEASURES if TIME else MEASURES[1:])
     # {black dotted,red,yellow,blue} line with marker o
-    styles = ['ko--', 'ro-', 'yo-', 'bo-']
+    styles = ['ro-', 'yo-', 'bo-']
+    if TIME:
+        styles = ['ko--'] + styles
 
     # get plot, and sets the labels for the axis and the right axis (time)
-    plot = gx.plot(style=styles, secondary_y=[statistics.GENR_TIME])
+    plot = gx.plot(style=styles, secondary_y=[statistics.GENR_TIME] if TIME else None)
     lines, labels = plot.get_legend_handles_labels()
-    rines, rabels = plot.right_ax.get_legend_handles_labels()
-    labels = [key2label(l) for l in labels] + ['concept generation time']
+    rines, _ = plot.right_ax.get_legend_handles_labels() if TIME else ([], None)
+    labels = [key2label(l) for l in labels]
+    if TIME:
+        labels += ['concept generation time']
 
     plot.legend(lines + rines, labels, loc='best')
     plot.set_xlabel(xlabel)
     plot.set_ylabel(ylabel)
-    plot.right_ax.set_ylabel('Time (s)')
+    if TIME:
+        plot.right_ax.set_ylabel('Time (s)')
 
     # axis limits : show the 0
-    plot.right_ax.set_ylim(0, max(gx[statistics.GENR_TIME]) * 2)
+    if TIME:
+        plot.right_ax.set_ylim(0, max(gx[statistics.GENR_TIME]) * 2)
     plot.set_ylim(0, max(gx[statistics.COMP_EDGE]) * 1.1)
 
     # print or save
