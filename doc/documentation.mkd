@@ -2,9 +2,8 @@
 This documentation is dedicated to PowerGrASP users who want to know more and contributors,
 while the README is sufficient to understand how PowerGrASP works, and how perform a compression.
 Moreover, an heavy use of internal docstring have been performed: doc inside the code is the most up-to-date ressource about PowerGrASP functionnalities, behavior and usage.
-Don't forget that Python allows an access to the docstring without browsing the code with the help(1) function.
 
-PowerGrASP is a Python module that allows user to compress a graph, according to the Power Graph method,
+PowerGrASP is a Python module that allows user to compress a graph, for instance according to the Power Graph method,
 and as final output produce a file that contains the compressed graph (see *output* and *visualization* for details).
 The compression, performed with the help of Formal Concept Analysis and Logic Programming,
 have a visualization interest: the compressed graph is easier to read, even in case of big graphs, and,
@@ -14,31 +13,33 @@ Some references are given at the end.
 
 
 ## Architecture
-PowerGrASP mainly uses CPython and Clingo, an Answer Set Programming implementation by *Potassco*.
-All is packaged in a pythonic way for allows the upload on pypi. One of the main dependance is [pyasp](http://github.com/sthiele/pyasp),
-the module making the bridge between ASP and Python.
-With the help of the [docopt](http://docopt.org) module, PowerGrASP can be interfaced with the command-line as with another Python program.
+PowerGrASP was originally a Power Graph compression implementation.
+It is now a library that can performs Power Graph compression, and also any variation of it.
+
+PowerGrASP expose a CLI. Best usage examples are in the Makefile.
 The [matplotlib](http://matplotlib.org/) and [pandas](http://pandas.pydata.org/) modules are used for compression statistics plotting (see *plotting*).
 
-The program us basically a Python code that call Clingo multiple times, while the input graph has a compressible motif,
-and finally perform a traduction of the concepts (biclique, clique, star) in the output format.
+The program is basically a Python code that call solvers to compress the input graph,
+and perform a traduction of the concepts (biclique, clique, star) in the output format.
 
-This output format, named bubble, is notabily readable by Cytoscape, once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
+PowerGrASP is tested with CPython and Clingo, an Answer Set Programming implementation by [Potassco](http://potassco.org).
+All is packaged in a pythonic way for allows the upload on pypi. One of the main dependance is [pyasp](http://github.com/sthiele/pyasp),
+the module making the bridge between ASP and Python.
 
 
 ### Modules
 The followings modules compose the important parts in the PowerGrASP source code.
 
 - *\__main__*: interface between the command line and the compression procedures.
-- *atoms*: provides many functions for manipulating atoms objects, output of ASP solvers.
+- *atoms*: provides the AtomsModel class, internal repr of the atoms, plus many functions for manipulating them.
 - *commons*: global definitions of constants, various generalist functions and logging management.
-- *compression*: implementation of the compression algorithm.
-- *converter*: converter library, that allows the transformation of input and output data in treatable formats.
-- *graph_reduction*: implementation of a graph reduction algorithm (see optimizations).
+- *converter*: converter library, that allows the transformation of input and output data.
+- *graph*: implementation of the Graph class, main API object.
+- *connected_component*: implementation of the ConnectedComponent class, main API object.
 - *info*: informations on the package itself.
 - *observers*: implementations of various compression observers, with different roles.
 - *plotting*: routines for plotting the statistics data.
-- *powergrasp*: main API, a wrapper around the compression routines.
+- *recipes*: subpackage exposing high-level recipes, including Power Graph compression.
 - *solving*: provides functions abstracting solving treatment like solver construction and best solution access.
 - *statistics*: defines way to do compression statistics, and how print/stock them.
 - *test*: unit test subpackage.
@@ -49,13 +50,13 @@ Moreover, inside the PowerGrASP module is a *ASPSources* subdirectory,
 that contains all ASP source code used by PowerGrASP.
 
 
-## Algorithm
+# Recipes
+## Powergraph
 While the more important part of the compression is performed in the ASP side, the compression algorithm can't be detailed
 without description of Clingo heuristics and behavior. This is not the goal of this document.
 Altough some tips on the implementation will be described below.
 
 ### Python side
-It needs to be well understood.
 
 1. determination of the connected component (ASP solver used (*extraction.lp*)).
 2. for each connected component:
@@ -102,19 +103,19 @@ This principle, implemented in the branch *enhancement#15*, seems to be slower. 
 
 
 
-## Implementation details
+# Implementation details
 
-### Converter
+## Converter
 
-### Observer
+## Observer
 
-### Logging
+## Logging
 
-### Optimizations
+## Optimizations
 The following parts are about the various optimizations implemented.
 
 
-#### Score bounds  (since 0.3.X)
+### Score bounds  (since 0.3.X)
 The score bounds (inclusives) are computed before any concept search, as follow:
 - the initial best score is the number of edges in the graph
 - the initial minimal score is 2
@@ -127,7 +128,7 @@ while the benchmarks shows a slower compression.
 The minimal score is 2, or equals to the score of the clique found (if any) at the same step for any biclique search.
 
 
-#### Reduction of equivalent nodes  (currently tested)
+### Reduction of equivalent nodes  (currently tested)
 Nodes with exactly the same attributes (== linked to the same other nodes) are always handled together in cases of bicliques.
 If N nodes have the same attributes, then the smaller lexicographically will be choosen as the normal node. The others are named «hidden» nodes.
 The data extraction in *extract.lp* yields an equiv/2 atom, where equiv(X,Y) define Y as an hidden node, and X as a normal node.
@@ -138,7 +139,7 @@ However, cliques needs a special treatment. When a clique use a node X such as e
 The choosen Y node is put in the clique, and the node X score is decremented.
 
 
-##### commits
+#### commits
 preprocessing: a110480e4b0b3da00fdeb520239cf09b7aeb6c00  
 postprocessing: 2faae7614d9eb8b0b9e943f542cb6ebc196a2214  
 compression: 3dc32cc80664c4ae0c179b324726312ba2e125ae  
@@ -147,7 +148,7 @@ clique test case: 2a8e21d2fede030fa4e5bf43f23f23ba2d236ee3
 main commit: 209d191f628fca4152893c9dc1aa1677205fa923  
 
 
-### CLI & API
+# CLI & API
 The CLI usage is described through the help:
 
     python -m powergrasp --help
@@ -155,19 +156,20 @@ The CLI usage is described through the help:
 
 The API is defined by the powergrasp module:
 
-    import powergrasp
-    help(powergrasp.compress)
-    powergrasp.compress('graph.lp', 'output.bbl')
+    from powergrasp import recipes
+    from powergrasp import config
+    cfg = config.from_cli(infile='graph.lp', outfile='output.bbl')
+    recipes.powergraph(cfg)
 
 Cf *README.mkd* and *Makefile* for exact PowerGrASP command line or python usage.
 
 
 
-## Visualization
+# I/O & Visualization
 PowerGrASP main goal is data visualization. There is some ways for perform that.
 
-### Cytoscape
-Print a power graph through Cytoscape is made possible by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin,
+## Cytoscape
+Print a power graph through [Cytoscape **2**](http://www.cytoscape.org/download_old_versions.html) is made possible by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin,
 which handle the endemic format *Bubble* developed by the BIOTEC team in 2012. (cf references)
 Cytoscape, in order to using the CyOog plugin, must be in version __[2.x](http://www.cytoscape.org/download_old_versions.html)__.
 
@@ -180,7 +182,7 @@ and use other technics for reach a comparable result with CyOog.
 As a consequence, while showing the compressed graph is not PowerGrASP's job,
 it lets Cytoscape (and CyOog) perform the final printings.
 
-### Oog Command line tool
+## Oog Command line tool
 BIOTEC team also released a [command line tool](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-command-line-tool.html) for power graph analysis.
 This tool allow to print a bubble file without Cytoscape usage, with something like:
 
@@ -190,44 +192,31 @@ Add *&>/dev/null* for prevent any logging output.
 Some problems can appears, notabily the normal edges that are not displayed.
 
 
-### DOT file format
-A layout engine of graphviz named *fdp* starts to handle graph clusters.
-According to this [demonstration](http://www.graphviz.org/content/fdpclust), clusters are exactly what the powernodes are.
+## DOT file format
+One output format, named bubble, is notabily readable by Cytoscape,
+once the plugin [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) is installed.
+Other outputs are reachable using the [bubble-tools](https://github.com/Aluriak/bubble-tools) module, notabily dot and gexf format.
 
-This needs to be implemented, but it can be an interesting alternative to others visualization tools.
+Graphviz and its dot format handles hierarchical graph. [bubble-tools](https://github.com/Aluriak/bubble-tools) is a simple CLI tool that convert bubble files
+(outputed by PowerGrASP) to other formats, including dot.
+
+[Graphviz](http://graphviz.org) is a way to visualize dot, or using softwares like [ZGR](http://zvtm.sourceforge.net/zgrviewer.html) or [xdot](http://freecode.com/projects/xdot_py).
+
+Also, [Gephi](http://gephi.org) in versions smaller than 0.9, since it has [removed the hierarchical graph handling](https://github.com/gephi/graphstore/pull/128),
+can be used to print GEXF files that bubble-tools is able to generate.
 
 
-### Statistics about compression
+## Statistics about compression
 Using the `--stats-file=filename` option, PowerGrASP will generate statistical data about the compression for each step, and store it in CSV format in given *filename*. With the `--plot-stats` flag, or the `--plot-file=plot.png` option, PowerGrASP will look for the data in *filename* and plot it using matplotlib.
 
 
 
 
-## I/O formats
-### Input
+## Input formats
 The only input format managed by the compression is an ASP code that contains atoms *edge/2*, describing the link between two nodes identified by their labels.
 However, PowerGrASP embeds a converter library that works before PowerGrASP
 for create a new file from the non-ASP input file.
-Formats currently managed by PowerGrASP are described in the internal docstring and in the README.
-
-### Output
-PowerGrASP only outputs *Bubble*-formated files. Bubble is a file format defined by BIOTEC, used by the module [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-cytoscape-plugin.html) of [Cytoscape **2**](http://www.cytoscape.org/download_old_versions.html).
-The converter library embedded in PowerGrASP can perform conversion after the compression.
-This is, however, not an important feature, while the only way for printing power graphs
-is Cytoscape and the module CyOog, which use exclusively the Bubble format.
-Like for inputs, managed output files are detailed in internal docstring and README.
-
-As for inputs, PowerGrASP can be extended in order to provides new output formats.
-
-### Extension
-Both input and output formats can be easily added to the module.
-For input formats, take a look to the following commits:
-
-- core implementation: [1dbed399b89139a9ce9e8d2ae2cc686a9392e905](https://github.com/Aluriak/PowerGrASP/commit/1dbed399b89139a9ce9e8d2ae2cc686a9392e905)
-- example integration: [c4c95a0964fc999aa0ac92f02fbbd648da638bcd](https://github.com/Aluriak/PowerGrASP/commit/c4c95a0964fc999aa0ac92f02fbbd648da638bcd)
-- unit tests: [2699fd1ec9ba10f5ee8a2617be3269f85dbdcbea](https://github.com/Aluriak/PowerGrASP/commit/2699fd1ec9ba10f5ee8a2617be3269f85dbdcbea)
-
-For output formats, the core implementation is equivalent, but currently unit tests and example integration are more difficult to test.
+Formats currently managed by PowerGrASP are described in the internal docstring.
 
 
 
