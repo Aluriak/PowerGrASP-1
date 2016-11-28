@@ -94,7 +94,7 @@ class AtomsModel:
 
 
     def get(self, names:str or iter) -> iter:
-        """Yield (predicate, args) for all atoms of of given predicate name"""
+        """Yield (predicate, args) for all atoms of given predicate name"""
         for name in ([names] if isinstance(names, str) else names):
             if name not in self._payload:
                 # raise ValueError("Given predicate {} is not in {}"
@@ -103,6 +103,9 @@ class AtomsModel:
             all_args = tuple(self._payload.get(name, ()))
             yield from (ASPAtom(name, args) for args in all_args)
 
+    def get_str(self, names:str or iter) -> iter:
+        """Return a string of atoms for all atoms of given predicate name"""
+        return AtomsModel(self.get(names))
 
 
     @staticmethod
