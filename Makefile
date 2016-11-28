@@ -13,8 +13,8 @@ TIMERS=--timers
 STATFILE=--stats-file=$(DATA)statistics.csv
 #PLOTFILE=--plot-file=$(DATA)statistics.png
 #PLOT=--plot-stats
-OUTPUT=--output-format="bbl"
-FOUT=--output-file="$(DATA)output.bbl"
+OUTPUT=--outformat="bbl"
+FOUT=--outfile="$(DATA)output.bbl"
 LOGLEVEL=--loglevel=debug
 LOGLEVEL=--loglevel=info
 #LOGLEVEL=--loglevel=warning
