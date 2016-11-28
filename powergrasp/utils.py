@@ -117,7 +117,3 @@ def make_tree(nb_node, filename, nb_child=lambda:2):
             for child in childs():
                 fd.write(edge(node, child))
                 nodes.append(child)
-
-
-
-
