@@ -12,7 +12,7 @@ LOGGER = commons.logger()
 SIGNAL_STARTED   = '_started'
 SIGNAL_STOPPED   = '_stopped'
 SIGNAL_GENERATED = '_generated'
-SIGNAL_FOUND     = '_found'
+SIGNAL_MOTIF     = '_motif'
 
 
 class Signals(Enum):
@@ -23,19 +23,13 @@ class Signals(Enum):
     CompressionStopped        = 'compression_stopped'
     ConnectedComponentStarted = 'connected_component_started'
     ConnectedComponentStopped = 'connected_component_stopped'
-    IterationStarted          = 'iteration_started'  # send before all iterations
-    IterationStopped          = 'iteration_stopped'  # send at the end of all iterations
     ExtractionStarted         = 'extraction_started'
     ExtractionStopped         = 'extraction_stopped'
-    PreprocessingStarted      = 'preprocessing_started'
-    PreprocessingStopped      = 'preprocessing_stopped'
     # Finalizations
     StepFinalized             = 'step_finalized'         # send after the StepStopped signal
     CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
     # Objects signals
-    ModelFound                = 'model_found'
-    BicliqueFound             = 'biclique_found'
-    CliqueFound               = 'clique_found'
+    ModelFound                = 'model_found'  # associated with the motif class
     # Data signals
     CompressionTimeGenerated  = 'compression_time_generated'
     FinalEdgeCountGenerated   = 'final_edge_count_generated'

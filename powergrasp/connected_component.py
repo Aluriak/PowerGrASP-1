@@ -129,8 +129,6 @@ class ConnectedComponent:
             )
         else:  # there is a found model
             self._has_motif = True
-            SIGNAL_MODEL_ATOMS = {'powernode', 'clique', 'poweredge'}
-            model_data = AtomsModel(found_motif.model.get(SIGNAL_MODEL_ATOMS))
 
             data = found_motif.motif.compress(found_motif.model, self._atoms)
             assert len(data['poweredge_count']) == 1, "Multiple poweredge_count/1 atoms were generated."
@@ -138,7 +136,7 @@ class ConnectedComponent:
             assert len(data['score']) == 1, "Multiple score/1 atoms were generated."
 
             self.observers.signal(
-                model_found=model_data,
+                model_found=found_motif,
                 step_data_generated=(int(data['powernode_count'][0]),
                                      int(data['poweredge_count'][0]),
                                      int(data['score'][0]))

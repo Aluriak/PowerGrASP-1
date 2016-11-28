@@ -69,9 +69,11 @@ class OutputWriter(CompressionObserver):
     def _update(self, signals):
         # print('Output Writer:', signals)
         if Signals.ModelFound in signals:
-            # give new powernodes to converter
-            atoms = signals[Signals.ModelFound]
-            self.write(str(atoms))
+            SIGNAL_MODEL_ATOMS = {'powernode', 'clique', 'poweredge'}
+            motif = signals[Signals.ModelFound]
+            # give new powernodes, clique and poweredges to converter
+            model_atoms = motif.model.get_str(SIGNAL_MODEL_ATOMS)
+            self.write(str(model_atoms))
 
         if Signals.ConnectedComponentStopped in signals:
             remain_edges = signals[Signals.ConnectedComponentStopped]

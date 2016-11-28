@@ -4,7 +4,7 @@
 import logging
 from collections import defaultdict
 
-from .observer import CompressionObserver, Signals, SIGNAL_FOUND
+from .observer import CompressionObserver, Signals
 from powergrasp import commons
 
 

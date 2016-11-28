@@ -2,7 +2,7 @@
 Definition of various counting related compression observers.
 
 """
-from .observer import CompressionObserver, Signals, SIGNAL_FOUND
+from .observer import CompressionObserver, Signals, SIGNAL_MOTIF
 from powergrasp import commons
 
 
@@ -38,17 +38,14 @@ class ObjectCounter(CompressionObserver):
 
     def __init__(self):
         self.props = []
-        for signal in (s for s in Signals if s.value.endswith(SIGNAL_FOUND)):
-            prop = ObjectCounter.property_named_from(signal.value)
-            setattr(self, prop, 0)
-            self.props.append(prop)
 
     def _update(self, signals):
-        for signal in signals:
-            name = signal.value
-            if name.endswith(SIGNAL_FOUND):
-                prop = ObjectCounter.property_named_from(name)
-                setattr(self, prop, getattr(self, prop) + 1)
+        if Signals.ModelFound in signals:
+            # incrementation of the internal counter associated with given motif
+            motif = signals[Signals.ModelFound].motif
+            prop = ObjectCounter.property_named_from(motif)
+            setattr(self, prop, getattr(self, prop, 0) + 1)
+
         if Signals.CompressionFinalized in signals:
             for prop in self.props:
                 LOGGER.info(self.__class__.__name__ + ': '
@@ -56,9 +53,9 @@ class ObjectCounter(CompressionObserver):
                             + ': ' + str(getattr(self, prop)))
 
     @staticmethod
-    def property_named_from(signal_name):
+    def property_named_from(signal_payload):
         "Return the property name deduced from the signal name"
-        return ObjectCounter.PREFIX + signal_name[:-len(SIGNAL_FOUND)]
+        return ObjectCounter.PREFIX + str(signal_payload)
 
     @staticmethod
     def prettified(property_name):
