@@ -17,15 +17,23 @@ from pyasp import asp
 # ASP Parser: if atoms are defined as arguments, consider them strings.
 PARSER = asp.Parser(collapseTerms=True, collapseAtoms=False)
 
-# Atom definition
-ATOM = namedtuple('Atom', ['name', 'args'])
-
 # CONSTANTS
 RESULTS_PREDICATS = (
     'powernode',
     'poweredge',
     'score',
 )
+
+
+# Atom definition
+class ASPAtom(namedtuple('BaseAtom', ['name', 'args'])):
+
+    @property
+    def only_arg(self):
+        assert len(self.args) == 1, ("Atom {} have multiple parameters. "
+                                     "only_args() property is not "
+                                     "accessible.".format(self))
+        return self.args[0]
 
 
 class AtomsModel:
@@ -64,12 +72,12 @@ class AtomsModel:
         for name, args in atoms:
             self._payload[name].remove(tuple(args))
 
-    def get_only(self, atom_name:str) -> ATOM:
+    def get_only(self, atom_name:str) -> ASPAtom:
         """Return the only one atom having the given predicate name"""
         args = self._payload[atom_name]
         assert len(args) < 2, "given predicate name is shared by multiple predicate"
         assert len(args) > 0, "given predicate name doesn't exists"
-        return ATOM(atom_name, next(iter(args)))
+        return ASPAtom(atom_name, next(iter(args)))
 
 
     @property
@@ -93,7 +101,7 @@ class AtomsModel:
                                  # " container".format(name, self))
                 continue
             all_args = tuple(self._payload.get(name, ()))
-            yield from (ATOM(name, args) for args in all_args)
+            yield from (ASPAtom(name, args) for args in all_args)
 
 
 
@@ -152,31 +160,31 @@ def atoms_from_aspstr(aspcode:str) -> iter:
         yield atom.predicate, tuple(atom.args())
 
 
-def split(atom:str) -> ATOM or None:
+def split(atom:str) -> ASPAtom or None:
     """Return the splitted version of given atom.
 
     atom -- string formatted as an ASP readable atom.
-    return -- None or an ATOM object with field name and args.
+    return -- None or an ASPAtom object with field name and args.
 
     If many atoms are defined in the input string,
         only one will be returned.
     If given atom is not valid, None is returned.
 
     >>> split('edge(lacA,lacZ)')
-    Atom(name='edge', args=('lacA', 'lacZ'))
+    ASPAtom(name='edge', args=('lacA', 'lacZ'))
     >>> split('edge(42,12)')
-    Atom(name='edge', args=('42', '12'))
+    ASPAtom(name='edge', args=('42', '12'))
     >>> split('edge("ASX38","MER(HUMAN)")')
-    Atom(name='edge', args=('"ASX38"', '"MER(HUMAN)"'))
+    ASPAtom(name='edge', args=('"ASX38"', '"MER(HUMAN)"'))
     >>> split('lowerbound.')
-    Atom(name='lowerbound', args=())
+    ASPAtom(name='lowerbound', args=())
     >>> split('')
 
     """
     assert isinstance(atom, str)
     try:
         parsed = next(iter(PARSER.parse(atom.rstrip('.'))))
-        return ATOM(parsed.predicate, tuple(parsed.args()))
+        return ASPAtom(parsed.predicate, tuple(parsed.args()))
     except StopIteration:
         return None
 
