@@ -94,9 +94,9 @@ class Graph:
                                          aspconfig=self.config.extract_config)
         for cc_nb, model in enumerate(cc_gen):
             atom_counts = model.counts
-            cc_atom = model.get_only('cc').args
-            assert len(cc_atom) == 1, "Extraction yield a cc/{} atom".format(len(cc_atom))
-            cc_id = str(cc_atom[0])
+            cc_id = model.get_only('cc').only_arg
+            cc_nb = model.get_only('nb_cc').only_arg
+            self.observers.signal(cc_count_generated=int(cc_nb))
             atoms = ('{}({}).'.format(name, ','.join(args))
                      for name, args  in model.atoms)
             cc_object = self.build_connected_component(
