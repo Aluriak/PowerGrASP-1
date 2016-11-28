@@ -92,6 +92,16 @@ class Configuration(metaclass=meta_config):
         self.validate()
 
 
+    @property
+    def fields(self):
+        for field in FIELDS:
+            yield getattr(self, field)
+
+    def __iter__(self) -> ('field', 'value'):
+        for field in FIELDS:
+            yield field, getattr(self, field)
+
+
     def populate(self):
         """Compute fields based on existing ones. Modify some existing fields
         in order to provide default values.
