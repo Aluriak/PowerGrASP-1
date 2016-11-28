@@ -1,4 +1,3 @@
-python3 bollobas.py
 edge(9,8).
 edge(1,4).
 edge(7,3).
