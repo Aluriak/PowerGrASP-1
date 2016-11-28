@@ -101,11 +101,23 @@ def to_asp_value(value) -> str:
     """
     if isinstance(value, int):
         return str(value)
-    return (  # surround value if necessary
-        ('' if value.startswith('"') else '"')
-        + str(value)
-        + ('' if value.endswith('"') else '"')
-    )
+    return quoted(value)
+
+
+def quoted(value:str, by='"'):
+    """
+
+    >>> quoted('a')
+    '"a"'
+    >>> quoted('"i')
+    '"i"'
+    >>> quoted('"i', by='a')
+    'a"ia'
+
+    """
+    return (('' if value.startswith(by) else by)
+            + str(value)
+            + ('' if value.endswith(by) else by))
 
 
 def basename(filepath):
