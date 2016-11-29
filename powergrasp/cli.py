@@ -81,6 +81,16 @@ def existant_file(filepath:str) -> str:
     return filepath
 
 
+def writable_file(filepath:str) -> str:
+    """Argparse type, raising an error if given file is not writable"""
+    try:
+        with open(filepath, 'a') as fd:
+            pass
+        return filepath
+    except (PermissionError, IOError):
+        raise argparse.ArgumentTypeError("file {} is not writable.".format(filepath))
+
+
 def output_format(format:str) -> str:
     """Argparse type, raising an error if given format does not exists"""
     if format not in converter.OUTPUT_FORMATS:
@@ -104,13 +114,13 @@ def cli_parser() -> argparse.ArgumentParser:
     # I/O arguments
     parser_pg.add_argument('infile', type=existant_file,
                            help='file containing the graph data')
-    parser_pg.add_argument('--outfile', '-o', type=existant_file,
+    parser_pg.add_argument('--outfile', '-o', type=writable_file,
                            help='output file. Will be overwritted')
     parser_pg.add_argument('--outformat', type=output_format,
                            help='Format to use for output')
     parser_pg.add_argument('--loglevel', type=loglevel,
                            help='Logging level, one of DEBUG, INFO, WARNING, ERROR or CRITICAL')
-    parser_pg.add_argument('--logfile', type=existant_file,
+    parser_pg.add_argument('--logfile', type=writable_file,
                            help='Logging file, where all logs are written')
 
     # Compression arguments
