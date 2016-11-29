@@ -23,7 +23,7 @@ LOGGER = commons.logger()
 FIELDS = {  # field: default value
     'infile'        : None,
     'outfile'       : None,
-    'outformat'     : commons.BUBBLE_FORMAT_ID,
+    'outformat'     : None,
     'interactive'   : False,
     'count_model'   : False,
     'count_cc'      : False,
