@@ -27,8 +27,18 @@ class ConnectedComponentsCounter(CompressionObserver):
                 LOGGER.info(self.cc_name + ': ' + 'No remaining edge')
         if Signals.ConnectedComponentStarted in signals:
             self.cc_num, self.cc_name, _ = signals[Signals.ConnectedComponentStarted]
+            self.cc_name = str(self.cc_name)
+            self.cc_num = int(self.cc_num)
             LOGGER.info('#### CC ' + self.cc_name + ' ' + str(self.cc_num+1)
                         + '/' + str(self._nb_ccs))
+
+    @property
+    def nb_ccs(self) -> int:
+        return int(self._nb_ccs)
+
+    @property
+    def current_cc(self) -> (str, int):
+        return self.cc_name, self.cc_num
 
 
 class ObjectCounter(CompressionObserver):
@@ -37,13 +47,14 @@ class ObjectCounter(CompressionObserver):
     PREFIX = '_counter_'
 
     def __init__(self):
-        self.props = []
+        self.props = set()
 
     def _update(self, signals):
         if Signals.ModelFound in signals:
             # incrementation of the internal counter associated with given motif
             motif = signals[Signals.ModelFound].motif
             prop = ObjectCounter.property_named_from(motif)
+            self.props.add(prop)
             setattr(self, prop, getattr(self, prop, 0) + 1)
 
         if Signals.CompressionFinalized in signals:
@@ -51,6 +62,7 @@ class ObjectCounter(CompressionObserver):
                 LOGGER.info(self.__class__.__name__ + ': '
                             + ObjectCounter.prettified(prop)
                             + ': ' + str(getattr(self, prop)))
+
 
     @staticmethod
     def property_named_from(signal_payload):
@@ -62,3 +74,8 @@ class ObjectCounter(CompressionObserver):
         "Return the prettified property name deduced from the property name"
         property_name = property_name[len(ObjectCounter.PREFIX):]
         return property_name.replace('_', ' ').title()
+
+    @property
+    def count(self):
+        return {prop.split('_')[-1]: int(getattr(self, prop))
+                for prop in self.props}
