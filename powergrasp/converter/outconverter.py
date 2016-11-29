@@ -43,26 +43,29 @@ def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
         validate_bubble(bubblefile)
     if bubblefile != outfile:
         shutil.copy(bubblefile, outfile)
+    return outfile
 
 
 def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
     """Convert input using bubbletools, return the new filename"""
     if validate:
         validate_bubble(bubblefile)
-    get_bubbletools().convert.to_dot(open(bubblefile), dotfile=outfile)
+    get_bubbletools().convert.bubble_to_dot(bubblefile, dotfile=outfile)
+    return outfile
 
 
 def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
     """Convert input using bubbletools, return the new filename"""
     if validate:
         validate_bubble(bubblefile)
-    get_bubbletools().convert.to_gexf(open(bubblefile), dotfile=outfile)
+    get_bubbletools().convert.bubble_to_gexf(bubblefile, gexffile=outfile)
+    return outfile
 
 
 def validate_bubble(bubblefile:str):
     """Perform a validation of given bubble file"""
     LOGGER.info("Validation of output bubble file…")
-    for log in get_bubbletools().validate(open(bubblefile), profiling=True):
+    for log in get_bubbletools().validate(bubblefile, profiling=True):
         LOGGER.info('\t' + log)
     LOGGER.info("Finished.")
 
