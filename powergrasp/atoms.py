@@ -30,9 +30,10 @@ class ASPAtom(namedtuple('BaseAtom', ['name', 'args'])):
 
     @property
     def only_arg(self):
-        assert len(self.args) == 1, ("Atom {} have multiple parameters. "
-                                     "only_args() property is not "
-                                     "accessible.".format(self))
+        if len(self.args) != 1:
+            raise ValueError("Atom {} have multiple parameters. "
+                             "only_args() property is not "
+                             "accessible.".format(self))
         return self.args[0]
 
 
