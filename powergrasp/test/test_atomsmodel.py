@@ -2,7 +2,17 @@
 import unittest
 
 from powergrasp import atoms as atoms_module
-from powergrasp.atoms import AtomsModel
+from powergrasp.atoms import AtomsModel, ASPAtom
+
+
+class TestASPAtom(unittest.TestCase):
+
+    def test_only(self):
+        atom = ASPAtom('oedge', [1, 2])
+        self.assertEqual(atom.name, 'oedge')
+        self.assertSequenceEqual(atom.args, [1, 2])
+        with self.assertRaises(ValueError) as ctxt:
+            atom.only_arg
 
 
 class TestAtomsFunctions(unittest.TestCase):

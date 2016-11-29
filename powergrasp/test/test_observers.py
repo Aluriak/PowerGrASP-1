@@ -3,7 +3,10 @@ import random
 import unittest
 
 from powergrasp import observers
-from powergrasp.observers import Priorities, ObserverBatch
+from powergrasp.atoms import AtomsModel
+from powergrasp.motif import FoundMotif
+from powergrasp.observers import (Priorities, ObserverBatch, ObjectCounter,
+                                  ConnectedComponentsCounter)
 
 
 class MockObserver(observers.CompressionObserver):
@@ -59,3 +62,32 @@ class TestObserverBatch(unittest.TestCase):
         self.assertIsNot(new_batch, batch)
         self.compare_priorities(new_batch, base + add1 + add2 + add3)
         self.compare_priorities(batch, base + add1 + add2)
+
+
+
+class TestCounterObservers(unittest.TestCase):
+
+    def test_object_counter(self):
+        counter = ObjectCounter()
+        obs = ObserverBatch([counter], None)
+        motifs_found = [random.choice(('clique', 'biclique')) for _ in range(10)]
+        for motif in motifs_found:
+            obs.signal(model_found=FoundMotif(None, None, motif))
+        for motif in set(motifs_found):
+            with self.subTest(motif_name=motif):
+                found = counter.count[motif]
+                expected = motifs_found.count(motif)
+                self.assertEqual(found, expected)
+
+    def test_cc_counter(self):
+        counter = ConnectedComponentsCounter()
+        obs = ObserverBatch([counter], None)
+        nb_ccs = random.randint(1, 10)
+        ccs = tuple(random.sample(range(100), nb_ccs))
+        obs.signal(cc_count_generated=nb_ccs)
+        for idx, cc in enumerate(ccs):
+            obs.signal(connected_component_started=(idx, cc, None))
+            obs.signal(connected_component_stopped=AtomsModel([]))
+            self.assertEqual(str(cc), counter.cc_name)
+            self.assertEqual(idx, counter.cc_num)
+        self.assertEqual(nb_ccs, counter.nb_ccs)
