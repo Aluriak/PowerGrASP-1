@@ -92,24 +92,25 @@ class Graph:
 
         cc_gen = solving.all_models_from('', aspfiles=[self.config.graph_file],
                                          aspconfig=self.config.extract_config)
+        total_cc_nb = None
         for cc_nb, model in enumerate(cc_gen):
             atom_counts = model.counts
             cc_id = model.get_only('cc').only_arg
-            cc_nb = model.get_only('nb_cc').only_arg
-            self.observers.signal(cc_count_generated=int(cc_nb))
+            if not total_cc_nb:
+                total_cc_nb = int(model.get_only('nb_cc').only_arg)
+                self.observers.signal(cc_count_generated=total_cc_nb)
             atoms = ('{}({}).'.format(name, ','.join(args))
                      for name, args  in model.atoms)
             cc_object = self.build_connected_component(
                 cc_id=cc_id,
                 cc_nb=cc_nb,
-                node_number=int(atom_counts['membercc']),
-                edge_number=int(atom_counts['oedge']),
+                node_number=int(atom_counts.get('membercc', 0)),
+                edge_number=int(atom_counts.get('oedge', 0)),
                 atoms=''.join(atoms),
                 observers=self.observers,
                 config=config
             )
             self._ccs.append(cc_object)
-            print(self.ccs)
             yield cc_object
         self.observers.signal(Signals.ExtractionStopped)
 
