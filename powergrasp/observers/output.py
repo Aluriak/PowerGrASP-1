@@ -55,15 +55,10 @@ class OutputWriter(CompressionObserver):
 
     """
 
-    def __init__(self, outfile:str, outformat:str):
+    def __init__(self, outfile:str=None, outformat:str=None):
         self.format = OutputWriter.format_deduced_from(outfile, outformat)
-        self.output = open(outfile, 'w') if outfile else sys.stdout
-        if self.write_to_bubble:  # write directly to output file
-            self.writer = converter.BubbleWriter(self.output)
-        else:  # user wants a conversion to another format
-            # write bubble in tempfile, then convert it to outfile
-            fd = tempfile.NamedTemporaryFile('w', delete=False)
-            self.writer = converter.bbl_writer(fd)
+        self.output = str(outfile or '')
+        self.write_to_stdout = not bool(self.output)
 
 
     def _update(self, signals):
@@ -75,18 +70,37 @@ class OutputWriter(CompressionObserver):
             model_atoms = motif.model.get_str(SIGNAL_MODEL_ATOMS)
             self.write(str(model_atoms))
 
+        if Signals.ConnectedComponentStarted in signals:
+            cc_num, cc_name, _ = signals[Signals.ConnectedComponentStarted]
+            self.comment('CONNECTED COMPONENT {}: {}'.format(cc_num, cc_name))
+
         if Signals.ConnectedComponentStopped in signals:
             remain_edges = signals[Signals.ConnectedComponentStopped]
             self.write(str(remain_edges))
-            self.finalized()
-            LOGGER.debug("Connected component data saved in file " + self.output.name)
+            self.finalize_cc()
 
         if Signals.CompressionStarted in signals:
-            self.writer.write_header()
+            self.init_writer()
+
         if Signals.CompressionStopped in signals:
             self.finalized()
-            if self.output is not sys.stdout:
-                self.output.close()
+
+
+    def init_writer(self):
+        """Open the output file, initialize the writer, write the header"""
+        if self.write_to_bubble:  # write directly to output file
+            self.fd = sys.stdout if self.write_to_stdout else open(self.output, 'w')
+        else:  # user wants a conversion to another format
+            # write bubble in tempfile, then convert it to outfile
+            self.fd = tempfile.NamedTemporaryFile('w', delete=False)
+
+        self.writer = converter.BubbleWriter(self.fd)
+        self.writer.write_header()
+
+
+    def finalize_cc(self):
+        self.writer.finalize_cc()
+        LOGGER.debug("Connected component data wrote in file " + self.fd.name)
 
 
     def finalized(self):
@@ -94,12 +108,13 @@ class OutputWriter(CompressionObserver):
         it to expected output format
 
         """
-        self.writer.finalized()
+        if not self.write_to_stdout:
+            self.fd.close()
+        # conversion to real output
         if not self.write_to_bubble:
-            assert self.writer.filename != self.output.name
-            converter.bbl_to_output(self.writer.filename,
-                                    self.output.name,
-                                    self.format)
+            assert self.fd.name != self.output
+            print('CYVSBE:', self.fd.name)
+            converter.bbl_to_output(self.fd.name, self.output, self.format)
 
     def write(self, lines):
         """Add given lines to output"""
