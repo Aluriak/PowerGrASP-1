@@ -104,18 +104,18 @@ class BubbleWriter:
 
     def write_header(self) -> str:
         """Return header of the file, and write it to output file"""
-        header = '#BBL-1.0\n#' + BubbleWriter.META_DATA + '\n'
+        header = '#BBL-1.0\n#' + BubbleWriter.META_DATA
         self.fd.write(header)
         return header
 
     def write_comment(self, lines) -> str:
         """Add given iterable of lines as comments, return it"""
-        comments = '\n# ' + '\n# '.join(lines)
-        self.fd.write(comments)
+        comments = lines if isinstance(lines, str) else '\n# '.join(lines)
+        self.fd.write('\n# ' + comments)
         return comments
 
 
-    def finalized(self):
+    def finalize_cc(self):
         """Compute data, write it as bubble and be ready for the next wave"""
         self._populate_containers()
         self._write_bubble()
