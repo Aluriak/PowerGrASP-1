@@ -88,18 +88,4 @@ def built_from(cfg:config.Configuration) -> ObserverBatch:
         for obs in instanciated_observers
     )))
 
-    # TODO MOVE THIS BLOCK
-    # Launch the compression
-    # LOGGER.info('COMPRESSION STARTED !')
-    # if do_profiling:
-        # print(utils.test_integrity(graph_file))
-    # compression.compress_lp_graph(
-        # graph_file,
-        # all_observers=tuple(instanciated_observers),
-        # extract_config=extract_config,
-        # clique_config=clique_config,
-        # biclique_config=biclique_config,
-    # )
-    # LOGGER.info('COMPRESSION FINISHED !')
-
     return ObserverBatch(tuple(instanciated_observers), cfg)
