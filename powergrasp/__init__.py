@@ -1,5 +1,4 @@
 from powergrasp import info
-from powergrasp.powergrasp import compress
-from powergrasp.plotting import plots
 from powergrasp import motif
 from powergrasp.graph import Graph
+from powergrasp.plotting import plots
