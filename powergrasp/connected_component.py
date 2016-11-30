@@ -60,6 +60,11 @@ class ConnectedComponent:
                 LOGGER.critical("A node in input data is named <{}>, which is "
                                 "reserved. This is not expected.".format(node))
                 exit(1)
+            if node == '':
+                LOGGER.critical("A node in input data is named with no "
+                                "characters, i.e. is an empty string, which "
+                                "is not expected.".format(node))
+                exit(1)
 
 
     @property
