@@ -124,21 +124,20 @@ edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
 %edgecover(cc,k,T,N):- newconcept(cc,k,T,_) ; N=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)}.
 
 % Concept score, equal to maximal score - edge cover.
-score(cc,k,N):- N=(N1*N2); N>=0   ; not clique(cc,k)    ;
+score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
                 edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
-score(cc,k,N):- N=((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
+score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
                 N1={newconcept(cc,k,1,X)}.
 
 % Minimize score
-#maximize{S@1,S:score(cc,k,S)}.
+#minimize{S@1,S:score(cc,k,S)}.
 
 % Exclusion of concepts with not enough nodes.
 %  The lowerbound is equals to 1 at least,
 %  and determined by the scorebound ASP program.
 %  The upperbound is the min between the number of remaining edges
 %  in the connected component and the size of the previous concept.
-:- score(cc,k,S) ; S<lowerbound.
-:- score(cc,k,S) ; S>upperbound.
+:- score(cc,k,S) ; S>upperbound-lowerbound.
 
 % Discard cases when no score is generated
 :- not score(cc,k,_).
@@ -168,7 +167,7 @@ score(cc,k,N):- N=((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
 #show poweredge_count(K): K={poweredge(_,_)}.
-#show score(S): score(cc,k,S).  % edge cover == score
+#show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
 
 % debug output
 %#show clique/2.
