@@ -190,5 +190,4 @@ class Configuration(metaclass=meta_config):
         params = cli.parse(parameters=parameters, args=args,
                            default_options=FIELDS)
         cfg = Configuration(**params)
-        cfg.cli_params = params  # TODO: document it, or delete it
         return cfg
