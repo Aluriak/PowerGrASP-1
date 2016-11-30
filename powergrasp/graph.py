@@ -44,12 +44,8 @@ class Graph:
 
 
     def __enter__(self):
-        self.observers.signal(
-            Signals.CompressionStarted,
-            Signals.ExtractionStarted,
-            asp_config_updated=self.config.asp_configs,
-        )
         return self
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.finalize()
 
@@ -88,7 +84,11 @@ class Graph:
          the new ConnectedComponent instances.
 
         """
-        self.observers.signal(Signals.ExtractionStarted)
+        self.observers.signal(
+            Signals.CompressionStarted,
+            Signals.ExtractionStarted,
+            asp_config_updated=self.config.asp_configs,
+        )
 
         cc_gen = solving.all_models_from('', aspfiles=[self.config.graph_file],
                                          aspconfig=self.config.extract_config)
