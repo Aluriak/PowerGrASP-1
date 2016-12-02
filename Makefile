@@ -114,6 +114,8 @@ edgetest:
 	$(COMMAND) "$(TESTS)edges_test.lp"
 empty:
 	$(COMMAND) "$(TESTS)empty.lp"
+glasses:
+	$(COMMAND) "$(TESTS)glasses.lp"
 inc:
 	$(COMMAND) "$(TESTS)inclusions.lp"
 matrixdb:
