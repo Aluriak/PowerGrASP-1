@@ -86,7 +86,7 @@ class TestCounterObservers(unittest.TestCase):
         ccs = tuple(random.sample(range(100), nb_ccs))
         obs.signal(cc_count_generated=nb_ccs)
         for idx, cc in enumerate(ccs):
-            obs.signal(connected_component_started=(idx, cc, None))
+            obs.signal(connected_component_started=(idx, cc, None, None))
             obs.signal(connected_component_stopped=AtomsModel([]))
             self.assertEqual(str(cc), counter.cc_name)
             self.assertEqual(idx, counter.cc_num)
