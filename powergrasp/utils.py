@@ -25,6 +25,26 @@ def draw_lattice(graph_dict, filename):
         filename=filename
     )
 
+
+def density(nb_node:int, nb_edge:int) -> float:
+    """Return the density of a graph having given number of edges
+    and number of nodes.
+
+    >>> density(2, 1)
+    1.0
+    >>> round(density(3, 2), 2)
+    0.67
+    >>> round(density(4, 2), 2)
+    0.33
+
+    """
+    assert isinstance(nb_edge, int)
+    assert isinstance(nb_node, int)
+    assert nb_edge >= 0
+    assert nb_node >= 1
+    return 2 * nb_edge / (nb_node * (nb_node - 1))
+
+
 def asp2graph(asp_atoms):
     """Convert string containing (o)edge(X,Y) or inter(X,Y)
     to dict {node: {succs}}"""

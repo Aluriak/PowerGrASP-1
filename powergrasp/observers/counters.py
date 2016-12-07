@@ -27,7 +27,7 @@ class ConnectedComponentsCounter(CompressionObserver):
             LOGGER.info(self.cc_name + ': ' + 'No remaining edge')
 
     def on_connected_component_started(self, payload):
-        num, name, _ = payload
+        num, name, _, _ = payload
         self.cc_num, self.cc_name = int(num), str(name)
         LOGGER.info('#### CC ' + self.cc_name + ' ' + str(self.cc_num+1)
                     + '/' + str(self._nb_ccs))

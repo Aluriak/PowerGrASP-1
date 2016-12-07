@@ -6,6 +6,7 @@ See recipes submodule in order to get usage examples.
 """
 
 
+from powergrasp import utils
 from powergrasp import motif
 from powergrasp import commons
 from powergrasp.atoms import AtomsModel
@@ -47,6 +48,8 @@ class ConnectedComponent:
         self.initial_edges_count = sum(1 for _ in self._atoms.get('oedge'))
         self._first_call = True
         self.validate()
+        self.density = utils.density(self._atoms.counts['membercc'],
+                                     self._atoms.counts['oedge'])
 
 
     def validate(self):
@@ -92,8 +95,8 @@ class ConnectedComponent:
             self._first_call = False
             self.observers.signal(connected_component_started=(self.number,
                                                                self.name,
-                                                               self._atoms))
-
+                                                               self._atoms,
+                                                               self.density))
         found_motif = motif.search(
             input_atoms=str(self._atoms),
             score_min=self.score_min,

@@ -67,8 +67,8 @@ class OutputWriter(CompressionObserver):
         self.write(str(model_atoms))
 
     def on_connected_component_started(self, payload):
-        cc_num, cc_name, _ = payload
-        self.comment('CONNECTED COMPONENT {}: {}'.format(int(cc_num), cc_name))
+        cc_num, cc_name, cc_atoms, cc_density = payload
+        self.comment("CONNECTED COMPONENT {}: {} (density={})".format(int(cc_num), cc_name, round(cc_density, 3)))
 
     def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
         self.write(str(remain_edges))
