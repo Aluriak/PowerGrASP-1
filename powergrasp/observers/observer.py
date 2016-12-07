@@ -47,21 +47,58 @@ class Priorities(Enum):
 
 
 class CompressionObserver:
-    """Base class for all compression observers, where the update method used
-    by compression is implemented.
+    """Base class for all compression observers, where each compression
+    signal is associated with one method to redefine in derived classes.
 
-    Derived classes must implements the _update method.
+    Derived classes must implements the on_* methods that are relevant
+    to their tasks.
     They can also overwrite the priority method, for ensure to be called before
     others observers.
 
+    Another way to handle signals is to define on_signals method, which receive
+    all signals in a mapping {signal: parameters}.
+
     """
-    def update(self, *args, **kwargs):
-        # integrate signals of args in kwargs, convert all into Signals object
-        # and finally launch the update
-        kwargs.update({sig: None for sig in args})
-        kwargs = {Signals(sig): value for sig, value in kwargs.items()}
-        assert all(sig in Signals for sig in kwargs.keys())
-        self._update(kwargs)
+
+    def handles(self, *args, **kwargs):
+        """Dispatch given signals to (1) on_* methods or (2) on_signals method
+        if available.
+
+        Example of call: obs.handles(StepStopped, model_found=params)
+
+        """
+        if hasattr(self, 'on_signals'):
+            # integrate signals of args in kwargs, convert all into Signals object
+            # and finally launch the update
+            kwargs.update({sig: None for sig in args})
+            kwargs = {Signals(sig): value for sig, value in kwargs.items()}
+            assert all(sig in Signals for sig in kwargs.keys())
+            self.on_signals(kwargs)
+        else:
+            for signal in args:
+                method = getattr(self, 'on_' + signal.value)
+                method()
+            for signal, payload in kwargs.items():
+                method = getattr(self, 'on_' + signal)
+                method() if payload is None else method(payload)
+
+    def on_step_started(self): pass
+    def on_step_stopped(self): pass
+    def on_step_finalized(self): pass
+    def on_model_found(self, result): pass
+    def on_step_data_generated(self, payload): pass
+    def on_connected_component_started(self, payload): pass
+    def on_connected_component_stopped(self, atoms): pass
+    def on_extraction_started(self): pass
+    def on_extraction_stopped(self): pass
+    def on_compression_started(self): pass
+    def on_compression_stopped(self): pass
+    def on_compression_finalized(self): pass
+    def on_cc_count_generated(self, nb_cc:int):  pass
+    def on_final_edge_count_generated(self, nb_edge:int): pass
+    def on_final_remain_edge_count_generated(self, nb_edge:int): pass
+    def on_asp_config_updated(self, payload): pass
+
 
     @property
     def priority(self):
@@ -96,7 +133,7 @@ class ObserverBatch:
 
     def signal(self, *args, **kwargs):
         for observer in self.observers:
-            observer.update(*args, **kwargs)
+            observer.handles(*args, **kwargs)
 
     def __iadd__(self, othr):
         """Alias for extend method"""
