@@ -82,6 +82,10 @@ class AtomsModel:
 
 
     @property
+    def predicates(self):
+        return frozenset(self._payload.keys())
+
+    @property
     def atoms(self):
         yield from ((name, arg) for name, args in self._payload.items()
                     for arg in args)
