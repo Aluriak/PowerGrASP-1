@@ -15,22 +15,22 @@ class ConnectedComponentsCounter(CompressionObserver):
     def __init__(self):
         self._nb_ccs = '?'  # number of cc, printed after current cc number
 
-    def _update(self, signals):
-        if Signals.CCCountGenerated in signals:
-            self._nb_ccs = int(signals[Signals.CCCountGenerated])
-        if Signals.ConnectedComponentStopped in signals:
-            count = signals[Signals.ConnectedComponentStopped].counts.get('oedge', 0)
-            if count > 0:
-                LOGGER.info(self.cc_name + ': ' + str(count)
-                            + ' remaining edge(s)')
-            else:
-                LOGGER.info(self.cc_name + ': ' + 'No remaining edge')
-        if Signals.ConnectedComponentStarted in signals:
-            self.cc_num, self.cc_name, _ = signals[Signals.ConnectedComponentStarted]
-            self.cc_name = str(self.cc_name)
-            self.cc_num = int(self.cc_num)
-            LOGGER.info('#### CC ' + self.cc_name + ' ' + str(self.cc_num+1)
-                        + '/' + str(self._nb_ccs))
+    def on_cc_count_generated(self, nb_cc:int):
+        self._nb_ccs = int(nb_cc)
+
+    def on_connected_component_stopped(self, atoms:'AtomsModel'):
+        count = atoms.counts.get('oedge', 0)
+        if count > 0:
+            LOGGER.info(self.cc_name + ': ' + str(count)
+                        + ' remaining edge(s)')
+        else:
+            LOGGER.info(self.cc_name + ': ' + 'No remaining edge')
+
+    def on_connected_component_started(self, payload):
+        num, name, _ = payload
+        self.cc_num, self.cc_name = int(num), str(name)
+        LOGGER.info('#### CC ' + self.cc_name + ' ' + str(self.cc_num+1)
+                    + '/' + str(self._nb_ccs))
 
     @property
     def nb_ccs(self) -> int:
@@ -49,19 +49,19 @@ class ObjectCounter(CompressionObserver):
     def __init__(self):
         self.props = set()
 
-    def _update(self, signals):
-        if Signals.ModelFound in signals:
-            # incrementation of the internal counter associated with given motif
-            motif = signals[Signals.ModelFound].motif
-            prop = ObjectCounter.property_named_from(motif)
-            self.props.add(prop)
-            setattr(self, prop, getattr(self, prop, 0) + 1)
 
-        if Signals.CompressionFinalized in signals:
-            for prop in self.props:
-                LOGGER.info(self.__class__.__name__ + ': '
-                            + ObjectCounter.prettified(prop)
-                            + ': ' + str(getattr(self, prop)))
+    def on_model_found(self, result):
+        # incrementation of the internal counter associated with given motif
+        motif = result.motif
+        prop = ObjectCounter.property_named_from(motif)
+        self.props.add(prop)
+        setattr(self, prop, getattr(self, prop, 0) + 1)
+
+    def on_compression_finalized(self):
+        for prop in self.props:
+            LOGGER.info(self.__class__.__name__ + ': '
+                        + ObjectCounter.prettified(prop)
+                        + ': ' + str(getattr(self, prop)))
 
 
     @staticmethod

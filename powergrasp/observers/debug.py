@@ -23,7 +23,7 @@ class SignalProfiler(CompressionObserver):
         self.counts = {signal: [] for signal in Signals}  # signal: [payload type]
         self.loglevel = commons.log_level_code(loglevel)
 
-    def _update(self, signals):
+    def on_signals(self, signals):
         for signal, payload in signals.items():
             self.counts[signal].append(type(payload))
         if Signals.CompressionFinalized in signals:

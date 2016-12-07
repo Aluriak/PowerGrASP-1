@@ -19,12 +19,12 @@ LOGGER = commons.logger()
 class InteractiveCompression(CompressionObserver):
     """Make the compression interactive: ask for an input from user
     at the end of each step"""
-    def _update(self, signals):
-        if Signals.StepStopped in signals:
-            try:
-                input('<hit enter for next model computation>')
-            except KeyboardInterrupt:
-                exit()
+
+    def on_step_stopped(self):
+        try:
+            input('<hit enter for next model computation>')
+        except KeyboardInterrupt:
+            exit()
 
     @property
     def priority(self):
@@ -38,15 +38,14 @@ class LatticeDrawer(CompressionObserver):
                  prefix='lattice_'):
         self.basename = directory + prefix + '{}'
 
-    def _update(self, signals):
-        if Signals.ConnectedComponentStarted in signals:
-            _, cc, atoms = signals[Signals.ConnectedComponentStarted]
-            graphdict = utils.asp2graph(atoms)
-            filename = self.basename.format(cc)
-            # print('DEBUG:', filename, atoms, graphdict)
-            utils.draw_lattice(graphdict, filename)
-            LOGGER.info('Line diagram of CC ' + str(cc)
-                        + ' saved in ' + filename)
+    def on_connected_component_started(self, payload):
+        _, cc_name, atoms = payload
+        graphdict = utils.asp2graph(atoms)
+        filename = self.basename.format(cc_name)
+        # print('DEBUG:', filename, atoms, graphdict)
+        utils.draw_lattice(graphdict, filename)
+        LOGGER.info('Line diagram of CC ' + str(cc_name)
+                    + ' saved in ' + filename)
 
 
 class OutputWriter(CompressionObserver):
@@ -61,29 +60,25 @@ class OutputWriter(CompressionObserver):
         self.write_to_stdout = not bool(self.output)
 
 
-    def _update(self, signals):
-        # print('Output Writer:', signals)
-        if Signals.ModelFound in signals:
-            SIGNAL_MODEL_ATOMS = {'powernode', 'clique', 'poweredge'}
-            motif = signals[Signals.ModelFound]
-            # give new powernodes, clique and poweredges to converter
-            model_atoms = motif.model.get_str(SIGNAL_MODEL_ATOMS)
-            self.write(str(model_atoms))
+    def on_model_found(self, motif):
+        SIGNAL_MODEL_ATOMS = {'powernode', 'clique', 'poweredge'}
+        # give new powernodes, clique and poweredges to converter
+        model_atoms = motif.model.get_str(SIGNAL_MODEL_ATOMS)
+        self.write(str(model_atoms))
 
-        if Signals.ConnectedComponentStarted in signals:
-            cc_num, cc_name, _ = signals[Signals.ConnectedComponentStarted]
-            self.comment('CONNECTED COMPONENT {}: {}'.format(cc_num, cc_name))
+    def on_connected_component_started(self, payload):
+        cc_num, cc_name, _ = payload
+        self.comment('CONNECTED COMPONENT {}: {}'.format(int(cc_num), cc_name))
 
-        if Signals.ConnectedComponentStopped in signals:
-            remain_edges = signals[Signals.ConnectedComponentStopped]
-            self.write(str(remain_edges))
-            self.finalize_cc()
+    def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
+        self.write(str(remain_edges))
+        self.finalize_cc()
 
-        if Signals.CompressionStarted in signals:
-            self.init_writer()
+    def on_compression_started(self):
+        self.init_writer()
 
-        if Signals.CompressionStopped in signals:
-            self.finalized()
+    def on_compression_stopped(self):
+        self.finalized()
 
 
     def init_writer(self):
@@ -171,6 +166,15 @@ class TimeComparator(CompressionObserver):
         except statistics.StatisticsError:
             self.time_mean = None
 
+
+    def on_compression_stopped(self):
+        if self.time_counter is None:
+            return
+        time = self.time_counter.compression_time
+        self.save_time(time)
+        self.show(time)
+
+
     def save_time(self, new_time):
         if self.save_result:
             with open(self.filename, 'a') as fd:
@@ -178,13 +182,6 @@ class TimeComparator(CompressionObserver):
         else:
             pass
 
-    def _update(self, signals):
-        if Signals.CompressionStopped in signals:
-            if self.time_counter is None:
-                return
-            time = self.time_counter.compression_time
-            self.save_time(time)
-            self.show(time)
 
     def show(self, time):
         if self.time_mean is None:

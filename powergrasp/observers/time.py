@@ -44,7 +44,7 @@ class TimeCounter(CompressionObserver):
         assert all(s in Signals for s in self.ignored)
 
 
-    def _update(self, signals):
+    def on_signals(self, signals):
         for signal in signals:
             if signal in self.ignored: continue
             name = signal.value

@@ -130,54 +130,55 @@ class DataExtractor(observers.CompressionObserver, dict):
                 '\tsolver  : ' + config.clasp_options,
             )
 
-    def _update(self, signals):
-        if Signals.CompressionStopped in signals:
-            # create the final result render
-            final_results = (
-                "All cc have been performed"
-                + ((' in ' + str(round(self.compression_time, 3)) + 's.')
-                   if self.compression_time else '.')
-                + ((' (including extraction in ' + str(round(self.extraction_time, 3)) + ')')
-                   if self.extraction_time else '')
-                + '\n' + '\n'.join(self.prettified_configs())
-                + "\nNow, statistics on "
-                + self.stats_output()
-            )
-            LOGGER.info(final_results)
-            if self.output_converter:
-                self.output_converter.comment(final_results.split('\n'))
-            self.finalize()
+    def on_compression_stopped(self):
+        # create the final result render
+        final_results = (
+            "All cc have been performed"
+            + ((' in ' + str(round(self.compression_time, 3)) + 's.')
+               if self.compression_time else '.')
+            + ((' (including extraction in ' + str(round(self.extraction_time, 3)) + ')')
+               if self.extraction_time else '')
+            + '\n' + '\n'.join(self.prettified_configs())
+            + "\nNow, statistics on "
+            + self.stats_output()
+        )
+        LOGGER.info(final_results)
+        if self.output_converter:
+            self.output_converter.comment(final_results.split('\n'))
+        self.finalize()
 
-        if Signals.ASPConfigUpdated in signals:
-            extract, clique, biclique = signals[Signals.ASPConfigUpdated]
-            self.configs = (
-                ('Extraction', extract),
-                ('Find best clique', clique),
-                ('Find best biclique', biclique),
-            )
-        if Signals.FinalEdgeCountGenerated in signals:
-            self[INIT_EDGE] = int(signals[Signals.FinalEdgeCountGenerated])
-        if Signals.FinalRemainEdgeCountGenerated in signals:
-            self[FINL_EDGE] = int(signals[Signals.FinalRemainEdgeCountGenerated])
-        if Signals.StepDataGenerated in signals:
-            (powernode_count,
-             poweredge_count,
-             compressed_edge_count) = signals[Signals.StepDataGenerated]
-            # defense against a no-data case
-            if powernode_count is None:
-                assert poweredge_count is None
-                assert compressed_edge_count is None
-            else:  # all data is given
-                self[GENR_PWED] += int(poweredge_count)
-                self[GENR_PWND] += int(powernode_count)
-                self[COMP_EDGE] += int(compressed_edge_count)
-        if Signals.StepStopped in signals:
-            if self.time_counter:
-                gentime = self.time_counter.last_step_time
-            else:
-                gentime = 0.
-            self.write_csv_data(self[GENR_PWED], self[GENR_PWND],
-                                gentime, self[COMP_EDGE])
+    def on_asp_config_updated(self, payload):
+        extract, clique, biclique = payload
+        self.configs = (
+            ('Extraction', extract),
+            ('Find best clique', clique),
+            ('Find best biclique', biclique),
+        )
+
+    def on_final_edge_count_generated(self, nb_edge:int):
+        self[INIT_EDGE] = int(nb_edge)
+
+    def on_final_remain_edge_count_generated(self, nb_edge:int):
+        self[FINL_EDGE] = int(nb_edge)
+
+    def on_step_data_generated(self, payload):
+        nb_pwnode, nb_pwedge, nb_compressed_edge = payload
+        # defense against a no-data case
+        if nb_pwnode is None:
+            assert nb_pwedge is None
+            assert nb_compressed_edge is None
+        else:  # all data is given
+            self[GENR_PWED] += int(nb_pwedge)
+            self[GENR_PWND] += int(nb_pwnode)
+            self[COMP_EDGE] += int(nb_compressed_edge)
+
+    def on_step_stopped(self):
+        if self.time_counter:
+            gentime = self.time_counter.last_step_time
+        else:
+            gentime = 0.
+        self.write_csv_data(self[GENR_PWED], self[GENR_PWND],
+                            gentime, self[COMP_EDGE])
 
 
     def stats_output(self, format=FORMAT_RAW):
