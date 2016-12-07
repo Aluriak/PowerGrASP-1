@@ -25,9 +25,14 @@ FoundMotif = namedtuple('FoundMotif', 'model score motif')
 # incremental atoms replace the existing atoms of same name in the model
 INCREMENTAL_ATOMS = {'block', 'include_block'}
 # accumulable atoms need to be added to the model
-ACCUMULABLE_ATOMS = {'powernode', 'poweredge'}
+ACCUMULABLE_ATOMS = set()
 # metadata are used by observers (or by motif only one time)
-METADATA_ATOMS = {'powernode_count', 'poweredge_count', 'score', 'star'}
+METADATA_ATOMS = {'powernode_count', 'poweredge_count', 'score', 'star',
+                  'powernode', 'poweredge'}
+
+assert not INCREMENTAL_ATOMS & ACCUMULABLE_ATOMS
+assert not INCREMENTAL_ATOMS & METADATA_ATOMS
+assert not ACCUMULABLE_ATOMS & METADATA_ATOMS
 
 
 class Motif(solving.ASPConfig):
@@ -95,34 +100,34 @@ class Motif(solving.ASPConfig):
         return edge_cover
 
 
-    def compress(self, atoms:'AtomsModel', model:'AtomsModel'):
-        """Modify self, compressed according to the given motif.
+    def compress(self, motif:'AtomsModel', graph:'AtomsModel'):
+        """Modify given graph, compressed according to the given motif.
 
         atoms -- AtomsModel instance describing the motif model
         model -- AtomsModel instance that will be updated  *MODIFIED*
         return -- metadata extracted from the compression.
 
         """
-        assert atoms.__class__.__name__ == 'AtomsModel'
-        assert model.__class__.__name__ == 'AtomsModel'
+        assert motif.__class__.__name__ == 'AtomsModel'
+        assert graph.__class__.__name__ == 'AtomsModel'
         to_replace, data = [], []
-        for name, args in atoms:
+        for name, args in motif:
             if name in INCREMENTAL_ATOMS:
-                model._payload[name] = {}
+                graph._payload[name] = {}
                 to_replace.append((name, args))
             elif name in ACCUMULABLE_ATOMS:
-                model._payload[name].add(args)
+                graph._payload[name].add(args)
             elif name in METADATA_ATOMS:
                 data.append((name, args))
             else:
                 raise ValueError("Extraction yield an unexpected atom {}({}).".format(str(name), args))
         for name, all_args in itertools.groupby(to_replace, operator.itemgetter(0)):
             all_args = (args for _, args in all_args)
-            model._payload[name] = set(all_args)
+            graph._payload[name] = set(all_args)
 
-        covered_edges = frozenset(self.covered_edges_in_found(atoms))
+        covered_edges = frozenset(self.covered_edges_in_found(motif))
         # print('COVERED:', len(covered_edges), covered_edges)
-        model._payload['oedge'] = set(edge for edge in model._payload['oedge']
+        graph._payload['oedge'] = set(edge for edge in graph._payload['oedge']
                                       if edge not in covered_edges)
         # print('DATA:', dict(data))
         return dict(data)
