@@ -74,12 +74,25 @@ class Motif(solving.ASPConfig):
         # treatment of the model
         if model is None:
             LOGGER.debug(self.name.upper() + ' SEARCH: no model found')
-            concept_score = 0
+            concept_cover = 0
         else:
             assert 'score' in str(model)
-            concept_score = int(model.get_only('score').args[0])
+            concept_cover = int(model.get_only('score').args[0])
+        concept_score = self._score_from_cover(concept_cover)
         ret = FoundMotif(model=model, score=concept_score, motif=self)
         return ret
+
+
+    def _score_from_cover(self, edge_cover:int) -> int:
+        """Return the score for the motif, based on the number of edges
+        covered by the motif.
+
+        This method returns the edge_cover as the score, and is here
+        to be redefined by subclasses.
+
+        """
+        assert isinstance(edge_cover, int)
+        return edge_cover
 
 
     def compress(self, atoms:'AtomsModel', model:'AtomsModel'):
@@ -129,6 +142,10 @@ class Motif(solving.ASPConfig):
 
 
 class CliqueMotif(Motif):
+    """Implementation of the clique motif,
+    where the edge cover equals N * (N-1) / 2
+
+    """
 
     def __init__(self, clasp_options='', gringo_options=''):
         super().__init__('clique', [ASP_SRC_FINDCC], clasp_options, gringo_options)
@@ -146,6 +163,10 @@ class CliqueMotif(Motif):
 
 
 class BicliqueMotif(Motif):
+    """Implementation of the biclique motif,
+    where the edge cover equals N * M
+
+    """
 
     def __init__(self, clasp_options='', gringo_options=''):
         super().__init__('biclique', [ASP_SRC_FINDBC], clasp_options, gringo_options)
