@@ -51,7 +51,7 @@ edge(ay,by).
 edge(az,bz).
 edge(az,ca).
 edge(ba,cb).
-edge(ba,cc).
+edge(ba,cC).
 edge(bb,cd).
 edge(bb,ce).
 edge(bc,cf).
@@ -106,8 +106,8 @@ edge(ca,eb).
 edge(ca,ec).
 edge(cb,ed).
 edge(cb,ee).
-edge(cc,ef).
-edge(cc,eg).
+edge(cC,ef).
+edge(cC,eg).
 edge(cd,eh).
 edge(cd,ei).
 edge(ce,ej).
