@@ -50,14 +50,14 @@ class Motif(solving.ASPConfig):
         self.name = name
 
 
-    def search(self, input_atoms:str, score_min:int, score_max:int,
+    def search(self, input_atoms:'AtomsModel', score_min:int, score_max:int,
                cc:str, step:int):
         """Return the concept found and its score.
 
         if no concept found: return (None, None)
         if concept found: return (atoms, concept score)
 
-        input_atoms -- string of atoms
+        input_atoms -- AtomsModel instance
         score_min -- minimal score accepted
         score_max -- maximal score accepted
         cc -- connected component identifier
@@ -69,11 +69,16 @@ class Motif(solving.ASPConfig):
         if score_min > score_max: return FoundMotif(None, 0, self)
         LOGGER.debug('FIND BEST ' + self.name
                      + ' [' + str(score_min) + ';' + str(score_max) + ']')
+        aspargs = {
+            ASP_ARG_CC: cc,
+            ASP_ARG_STEP: step,
+            ASP_ARG_LOWERBOUND: score_min,
+            ASP_ARG_UPPERBOUND: score_max
+        }
+        aspargs.update(self._supplementary_constants(input_atoms))
         model = solving.model_from(
-            base_atoms=input_atoms,
-            aspargs={ASP_ARG_CC: cc, ASP_ARG_STEP: step,
-                     ASP_ARG_LOWERBOUND: score_min,
-                     ASP_ARG_UPPERBOUND: score_max},
+            base_atoms=str(input_atoms),
+            aspargs=aspargs,
             aspconfig=self,
         )
         # treatment of the model
@@ -87,6 +92,9 @@ class Motif(solving.ASPConfig):
         ret = FoundMotif(model=model, score=concept_score, motif=self)
         return ret
 
+    def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
+        """Return a dict of supplementary constants {name: value} for solving"""
+        return {}
 
     def _score_from_cover(self, edge_cover:int) -> int:
         """Return the score for the motif, based on the number of edges
@@ -156,7 +164,7 @@ class CliqueMotif(Motif):
         super().__init__('clique', [ASP_SRC_FINDCC], clasp_options, gringo_options)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
-        """Yield edges covered by given clique in ASP model"""
+        """Yield edges covered by given clique in given model"""
         nodes = []
         for name, args in model.get('powernode'):
             cc, step, setnb, node = args
@@ -177,7 +185,7 @@ class BicliqueMotif(Motif):
         super().__init__('biclique', [ASP_SRC_FINDBC], clasp_options, gringo_options)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
-        """Yield edges covered by given clique in ASP model"""
+        """Yield edges covered by given biclique in given model"""
         first, secnd = [], []
         for name, args in model.get('powernode'):
             cc, step, setnb, node = args

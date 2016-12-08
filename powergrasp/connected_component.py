@@ -98,7 +98,7 @@ class ConnectedComponent:
                                                                self._atoms,
                                                                self.density))
         found_motif = motif.search(
-            input_atoms=str(self._atoms),
+            input_atoms=self._atoms,
             score_min=self.score_min,
             score_max=self.score_max,
             step=self.step,
