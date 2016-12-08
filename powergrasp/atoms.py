@@ -63,15 +63,17 @@ class AtomsModel:
                 inrepr[name].add(tuple(args))
             data = inrepr
         self._payload = defaultdict(set, dict(data))
-
+        self._counts = self.__count_atoms()
 
     def remove_atoms(self, atoms:iter):
         for name, args in atoms:
             self._payload[name].remove(tuple(args))
+        self._counts = self.__count_atoms()
 
     def add_atoms(self, atoms:iter):
         for name, args in atoms:
             self._payload[name].remove(tuple(args))
+        self._counts = self.__count_atoms()
 
     def get_only(self, atom_name:str) -> ASPAtom:
         """Return the only one atom having the given predicate name"""
@@ -79,6 +81,11 @@ class AtomsModel:
         assert len(args) < 2, "given predicate name is shared by multiple predicate"
         assert len(args) > 0, "given predicate name doesn't exists"
         return ASPAtom(atom_name, next(iter(args)))
+
+
+    def __count_atoms(self) -> dict:
+        """Return number of atom for each predicate"""
+        return {name: len(args) for name, args in self._payload.items()}
 
 
     @property
@@ -95,7 +102,7 @@ class AtomsModel:
 
     @property
     def counts(self):
-        return {name: len(args) for name, args in self._payload.items()}
+        return self._counts
 
 
     def get(self, names:str or iter) -> iter:
