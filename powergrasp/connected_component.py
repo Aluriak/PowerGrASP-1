@@ -123,13 +123,14 @@ class ConnectedComponent:
         return search_motif(Motif.CLIQUE, alt=alt, constraints=constraints)
 
 
-    def compress(self, found_motif:'FoundMotif'):
+    def compress(self, found:'FoundMotif', new_best_score:int=None):
         """Modify self, based on given found motif.
 
         Terminate the step.
+        new_best_score -- if None, set max score to found.score.
 
         """
-        if found_motif.model is None:
+        if found.model is None:
             self._has_motif = False
             self.observers.signal(
                 connected_component_stopped=self.remaining_edges,
@@ -138,13 +139,16 @@ class ConnectedComponent:
         else:  # there is a found model
             self._has_motif = True
 
-            data = found_motif.motif.compress(found_motif.model, self._atoms)
+            assert new_best_score is None or isinstance(new_best_score, int)
+            self.score_max = found.score if new_best_score is None else new_best_score
+
+            data = found.motif.compress(found.model, self._atoms)
             assert len(data['poweredge_count']) == 1, "Multiple poweredge_count/1 atoms were generated."
             assert len(data['powernode_count']) == 1, "Multiple powernode_count/1 atoms were generated."
             assert len(data['score']) == 1, "Multiple score/1 atoms were generated."
 
             self.observers.signal(
-                model_found=found_motif,
+                model_found=found,
                 step_data_generated=(int(data['powernode_count'][0]),
                                      int(data['poweredge_count'][0]),
                                      int(data['score'][0]))
