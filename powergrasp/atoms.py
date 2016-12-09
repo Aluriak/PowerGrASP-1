@@ -72,15 +72,8 @@ class AtomsModel:
 
     def add_atoms(self, atoms:iter):
         for name, args in atoms:
-            self._payload[name].remove(tuple(args))
+            self._payload[name].add(tuple(args))
         self._counts = self.__count_atoms()
-
-    def get_only(self, atom_name:str) -> ASPAtom:
-        """Return the only one atom having the given predicate name"""
-        args = self._payload[atom_name]
-        assert len(args) < 2, "given predicate name is shared by multiple predicate"
-        assert len(args) > 0, "given predicate name doesn't exists"
-        return ASPAtom(atom_name, next(iter(args)))
 
 
     def __count_atoms(self) -> dict:
@@ -114,6 +107,13 @@ class AtomsModel:
                 continue
             all_args = tuple(self._payload.get(name, ()))
             yield from (ASPAtom(name, args) for args in all_args)
+
+    def get_only(self, atom_name:str) -> ASPAtom:
+        """Return the only one atom having the given predicate name"""
+        args = self._payload[atom_name]
+        assert len(args) < 2, "given predicate name is shared by multiple predicate"
+        assert len(args) > 0, "given predicate name doesn't exists"
+        return ASPAtom(atom_name, next(iter(args)))
 
     def get_str(self, names:str or iter) -> iter:
         """Return a string of atoms for all atoms of given predicate name"""
