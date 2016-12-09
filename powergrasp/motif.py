@@ -137,7 +137,11 @@ class Motif(solving.ASPConfig):
         # print('COVERED:', len(covered_edges), covered_edges)
         graph._payload['oedge'] = set(edge for edge in graph._payload['oedge']
                                       if edge not in covered_edges)
-        # print('DATA:', dict(data))
+        # remove all unnecessary nodes from the graph
+        #  a node that is implyied in no edge can't be member of any set.
+        #  it is therefore a time waste to give it to the heuristic.
+        all_connected_nodes = frozenset(itertools.chain.from_iterable(a for _, a in graph.get('oedge')))
+        graph._payload['membercc'] = frozenset((node,) for node in all_connected_nodes)
         return dict(data)
 
 
