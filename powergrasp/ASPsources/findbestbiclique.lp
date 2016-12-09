@@ -21,28 +21,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-linked2(X,Z):- X!=Z ; inter(X,Y) ; inter(Y,Z).
-
 % Choice of the minimum of the concept
-1{minobj(cc,k,X):membercc(X)}1.
+1{minobj(cc,k,X): membercc(X)}1.
 
-% Choice of elements in part 1
+% Choice of elements in set 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
 { newconcept(cc,k,1,X): membercc(X), Min<X }:- minobj(cc,k,Min).
 
-% Choice of elements in part 2
+% Choice of elements in set 2
 1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<=Y } :- minobj(cc,k,Min).
 
 % An element in a set can't be in the other set.
 :- newconcept(cc,k,1,X) ; newconcept(cc,k,2,X).
 
-% Impossible element in a concept
-%  a node is impossible if not linked to some node of other part
-imp(k,3-T,X):- membercc(X); newconcept(cc,k,T,Y) ; not inter(X,Y) ; not inter(Y,X).
-%  a node is impossible if not linked2 to some node of the same part
-imp(k,T,X):- membercc(X); newconcept(cc,k,T,Y) ; not linked2(X,Y); X!=Y.
-% Consistency ; no impossible element can be added to the concept
-:- imp(k,T,Y); newconcept(cc,k,T,Y).
+% A node can't be in a set if not linked to a node of other set
+:- membercc(X) ; newconcept(cc,k,3-T,X) ; newconcept(cc,k,T,Y) ; not inter(X,Y).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
