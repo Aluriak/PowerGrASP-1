@@ -116,12 +116,14 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=aspconfig.clasp_options)
+    # print('FILES:', aspfiles)
+    # print('ATOMS:', str(base_atoms))
     answers = solver.run(aspfiles, additionalProgramText=base_atoms,
                          collapseAtoms=not parsed)
     # if len(answers) > 0:
         # for idx, answer in enumerate(answers):
             # print('ANSWER ' + str(idx) + ':', answer)
-            # print('ATOM(S):', atoms.count(answer))
+        # print('ALL ANSWERS GAVE')
     # else:
         # print('NO MODEL FOUND !')
     yield from (atoms.AtomsModel.from_pyasp_termset(answer) for answer in answers)
