@@ -160,7 +160,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show star(X): star(cc,k,T) ; newconcept(cc,k,T,X).
 
 % data about new partition
-#show block(k,P,X): block(k,P,X).
+#show block(k,P,X): block(k,P,X).  % output only new blocks.
 #show include_block(k,B,C): include_block(k,B,C).
 
 % statistics
