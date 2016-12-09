@@ -36,6 +36,11 @@ class ASPAtom(namedtuple('BaseAtom', ['name', 'args'])):
                              "accessible.".format(self))
         return self.args[0]
 
+    @property
+    def asp(self):
+        """Return the self representation compliant with ASP"""
+        return "{}({}).".format(self.name, ', '.join(self.args))
+
 
 class AtomsModel:
     """Main model of atoms data.
