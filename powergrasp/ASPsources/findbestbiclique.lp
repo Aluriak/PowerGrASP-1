@@ -8,6 +8,8 @@
 % Constants:
 %       - cc: treated connected component. (cc/1 gives existing cc)
 %       -  k: current step of treatment (first step is 1)
+%       - upperbound: the maximal reachable cover
+%       - max_set_size: the maximal reachable size of a set
 % Input:
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
 %       - oedge(X,Y): there exist an oriented edge linking X and Y in cc.
@@ -26,10 +28,10 @@
 
 % Choice of elements in set 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
-{ newconcept(cc,k,1,X): membercc(X), Min<X }:- minobj(cc,k,Min).
+0 { newconcept(cc,k,1,X): membercc(X), Min<X } max_set_size :- minobj(cc,k,Min).
 
-% Choice of elements in set 2
-1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<=Y } :- minobj(cc,k,Min).
+% Choice of elements in set 2, using nb_node if available
+1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<=Y } max_set_size :- minobj(cc,k,Min).
 
 % An element in a set can't be in the other set.
 :- newconcept(cc,k,1,X) ; newconcept(cc,k,2,X).

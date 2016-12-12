@@ -22,7 +22,7 @@ LOGGER = commons.logger()
 # returned by motif search, embedding all informations about found motif
 FoundMotif = namedtuple('FoundMotif', 'model score motif')
 
-# Follows atoms produced by motif solving, splitted in 4 disjoint classes.
+# Follows atoms produced by motif solving, splitted in 3 disjoint classes.
 # incremental atoms replace the existing atoms of same name in the model
 INCREMENTAL_ATOMS = {'block', 'include_block'}
 # accumulable atoms need to be added to the model
@@ -31,6 +31,7 @@ ACCUMULABLE_ATOMS = set()
 METADATA_ATOMS = {'powernode_count', 'poweredge_count', 'score', 'star',
                   'powernode', 'poweredge'}
 
+# ensure that no atom is in two classes
 assert not INCREMENTAL_ATOMS & ACCUMULABLE_ATOMS
 assert not INCREMENTAL_ATOMS & METADATA_ATOMS
 assert not ACCUMULABLE_ATOMS & METADATA_ATOMS
@@ -76,6 +77,7 @@ class Motif(solving.ASPConfig):
             ASP_ARG_LOWERBOUND: score_min,
             ASP_ARG_UPPERBOUND: score_max
         }
+        input_atoms = self._enriched_input_atoms(input_atoms)
         aspargs.update(self._supplementary_constants(input_atoms))
         model = solving.model_from(
             base_atoms=str(input_atoms),
@@ -89,9 +91,18 @@ class Motif(solving.ASPConfig):
         else:
             assert 'score' in str(model)
             concept_cover = int(model.get_only('score').args[0])
+            LOGGER.debug(self.name.upper() + " SEARCH: model covering {} edges"
+                         "found".format(concept_cover))
+            LOGGER.debug("\t" + '\n\t'.join(a.asp for a in model.get('powernode')))
         concept_score = self._score_from_cover(concept_cover)
         ret = FoundMotif(model=model, score=concept_score, motif=self)
         return ret
+
+
+    def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
+        """Modify the input model in order to prepare the next round"""
+        return graph
+
 
     def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
         """Return a dict of supplementary constants {name: value} for solving"""
@@ -130,12 +141,12 @@ class Motif(solving.ASPConfig):
                 data.append((name, args))
             else:
                 raise ValueError("Extraction yield an unexpected atom {}({}).".format(str(name), args))
+                # print("\nExtraction yield an unexpected atom {}({}).\n".format(str(name), ','.join(args)))
         for name, all_args in itertools.groupby(to_replace, operator.itemgetter(0)):
             all_args = (args for _, args in all_args)
             graph._payload[name] = set(all_args)
 
         covered_edges = frozenset(self.covered_edges_in_found(motif))
-        # print('COVERED:', len(covered_edges), covered_edges)
         graph._payload['oedge'] = set(edge for edge in graph._payload['oedge']
                                       if edge not in covered_edges)
         # remove all unnecessary nodes from the graph
@@ -222,6 +233,23 @@ class Biclique(Motif):
         yield from (((f, s) if f < s else (s, f))
                     for f, s in itertools.product(first, secnd))
 
+    def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
+        """Modify the input model in order to prepare the next round"""
+        if self.include_node_degrees:
+            degrees = defaultdict(int)
+            graph = atoms.AtomsModel(graph)
+            edges = frozenset(frozenset(args) for _, args in graph.get('oedge'))
+            degrees = Counter(itertools.chain.from_iterable(edges))
+            graph.add_atoms(('degree', args) for args in degrees.items())
+        return graph
+
+
+    def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
+        """Return a dict of supplementary constants {name: value} for solving"""
+        nb_node = atoms.counts.get('membercc', 0)
+        return {
+            'max_set_size': nb_node - 1,
+        }
 
     @staticmethod
     def for_powergraph():
