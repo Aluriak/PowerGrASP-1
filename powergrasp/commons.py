@@ -206,23 +206,23 @@ def logger(name=LOGGER_NAME):
     return logging.getLogger(name)
 
 
-def configure_logger(log_filename=None, term_loglevel=None, loglevel=None):
+def configure_logger(log_filename=None, term_loglevel=None, file_loglevel=None):
     """Operate the logger configuration for the package"""
     # use defaults if None given
-    log_filename = DEFAULT_LOG_FILE if log_filename is None else log_filename
-    term_loglevel = DEFAULT_LOG_LEVEL if term_loglevel is None else term_loglevel
-    loglevel = DEFAULT_LOG_LEVEL if loglevel is None else loglevel
+    log_filename = log_filename or DEFAULT_LOG_FILE
+    term_loglevel = term_loglevel or DEFAULT_LOG_LEVEL
+    file_loglevel = file_loglevel or DEFAULT_LOG_LEVEL
     # put given log level in upper case, or keep it as integer
     try:
-        loglevel = loglevel.upper()
-    except AttributeError:  # loglevel is an integer, not a string
+        file_loglevel = log_level_code(file_loglevel)
+    except AttributeError:  # file_loglevel is an integer, not a string
         pass  # nothing to do, lets keep the log level as an int
     try:
-        term_loglevel = term_loglevel.upper()
+        term_loglevel = log_level_code(term_loglevel)
     except AttributeError:  # term_loglevel is an integer, not a string
         pass  # nothing to do, lets keep the log level as an int
-    assert isinstance(term_loglevel, int) or isinstance(term_loglevel, str)
-    assert isinstance(loglevel, int) or isinstance(loglevel, str)
+    assert isinstance(term_loglevel, int)
+    assert isinstance(file_loglevel, int)
 
     # define the configuration
     logging_config = {
@@ -243,7 +243,7 @@ def configure_logger(log_filename=None, term_loglevel=None, loglevel=None):
                 'formatter': 'simple',
             },
             'logfile': {
-                'level': loglevel,
+                'level': file_loglevel,
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': log_filename,
                 'mode': 'w',
@@ -255,7 +255,7 @@ def configure_logger(log_filename=None, term_loglevel=None, loglevel=None):
             PACKAGE_NAME: {
                 'handlers':['console', 'logfile'],
                 'propagate': True,
-                'level': loglevel,
+                'level': min(term_loglevel, file_loglevel),
             },
         }
     }
@@ -287,17 +287,18 @@ def log_level(level):
 def log_level_code(level:str) -> int:
     """Return the integer code associated to given level.
 
-    >>> log_level_code('DEBUG')
+    >>> log_level_code('debug')
     10
     >>> log_level_code('INFO')
     20
-    >>> log_level_code('WARNING')
+    >>> log_level_code('warning')
     30
     >>> log_level_code('ERROR')
     40
-    >>> log_level_code('CRITICAL')
+    >>> log_level_code('critical')
     50
 
     """
+    level = level.upper()
     assert level in LOGLEVELS
     return getattr(logging, level)
