@@ -3,10 +3,11 @@
 
 import inspect
 
+from powergrasp import config
 from powergrasp import commons
 from powergrasp import solving
 from powergrasp import converter
-from powergrasp import config
+from powergrasp import statistics
 from . import (ObserverBatch, CompressionObserver, OutputWriter, TimeCounter,
                Signals, ObjectCounter, ConnectedComponentsCounter,
                InteractiveCompression, SignalProfiler,
@@ -35,10 +36,6 @@ def built_from(cfg:config.Configuration) -> ObserverBatch:
     to fullfill given configuration needs.
 
     """
-    from powergrasp import statistics
-    # define the log file and the log level, if necessary
-    commons.configure_logger(cfg.logfile, cfg.loglevel)
-
     # Create the default observers
     output_converter = OutputWriter(cfg.outfile, cfg.outformat)
     instanciated_observers = [

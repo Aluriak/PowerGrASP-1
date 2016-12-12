@@ -143,6 +143,10 @@ class Configuration(metaclass=meta_config):
         setattr(self, '__asp_configs',
                 list(self.motifs) + [self.extract_config])
 
+        # logging
+        commons.configure_logger(log_filename=self.logfile,
+                                 term_loglevel=self.loglevel)
+
 
     def validate(self):
         """Logs any inconsistancies in the configuration, and try to fix them."""
