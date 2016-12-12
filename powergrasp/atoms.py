@@ -91,7 +91,7 @@ class AtomsModel:
         return frozenset(self._payload.keys())
 
     @property
-    def atoms(self):
+    def atoms(self) -> iter(('name', 'arg')):
         yield from ((name, arg) for name, args in self._payload.items()
                     for arg in args)
 

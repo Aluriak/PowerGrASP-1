@@ -55,7 +55,11 @@ ASP_SRC_PREPRO    = __asp_file('preprocessing')
 ASP_SRC_FINDCC    = __asp_file('findbestclique')
 ASP_SRC_FINDBC    = __asp_file('findbestbiclique')
 ASP_SRC_POSTPRO   = __asp_file('postprocessing')
+ASP_SRC_SCORING   = __asp_file('scoring_powergraph')
 ASP_SRC_INCLUSION = __asp_file('inclusion')
+
+# alternative scoring
+ASP_SRC_SCORING_OEM = __asp_file('scoring_oem')
 
 # Constants involved in ASP solving
 ASP_ARG_CC   = 'cc'

@@ -7,13 +7,14 @@ Predefined motifs are defined in this module: biclique and clique.
 
 import operator
 import itertools
-from collections import namedtuple
+from collections import namedtuple, defaultdict, Counter
 
+from powergrasp import atoms
 from powergrasp import commons
 from powergrasp import solving
 from powergrasp.commons import (ASP_ARG_UPPERBOUND, ASP_ARG_CC,
                                 ASP_ARG_LOWERBOUND, ASP_ARG_STEP,
-                                ASP_SRC_FINDCC, ASP_SRC_FINDBC)
+                                ASP_SRC_FINDCC, ASP_SRC_FINDBC, ASP_SRC_SCORING)
 
 
 LOGGER = commons.logger()
@@ -158,14 +159,16 @@ class Motif(solving.ASPConfig):
         return self.name
 
 
-class CliqueMotif(Motif):
+class Clique(Motif):
     """Implementation of the clique motif,
     where the edge cover equals N * (N-1) / 2
 
     """
 
-    def __init__(self, clasp_options='', gringo_options=''):
-        super().__init__('clique', [ASP_SRC_FINDCC], clasp_options, gringo_options)
+    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
+                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION):
+        super().__init__('clique', [ASP_SRC_FINDCC, scoring],
+                         clasp_options, gringo_options)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given clique in given model"""
@@ -178,15 +181,27 @@ class CliqueMotif(Motif):
         yield from (((f, s) if f < s else (s, f))
                     for f, s in itertools.product(nodes, repeat=2))
 
+    @staticmethod
+    def for_powergraph():
+        """Return a clique object designed to reproduce
+        the powergraph compression
 
-class BicliqueMotif(Motif):
+        """
+        return Clique()
+
+
+class Biclique(Motif):
     """Implementation of the biclique motif,
     where the edge cover equals N * M
 
     """
 
-    def __init__(self, clasp_options='', gringo_options=''):
-        super().__init__('biclique', [ASP_SRC_FINDBC], clasp_options, gringo_options)
+    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
+                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
+                 include_node_degrees:bool=False):
+        super().__init__('biclique', [ASP_SRC_FINDBC, scoring],
+                         clasp_options, gringo_options)
+        self.include_node_degrees = bool(include_node_degrees)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given biclique in given model"""
@@ -208,10 +223,17 @@ class BicliqueMotif(Motif):
                     for f, s in itertools.product(first, secnd))
 
 
-CLIQUE   = CliqueMotif(solving.ASP_DEFAULT_CLASP_OPTION)
-BICLIQUE = BicliqueMotif(solving.ASP_DEFAULT_CLASP_OPTION)
-POWERGRAPH = (CLIQUE, BICLIQUE)
-ALL = (CLIQUE, BICLIQUE)
+    @staticmethod
+    def for_powergraph():
+        """Return a biclique object designed to reproduce
+        the powergraph compression
+
+        """
+        return Biclique()
+
+
+# Expose the motifs as constants.
+POWERGRAPH = (Clique.for_powergraph(), Biclique.for_powergraph())
 
 
 class comparer:

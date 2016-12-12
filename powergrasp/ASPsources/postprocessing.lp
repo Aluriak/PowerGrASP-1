@@ -22,20 +22,16 @@
 %       - clique(cc,k): concept is a clique.
 %       - star(cc,k,T): set T of concept is a star.
 % Input (common data):
-%       - equiv(X,Y): any time X is compressed, Y should be too. neighbor(X) == neighbor(Y)
-%       - weight(X,W): node X hides W-1 nodes.
 % Output:
 %       - powernode(cc,k,T,X): X is the member of the set T in the concept cc at step k.
 %       - poweredge(cc,K1,T1,K2,T2): powernode K1,T1 is linked to powernode K2,T2.
 %       - poweredge(cc,K1,T1,X): powernode K1,T1 is linked to node X.
-%       - covered(X,Y): oriented edge X to Y is covered by returned powernode(s).
+%       - covered(X,Y): oriented edge X to Y is covered by concept.
 %       - include_block(k,B,p(cc,k,T)): block B contains set T of newconcept.
 %       - block(k,B,X): block B contains X.
 %       - include_powernode(cc,K1,T1,K2,T2): powernode K1,T1 contains K2,T2.
-%       - powernode_count(S): S powernode are generated.
-%       - edge(X,Y): oriented edge X to Y remains unused at this step
-%       - score(cc,k,b(S)): concept cc at step k is a biclique of score S. [DEBUG]
-%       - score(cc,k,c(S)): concept cc at step k is a   clique of score S. [DEBUG]
+%       - powernode_count(S): S new powernodes are generated.
+%       - score(S): concept cc at step k is a motif of score S.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %#program postprocessing(cc,k,lowerbound,upperbound).
 
@@ -115,34 +111,6 @@ poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
 % in all other cases: create a poweredge between the two newconcepts
 poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 
-% Are covered all edges of concept that link two nodes of different sets.
-covered(cc,k,X,Y):- newconcept(cc,k,T,X) ; newconcept(cc,k,3-T,Y) ; X<=Y ; T=1..2.
-
-% Node count in each set of the biclique is given by summing weights of all nodes.
-% Edge cover is the number of node covered by the set.
-edgecover(cc,k,T,N):- T=1..2 ; N={newconcept(cc,k,T,X)}.
-%edgecover(cc,k,T,N):- newconcept(cc,k,T,_) ; N=#sum{W,X:weight(X,W), newconcept(cc,k,T,X)}.
-
-% Concept score, equal to maximal score - edge cover.
-score(cc,k,N):- N=upperbound-(N1*N2); N>=0   ; not clique(cc,k)    ;
-                edgecover(cc,k,1,N1) ; edgecover(cc,k,2,N2).
-score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
-                N1={newconcept(cc,k,1,X)}.
-
-% Minimize score
-#minimize{S@1,S:score(cc,k,S)}.
-
-% Exclusion of concepts with not enough nodes.
-%  The lowerbound is equals to 1 at least,
-%  and determined by the scorebound ASP program.
-%  The upperbound is the min between the number of remaining edges
-%  in the connected component and the size of the previous concept.
-:- score(cc,k,S) ; S>upperbound-lowerbound.
-
-% Discard cases when no score is generated
-:- not score(cc,k,_).
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -167,7 +135,7 @@ score(cc,k,N):- N=upperbound-((N1*(N1-1))/2) ; N>=0 ; clique(cc,k) ;
 #show powernode_count(1): clique(cc,k).
 #show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
 #show poweredge_count(K): K={poweredge(_,_)}.
-#show score(upperbound-S): score(cc,k,S).  % the outside consider that the edge cover is the score
+#show score(upperbound-S): score(S).  % the outside consider that the edge cover is the score
 
 % debug output
 %#show clique/2.
