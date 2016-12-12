@@ -2,8 +2,8 @@
 The Python [Powergraph analysis](https://en.wikipedia.org/wiki/Power_graph_analysis) tool,
 based on [Answer Set Programming](https://en.wikipedia.org/wiki/Answer_set_programming) solving and formal concept analysis.
 
-More technical documentation about PowerGrASP can be found in the [documentation file](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/doc/documentation.mkd).
-PowerGrASP results, compared to the existing BIOTEC tool, can be found in the [results file](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/doc/results.mkd).
+More technical documentation about PowerGrASP can be found in the [documentation file](doc/documentation.mkd).
+PowerGrASP results, compared to the existing BIOTEC tool, can be found in the [results file](doc/results.mkd).
 
 
 
@@ -59,8 +59,8 @@ The supported input file formats are currently :
 - GML: a regular Graph Modeling Language file, readable by networkx python module.
 - GraphML: a regular [GraphML](http://graphml.graphdrawing.org/) file, readable by [networkx python module](https://networkx.github.io/documentation/networkx-1.9/reference/readwrite.graphml.html).
 
-Example of inputs can be found in the [powergrasp/test/](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests) directory.
-Some of these are simple and used for unit testing. Take a look to [ddiam](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests/double_biclique.lp), [coli](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests/ecoli_2896-23.gml) or [star](https://github.com/Aluriak/PowerGrASP/blob/0.4.x/powergrasp/tests/star.lp).
+Example of inputs can be found in the [powergrasp/test/](powergrasp/tests) directory.
+Some of these are simple and used for unit testing. Take a look to [ddiam](powergrasp/tests/double_biclique.lp), [coli](powergrasp/tests/ecoli_2896-23.gml) or [star](powergrasp/tests/star.lp).
 
 Other formats will be supported in the future.
 
