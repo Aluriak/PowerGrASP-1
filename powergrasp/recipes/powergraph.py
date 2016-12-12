@@ -2,9 +2,10 @@
 
 
 import powergrasp as pg
+from powergrasp.observers import ObserverBatch
 
 
-def powergraph(cfg=None, *, observers:pg.observers.ObserverBatch=None):
+def powergraph(cfg=None, *, observers:ObserverBatch=None):
     """Implementation of the greedy Power Graph compression.
 
     If observers is not given, pg.observers.all() call will be used.
@@ -36,10 +37,10 @@ def bipartite_powergraph(inputfile:str, outputfile:str=None,
     raise NotImplementedError
     return powergraph_template(inputfile, outputfile,
                                observers=observers or pg.observers.most(),
-                               motifs=[motif.BICLIQUE])
+                               motifs=[motif.Biclique.for_powergraph()])
 
 
-def powergraph_template(cfg, observers:pg.observers.ObserverBatch=None):
+def powergraph_template(cfg, observers:ObserverBatch=None):
     """Implementation of a greedy Power Graph compression.
 
     Save compressed graph in given file, and return it.
