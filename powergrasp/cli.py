@@ -16,8 +16,13 @@ import sys
 import argparse
 from collections import ChainMap
 
+from powergrasp import motif
 from powergrasp import commons
 from powergrasp import converter
+
+
+# args accepted by CLI, but that should not be put in the configuration
+CLI_ONLY_ARGS = ['recipe name']
 
 
 def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
@@ -33,11 +38,18 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
     """
     parameters = {k: v for k, v in parameters.items() if v is not None}
 
+    parsed_cli = vars(cli_parser().parse_args(args))
+    method = str(parsed_cli['recipe name'])
+    if method == 'OEM':
+        parsed_cli['motifs'] = (
+            motif.Clique(scoring=commons.ASP_SRC_SCORING_OEM),
+            motif.Biclique(scoring=commons.ASP_SRC_SCORING_OEM)
+        )
     cli_args = {
         normalized(arg): value
-        for arg, value in vars(cli_parser().parse_args(args)).items()
+        for arg, value in parsed_cli.items()
+        if arg not in CLI_ONLY_ARGS
     } if args else {}
-
     return ChainMap(parameters, cli_args, default_options or {})
 
 
@@ -101,52 +113,65 @@ def output_format(format:str) -> str:
     return format
 
 
+def _populate_compression_parser(parser):
+    """Add generic parameters to the given parser.
+
+    These parameters are oriented toward compression control
+
+    """
+    # I/O arguments
+    parser.add_argument('infile', type=existant_file,
+                        help='file containing the graph data')
+    parser.add_argument('--outfile', '-o', type=writable_file,
+                        help='output file. Will be overwritted')
+    parser.add_argument('--outformat', type=output_format,
+                        help='Format to use for output')
+    parser.add_argument('--loglevel', type=loglevel,
+                        help='Logging level, one of DEBUG, INFO, WARNING, ERROR or CRITICAL')
+    parser.add_argument('--logfile', type=writable_file,
+                        help='Logging file, where all logs are written')
+
+    # Compression arguments
+    parser.add_argument('--thread', type=thread_number, default=1,
+                        help='number of thread to use during solving')
+
+    # Observers arguments
+    parser.add_argument('--count-model', action='store_true',
+                        help='Log the number of found models')
+    parser.add_argument('--count-cc', action='store_true',
+                        help='Log the number of found connected component')
+    parser.add_argument('--timers', action='store_true',
+                        help='Log measure of various timers')
+    parser.add_argument('--interactive', action='store_true',
+                        help='Wait for user between two motif search')
+    parser.add_argument('--plot-stats', action='store_true',
+                        help='Render the final statistic plot')
+    parser.add_argument('--draw-lattice', action='store_true',
+                        help='Render the lattice representing the graph')
+    parser.add_argument('--save-time', action='store_true',
+                        help='Save the compression time for further comparison')
+    parser.add_argument('--signal-profile', action='store_true',
+                        help='Print information on signals that are raised by compression.')
+
+    parser.add_argument('--plot-file', help='File used to save the rendered plot')
+    parser.add_argument('--stats-file', help='File to write for save statistics')
+
+
 def cli_parser() -> argparse.ArgumentParser:
     """Return the dict of options set by CLI"""
 
     # main parser
     parser = argparse.ArgumentParser(description='CLI for PowerGrASP.')
-    subs = parser.add_subparsers()
+    subs = parser.add_subparsers(dest='recipe name')
 
     # powergraph recipe
-    parser_pg = subs.add_parser('powergraph', description='Run a regular Powergraph compression.')
+    parser_pwg = subs.add_parser('powergraph', description='Run a regular Powergraph compression.')
+    _populate_compression_parser(parser_pwg)
 
-    # I/O arguments
-    parser_pg.add_argument('infile', type=existant_file,
-                           help='file containing the graph data')
-    parser_pg.add_argument('--outfile', '-o', type=writable_file,
-                           help='output file. Will be overwritted')
-    parser_pg.add_argument('--outformat', type=output_format,
-                           help='Format to use for output')
-    parser_pg.add_argument('--loglevel', type=loglevel,
-                           help='Logging level, one of DEBUG, INFO, WARNING, ERROR or CRITICAL')
-    parser_pg.add_argument('--logfile', type=writable_file,
-                           help='Logging file, where all logs are written')
+    # OEM recipe
+    parser_oem = subs.add_parser('OEM', description='Run a Powergraph compression that minimize the amount of outgoing edges per module.')
+    _populate_compression_parser(parser_oem)
 
-    # Compression arguments
-    parser_pg.add_argument('--thread', type=thread_number, default=1,
-                           help='number of thread to use during solving')
-
-    # Observers arguments
-    parser_pg.add_argument('--count-model', action='store_true',
-                           help='Log the number of found models')
-    parser_pg.add_argument('--count-cc', action='store_true',
-                           help='Log the number of found connected component')
-    parser_pg.add_argument('--timers', action='store_true',
-                           help='Log measure of various timers')
-    parser_pg.add_argument('--interactive', action='store_true',
-                           help='Wait for user between two motif search')
-    parser_pg.add_argument('--plot-stats', action='store_true',
-                           help='Render the final statistic plot')
-    parser_pg.add_argument('--draw-lattice', action='store_true',
-                           help='Render the lattice representing the graph')
-    parser_pg.add_argument('--save-time', action='store_true',
-                           help='Save the compression time for further comparison')
-    parser_pg.add_argument('--signal-profile', action='store_true',
-                           help='Print information on signals that are raised by compression.')
-
-    parser_pg.add_argument('--plot-file', help='File used to save the rendered plot')
-    parser_pg.add_argument('--stats-file', help='File to write for save statistics')
 
 
     # statistic recipe
