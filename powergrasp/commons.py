@@ -36,7 +36,7 @@ access_packaged_file = partial(pkg_resources.resource_filename, PACKAGE_NAME)
 # LOGGING VALUES
 LOGGER_NAME       = PACKAGE_NAME
 DEFAULT_LOG_FILE  = access_packaged_file(DIR_LOGS + LOGGER_NAME + '.log')
-DEFAULT_LOG_LEVEL = logging.DEBUG
+DEFAULT_LOG_LEVEL = logging.WARNING
 LOGLEVELS = ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL')
 
 # PATH INSIDE PACKAGE
