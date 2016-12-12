@@ -5,12 +5,20 @@ import powergrasp as pg
 from powergrasp.observers import ObserverBatch
 
 
-def powergraph(cfg=None, *, observers:ObserverBatch=None):
+def powergraph(infile:str=None, outfile:str=None, *, cfg=None,
+               observers:ObserverBatch=None):
     """Implementation of the greedy Power Graph compression.
 
     If observers is not given, pg.observers.all() call will be used.
 
+    If infile and outfile are given, the config should not.
+    If config is given, infile and outfile should not.
+
     """
+    if infile or outfile:
+        assert infile and outfile, "both input and output files should be given"
+        assert not cfg, "config should not be given if I/O files are"
+        cfg = pg.Config(infile=infile, outfile=outfile)
     if observers is None:
         if cfg is None:
             cfg, observers = pg.observers.most()
