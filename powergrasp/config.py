@@ -8,6 +8,7 @@ for a compression.
 import os
 import sys
 import tempfile
+from collections import ChainMap
 
 from powergrasp import cli
 from powergrasp import motif
@@ -20,7 +21,7 @@ LOGGER = commons.logger()
 
 
 # Definition of the configuration fields and their default values
-FIELDS = {  # field: default value
+BASE_FIELDS = {  # field: default value
     'infile'        : None,
     'outfile'       : None,
     'outformat'     : None,
@@ -37,16 +38,19 @@ FIELDS = {  # field: default value
     'thread'        : 1,  # how many thread to use
     'draw_lattice'  : None,
     'save_time'     : False,
-    'motifs'        : (motif.CLIQUE, motif.BICLIQUE),  # iterable of motifs to use to compress
+    'motifs'        : (motif.Clique.for_powergraph(), motif.Biclique.for_powergraph()),  # iterable of motifs to use to compress
     'extract_config': solving.DEFAULT_CONFIG_EXTRACTION(),
     'signal_profile': False,  # print debug information on received signals
     'additional_observers': None,  # iterable of observers to add
-
-    # infered data: this should not be written over
+}
+INFERRED_FIELDS = {
     'network_name': None,  # name used to refer to the input network
     'graph_file': None,
     'asp_configs': None,  # iterable of asp configs (motifs + others)
 }
+# all available fields and default options
+FIELDS = ChainMap({}, INFERRED_FIELDS, BASE_FIELDS)
+DEFAULT_OPTIONS = dict(BASE_FIELDS)
 
 
 def meta_config(name, bases, attrs):
@@ -84,7 +88,8 @@ class Configuration(metaclass=meta_config):
 
     def __init__(self, **kwargs):
         self._validate_init_args(kwargs)
-        for field in FIELDS:
+        assert all(kwarg in BASE_FIELDS for kwarg in kwargs)
+        for field in BASE_FIELDS:
             value = kwargs.get(field)
             setattr(self, '__' + field,
                     FIELDS.get(field) if value is None else value)
@@ -188,6 +193,6 @@ class Configuration(metaclass=meta_config):
 
         """
         params = cli.parse(parameters=parameters, args=args,
-                           default_options=FIELDS)
+                           default_options=DEFAULT_OPTIONS)
         cfg = Configuration(**params)
         return cfg
