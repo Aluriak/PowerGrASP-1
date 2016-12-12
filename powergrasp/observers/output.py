@@ -2,6 +2,8 @@
 Definition of various output-related compression observers.
 
 """
+
+import os
 import sys
 import tempfile
 import statistics
@@ -42,7 +44,6 @@ class LatticeDrawer(CompressionObserver):
         _, cc_name, atoms = payload
         graphdict = utils.asp2graph(atoms)
         filename = self.basename.format(cc_name)
-        # print('DEBUG:', filename, atoms, graphdict)
         utils.draw_lattice(graphdict, filename)
         LOGGER.info('Line diagram of CC ' + str(cc_name)
                     + ' saved in ' + filename)
@@ -108,7 +109,6 @@ class OutputWriter(CompressionObserver):
         # conversion to real output
         if not self.write_to_bubble:
             assert self.fd.name != self.output
-            print('CYVSBE:', self.fd.name)
             converter.bbl_to_output(self.fd.name, self.output, self.format)
 
     def write(self, lines):
@@ -131,17 +131,18 @@ class OutputWriter(CompressionObserver):
 
 
     @staticmethod
-    def format_deduced_from(output_file, output_format):
+    def format_deduced_from(output_file:str, output_format:str=None):
         """Return the most likely expected output format by looking at given args"""
         # look at the output_file extension if output_format is unusable
         if not output_format or output_format not in converter.OUTPUT_FORMATS:
             try:
-                output_format = output_file.split('.')[-1]  # extension of the file
+                # infer from file extension
+                output_format = os.path.splitext(output_file)[1].lstrip('.')
             except (IndexError, AttributeError):
+                LOGGER.WARNING("Given outfile ({}) will be written in"
+                               " bubble format because of unknow"
+                               " extension.".format(output_file))
                 output_format = converter.DEFAULT_OUTPUT_FORMAT  # use BBL
-        # verifications
-        if output_format not in converter.OUTPUT_FORMATS:
-            output_format = converter.DEFAULT_OUTPUT_FORMAT
         return output_format
 
 

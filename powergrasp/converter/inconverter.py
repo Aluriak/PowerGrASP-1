@@ -93,7 +93,6 @@ def from_gml(infile:str) -> iter:
     Use networkx to read the input file.
 
     """
-    print(infile)
     try:
         from networkx import read_gml
         for node1, node2 in read_gml(infile).edges():

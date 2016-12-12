@@ -12,6 +12,7 @@ from powergrasp import commons
 LOGGER = commons.logger()
 INPUT_FORMATS = tuple(inconverter.formats_converters())
 OUTPUT_FORMATS = tuple(outconverter.formats_converters())
+DEFAULT_OUTPUT_FORMAT = 'bbl'
 
 
 def convert(is_input:bool, infile:str, outfile:str=None, format:str=None) -> str:
@@ -25,9 +26,9 @@ def convert(is_input:bool, infile:str, outfile:str=None, format:str=None) -> str
     converter_module = (inconverter if is_input else outconverter)
     func = converter_module.converter_for(format)
     if not func:
-        formats = ', '.join(str(f) for f in converter.formats_converters())
+        formats = ', '.join(str(f) for f in converter_module.formats_converters())
         error = ("given extension {} not recognized. Supported {}put formats "
-                 "are {}. ".format(format, ('out' if is_output else 'in'), formats))
+                 "are {}. ".format(format, ('in' if is_input else 'out'), formats))
         LOGGER.error(error)
         raise ValueError(error)
     return func(infile, outfile)
