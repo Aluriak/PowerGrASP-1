@@ -13,8 +13,6 @@ import sys
 import os
 from functools   import partial
 
-from docopt import docopt
-
 from powergrasp.info import PACKAGE_NAME, PACKAGE_VERSION
 
 
