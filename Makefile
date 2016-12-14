@@ -125,6 +125,12 @@ matrixdb:
 	$(COMMAND) "$(TESTS)matrixdb_160614_CORE27.lp"
 onedge:
 	$(COMMAND) "$(TESTS)one_edge.lp"
+or_double_edge:
+	$(COMMAND) "$(TESTS)oriented_double_edge.lp"
+or_lattice:
+	$(COMMAND) "$(TESTS)oriented_lattice.lp"
+or_simple:
+	$(COMMAND) "$(TESTS)oriented_simple.lp"
 pfc:
 	$(COMMAND) "$(TESTS)perfectfit.lp"
 phos:
