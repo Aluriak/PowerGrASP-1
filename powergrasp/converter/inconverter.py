@@ -179,8 +179,8 @@ def from_sbml(infile:str) -> iter:
 
 @edge_generator
 def from_dict(graph_dict):
-    """convert {node: succs} to pairs (X, Y), where edge(X,Y) defines X
-    as node and Y a successor.
+    """convert {node: succs} to pairs (X, Y), where X is a node
+    and Y its successor in the graph.
 
     """
     for node, succs in graph_dict.items():
