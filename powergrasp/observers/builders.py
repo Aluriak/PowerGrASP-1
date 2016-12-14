@@ -17,7 +17,7 @@ from . import (ObserverBatch, CompressionObserver, OutputWriter, TimeCounter,
 LOGGER = commons.logger()
 
 
-def most(infile:str, outfile:str) -> (config, CompressionObserver):
+def most(infile:str, outfile:str) -> ObserverBatch:
     """Initialize a maximum number of observers
     with a dedicated configuration.
 
