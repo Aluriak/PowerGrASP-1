@@ -15,7 +15,8 @@ OUTPUT_FORMATS = tuple(outconverter.formats_converters())
 DEFAULT_OUTPUT_FORMAT = 'bbl'
 
 
-def convert(is_input:bool, infile:str, outfile:str=None, format:str=None) -> str:
+def convert(is_input:bool, infile:str, outfile:str=None,
+            format:str=None, oriented:bool=False) -> str:
     """Return the file containing input data formated in ASP-compliant format"""
     if format is None:
         if isinstance(infile, str):
@@ -31,7 +32,10 @@ def convert(is_input:bool, infile:str, outfile:str=None, format:str=None) -> str
                  "are {}. ".format(format, ('in' if is_input else 'out'), formats))
         LOGGER.error(error)
         raise ValueError(error)
-    return func(infile, outfile)
+    if is_input:
+        return func(infile, outfile)
+    else:  # oriented information is relevant only for output converters
+        return func(infile, outfile, oriented=oriented)
 
 
 def to_asp_file(input_filename:str, format:str=None) -> str:
@@ -48,7 +52,8 @@ def to_asp_file(input_filename:str, format:str=None) -> str:
     return aspfile
 
 
-def bbl_to_output(bubblefile:str, outfile:str, format:str=None) -> str:
+def bbl_to_output(bubblefile:str, outfile:str, format:str=None,
+                  oriented:bool=False) -> str:
     """Overwrite and return given outfile with graph found in given bubble,
     encoded in given format.
 
@@ -56,6 +61,6 @@ def bbl_to_output(bubblefile:str, outfile:str, format:str=None) -> str:
 
     """
     outfile = convert(is_input=False, infile=bubblefile,
-                      outfile=outfile, format=format)
+                      outfile=outfile, format=format, oriented=oriented)
     assert isinstance(outfile, str)
     return outfile

@@ -37,7 +37,8 @@ def converter_for(extension:str) -> callable:
     return formats_converters().get(extension)
 
 
-def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
+def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+           oriented:bool=False):
     """Copy the file to target if necessary, else just return the same file"""
     if validate:
         validate_bubble(bubblefile)
@@ -46,19 +47,23 @@ def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
     return outfile
 
 
-def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
+def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+           oriented:bool=False):
     """Convert input using bubbletools, return the new filename"""
     if validate:
         validate_bubble(bubblefile)
-    get_bubbletools().convert.bubble_to_dot(bubblefile, dotfile=outfile)
+    get_bubbletools().convert.bubble_to_dot(bubblefile, dotfile=outfile,
+                                            oriented=oriented)
     return outfile
 
 
-def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE):
+def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+            oriented:bool=False):
     """Convert input using bubbletools, return the new filename"""
     if validate:
         validate_bubble(bubblefile)
-    get_bubbletools().convert.bubble_to_gexf(bubblefile, gexffile=outfile)
+    get_bubbletools().convert.bubble_to_gexf(bubblefile, gexffile=outfile,
+                                             oriented=oriented)
     return outfile
 
 
