@@ -171,12 +171,24 @@ def network_name(input_file:str) -> str:
     if data is a valid filepath, the filename without path will be returned.
     Else, the string 'stdin network' will be returned.
 
+    >>> network_name(None)
+    'stdin network'
     >>> network_name('')
     'stdin network'
+    >>> network_name('test.gml')
+    'test'
+    >>> network_name('test.lp')
+    'test'
+    >>> network_name('test')
+    'test'
 
     """
-    return (os.path.splitext(os.path.split(input_file)[1])[0]
-            if os.path.isfile(input_file) else "stdin network")
+    if not input_file:
+        return 'stdin network'
+    if '.' in input_file:
+        return os.path.splitext(os.path.split(input_file)[1])[0]
+    else:
+        return input_file
 
 
 def thread(number=None):
