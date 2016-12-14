@@ -21,9 +21,11 @@ def convert(is_input:bool, infile:str, outfile:str=None,
     if format is None:
         if isinstance(infile, str):
             format = commons.extension(infile)
-        else:  # infile is then a dictionnary representing the graph
-            assert isinstance(infile, dict)
+        elif isinstance(infile, dict):
             format = dict
+        else:
+            raise ValueError("Input file {} of type {} is not treatable."
+                             "".format(infile, type(infile)))
     converter_module = (inconverter if is_input else outconverter)
     func = converter_module.converter_for(format)
     if not func:
