@@ -4,6 +4,7 @@ or the compression.
 
 """
 
+import math
 import os.path
 import itertools
 from collections import defaultdict
@@ -119,13 +120,14 @@ def make_clique(nb_node, filename):
 
 def make_tree(nb_node, filename, nb_child=lambda:2):
     """write in given file a graph that is a bintree of nb_node node"""
-    import math
+    UNWANTED_IDS = frozenset(commons.ASP_ARGS_NAMES)
     carac   = (chr(_) for _ in range(ord('a'), ord('z')+1))
     nb_cars = int(math.ceil(math.log(nb_node, 26)))
     label   = (''.join(c)
                for c in itertools.islice(itertools.product(
                 carac, repeat=nb_cars), nb_node
                ))
+    label = (l for l in label if l not in UNWANTED_IDS)
     def childs():
         for _ in range(nb_child()):
             yield next(label)
