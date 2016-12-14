@@ -1,42 +1,66 @@
-"""Definition of the oriented motif: OrientedBiclique.
-
-OrientedClique is not implemented, because it's not
-very probable to found one.
+"""Definition of basic powergraph motifs, Biclique and Clique.
 
 """
 
 
 import itertools
-from collections import namedtuple, defaultdict, Counter
+from collections import defaultdict, Counter
 
 from powergrasp import atoms
 from powergrasp import commons
 from powergrasp import solving
-from powergrasp.commons import ASP_SRC_FINDORBC, ASP_SRC_SCORING
-
+from powergrasp.commons import ASP_SRC_FINDBC, ASP_SRC_FINDCC, ASP_SRC_SCORING
 from .motif import Motif
 
 
 LOGGER = commons.logger()
 
 
-class OrientedBiclique(Motif):
-    """Implementation of the oriented biclique motif,
-    where the edge cover equals N * M
+class Clique(Motif):
+    """Implementation of the clique motif,
+    where the edge cover equals N * (N-1) / 2
 
-    Elements in the first set of the oriented biclique are all sources
-    of the edges covered by the motif.
+    """
+
+    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
+                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION):
+        super().__init__('clique', [ASP_SRC_FINDCC, scoring],
+                         clasp_options, gringo_options)
+
+    def covered_edges_in_found(self, model:'AtomsModel'):
+        """Yield edges covered by given clique in given model"""
+        nodes = []
+        for name, args in model.get('powernode'):
+            cc, step, setnb, node = args
+            assert setnb == '1'
+            nodes.append(node)
+        yield from (((f, s) if f < s else (s, f))
+                    for f, s in itertools.product(nodes, repeat=2)
+                    if f != s)
+
+    @staticmethod
+    def for_powergraph():
+        """Return a clique object designed to reproduce
+        the powergraph compression
+
+        """
+        return Clique()
+
+
+class Biclique(Motif):
+    """Implementation of the biclique motif,
+    where the edge cover equals N * M
 
     """
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
                  clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
                  include_node_degrees:bool=False):
-        super().__init__('oriented biclique', [ASP_SRC_FINDORBC, scoring],
+        super().__init__('biclique', [ASP_SRC_FINDBC, scoring],
                          clasp_options, gringo_options)
         self.include_node_degrees = bool(include_node_degrees)
 
-    def covered_edges_in_found(self, model:atoms.AtomsModel):
+    def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given biclique in given model"""
         first, secnd = [], []
         for name, args in model.get('powernode'):
@@ -52,9 +76,10 @@ class OrientedBiclique(Motif):
         # print('SETS:', first, secnd)
         assert len(secnd), "The second set of the biclique is empty"
         assert len(first),  "The first set of the biclique is empty"
-        yield from itertools.product(first, secnd)
+        yield from (((f, s) if f < s else (s, f))
+                    for f, s in itertools.product(first, secnd))
 
-    def _enriched_input_atoms(self, graph:atoms.AtomsModel) -> atoms.AtomsModel:
+    def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
         """Modify the input model in order to prepare the next round"""
         if self.include_node_degrees:
             degrees = defaultdict(int)
@@ -65,7 +90,7 @@ class OrientedBiclique(Motif):
         return graph
 
 
-    def _supplementary_constants(self, atoms:atoms.AtomsModel) -> dict:
+    def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
         """Return a dict of supplementary constants {name: value} for solving"""
         nb_node = atoms.counts.get('membercc', 0)
         return {
@@ -78,4 +103,4 @@ class OrientedBiclique(Motif):
         the powergraph compression
 
         """
-        return OrientedBiclique()
+        return Biclique()
