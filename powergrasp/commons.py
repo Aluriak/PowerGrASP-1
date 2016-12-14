@@ -49,9 +49,11 @@ def __asp_file(name):
     "path to given asp source file name"
     return access_packaged_file(DIR_ASP_SOURCES + name + ASP_FILE_EXTENSION)
 ASP_SRC_EXTRACT   = __asp_file('extract')
+ASP_SRC_OREXTRACT = __asp_file('oriented_extract')
 ASP_SRC_PREPRO    = __asp_file('preprocessing')
 ASP_SRC_FINDCC    = __asp_file('findbestclique')
 ASP_SRC_FINDBC    = __asp_file('findbestbiclique')
+ASP_SRC_FINDORBC  = __asp_file('findbestorientedbiclique')
 ASP_SRC_POSTPRO   = __asp_file('postprocessing')
 ASP_SRC_SCORING   = __asp_file('scoring_powergraph')
 ASP_SRC_INCLUSION = __asp_file('inclusion')
