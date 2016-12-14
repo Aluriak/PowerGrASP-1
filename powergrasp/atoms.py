@@ -70,16 +70,6 @@ class AtomsModel:
         self._payload = defaultdict(set, dict(data))
         self._counts = self.__count_atoms()
 
-    def remove_atoms(self, atoms:iter):
-        for name, args in atoms:
-            self._payload[name].remove(tuple(args))
-        self._counts = self.__count_atoms()
-
-    def add_atoms(self, atoms:iter):
-        for name, args in atoms:
-            self._payload[name].add(tuple(args))
-        self._counts = self.__count_atoms()
-
 
     def __count_atoms(self) -> dict:
         """Return number of atom for each predicate"""
@@ -102,6 +92,10 @@ class AtomsModel:
     def counts(self):
         return self._counts
 
+    def set_args(self, atom_name:str, new_args:iter):
+        """Replace args of given predicate by given new args"""
+        self._payload[atom_name] = frozenset(new_args)
+
 
     def get(self, names:str or iter) -> iter:
         """Yield (predicate, args) for all atoms of given predicate name"""
@@ -119,6 +113,10 @@ class AtomsModel:
         assert len(args) < 2, "given predicate name is shared by multiple predicate"
         assert len(args) > 0, "given predicate name doesn't exists"
         return ASPAtom(atom_name, next(iter(args)))
+
+    def get_args(self, atom_name:str) -> iter:
+        """Yield only the args of given predicate"""
+        yield from self._payload[atom_name]
 
     def get_str(self, names:str or iter) -> iter:
         """Return a string of atoms for all atoms of given predicate name"""
