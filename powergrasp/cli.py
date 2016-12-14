@@ -18,6 +18,7 @@ from collections import ChainMap
 
 from powergrasp import motif
 from powergrasp import commons
+from powergrasp import solving
 from powergrasp import converter
 
 
@@ -44,6 +45,12 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
         parsed_cli['motifs'] = (
             motif.Clique(scoring=commons.ASP_SRC_SCORING_OEM),
             motif.Biclique(scoring=commons.ASP_SRC_SCORING_OEM)
+        )
+    elif method == 'oriented':
+        parsed_cli['oriented'] = True
+        parsed_cli['motifs'] = (motif.OrientedBiclique.for_powergraph(),)
+        parsed_cli['extract_config'] = solving.ASPConfig.extraction(
+            aspfiles=[commons.ASP_SRC_OREXTRACT]
         )
     cli_args = {
         normalized(arg): value
@@ -167,6 +174,11 @@ def cli_parser() -> argparse.ArgumentParser:
     # powergraph recipe
     parser_pwg = subs.add_parser('powergraph', description='Run a regular Powergraph compression.')
     _populate_compression_parser(parser_pwg)
+
+
+    # oriented powergraph recipe
+    parser_opg = subs.add_parser('oriented', description='Run an oriented Powergraph compression.')
+    _populate_compression_parser(parser_opg)
 
     # OEM recipe
     parser_oem = subs.add_parser('OEM', description='Run a Powergraph compression that minimize the amount of outgoing edges per module.')
