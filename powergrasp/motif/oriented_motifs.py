@@ -38,7 +38,8 @@ class Clique(Motif):
             nodes.append(node)
         # print('SET :', nodes)
         yield from (((f, s) if f < s else (s, f))
-                    for f, s in itertools.product(nodes, repeat=2))
+                    for f, s in itertools.product(nodes, repeat=2)
+                    if f != s)
 
     @staticmethod
     def for_powergraph():

@@ -142,20 +142,21 @@ class Motif(solving.ASPConfig):
                 data.append((name, args))
             else:  # predicate not in any class
                 raise ValueError("Extraction yield an unexpected atom {}({}).".format(str(name), args))
-        # Replacement
+        # Replacement of incremental atoms
         for name, all_args in itertools.groupby(to_replace, operator.itemgetter(0)):
             all_args = (args for _, args in all_args)
             graph.set_args(name, all_args)
 
         # All covered edges should be in the graph
         covered_edges = frozenset(self.covered_edges_in_found(motif))
+        graph_edges = frozenset(graph.get_args('edge'))
         for covered_edge in covered_edges:
-            if covered_edge not in graph.get_args('edge'):
+            if covered_edge not in graph_edges:
                 LOGGER.warning("Edge ({},{}) declared as covered by motif {} "
                                "doesn't exists in the graph".format(*covered_edge, self))
         # Update the graph model
-        graph.set_args('edge', frozenset(edge for edge in graph.get_args('edge')
-                                         if edge not in covered_edges))
+        graph.set_args('edge', (edge for edge in graph.get_args('edge')
+                                if edge not in covered_edges))
         # remove all unnecessary nodes from the graph
         #  a node that is implyied in no edge can't be member of any set.
         #  it is therefore a time waste to give it to the heuristic.
