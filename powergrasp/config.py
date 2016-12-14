@@ -87,13 +87,15 @@ class Configuration(metaclass=meta_config):
 
     """
 
-    def __init__(self, **kwargs):
-        self._validate_init_args(kwargs)
-        assert all(kwarg in BASE_FIELDS for kwarg in kwargs)
-        for field in BASE_FIELDS:
-            value = kwargs.get(field)
-            setattr(self, '__' + field,
-                    FIELDS.get(field) if value is None else value)
+    def __init__(self, default=FIELDS, **kwargs):
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        # payload is the aggregation of default values,
+        #  given default (dict or Configuration object) and given kwargs,
+        #  in decreasing order of priority.
+        payload = dict(ChainMap(kwargs, dict(default), BASE_FIELDS))
+        self._validate_init_args(payload)
+        for field, value in payload.items():
+            setattr(self, '__' + field, value)
         self.populate()
         self.validate()
 
@@ -139,7 +141,8 @@ class Configuration(metaclass=meta_config):
         # read http://stackoverflow.com/a/40495529/3077939 to see
         # why the setattr form is used.
         setattr(self, '__network_name', commons.network_name(self.infile))
-        setattr(self, '__graph_file', converter.to_asp_file(self.infile))
+        setattr(self, '__graph_file', (None if not self.infile
+                                       else converter.to_asp_file(self.infile)))
 
         setattr(self, '__additional_observers',
                 list(getattr(self, '__additional_observers') or []))
@@ -177,6 +180,28 @@ class Configuration(metaclass=meta_config):
             LOGGER.error('Thread value is not valid (equal to {}). 1 will be used.'.format(self.thread))
             self.__thread = 1
 
+        # verifications about directed graphs
+        have_oriented_extraction = self.extract_config.files == [commons.ASP_SRC_OREXTRACT]
+        have_oriented_motif = any(isinstance(m, motif.OrientedBiclique)
+                                  for m in self.motifs)
+        have_non_oriented_motif = any(not isinstance(m, motif.OrientedBiclique)
+                                      for m in self.motifs)
+        if have_oriented_motif and have_non_oriented_motif:
+            LOGGER.warning("Graph declared both oriented and non oriented"
+                           " motifs. This is very probably an error.")
+        if self.oriented and not have_oriented_motif:
+            LOGGER.warning("Graph is said oriented but declared non-oriented"
+                           " motifs. This is very probably an error.")
+        if have_oriented_motif and not self.oriented:
+            LOGGER.warning("Graph declared non-oriented motifs but it is"
+                           " said oriented. This is very probably an error.")
+        if have_oriented_extraction and not have_oriented_motif:
+            LOGGER.warning("Graph declared oriented motifs but extraction"
+                           " is not oriented. This is very probably an error.")
+        if not have_oriented_extraction and have_oriented_motif:
+            LOGGER.warning("Graph declared non-oriented motifs but extraction"
+                           " is oriented. This is very probably an error.")
+
 
     def _validate_init_args(self, kwargs):
         """Verify data sent to __init__, raise ValueError if any problem"""
@@ -204,3 +229,28 @@ class Configuration(metaclass=meta_config):
                            default_options=DEFAULT_OPTIONS)
         cfg = Configuration(**params)
         return cfg
+
+
+    @staticmethod
+    def fields_for_oriented_graph(**kwargs) -> dict:
+        """Return a minimal dict of fields and values allowing
+        to treat oriented graphs.
+
+        kwargs -- supplementary fields to provide. Will override default data.
+
+        """
+        fields = {
+            'oriented': True,
+            'motifs': (motif.OrientedBiclique.for_powergraph(),),
+            'extract_config': solving.ASPConfig.oriented_extraction(),
+        }
+        for field in fields:
+            if field in kwargs:
+                LOGGER.warning("The recipe Configuration.for_oriented_graph is"
+                               " designed to define the field {}, but given"
+                               " parameter overrides it with value {}."
+                               " This unexpected value will be used, but"
+                               " chances are this is an error."
+                               "".format(field, kwargs[field]))
+        fields.update(kwargs)
+        return fields
