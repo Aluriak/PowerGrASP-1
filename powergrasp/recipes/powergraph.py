@@ -5,7 +5,7 @@ import powergrasp as pg
 from powergrasp.observers import ObserverBatch
 
 
-def oriented_powergraph(infile:str=None, outfile:str=None, *,
+def oriented_powergraph(infile:str=None, outfile:str=None, *, cfg=None,
                         observers:ObserverBatch=None):
     """Implementation of the greedy Power Graph compression,
     with a constraint on generated motifs: only oriented edges oriented in
@@ -19,8 +19,11 @@ def oriented_powergraph(infile:str=None, outfile:str=None, *,
     """
     if infile or outfile:
         assert infile and outfile, "both input and output files should be given"
-    MOTIFS = [pg.motif.OrientedBiclique.for_powergraph()]
-    cfg = pg.Config(infile=infile, outfile=outfile, motifs=MOTIFS)
+        assert cfg is None, "Config can't be given if files are given"
+        cfg = pg.Config(pg.Config.fields_for_oriented_graph(infile=infile, outfile=outfile))
+    else:
+        assert cfg is not None, "Config should be provided"
+        cfg = pg.Config(pg.Config.fields_for_oriented_graph(**dict(cfg)))
     if observers is None:
         observers = pg.observers.built_from(cfg)
     return powergraph_template(cfg, observers=observers)
