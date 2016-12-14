@@ -32,6 +32,7 @@ SIGNAL_PROFILER=--signal-profile
 
 COMPRESSION_METHOD=powergraph
 # COMPRESSION_METHOD=OEM
+# COMPRESSION_METHOD=oriented
 
 # PDF OUPUT PIPELINE
 powerlattice:
