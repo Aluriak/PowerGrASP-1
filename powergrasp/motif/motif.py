@@ -1,20 +1,20 @@
-"""Definition of data related to motifs, including solving functions
+"""Definition of Motif and comparer class, including solving functions
 
-Predefined motifs are defined in this module: biclique and clique.
+See the other files of the package for implemented motifs exposed
+to the exterior.
 
 """
 
 
 import operator
 import itertools
-from collections import namedtuple, defaultdict, Counter
+from collections import namedtuple
 
 from powergrasp import atoms
 from powergrasp import commons
 from powergrasp import solving
 from powergrasp.commons import (ASP_ARG_UPPERBOUND, ASP_ARG_CC,
-                                ASP_ARG_LOWERBOUND, ASP_ARG_STEP,
-                                ASP_SRC_FINDCC, ASP_SRC_FINDBC, ASP_SRC_SCORING)
+                                ASP_ARG_LOWERBOUND, ASP_ARG_STEP)
 
 
 LOGGER = commons.logger()
@@ -48,8 +48,8 @@ class Motif(solving.ASPConfig):
 
     def __init__(self, name:str, files=None, clasp_options='', gringo_options='',
                  motif_search_files=solving.ASP_FILES_MOTIF_SEARCH):
-        super().__init__(files + motif_search_files, clasp_options, gringo_options)
-        self.name = name
+        super().__init__(name, files + motif_search_files,
+                         clasp_options, gringo_options)
 
 
     def search(self, input_atoms:'AtomsModel', score_min:int, score_max:int,
@@ -131,6 +131,7 @@ class Motif(solving.ASPConfig):
         assert motif.__class__.__name__ == 'AtomsModel'
         assert graph.__class__.__name__ == 'AtomsModel'
         to_replace, data = [], []
+        # Detect diff produced by motif compression on the graph model
         for name, args in motif:
             if name in INCREMENTAL_ATOMS:
                 graph._payload[name] = {}
@@ -139,21 +140,29 @@ class Motif(solving.ASPConfig):
                 graph._payload[name].add(args)
             elif name in METADATA_ATOMS:
                 data.append((name, args))
-            else:
+            else:  # predicate not in any class
                 raise ValueError("Extraction yield an unexpected atom {}({}).".format(str(name), args))
-                # print("\nExtraction yield an unexpected atom {}({}).\n".format(str(name), ','.join(args)))
+        # Replacement
         for name, all_args in itertools.groupby(to_replace, operator.itemgetter(0)):
             all_args = (args for _, args in all_args)
-            graph._payload[name] = set(all_args)
+            graph.set_args(name, all_args)
 
+        # All covered edges should be in the graph
         covered_edges = frozenset(self.covered_edges_in_found(motif))
-        graph._payload['oedge'] = set(edge for edge in graph._payload['oedge']
-                                      if edge not in covered_edges)
+        for covered_edge in covered_edges:
+            if covered_edge not in graph.get_args('edge'):
+                LOGGER.warning("Edge ({},{}) declared as covered by motif {} "
+                               "doesn't exists in the graph".format(*covered_edge, self))
+        # Update the graph model
+        graph.set_args('edge', frozenset(edge for edge in graph.get_args('edge')
+                                         if edge not in covered_edges))
         # remove all unnecessary nodes from the graph
         #  a node that is implyied in no edge can't be member of any set.
         #  it is therefore a time waste to give it to the heuristic.
-        all_connected_nodes = frozenset(itertools.chain.from_iterable(a for _, a in graph.get('oedge')))
-        graph._payload['membercc'] = frozenset((node,) for node in all_connected_nodes)
+        all_connected_nodes = frozenset(itertools.chain.from_iterable(
+            a for _, a in graph.get('edge')
+        ))
+        graph.set_args('membercc', frozenset((node,) for node in all_connected_nodes))
         return dict(data)
 
 
@@ -168,114 +177,3 @@ class Motif(solving.ASPConfig):
 
     def __repr__(self):
         return self.name
-
-
-class Clique(Motif):
-    """Implementation of the clique motif,
-    where the edge cover equals N * (N-1) / 2
-
-    """
-
-    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
-                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION):
-        super().__init__('clique', [ASP_SRC_FINDCC, scoring],
-                         clasp_options, gringo_options)
-
-    def covered_edges_in_found(self, model:'AtomsModel'):
-        """Yield edges covered by given clique in given model"""
-        nodes = []
-        for name, args in model.get('powernode'):
-            cc, step, setnb, node = args
-            assert setnb == '1'
-            nodes.append(node)
-        # print('SET :', nodes)
-        yield from (((f, s) if f < s else (s, f))
-                    for f, s in itertools.product(nodes, repeat=2))
-
-    @staticmethod
-    def for_powergraph():
-        """Return a clique object designed to reproduce
-        the powergraph compression
-
-        """
-        return Clique()
-
-
-class Biclique(Motif):
-    """Implementation of the biclique motif,
-    where the edge cover equals N * M
-
-    """
-
-    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
-                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
-                 include_node_degrees:bool=False):
-        super().__init__('biclique', [ASP_SRC_FINDBC, scoring],
-                         clasp_options, gringo_options)
-        self.include_node_degrees = bool(include_node_degrees)
-
-    def covered_edges_in_found(self, model:'AtomsModel'):
-        """Yield edges covered by given biclique in given model"""
-        first, secnd = [], []
-        for name, args in model.get('powernode'):
-            cc, step, setnb, node = args
-            assert setnb in '12'
-            (first if setnb == '1' else secnd).append(node)
-        if not first or not secnd:
-            assert model.get_only('star'), "there is no star/1 atom despite empty powernode"
-            assert len(model.get_only('star')[1]) == 1, "star atom is not star/1"
-            star = model.get_only('star')[1][0]
-            empty_set = first if not first else secnd
-            empty_set.append(star)
-        # print('SETS:', first, secnd)
-        assert len(secnd), "The second set of the biclique is empty"
-        assert len(first),  "The first set of the biclique is empty"
-        yield from (((f, s) if f < s else (s, f))
-                    for f, s in itertools.product(first, secnd))
-
-    def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
-        """Modify the input model in order to prepare the next round"""
-        if self.include_node_degrees:
-            degrees = defaultdict(int)
-            graph = atoms.AtomsModel(graph)
-            edges = frozenset(frozenset(args) for _, args in graph.get('oedge'))
-            degrees = Counter(itertools.chain.from_iterable(edges))
-            graph.add_atoms(('degree', args) for args in degrees.items())
-        return graph
-
-
-    def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
-        """Return a dict of supplementary constants {name: value} for solving"""
-        nb_node = atoms.counts.get('membercc', 0)
-        return {
-            'max_set_size': nb_node - 1,
-        }
-
-    @staticmethod
-    def for_powergraph():
-        """Return a biclique object designed to reproduce
-        the powergraph compression
-
-        """
-        return Biclique()
-
-
-# Expose the motifs as constants.
-POWERGRAPH = (Clique.for_powergraph(), Biclique.for_powergraph())
-
-
-class comparer:
-    """Namespace for comparison of models."""
-
-    @staticmethod
-    def by_score(ma:FoundMotif, mb:FoundMotif):
-        """Return model that have the greater score, or ma on equality"""
-        if not isinstance(ma, FoundMotif) and ma is not None:
-            print('ASSERT:', ma, type(ma), FoundMotif)
-            assert isinstance(ma, FoundMotif) and ma is not None
-        if not isinstance(mb, FoundMotif) and mb is not None:
-            print('ASSERT:', mb, type(mb), FoundMotif)
-            assert isinstance(mb, FoundMotif) and mb is not None
-        ma_score = ma.score if ma else 0
-        mb_score = mb.score if mb else 0
-        return ma if ma_score >= mb_score else mb
