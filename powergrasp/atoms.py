@@ -95,6 +95,7 @@ class AtomsModel:
     def set_args(self, atom_name:str, new_args:iter):
         """Replace args of given predicate by given new args"""
         self._payload[atom_name] = frozenset(new_args)
+        self._counts = self.__count_atoms()
 
 
     def get(self, names:str or iter) -> iter:
