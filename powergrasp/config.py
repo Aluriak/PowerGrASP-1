@@ -39,7 +39,7 @@ BASE_FIELDS = {  # field: default value
     'draw_lattice'  : None,
     'save_time'     : False,
     'motifs'        : (motif.Clique.for_powergraph(), motif.Biclique.for_powergraph()),  # iterable of motifs to use to compress
-    'extract_config': solving.DEFAULT_CONFIG_EXTRACTION(),
+    'extract_config': solving.ASPConfig.extraction(),
     'signal_profile': False,  # print debug information on received signals
     'additional_observers': None,  # iterable of observers to add
 }
@@ -116,16 +116,19 @@ class Configuration(metaclass=meta_config):
         thread_option = commons.thread(self.thread)
         if thread_option:
             self.__extract_config = solving.ASPConfig(
+                "extraction",
                 self.__extract_config.files,
                 self.__extract_config.clasp_options + thread_option,
                 self.__extract_config.gringo_options
             )
             self.__clique_config = solving.ASPConfig(
+                "clique",
                 self.__clique_config.files,
                 self.__clique_config.clasp_options + thread_option,
                 self.__clique_config.gringo_options
             )
             self.__biclique_config = solving.ASPConfig(
+                "biclique",
                 self.__biclique_config.files,
                 self.__biclique_config.clasp_options + thread_option,
                 self.__biclique_config.gringo_options
