@@ -55,9 +55,10 @@ class OutputWriter(CompressionObserver):
 
     """
 
-    def __init__(self, outfile:str=None, outformat:str=None):
+    def __init__(self, outfile:str=None, outformat:str=None, oriented:bool=False):
         self.format = OutputWriter.format_deduced_from(outfile, outformat)
         self.output = str(outfile or '')
+        self.oriented = bool(oriented)
         self.write_to_stdout = not bool(self.output)
 
 
@@ -109,7 +110,8 @@ class OutputWriter(CompressionObserver):
         # conversion to real output
         if not self.write_to_bubble:
             assert self.fd.name != self.output
-            converter.bbl_to_output(self.fd.name, self.output, self.format)
+            converter.bbl_to_output(self.fd.name, self.output,
+                                    self.format, self.oriented)
 
     def write(self, lines):
         """Add given lines to output"""

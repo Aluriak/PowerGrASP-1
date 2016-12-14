@@ -37,7 +37,7 @@ def built_from(cfg:config.Configuration) -> ObserverBatch:
 
     """
     # Create the default observers
-    output_converter = OutputWriter(cfg.outfile, cfg.outformat)
+    output_converter = OutputWriter(cfg.outfile, cfg.outformat, cfg.oriented)
     instanciated_observers = [
         output_converter,
     ] + list(cfg.additional_observers)
