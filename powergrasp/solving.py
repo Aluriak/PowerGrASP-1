@@ -63,6 +63,10 @@ class ASPConfig:
                          ' --heuristic=Vsids --configuration=frumpy -n 0')
 
     @staticmethod
+    def oriented_extraction(aspfiles=[commons.ASP_SRC_OREXTRACT]):
+        return ASPConfig.extraction(aspfiles=aspfiles)
+
+    @staticmethod
     def inclusion(aspfiles=[commons.ASP_SRC_INCLUSION]):
         assert isinstance(aspfiles, list)
         return ASPConfig('inclusion', list(aspfiles))
