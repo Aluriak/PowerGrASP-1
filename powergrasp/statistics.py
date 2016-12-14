@@ -16,6 +16,7 @@ import csv
 
 from powergrasp import observers
 from powergrasp import commons
+from powergrasp.solving import ASPConfig
 from powergrasp.observers import Signals  # shortcut
 
 
@@ -122,9 +123,9 @@ class DataExtractor(observers.CompressionObserver, dict):
 
     def prettified_configs(self):
         """Yield lines of a prettified view of solvers config"""
-        for name, config in self.configs:
+        for config in self.configs:
             yield from (
-                name + ' configuration: ',
+                config.name + ' configuration: ',
                 '\tfiles   : ' + ', '.join(commons.basename(_) for _ in config.files),
                 '\tgrounder: ' + config.gringo_options,
                 '\tsolver  : ' + config.clasp_options,
@@ -148,12 +149,8 @@ class DataExtractor(observers.CompressionObserver, dict):
         self.finalize()
 
     def on_asp_config_updated(self, payload):
-        extract, clique, biclique = payload
-        self.configs = (
-            ('Extraction', extract),
-            ('Find best clique', clique),
-            ('Find best biclique', biclique),
-        )
+        assert all(isinstance(cfg, ASPConfig) for cfg in payload)
+        self.configs = tuple(payload)
 
     def on_final_edge_count_generated(self, nb_edge:int):
         self[INIT_EDGE] = int(nb_edge)
