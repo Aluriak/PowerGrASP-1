@@ -246,6 +246,10 @@ and use other technics for reach a comparable result with CyOog.
 As a consequence, while showing the compressed graph is not PowerGrASP's job,
 it lets Cytoscape (and CyOog) perform the final printings.
 
+### Caveats
+CyOog does not handles edges that are printed multiple times, nor oriented edges.
+Thus, oriented compression is not efficiently reprensented using Cytoscape.
+
 ## Oog Command line tool
 BIOTEC team also released a [command line tool](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-command-line-tool.html) for power graph analysis.
 This tool allow to print a bubble file without Cytoscape usage, with something like:

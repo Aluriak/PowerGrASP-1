@@ -33,6 +33,9 @@ Or can be embedded in any python program:
     import powergrasp
     powergrasp.recipes.powergraph('human_proteom.lp', 'for_cytoscape.bbl')
 
+## Other recipes
+Some other recipes are implemented, including oriented graph compression, and alternative scoring methods.
+
 
 ## Help & Details
 ### General overview
@@ -76,6 +79,11 @@ Bubble files can be used in several ways:
 Print a power graph through Cytoscape is made possible by the [CyOog](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/) plugin,
 which handle the format *Bubble*.
 Cytoscape, in order to using the CyOog plugin, must be in version __[2.x](http://www.cytoscape.org/download_old_versions.html)__.
+
+
+###### Caveats
+CyOog does not handles edges that are printed multiple times, nor oriented edges.
+Thus, oriented compression is not efficiently reprensented using Cytoscape.
 
 ##### Oog Command line tool
 BIOTEC team also released a [command line tool](http://www.biotec.tu-dresden.de/research/schroeder/powergraphs/download-command-line-tool.html) for power graph analysis.
