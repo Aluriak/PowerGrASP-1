@@ -32,6 +32,7 @@ BASE_FIELDS = {  # field: default value
     'loglevel'      : commons.DEFAULT_LOG_LEVEL,
     'logfile'       : commons.DEFAULT_LOG_FILE,
     'stats_file'    : None,
+    'oriented'      : False,  # True for oriented output graph
     'plot_stats'    : False,
     'plot_file'     : False,
     'profiling'     : False,  # profiling of input data
