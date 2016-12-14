@@ -20,6 +20,7 @@ from powergrasp import motif
 from powergrasp import commons
 from powergrasp import solving
 from powergrasp import converter
+from powergrasp import config
 
 
 # args accepted by CLI, but that should not be put in the configuration
@@ -47,11 +48,7 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
             motif.Biclique(scoring=commons.ASP_SRC_SCORING_OEM)
         )
     elif method == 'oriented':
-        parsed_cli['oriented'] = True
-        parsed_cli['motifs'] = (motif.OrientedBiclique.for_powergraph(),)
-        parsed_cli['extract_config'] = solving.ASPConfig.extraction(
-            aspfiles=[commons.ASP_SRC_OREXTRACT]
-        )
+        parsed_cli.update(config.Configuration.fields_for_oriented_graph())
     cli_args = {
         normalized(arg): value
         for arg, value in parsed_cli.items()
