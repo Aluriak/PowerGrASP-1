@@ -45,17 +45,17 @@ class ConnectedComponent:
         self._last_step = 0
         self.step = 0
         self._atoms = AtomsModel.from_(atoms)
-        self.initial_edges_count = sum(1 for _ in self._atoms.get('oedge'))
+        self.initial_edges_count = sum(1 for _ in self._atoms.get('edge'))
         self._first_call = True
         self.validate()
         self.density = utils.density(self._atoms.counts['membercc'],
-                                     self._atoms.counts['oedge'])
+                                     self._atoms.counts['edge'])
 
 
     def validate(self):
         """Raise errors for different reasons"""
         def gen_nodes():
-            for _, args in self._atoms.get('oedge'):
+            for _, args in self._atoms.get('edge'):
                 yield from args
 
         for node in gen_nodes():
@@ -73,7 +73,7 @@ class ConnectedComponent:
     @property
     def remaining_edges_count(self):
         """Return the number of remaining edges"""
-        return sum(1 for _ in self._atoms.get('oedge'))
+        return sum(1 for _ in self._atoms.get('edge'))
 
 
     def search_motif(self, motif:motif.Motif, alt=None, constraints:str='',
@@ -167,4 +167,4 @@ class ConnectedComponent:
 
     @property
     def remaining_edges(self):
-        return AtomsModel(self._atoms.get('oedge'))
+        return AtomsModel(self._atoms.get('edge'))

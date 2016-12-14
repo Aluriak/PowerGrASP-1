@@ -19,7 +19,7 @@ class ConnectedComponentsCounter(CompressionObserver):
         self._nb_ccs = int(nb_cc)
 
     def on_connected_component_stopped(self, atoms:'AtomsModel'):
-        count = atoms.counts.get('oedge', 0)
+        count = atoms.counts.get('edge', 0)
         if count > 0:
             LOGGER.info(self.cc_name + ': ' + str(count)
                         + ' remaining edge(s)')

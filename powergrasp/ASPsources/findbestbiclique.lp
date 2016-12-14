@@ -12,7 +12,7 @@
 %       - max_set_size: the maximal reachable size of a set
 % Input:
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
-%       - oedge(X,Y): there exist an oriented edge linking X and Y in cc.
+%       - edge(X,Y): there exist a edge linking X and Y in cc. (X<Y)
 %       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
@@ -23,6 +23,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% CONCEPTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Symetric edges.
+inter(X,Y):- edge(X,Y).
+inter(X,Y):- inter(Y,X).
+
 % Choice of the minimum of the concept
 1{minobj(cc,k,X): membercc(X)}1.
 

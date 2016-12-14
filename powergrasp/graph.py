@@ -105,7 +105,7 @@ class Graph:
                 cc_id=cc_id,
                 cc_nb=cc_nb,
                 node_number=int(atom_counts.get('membercc', 0)),
-                edge_number=int(atom_counts.get('oedge', 0)),
+                edge_number=int(atom_counts.get('edge', 0)),
                 atoms=''.join(atoms),
                 observers=self.observers,
                 config=config

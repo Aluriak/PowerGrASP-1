@@ -10,7 +10,7 @@
 % Output (one model per connected component):
 %       - cc(CC): CC is the minimal element of a connected component.
 %       - membercc(X,Y): there exists a path from X to Y, X<Y.
-%       - ccedge(X,Y): there exists an edge between X and Y.
+%       - edge(X,Y): there exists an edge between X and Y.
 %       - block(0,CC,X): X is in the block cc a step 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -26,8 +26,7 @@ inter(X,Y):- inter(Y,X).
 % Node access.
 node(X):- inter(X,_).
 
-% Oriented graph
-% an oriented edge go from smaller to bigger :
+% An Oriented edge go from smaller to bigger :
 % oedge(3, 5) is true, oedge(5, 3) is false.
 oedge(X,Y):- edge(X,Y) ; X<Y.
 oedge(X,Y):- edge(Y,X) ; X<Y.
@@ -56,5 +55,5 @@ block(0,CC,X):- membercc(X) ; cc(CC).
 #show cc/1.
 #show membercc/1.
 #show block/3.
-#show oedge(X,Y): oedge(X,Y), membercc(X).
+#show edge(X,Y): oedge(X,Y), membercc(X).
 #show nb_cc(N): N={node(X): node(X), not connectedpath(_,X)}.

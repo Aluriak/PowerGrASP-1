@@ -27,12 +27,13 @@ SOLVER_FLAGS = ('', '--restart-on-model')
 
 SOLVER_CLI_TEMPLATE = ' --heuristic={} --configuration={} --opt-strategy={} {} -n 0'
 ASP_DEFAULT_CLASP_OPTION = ' --heuristic=Vsids --configuration=frumpy '
-ASP_FILES_MOTIF_SEARCH = [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO]
+ASP_FILES_MOTIF_SEARCH = [commons.ASP_SRC_POSTPRO]
 
 
 class ASPConfig:
     """Context for solvers, used by solving module"""
-    def __init__(self, files:list, clasp_options:str='', gringo_options:str=''):
+    def __init__(self, name:str, files:list, clasp_options:str='', gringo_options:str=''):
+        self.name = str(name)
         self.files = list(files or [])
         self.clasp_options = clasp_options
         self.gringo_options = gringo_options
@@ -52,29 +53,19 @@ class ASPConfig:
     def gen_extract_configs():
         """Yield all possible ASPConfig objects for extraction"""
         for heur, conf, strat, flag in gen_configs():
-            yield ASPConfig([commons.ASP_SRC_EXTRACT],
+            yield ASPConfig('Extraction', [commons.ASP_SRC_EXTRACT],
                             SOLVER_CLI_TEMPLATE.format(heur, conf, strat, flag))
 
+    @staticmethod
+    def extraction(aspfiles=[commons.ASP_SRC_EXTRACT]):
+        assert isinstance(aspfiles, list)
+        return ASPConfig('extraction', list(aspfiles),
+                         ' --heuristic=Vsids --configuration=frumpy -n 0')
 
-SOLVER_NB_CONFIG = len(tuple(ASPConfig.gen_configs()))
-
-# default configs
-CONFIG_DEFAULT = lambda: ASPConfig(None)
-DEFAULT_CONFIG_EXTRACTION = lambda: ASPConfig(
-    [commons.ASP_SRC_EXTRACT],
-    ' --heuristic=Vsids --configuration=frumpy -n 0',
-)
-DEFAULT_CONFIG_BICLIQUE = lambda: ASPConfig(
-    [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDBC],
-    ASP_DEFAULT_CLASP_OPTION,
-)
-DEFAULT_CONFIG_CLIQUE = lambda: ASPConfig(
-    [commons.ASP_SRC_PREPRO, commons.ASP_SRC_POSTPRO, commons.ASP_SRC_FINDCC],
-    ASP_DEFAULT_CLASP_OPTION,
-)
-DEFAULT_CONFIG_INCLUSION = lambda: ASPConfig(
-    [commons.ASP_SRC_INCLUSION],
-)
+    @staticmethod
+    def inclusion(aspfiles=[commons.ASP_SRC_INCLUSION]):
+        assert isinstance(aspfiles, list)
+        return ASPConfig('inclusion', list(aspfiles))
 
 
 def all_models_from(base_atoms, aspfiles=None, aspargs=None,
@@ -92,7 +83,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     """
     aspfiles = aspfiles or []
     aspargs = aspargs or {}
-    aspconfig = aspconfig or CONFIG_DEFAULT()
+    aspconfig = aspconfig or ASPConfig('unamed config')
     # use list of aspfiles in all cases
     assert aspfiles.__class__ in (tuple, list, str)
     assert isinstance(aspconfig, ASPConfig)
