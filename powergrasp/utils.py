@@ -51,7 +51,7 @@ def asp2graph(asp_atoms):
     to dict {node: {succs}}"""
     graph = defaultdict(set)
     edges = (atom for atom in asp_atoms.split('.')
-             if any(atom.startswith(prefix) for prefix in ('edge', 'oedge', 'inter')))
+             if any(atom.startswith(prefix) for prefix in ('edge', 'inter')))
     for atom, args in (atoms.split(atom) for atom in edges):
         x, y = args
         ux, uy = x.upper(), y.upper()
