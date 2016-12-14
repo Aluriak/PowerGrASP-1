@@ -8,8 +8,8 @@ from powergrasp.atoms import AtomsModel, ASPAtom
 class TestASPAtom(unittest.TestCase):
 
     def test_only(self):
-        atom = ASPAtom('oedge', [1, 2])
-        self.assertEqual(atom.name, 'oedge')
+        atom = ASPAtom('edge', [1, 2])
+        self.assertEqual(atom.name, 'edge')
         self.assertSequenceEqual(atom.args, [1, 2])
         with self.assertRaises(ValueError) as ctxt:
             atom.only_arg
