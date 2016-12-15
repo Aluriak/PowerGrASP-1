@@ -20,7 +20,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % X and Y are both source of an edge linking to another node.
-linked2(X,Y):- edge(X,Z) ; edge(Y,Z).
+linked2(X,Y):- edge(X,Z) ; edge(Y,Z) ; X<Y.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
