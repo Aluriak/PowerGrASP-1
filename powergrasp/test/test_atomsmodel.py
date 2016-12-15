@@ -49,12 +49,14 @@ class TestAtomsModel(unittest.TestCase):
 
 
     def test_builder_cons(self):
-        data = (('p', ['1']), ('p', ['2']), ('abcde', ('1', '"fgh"')))
+        data = (('p', ['1']), ('p', ['2']), ('abcde', ('1', '"fgh"')), ('a', [1]))
         model = AtomsModel(data)
 
         name, args = model.get_only('abcde')
         self.assertEqual(name, 'abcde')
         self.assertSequenceEqual(args, ('1', '"fgh"'))
+
+        assert model.get_unique_only_arg('a') == 1
 
         p_atoms = model.get('p')
         for name, args in p_atoms:

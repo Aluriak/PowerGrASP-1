@@ -98,9 +98,11 @@ class AtomsModel:
         self._counts = self.__count_atoms()
 
 
-    def get(self, names:str or iter) -> iter:
+    def get(self, names:str or iter, *additonal_names) -> iter:
         """Yield (predicate, args) for all atoms of given predicate name"""
-        for name in ([names] if isinstance(names, str) else names):
+
+        names = list([names] if isinstance(names, str) else names) + list(additonal_names)
+        for name in names:
             if name not in self._payload:
                 # raise ValueError("Given predicate {} is not in {}"
                                  # " container".format(name, self))
@@ -114,6 +116,19 @@ class AtomsModel:
         assert len(args) < 2, "given predicate name is shared by multiple predicate"
         assert len(args) > 0, "given predicate name doesn't exists"
         return ASPAtom(atom_name, next(iter(args)))
+
+    def get_unique_only_arg(self, atom_name:str) -> 'arg value':
+        """Return the unique argument of the unique atom having given
+        predicate name.
+
+        """
+        args = self._payload[atom_name]
+        assert len(args) < 2, "given predicate name is shared by multiple predicate"
+        assert len(args) > 0, "given predicate name doesn't exists"
+        arg = tuple(args)[0]
+        assert len(arg) == 1, "Atom {a} is not {a}/1".format(a=atom_name)
+        return arg[0]
+
 
     def get_args(self, atom_name:str) -> iter:
         """Yield only the args of given predicate"""
