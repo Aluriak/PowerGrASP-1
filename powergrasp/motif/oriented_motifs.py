@@ -37,21 +37,19 @@ class OrientedBiclique(Motif):
 
     def covered_edges_in_found(self, model:atoms.AtomsModel):
         """Yield edges covered by given biclique in given model"""
-        first, secnd = [], []
+        source, target = [], []
         for name, args in model.get('powernode'):
             cc, step, setnb, node = args
             assert setnb in '12'
-            (first if setnb == '1' else secnd).append(node)
-        if not first or not secnd:
-            assert model.get_only('star'), "there is no star/1 atom despite empty powernode"
-            assert len(model.get_only('star')[1]) == 1, "star atom is not star/1"
-            star = model.get_only('star')[1][0]
-            empty_set = first if not first else secnd
+            (source if setnb == '1' else target).append(node)
+        # star case: add alone node to associated set
+        if not source or not target:
+            star = model.get_unique_only_arg('star')
+            empty_set = source if not source else target
             empty_set.append(star)
-        # print('SETS:', first, secnd)
-        assert len(secnd), "The second set of the biclique is empty"
-        assert len(first),  "The first set of the biclique is empty"
-        yield from itertools.product(first, secnd)
+        assert len(target), "The second set of the biclique is empty"
+        assert len(source),  "The source set of the biclique is empty"
+        yield from tuple( itertools.product(source, target))
 
     def _enriched_input_atoms(self, graph:atoms.AtomsModel) -> atoms.AtomsModel:
         """Modify the input model in order to prepare the next round"""
