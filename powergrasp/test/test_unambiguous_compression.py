@@ -201,7 +201,7 @@ IN\tc\tPWRN-a-1-2
 IN\td\tPWRN-a-1-2
 IN\tb\tPWRN-a-1-2
 IN\te\tPWRN-a-1-2
-EDGE\tPWRN-a-1-2\ta\t1.0
+EDGE\ta\tPWRN-a-1-2\t1.0
 """
 
 RESULT_CC = """
@@ -227,7 +227,7 @@ IN\tb\tPWRN-a-1-2
 IN\tc\tPWRN-a-1-2
 IN\td\tPWRN-a-1-2
 IN\te\tPWRN-a-1-2
-EDGE\tPWRN-a-1-2\ta\t1.0
+EDGE\ta\tPWRN-a-1-2\t1.0
 """
 
 RESULT_PFC = """
@@ -328,12 +328,12 @@ IN\tPWRN-b-3-2\tPWRN-b-2-2
 IN\tg\tPWRN-b-2-2
 IN\tm\tPWRN-b-3-2
 IN\tv\tPWRN-b-3-2
-EDGE\tPWRN-b-3-2\tl\t1.0
+EDGE\tl\tPWRN-b-3-2\t1.0
 EDGE\tl\tp\t1.0
 EDGE\tPWRN-b-1-1\tPWRN-b-1-1\t1.0
 EDGE\tm\tv\t1.0
 EDGE\tc\tf\t1.0
-EDGE\tPWRN-b-2-2\tb\t1.0
+EDGE\tb\tPWRN-b-2-2\t1.0
 """
 
 RESULT_GRAPHML = """
@@ -372,10 +372,10 @@ IN\tf\tPWRN-b-2-2
 IN\tPWRN-b-3-2\tPWRN-b-2-2
 IN\tv\tPWRN-b-3-2
 IN\tm\tPWRN-b-3-2
-EDGE\tPWRN-b-2-2\tb\t1.0
+EDGE\tb\tPWRN-b-2-2\t1.0
 EDGE\tc\tf\t1.0
 EDGE\tPWRN-b-1-1\tPWRN-b-1-1\t1.0
 EDGE\tm\tv\t1.0
 EDGE\tl\tp\t1.0
-EDGE\tPWRN-b-3-2\tl\t1.0
+EDGE\tl\tPWRN-b-3-2\t1.0
 """
