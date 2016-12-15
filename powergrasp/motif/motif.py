@@ -93,7 +93,7 @@ class Motif(solving.ASPConfig):
             concept_cover = int(model.get_only('score').args[0])
             LOGGER.debug(self.name.upper() + " SEARCH: model covering {} edges"
                          "found".format(concept_cover))
-            LOGGER.debug("\t" + '\n\t'.join(a.asp for a in model.get('powernode')))
+            LOGGER.debug("\t" + '\n\t'.join(a.asp for a in model.get('powernode', 'poweredge')))
         concept_score = self._score_from_cover(concept_cover)
         ret = FoundMotif(model=model, score=concept_score, motif=self)
         return ret
