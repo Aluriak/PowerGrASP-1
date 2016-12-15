@@ -146,6 +146,7 @@ class ConnectedComponent:
             assert len(data['poweredge_count']) == 1, "Multiple poweredge_count/1 atoms were generated."
             assert len(data['powernode_count']) == 1, "Multiple powernode_count/1 atoms were generated."
             assert len(data['score']) == 1, "Multiple score/1 atoms were generated."
+            LOGGER.debug("Connected Component model: " + str(self._atoms.counts))
 
             self.observers.signal(
                 model_found=found,
