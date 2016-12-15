@@ -28,15 +28,18 @@ the module making the bridge between ASP and Python.
 
 
 ### Modules
-The followings modules compose the important parts in the PowerGrASP source code.
+The followings modules and subpackages compose the PowerGrASP source code.
 
 - *\__main__*: interface between the command line and the compression procedures.
 - *atoms*: provides the AtomsModel class, internal repr of the atoms, plus many functions for manipulating them.
+- *cli*: implementation of the command line interface.
 - *commons*: global definitions of constants, various generalist functions and logging management.
+- *config*: definition of Configuration object, main API object.
+- *connected_component*: implementation of the ConnectedComponent class, main API object.
 - *converter*: converter library, that allows the transformation of input and output data.
 - *graph*: implementation of the Graph class, main API object.
-- *connected_component*: implementation of the ConnectedComponent class, main API object.
 - *info*: informations on the package itself.
+- *motif*: subpackage defining the motifs to search during compression.
 - *observers*: implementations of various compression observers, with different roles.
 - *plotting*: routines for plotting the statistics data.
 - *recipes*: subpackage exposing high-level recipes, including Power Graph compression.
@@ -101,6 +104,19 @@ and finally score the reduced ones.
 This principle, implemented in the branch *enhancement#15*, seems to be slower. (2.4 times the time needed for the *structural binding* test case with blocks)
 
 
+## Oriented power graph
+Add a constraint on the compression: edge(X,Y) is an oriented edge linking X (source) to Y (target).
+A poweredge can link only a source set to a target set, where covered edges have their sources in the source set, and their targets in the target set.
+
+This constraint allow a quicker compression but a lower edge compression on tested graphs.
+Follows a comparison with the graph [*structural binding*](powergrasp/tests/structural_binding.lp).
+
+    measure     |  regular compression  |  oriented compression
+    edge        |         1241          |           1241
+    compressed  |          939          |            804
+    ¬compressed |          302          |            437
+    edge compr. |          61%          |            48%
+    time        |          40s          |            24s
 
 
 # Implementation details
