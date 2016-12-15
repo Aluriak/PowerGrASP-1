@@ -227,8 +227,16 @@ class BubbleWriter:
             else:  # powernode linked to a node
                 assert(len(payload) == 4)
                 cc, k, t, node = payload
-                a = powernode(cc, k, t)
-                b = node
+                if t == '1':  # star is target node
+                    a = powernode(cc, k, t)
+                    b = node  # target
+                elif t == '2':  # star is source node
+                    a = node  # source
+                    b = powernode(cc, k, t)
+                else:
+                    raise ValueError("Given poweredge/4 have a T arg value of "
+                                     "type {} and value {}, which is unexpected"
+                                     "".format(type(t), t))
             assert(a.__class__ is str and b.__class__ is str)
             self.edges[a].add(b)
             logger.debug('POWEREDGE:' + a + ' to ' + b)
