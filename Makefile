@@ -129,6 +129,8 @@ or_double_edge:
 	$(COMMAND) "$(TESTS)oriented_double_edge.lp"
 or_lattice:
 	$(COMMAND) "$(TESTS)oriented_lattice.lp"
+or_overlap:
+	$(COMMAND) "$(TESTS)oriented_overlap.lp"
 or_simple:
 	$(COMMAND) "$(TESTS)oriented_simple.lp"
 pfc:

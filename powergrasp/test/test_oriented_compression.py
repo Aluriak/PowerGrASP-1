@@ -26,10 +26,10 @@ class TestOrientedUnambiguousCompression(unittest.TestCase):
 
     def setUp(self):
         self.test_cases = {
-            # 'oriented_ambiguous.lp'   : RESULT_AMBIGUOUS,
             # 'oriented_clique.lp'      : RESULT_CLIQUE,
             'oriented_double_edge.lp' : RESULT_DOUBLE_EDGE,
             'oriented_lattice.lp'     : RESULT_LATTICE,
+            'oriented_overlap.lp'     : RESULT_OVERLAP,
             'oriented_simple.lp'      : RESULT_SIMPLE,
             'empty.lp'                : '',
         }
@@ -75,7 +75,24 @@ class TestOrientedUnambiguousCompression(unittest.TestCase):
             )
 
 
-RESULT_AMBIGUOUS = """
+RESULT_OVERLAP = """
+NODE\tc
+NODE\tb
+NODE\td
+NODE\ta
+NODE\te
+NODE\tf
+IN\te\tPWRN-a-3-2
+IN\tf\tPWRN-a-3-2
+IN\tPWRN-a-3-2\tPWRN-a-2-2
+IN\tb\tPWRN-a-1-2
+IN\ta\tPWRN-a-1-2
+IN\tc\tPWRN-a-1-1
+IN\tPWRN-a-2-2\tPWRN-a-1-1
+IN\td\tPWRN-a-1-1
+EDGE\tb\tPWRN-a-3-2\t1.0
+EDGE\tPWRN-a-1-1\tPWRN-a-1-2\t1.0
+EDGE\tg\tPWRN-a-2-2\t1.0
 """
 RESULT_CLIQUE = """
 """
