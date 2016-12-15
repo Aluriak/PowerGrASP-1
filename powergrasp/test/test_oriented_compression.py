@@ -80,19 +80,23 @@ RESULT_AMBIGUOUS = """
 RESULT_CLIQUE = """
 """
 RESULT_LATTICE = """
-NODE\tg
-NODE\tc
 NODE\tf
-IN\tg\tPWRN-a-2-2
-IN\tc\tPWRN-a-2-2
-IN\tf\tPWRN-a-2-2
-IN\tPWRN-a-2-2\tPWRN-a-1-1
-EDGE\tb\td\t1.0
-EDGE\tPWRN-a-2-2\te\t1.0
-EDGE\tPWRN-a-1-1\th\t1.0
+NODE\ti
+NODE\te
+NODE\tc
+NODE\tg
+IN\tf\tPWRN-a-2-1
+IN\tc\tPWRN-a-2-1
+IN\tg\tPWRN-a-2-1
+IN\ti\tPWRN-a-1-1
+IN\te\tPWRN-a-1-1
+IN\tPWRN-a-2-1\tPWRN-a-1-2
+EDGE\tPWRN-a-2-1\th\t1.0
 EDGE\tc\td\t1.0
-EDGE\ta\tb\t1.0
+EDGE\tPWRN-a-1-1\tPWRN-a-1-2\t1.0
+EDGE\tb\td\t1.0
 EDGE\ta\tc\t1.0
+EDGE\ta\tb\t1.0
 """
 RESULT_DOUBLE_EDGE = """
 NODE\te
