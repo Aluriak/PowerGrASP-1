@@ -29,6 +29,24 @@ def oriented_powergraph(infile:str=None, outfile:str=None, *, cfg=None,
     return powergraph_template(cfg, observers=observers)
 
 
+def high_degree_first(infile:str=None, outfile:str=None, *, cfg=None,
+                      observers:ObserverBatch=None):
+    """Implementation of the greedy Power Graph compression,
+    with heuristic inspired from Dwyer et al.
+
+    If observers is not given, pg.observers.all() call will be used.
+
+    If infile and outfile are given, the config should not.
+    If config is given, infile and outfile should not.
+
+    """
+    cfg = pg.Config(pg.Config.fields_for_prioritized_degree(
+        infile=infile, outfile=outfile, default=cfg))
+    if observers is None:
+        observers = pg.observers.built_from(cfg)
+    return powergraph_template(cfg, observers=observers)
+
+
 def powergraph(infile:str=None, outfile:str=None, *, cfg=None,
                observers:ObserverBatch=None):
     """Implementation of the greedy Power Graph compression.
