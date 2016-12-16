@@ -7,12 +7,18 @@ from powergrasp.atoms import AtomsModel, ASPAtom
 
 class TestASPAtom(unittest.TestCase):
 
-    def test_only(self):
+    def test_general(self):
         atom = ASPAtom('edge', [1, 2])
         self.assertEqual(atom.name, 'edge')
         self.assertSequenceEqual(atom.args, [1, 2])
         with self.assertRaises(ValueError) as ctxt:
             atom.only_arg
+
+    def test_only(self):
+        atom = ASPAtom('cc', [2])
+        self.assertEqual(atom.name, 'cc')
+        self.assertSequenceEqual(atom.args, [2])
+        self.assertEqual(atom.only_arg, 2)
 
 
 class TestAtomsFunctions(unittest.TestCase):
@@ -56,9 +62,24 @@ class TestAtomsModel(unittest.TestCase):
         self.assertEqual(name, 'abcde')
         self.assertSequenceEqual(args, ('1', '"fgh"'))
 
-        assert model.get_unique_only_arg('a') == 1
+        self.assertEqual(model.get_unique_only_arg('a'), 1)
 
         p_atoms = model.get('p')
         for name, args in p_atoms:
             self.assertEqual(name, 'p')
             self.assertIn(list(args), (['1'], ['2']))
+
+
+    def test_set(self):
+        data = (('p', ['1']), ('p', ['2']), ('abcde', ('1', '"fgh"')), ('a', [1]))
+        model = AtomsModel(data)
+
+        self.assertEqual(model.counts['p'], 2)
+        self.assertEqual(model.counts['a'], 1)
+        self.assertEqual(model.counts['abcde'], 1)
+
+        new_args = ((0,), (1,), (2,))
+        model.set_args('p', new_args)
+        self.assertEqual(set(model.get_args('p')), set(new_args))
+
+        self.assertEqual(model.counts['p'], 3)
