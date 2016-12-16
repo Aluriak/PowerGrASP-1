@@ -29,8 +29,8 @@ def oriented_powergraph(infile:str=None, outfile:str=None, *, cfg=None,
     return powergraph_template(cfg, observers=observers)
 
 
-def high_degree_first(infile:str=None, outfile:str=None, *, cfg=None,
-                      observers:ObserverBatch=None):
+def high_priority_first(infile:str=None, outfile:str=None, *, cfg=None,
+                        observers:ObserverBatch=None):
     """Implementation of the greedy Power Graph compression,
     with heuristic inspired from Dwyer et al.
 
