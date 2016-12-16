@@ -84,10 +84,15 @@ class Biclique(Motif):
         """Modify the input model in order to prepare the next round"""
         if self.include_node_degrees:
             degrees = defaultdict(int)
-            graph = atoms.AtomsModel(graph)
+            # graph = atoms.AtomsModel(graph)
             edges = frozenset(frozenset(args) for _, args in graph.get('edge'))
             degrees = Counter(itertools.chain.from_iterable(edges))
-            graph.add_atoms(('degree', args) for args in degrees.items())
+            graph.set_args('priority', degrees.items())
+            max_prio = degrees.most_common(1)[0][1] if degrees else 0
+            graph.set_args('max_priority', ((node,) for node, prio in
+                                            degrees.items() if prio == max_prio))
+            membercc = frozenset(_[0] for _ in graph.get_args('membercc'))
+            assert all(node in degrees for node in membercc)
         return graph
 
 
