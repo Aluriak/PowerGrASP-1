@@ -232,6 +232,31 @@ class Configuration(metaclass=meta_config):
 
 
     @staticmethod
+    def fields_for_prioritized_degree(**kwargs) -> dict:
+        """Return a minimal dict of fields and values allowing
+        to treat graphs with a prioritization by degree.
+
+        kwargs -- supplementary fields to provide. Will override default data.
+
+        """
+        MOTIFS = [motif.Biclique(include_node_degrees=True,
+                                 additional_files=[commons.ASP_SRC_PRIORITY])]
+        fields = {
+            'motifs': tuple(MOTIFS),
+        }
+        for field in fields:
+            if field in kwargs:
+                LOGGER.warning("The recipe Configuration.fields_for_prioritized"
+                               "_degree is designed to define the field {}, but"
+                               " given parameter overrides it with value {}."
+                               " This unexpected value will be used, but"
+                               " chances are this is an error."
+                               "".format(field, kwargs[field]))
+        fields.update(kwargs)
+        return fields
+
+
+    @staticmethod
     def fields_for_oriented_graph(**kwargs) -> dict:
         """Return a minimal dict of fields and values allowing
         to treat oriented graphs.
