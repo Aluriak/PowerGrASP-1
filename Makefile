@@ -122,6 +122,8 @@ glasses:
 	$(COMMAND) "$(TESTS)glasses.lp"
 inc:
 	$(COMMAND) "$(TESTS)inclusions.lp"
+lattice:
+	$(COMMAND) "$(TESTS)lattice.lp"
 matrixdb:
 	$(COMMAND) "$(TESTS)matrixdb_160614_CORE27.lp"
 onedge:
