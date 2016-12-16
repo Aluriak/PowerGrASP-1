@@ -55,8 +55,9 @@ class Biclique(Motif):
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
                  clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
-                 include_node_degrees:bool=False):
-        super().__init__('biclique', [ASP_SRC_FINDBC, scoring],
+                 include_node_degrees:bool=False, additional_files:iter=[]):
+        super().__init__('biclique',
+                         [ASP_SRC_FINDBC, scoring] + list(additional_files),
                          clasp_options, gringo_options)
         self.include_node_degrees = bool(include_node_degrees)
 
