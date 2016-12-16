@@ -57,17 +57,9 @@ def powergraph(infile:str=None, outfile:str=None, *, cfg=None,
     If config is given, infile and outfile should not.
 
     """
-    if infile or outfile:
-        assert infile and outfile, "both input and output files should be given"
-        assert not cfg, "config should not be given if I/O files are"
-        cfg = pg.Config(infile=infile, outfile=outfile)
+    cfg = pg.Config(infile=infile, outfile=outfile, default=cfg)
     if observers is None:
-        if cfg is None:
-            cfg, observers = pg.observers.most()
-        else:
-            observers = pg.observers.built_from(cfg)
-    elif cfg is None:
-        cfg = pg.config.Configuration()
+        observers = pg.observers.built_from(cfg)
     return powergraph_template(cfg, observers=observers)
 
 
