@@ -137,6 +137,10 @@ pfc:
 	$(COMMAND) "$(TESTS)perfectfit.lp"
 phos:
 	$(COMMAND) "$(TESTS)phosphatase.lp"
+priodeg:
+	$(COMMAND) "$(TESTS)prio_deg.lp"
+priodeg_str:
+	$(COMMAND) "$(TESTS)prio_deg_str.lp"
 prol:
 	$(COMMAND) "$(TESTS)proteome_yeast_1_letters.lp"
 prot:
