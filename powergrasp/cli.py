@@ -49,6 +49,10 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
         )
     elif method == 'oriented':
         parsed_cli.update(config.Configuration.fields_for_oriented_graph())
+    elif method == 'HPF':
+        parsed_cli.update(config.Configuration.fields_for_high_priority_first())
+    else:
+        assert method == 'powergraph'
     cli_args = {
         normalized(arg): value
         for arg, value in parsed_cli.items()
@@ -173,9 +177,15 @@ def cli_parser() -> argparse.ArgumentParser:
     _populate_compression_parser(parser_pwg)
 
 
+    # prioritized degree powergraph recipe
+    parser_hpf = subs.add_parser('HPF', description='Run a Powergraph compression where nodes of higher degree are compressed first.')
+    _populate_compression_parser(parser_hpf)
+
+
     # oriented powergraph recipe
     parser_opg = subs.add_parser('oriented', description='Run an oriented Powergraph compression.')
     _populate_compression_parser(parser_opg)
+
 
     # OEM recipe
     parser_oem = subs.add_parser('OEM', description='Run a Powergraph compression that minimize the amount of outgoing edges per module.')
