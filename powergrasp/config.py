@@ -232,9 +232,9 @@ class Configuration(metaclass=meta_config):
 
 
     @staticmethod
-    def fields_for_prioritized_degree(**kwargs) -> dict:
+    def fields_for_high_priority_first(**kwargs) -> dict:
         """Return a minimal dict of fields and values allowing
-        to treat graphs with a prioritization by degree.
+        to treat graphs with a prioritization of some nodes.
 
         kwargs -- supplementary fields to provide. Will override default data.
 
