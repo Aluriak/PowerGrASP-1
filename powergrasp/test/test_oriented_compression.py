@@ -54,14 +54,13 @@ class TestOrientedUnambiguousCompression(unittest.TestCase):
         tmp.close()
         # launch the compression itself, then compare result with expected
         with self.subTest(filename=input_filename):
-            recipes.oriented_powergraph(cfg={
-                'infile': input_filename,
-                'outfile': tmp.name,
-                'outformat': 'bbl',
-                'loglevel': 'CRITICAL',
-                'oriented': True,
-                'extract_config': solving.ASPConfig.extraction(aspfiles=[commons.ASP_SRC_OREXTRACT]),
-            })
+            cfg = config.Configuration.fields_for_oriented_graph(
+                infile=input_filename,
+                outfile=tmp.name,
+                outformat='bbl',
+                loglevel='CRITICAL',
+            )
+            recipes.oriented_powergraph(cfg=cfg)
             expected = self.unified_bubble(expected_bubble)
             found = self.unified_bubble_from_file(tmp.name)
             self.assertEqual(expected, found)
