@@ -239,7 +239,7 @@ class Configuration(metaclass=meta_config):
         kwargs -- supplementary fields to provide. Will override default data.
 
         """
-        MOTIFS = [motif.Biclique(include_node_degrees=True,
+        MOTIFS = [motif.Biclique(include_max_node_degrees=True,
                                  additional_files=[commons.ASP_SRC_PRIORITY])]
         fields = {
             'motifs': tuple(MOTIFS),

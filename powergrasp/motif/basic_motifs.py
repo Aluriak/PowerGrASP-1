@@ -55,11 +55,14 @@ class Biclique(Motif):
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
                  clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
-                 include_node_degrees:bool=False, additional_files:iter=[]):
+                 include_node_degrees:bool=False,
+                 include_max_node_degrees:bool=False,
+                 additional_files:iter=[]):
         super().__init__('biclique',
                          [ASP_SRC_FINDBC, scoring] + list(additional_files),
                          clasp_options, gringo_options)
         self.include_node_degrees = bool(include_node_degrees)
+        self.include_max_node_degrees = bool(include_max_node_degrees)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given biclique in given model"""
@@ -82,15 +85,18 @@ class Biclique(Motif):
 
     def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
         """Modify the input model in order to prepare the next round"""
-        if self.include_node_degrees:
+        # add degrees as priority atoms if necessary
+        if self.include_node_degrees or self.include_max_node_degrees:
             degrees = defaultdict(int)
-            # graph = atoms.AtomsModel(graph)
             edges = frozenset(frozenset(args) for _, args in graph.get('edge'))
             degrees = Counter(itertools.chain.from_iterable(edges))
-            graph.set_args('priority', degrees.items())
+            if self.include_node_degrees:
+                graph.set_args('priority', degrees.items())
             max_prio = degrees.most_common(1)[0][1] if degrees else 0
-            graph.set_args('max_priority', ((node,) for node, prio in
-                                            degrees.items() if prio == max_prio))
+            if self.include_max_node_degrees:
+                graph.set_args('max_priority', ((node,) for node, prio in
+                                                degrees.items() if prio == max_prio))
+            # consistancy verification
             membercc = frozenset(_[0] for _ in graph.get_args('membercc'))
             assert all(node in degrees for node in membercc)
         return graph
