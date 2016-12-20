@@ -30,10 +30,9 @@ class OrientedBiclique(Motif):
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
                  clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
-                 include_node_degrees:bool=False):
+                 addons:iter=None):
         super().__init__('oriented biclique', [ASP_SRC_FINDORBC, scoring],
-                         clasp_options, gringo_options)
-        self.include_node_degrees = bool(include_node_degrees)
+                         clasp_options, gringo_options, addons=addons)
 
     def covered_edges_in_found(self, model:atoms.AtomsModel):
         """Yield edges covered by given biclique in given model"""
@@ -51,23 +50,6 @@ class OrientedBiclique(Motif):
         assert len(source),  "The source set of the biclique is empty"
         yield from tuple( itertools.product(source, target))
 
-    def _enriched_input_atoms(self, graph:atoms.AtomsModel) -> atoms.AtomsModel:
-        """Modify the input model in order to prepare the next round"""
-        if self.include_node_degrees:
-            degrees = defaultdict(int)
-            graph = atoms.AtomsModel(graph)
-            edges = frozenset(frozenset(args) for _, args in graph.get('edge'))
-            degrees = Counter(itertools.chain.from_iterable(edges))
-            graph.add_atoms(('degree', args) for args in degrees.items())
-        return graph
-
-
-    def _supplementary_constants(self, atoms:atoms.AtomsModel) -> dict:
-        """Return a dict of supplementary constants {name: value} for solving"""
-        nb_node = atoms.counts.get('membercc', 0)
-        return {
-            'max_set_size': nb_node - 1,
-        }
 
     @staticmethod
     def for_powergraph():

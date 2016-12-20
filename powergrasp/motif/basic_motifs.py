@@ -23,9 +23,10 @@ class Clique(Motif):
     """
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
-                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION):
+                 clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
+                 addons:iter=None):
         super().__init__('clique', [ASP_SRC_FINDCC, scoring],
-                         clasp_options, gringo_options)
+                         clasp_options, gringo_options, addons=addons)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given clique in given model"""
@@ -55,14 +56,10 @@ class Biclique(Motif):
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
                  clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
-                 include_node_degrees:bool=False,
-                 include_max_node_degrees:bool=False,
-                 additional_files:iter=[]):
+                 additional_files:iter=[], addons:iter=None):
         super().__init__('biclique',
                          [ASP_SRC_FINDBC, scoring] + list(additional_files),
-                         clasp_options, gringo_options)
-        self.include_node_degrees = bool(include_node_degrees)
-        self.include_max_node_degrees = bool(include_max_node_degrees)
+                         clasp_options, gringo_options, addons=addons)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given biclique in given model"""
@@ -82,32 +79,6 @@ class Biclique(Motif):
         assert len(first),  "The first set of the biclique is empty"
         yield from (((f, s) if f < s else (s, f))
                     for f, s in itertools.product(first, secnd))
-
-    def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
-        """Modify the input model in order to prepare the next round"""
-        # add degrees as priority atoms if necessary
-        if self.include_node_degrees or self.include_max_node_degrees:
-            degrees = defaultdict(int)
-            edges = frozenset(frozenset(args) for _, args in graph.get('edge'))
-            degrees = Counter(itertools.chain.from_iterable(edges))
-            if self.include_node_degrees:
-                graph.set_args('priority', degrees.items())
-            max_prio = degrees.most_common(1)[0][1] if degrees else 0
-            if self.include_max_node_degrees:
-                graph.set_args('max_priority', ((node,) for node, prio in
-                                                degrees.items() if prio == max_prio))
-            # consistancy verification
-            membercc = frozenset(_[0] for _ in graph.get_args('membercc'))
-            assert all(node in degrees for node in membercc)
-        return graph
-
-
-    def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
-        """Return a dict of supplementary constants {name: value} for solving"""
-        nb_node = atoms.counts.get('membercc', 0)
-        return {
-            'max_set_size': nb_node - 1,
-        }
 
     @staticmethod
     def for_powergraph():
