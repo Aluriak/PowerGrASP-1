@@ -104,9 +104,9 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     if len(aspargs) > 0:  # must begin by a -c for announce the first constant
         constants = '-c ' + constants
     gringo_options = constants + ' ' + aspconfig.gringo_options
+    # print('ASPCONFIG NAME:', aspconfig)
     # print('OPTIONS:', gringo_options)
     # print('OPTIONS:', aspconfig.clasp_options)
-    # print('OPTIONS:', aspconfig)
 
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
