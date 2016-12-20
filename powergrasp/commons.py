@@ -55,14 +55,14 @@ ASP_SRC_INCLUSION = __asp_file('inclusion')
 ASP_SRC_EXTRACT   = __asp_file('extract')
 ASP_SRC_OREXTRACT = __asp_file('oriented_extract')
 # Motifs
-ASP_SRC_FINDCC    = __asp_file('findbestclique')
-ASP_SRC_FINDBC    = __asp_file('findbestbiclique')
-ASP_SRC_FINDORBC  = __asp_file('findbestorientedbiclique')
+ASP_SRC_FINDCC   = __asp_file('findbestclique')
+ASP_SRC_FINDBC   = __asp_file('findbestbiclique')
+ASP_SRC_FINDORBC = __asp_file('findbestorientedbiclique')
 # Addons
 ASP_SRC_PRIORITY       = __asp_file('by_priority')
 ASP_SRC_FUZZY_PRIORITY = __asp_file('by_fuzzy_priority')
 # Scoring
-ASP_SRC_SCORING   = __asp_file('scoring_powergraph')
+ASP_SRC_SCORING     = __asp_file('scoring_powergraph')
 ASP_SRC_SCORING_OEM = __asp_file('scoring_oem')
 
 # Constants involved in ASP solving
