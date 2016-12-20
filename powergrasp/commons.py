@@ -59,7 +59,8 @@ ASP_SRC_FINDCC    = __asp_file('findbestclique')
 ASP_SRC_FINDBC    = __asp_file('findbestbiclique')
 ASP_SRC_FINDORBC  = __asp_file('findbestorientedbiclique')
 # Addons
-ASP_SRC_PRIORITY  = __asp_file('by_priority')
+ASP_SRC_PRIORITY       = __asp_file('by_priority')
+ASP_SRC_FUZZY_PRIORITY = __asp_file('by_fuzzy_priority')
 # Scoring
 ASP_SRC_SCORING   = __asp_file('scoring_powergraph')
 ASP_SRC_SCORING_OEM = __asp_file('scoring_oem')

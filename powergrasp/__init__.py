@@ -15,6 +15,7 @@ with graphs without having to code anything.
 
 from powergrasp import info
 from powergrasp import motif
+from powergrasp.motif import addon
 from powergrasp import recipes
 from powergrasp import observers
 from powergrasp.graph import Graph
