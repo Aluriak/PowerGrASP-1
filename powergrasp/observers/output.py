@@ -41,7 +41,7 @@ class LatticeDrawer(CompressionObserver):
         self.basename = directory + prefix + '{}'
 
     def on_connected_component_started(self, payload):
-        _, cc_name, atoms = payload
+        _, cc_name, atoms, _ = payload
         graphdict = utils.asp2graph(atoms)
         filename = self.basename.format(cc_name)
         utils.draw_lattice(graphdict, filename)
