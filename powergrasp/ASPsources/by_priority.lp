@@ -13,9 +13,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% A node is involved if in the concept.
-involved(X):- newconcept(cc,k,_,X).
-
 % at least one node of maximal priority is involved in the concept.
-ok :- involved(X) ; max_priority(X).
+ok :- newconcept(cc,k,_,X) ; max_priority(X).
 :- not ok.
