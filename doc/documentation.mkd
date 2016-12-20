@@ -110,7 +110,7 @@ Add a constraint on the compression: edge(X,Y) is an oriented edge linking X (so
 A poweredge can link only a source set to a target set, where covered edges have their sources in the source set, and their targets in the target set.
 
 This constraint allow a quicker compression but a lower edge compression on tested graphs.
-Follows a comparison with the graph [*structural binding*](powergrasp/tests/structural_binding.lp).
+Follows a comparison with the graph [*structural binding*](../powergrasp/tests/structural_binding.lp).
 
     measure     |  regular compression  |  oriented compression
     edge        |         1241          |           1241
@@ -155,12 +155,12 @@ These atoms are used only at solving and by statistics related observers, and ar
 
 
 ## Converters
-[Converters](powergrasp/converter/__init__.py) are a set of functions allowing (1) conversion of input data from various formats
+[Converters](../powergrasp/converter/__init__.py) are a set of functions allowing (1) conversion of input data from various formats
 to the internal format (for the record, edge/2 ASP atoms),
 (2) conversion of generated bubble data to various formats with the help of [bubbletools](http://github.com/aluriak/bubbletools)
 and (3) easy and straighforward implementation of other converters.
 
-Both [input](powergrasp/converter/inconverter.py) and [output](powergrasp/converter/outconverter.py) converters
+Both [input](../powergrasp/converter/inconverter.py) and [output](../powergrasp/converter/outconverter.py) converters
 are documented toward their extensions with other convertion methods.
 
 
@@ -173,36 +173,36 @@ Motifs are the description of concepts to found in the graph. Consequently they 
 how to search them (mainly by providing the associated ASP code source), and how to compress them
 (by computing which edges in the graphs are covered by the found concept).
 
-[Basic motifs](powergrasp/motif/basic_motifs.py) are Biclique and Clique. Oriented Biclique is described in its [own submodule](powergrasp/motif/oriented_motifs.py).
+[Basic motifs](../powergrasp/motif/basic_motifs.py) are Biclique and Clique. Oriented Biclique is described in its [own submodule](../powergrasp/motif/oriented_motifs.py).
 
 ### Addons: slight variations made easy
 Addons can be plugged to Motifs, in order to modify the behavior of the search.
-An addon is basically a set of ASP source code (for instance, [by_priority](powergrasp/ASPsources/by_priority)),
+An addon is basically a set of ASP source code (for instance, [by_priority](../powergrasp/ASPsources/by_priority)),
 and two functions allowing to enrith the set of atoms to be grounded with the graph data, and to add constants.
 
 Restriction of concepts like *must involve the node of maximal degree in the graph* can easily be described using the Addon system.
-This particular example is shown in the [addon module](powergrasp/motif/addon.py).
+This particular example is shown in the [addon module](../powergrasp/motif/addon.py).
 
 
 
 ## Observers
 Observers are here to implement a wide range of additional features.
-They react on *signals*, that are defined in the [observers package](powergrasp/observers/observers.py),
+They react on *signals*, that are defined in the [observers package](../powergrasp/observers/observers.py),
 that allow them to access a particular part of the data.
 Some examples follows.
 
 ### Output Writer
-[This one](powergrasp/observers/output.py) wait for information about compressed motifs in the graph,
+[This one](../powergrasp/observers/output.py) wait for information about compressed motifs in the graph,
 and take care of the bubble writing in the output file, and even of its conversion to another file format if user ask to.
 It basically reacts to signals *ModelFound* to extract data about found motifs,
 *ConnectedComponentStopped* to know when a connected component have been finished (so the bubble file can be written),
 and *CompressionStopped* in order to close the file descriptors and operate the conversion at the end of the compression.
 
 ### Statistics
-[code](powergrasp/statistics.py)
+[code](../powergrasp/statistics.py)
 
 ### Counters
-[code](powergrasp/observers/counters.py)
+[code](../powergrasp/observers/counters.py)
 
 
 
