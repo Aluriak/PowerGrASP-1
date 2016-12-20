@@ -94,6 +94,8 @@ class Graph:
                                          aspconfig=self.config.extract_config)
         total_cc_nb = None
         for cc_nb, model in enumerate(cc_gen):
+            if cc_nb == 0:  # first iteration
+                self.observers.signal(Signals.ExtractionStopped)
             atom_counts = model.counts
             cc_id = model.get_only('cc').only_arg
             if not total_cc_nb:
@@ -112,7 +114,6 @@ class Graph:
             )
             self._ccs.append(cc_object)
             yield cc_object
-        self.observers.signal(Signals.ExtractionStopped)
 
 
     @property
