@@ -10,11 +10,12 @@ import operator
 import itertools
 from collections import namedtuple
 
-from powergrasp import atoms
 from powergrasp import commons
 from powergrasp import solving
+from powergrasp.atoms import AtomsModel
 from powergrasp.commons import (ASP_ARG_UPPERBOUND, ASP_ARG_CC,
-                                ASP_ARG_LOWERBOUND, ASP_ARG_STEP)
+                                ASP_ARG_LOWERBOUND, ASP_ARG_STEP,
+                                ASP_ARG_MAX_SET_SIZE)
 
 
 LOGGER = commons.logger()
@@ -46,10 +47,16 @@ class Motif(solving.ASPConfig):
     """
 
 
-    def __init__(self, name:str, files=None, clasp_options='', gringo_options='',
-                 motif_search_files=solving.ASP_FILES_MOTIF_SEARCH):
-        super().__init__(name, files + motif_search_files,
+    def __init__(self, name:str, files, clasp_options='', gringo_options='',
+                 motif_search_files=solving.ASP_FILES_MOTIF_SEARCH,
+                 addons:iter=None):
+        addons_files = list(itertools.chain.from_iterable(
+            addon.files for addon in (addons or [])
+        ))
+        files = list(files or [])
+        super().__init__(name, files + motif_search_files + addons_files,
                          clasp_options, gringo_options)
+        self.addons = tuple(addons or ())
 
 
     def search(self, input_atoms:'AtomsModel', score_min:int, score_max:int,
@@ -71,14 +78,18 @@ class Motif(solving.ASPConfig):
         if score_min > score_max: return FoundMotif(None, 0, self)
         LOGGER.debug('FIND BEST ' + self.name
                      + ' [' + str(score_min) + ';' + str(score_max) + ']')
+        nb_node = input_atoms.counts.get('membercc', 0)
         aspargs = {
             ASP_ARG_CC: cc,
             ASP_ARG_STEP: step,
             ASP_ARG_LOWERBOUND: score_min,
-            ASP_ARG_UPPERBOUND: score_max
+            ASP_ARG_UPPERBOUND: score_max,
+            ASP_ARG_MAX_SET_SIZE: nb_node - 1,
         }
         input_atoms = self._enriched_input_atoms(input_atoms)
+        input_atoms = self._addons_enriched_input_atoms(input_atoms)
         aspargs.update(self._supplementary_constants(input_atoms))
+        aspargs.update(self._addons_supplementary_constants(input_atoms))
         model = solving.model_from(
             base_atoms=str(input_atoms),
             aspargs=aspargs,
@@ -99,14 +110,29 @@ class Motif(solving.ASPConfig):
         return ret
 
 
-    def _enriched_input_atoms(self, graph:'AtomsModel') -> 'AtomsModel':
+    def _enriched_input_atoms(self, graph:AtomsModel) -> 'AtomsModel':
         """Modify the input model in order to prepare the next round"""
+        return graph
+
+    def _addons_enriched_input_atoms(self, graph:AtomsModel) -> 'AtomsModel':
+        """Modify the input model in order to prepare the next round"""
+        for addon in self.addons:
+            graph = addon.add_atoms(graph)
+            assert isinstance(graph, AtomsModel)
         return graph
 
 
     def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
         """Return a dict of supplementary constants {name: value} for solving"""
         return {}
+
+    def _addons_supplementary_constants(self, atoms:'AtomsModel') -> dict:
+        """Return a dict of supplementary constants {name: value} for solving"""
+        constants = {}
+        for addon in self.addons:
+            constants.update(addon.add_constants(atoms))
+        return constants
+
 
     def _score_from_cover(self, edge_cover:int) -> int:
         """Return the score for the motif, based on the number of edges
