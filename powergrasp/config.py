@@ -12,6 +12,7 @@ from collections import ChainMap
 
 from powergrasp import cli
 from powergrasp import motif
+from powergrasp import addon
 from powergrasp import solving
 from powergrasp import commons
 from powergrasp import converter
@@ -239,19 +240,11 @@ class Configuration(metaclass=meta_config):
         kwargs -- supplementary fields to provide. Will override default data.
 
         """
-        MOTIFS = [motif.Biclique(include_max_node_degrees=True,
-                                 additional_files=[commons.ASP_SRC_PRIORITY])]
+        MOTIFS = [motif.Biclique(addons=[addon.ByDegree])]
         fields = {
             'motifs': tuple(MOTIFS),
         }
-        for field in fields:
-            if field in kwargs:
-                LOGGER.warning("The recipe Configuration.fields_for_prioritized"
-                               "_degree is designed to define the field {}, but"
-                               " given parameter overrides it with value {}."
-                               " This unexpected value will be used, but"
-                               " chances are this is an error."
-                               "".format(field, kwargs[field]))
+        _fields_verification(fields, kwargs)
         fields.update(kwargs)
         return fields
 
@@ -269,13 +262,18 @@ class Configuration(metaclass=meta_config):
             'motifs': (motif.OrientedBiclique.for_powergraph(),),
             'extract_config': solving.ASPConfig.oriented_extraction(),
         }
-        for field in fields:
-            if field in kwargs:
-                LOGGER.warning("The recipe Configuration.for_oriented_graph is"
-                               " designed to define the field {}, but given"
-                               " parameter overrides it with value {}."
-                               " This unexpected value will be used, but"
-                               " chances are this is an error."
-                               "".format(field, kwargs[field]))
+        _fields_verification(fields, kwargs)
         fields.update(kwargs)
         return fields
+
+
+def _fields_verification(fields:dict, provided:dict):
+    """Logs warning if a field in provided is in fields"""
+    for field in fields:
+        if field in provided:
+            LOGGER.warning("The recipe Configuration.fields_for_prioritized"
+                           "_degree is designed to define the field {}, but"
+                           " given parameter overrides it with value {}."
+                           " This unexpected value will be used, but"
+                           " chances are this is an error."
+                           "".format(field, provided[field]))
