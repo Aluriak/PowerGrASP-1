@@ -126,7 +126,7 @@ inc:
 lattice:
 	$(COMMAND) "$(TESTS)lattice.lp"
 matrixdb:
-	$(COMMAND) "$(TESTS)matrixdb_160614_CORE27.lp"
+	$(COMMAND) "$(TESTS)matrixdb_network.lp"
 onedge:
 	$(COMMAND) "$(TESTS)one_edge.lp"
 or_double_edge:
