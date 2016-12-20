@@ -106,6 +106,7 @@ def writable_file(filepath:str) -> str:
     try:
         with open(filepath, 'a') as fd:
             pass
+        os.remove(filepath)
         return filepath
     except (PermissionError, IOError):
         raise argparse.ArgumentTypeError("file {} is not writable.".format(filepath))
