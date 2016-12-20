@@ -206,6 +206,8 @@ pytest:
 te: pytest_exit
 pytest_exit:
 	pytest powergrasp --doctest-module --failed-first --exitfirst
+pylint:
+	pylint powergrasp > doc/pylint_report.txt
 
 
 # this is a way to treat multiple files

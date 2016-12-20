@@ -1,0 +1,1709 @@
+************* Module powergrasp
+C: 24, 0: Import "from powergrasp.plotting import plots" should be placed at the top of the module (wrong-import-position)
+************* Module powergrasp.solving
+C: 35, 0: Exactly one space required after :
+    def __init__(self, name:str, files:list, clasp_options:str='', gringo_options:str=''):
+                           ^ (bad-whitespace)
+C: 35, 0: Exactly one space required after :
+    def __init__(self, name:str, files:list, clasp_options:str='', gringo_options:str=''):
+                                      ^ (bad-whitespace)
+C: 35, 0: Exactly one space required after :
+    def __init__(self, name:str, files:list, clasp_options:str='', gringo_options:str=''):
+                                                          ^ (bad-whitespace)
+C: 35, 0: Exactly one space required after :
+    def __init__(self, name:str, files:list, clasp_options:str='', gringo_options:str=''):
+                                                                                 ^ (bad-whitespace)
+C:100, 0: Line too long (108/100) (line-too-long)
+C:103, 0: Exactly one space required after comma
+    constants = ' -c '.join(str(k)+'='+str(v) for k,v in aspargs.items())
+                                                   ^ (bad-whitespace)
+E: 55,39: Undefined variable 'gen_configs' (undefined-variable)
+W: 60, 4: Dangerous default value [] as argument (dangerous-default-value)
+C: 60, 4: Missing method docstring (missing-docstring)
+W: 66, 4: Dangerous default value [] as argument (dangerous-default-value)
+C: 66, 4: Missing method docstring (missing-docstring)
+W: 70, 4: Dangerous default value [] as argument (dangerous-default-value)
+C: 70, 4: Missing method docstring (missing-docstring)
+E: 90,29: No value for argument 'files' in constructor call (no-value-for-parameter)
+W:  9, 0: Unused import os (unused-import)
+W: 11, 0: Unused partial imported from functools (unused-import)
+W: 12, 0: Unused Counter imported from collections (unused-import)
+************* Module powergrasp.info
+C:  7, 0: Exactly one space required before assignment
+PROGRAM_NAME    = 'PowerGrASP'
+                ^ (bad-whitespace)
+C:  8, 0: Exactly one space required before assignment
+PACKAGE_NAME    = PROGRAM_NAME.lower()
+                ^ (bad-whitespace)
+C:  9, 0: Exactly one space required before assignment
+__fix           = '3'
+                ^ (bad-whitespace)
+C: 10, 0: Exactly one space required before assignment
+__minor         = '5'
+                ^ (bad-whitespace)
+C: 11, 0: Exactly one space required before assignment
+__major         = '0'
+                ^ (bad-whitespace)
+C:  9, 0: Invalid constant name "__fix" (invalid-name)
+C: 10, 0: Invalid constant name "__minor" (invalid-name)
+C: 11, 0: Invalid constant name "__major" (invalid-name)
+C: 16, 0: Import "from collections import defaultdict" should be placed at the top of the module (wrong-import-position)
+************* Module powergrasp.__main__
+C: 24, 4: Invalid constant name "cfg" (invalid-name)
+E: 28, 8: Instance of 'Configuration' has no 'plot_stats' member (no-member)
+E: 28,26: Instance of 'Configuration' has no 'plot_file' member (no-member)
+E: 28,45: Instance of 'Configuration' has no 'stats_file' member (no-member)
+E: 29,23: Instance of 'Configuration' has no 'stats_file' member (no-member)
+E: 29,48: Instance of 'Configuration' has no 'plot_file' member (no-member)
+************* Module powergrasp.config
+C: 43, 0: Line too long (128/100) (line-too-long)
+C:181, 0: Line too long (104/100) (line-too-long)
+C:270, 0: Exactly one space required after :
+def _fields_verification(fields:dict, provided:dict):
+                               ^ (bad-whitespace)
+C:270, 0: Exactly one space required after :
+def _fields_verification(fields:dict, provided:dict):
+                                              ^ (bad-whitespace)
+C: 65, 4: Missing function docstring (missing-docstring)
+C:105, 4: Missing method docstring (missing-docstring)
+E:120,39: Instance of 'Configuration' has no 'thread' member (no-member)
+E:144,61: Instance of 'Configuration' has no 'infile' member (no-member)
+E:145,51: Instance of 'Configuration' has no 'infile' member (no-member)
+E:146,66: Instance of 'Configuration' has no 'infile' member (no-member)
+E:152,21: Instance of 'Configuration' has no 'motifs' member (no-member)
+E:152,37: Instance of 'Configuration' has no 'extract_config' member (no-member)
+E:155,46: Instance of 'Configuration' has no 'logfile' member (no-member)
+E:156,47: Instance of 'Configuration' has no 'loglevel' member (no-member)
+E:162,11: Instance of 'Configuration' has no 'infile' member (no-member)
+W:164,28: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+W:166,16: Expression "[tmp.write((line) + ('\n')) for line in sys.stdin]" is assigned to nothing (expression-not-assigned)
+W:172,24: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+E:174,55: Instance of 'Configuration' has no 'network_name' member (no-member)
+E:174,74: Instance of 'Configuration' has no 'outformat' member (no-member)
+E:177,16: Instance of 'Configuration' has no 'network_name' member (no-member)
+E:177,42: Instance of 'Configuration' has no 'outformat' member (no-member)
+E:180,26: Instance of 'Configuration' has no 'thread' member (no-member)
+E:180,47: Instance of 'Configuration' has no 'thread' member (no-member)
+W:181,25: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+E:181,91: Instance of 'Configuration' has no 'thread' member (no-member)
+E:185,35: Instance of 'Configuration' has no 'extract_config' member (no-member)
+E:187,43: Instance of 'Configuration' has no 'motifs' member (no-member)
+E:189,47: Instance of 'Configuration' has no 'motifs' member (no-member)
+E:193,11: Instance of 'Configuration' has no 'oriented' member (no-member)
+E:196,39: Instance of 'Configuration' has no 'oriented' member (no-member)
+R:207, 4: Method could be a function (no-self-use)
+E:218,12: Instance of 'Configuration' has no 'network_name' member (no-member)
+W:224, 4: Dangerous default value {} as argument (dangerous-default-value)
+C:243, 8: Invalid variable name "MOTIFS" (invalid-name)
+E:169,11: Access to member 'outfile' before its definition line 175 (access-member-before-definition)
+E:171,27: Access to member 'outfile' before its definition line 175 (access-member-before-definition)
+E:174,41: Access to member 'outfile' before its definition line 175 (access-member-before-definition)
+W:274,27: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+************* Module powergrasp.graph
+C: 24, 0: Exactly one space required after :
+    def __init__(self, cfg:config.Configuration, observers:iter=None):
+                          ^ (bad-whitespace)
+C: 24, 0: Exactly one space required after :
+    def __init__(self, cfg:config.Configuration, observers:iter=None):
+                                                          ^ (bad-whitespace)
+C: 58,12: Invalid variable name "cc" (invalid-name)
+R: 70, 4: Method could be a function (no-self-use)
+C:120, 4: Missing method docstring (missing-docstring)
+************* Module powergrasp.atoms
+C: 55, 0: Exactly one space required after :
+    def __init__(self, data:iter or dict):
+                           ^ (bad-whitespace)
+C: 95, 0: Exactly one space required after :
+    def set_args(self, atom_name:str, new_args:iter):
+                                ^ (bad-whitespace)
+C: 95, 0: Exactly one space required after :
+    def set_args(self, atom_name:str, new_args:iter):
+                                              ^ (bad-whitespace)
+C:101, 0: Exactly one space required after :
+    def get(self, names:str or iter, *additonal_names) -> iter:
+                       ^ (bad-whitespace)
+C:113, 0: Exactly one space required after :
+    def get_only(self, atom_name:str) -> ASPAtom:
+                                ^ (bad-whitespace)
+C:120, 0: Exactly one space required after :
+    def get_unique_only_arg(self, atom_name:str) -> 'arg value':
+                                           ^ (bad-whitespace)
+C:133, 0: Exactly one space required after :
+    def get_args(self, atom_name:str) -> iter:
+                                ^ (bad-whitespace)
+C:137, 0: Exactly one space required after :
+    def get_str(self, names:str or iter) -> iter:
+                           ^ (bad-whitespace)
+C:143, 0: Exactly one space required after :
+    def from_asp_string(aspcode:str):
+                               ^ (bad-whitespace)
+C:160, 0: Exactly one space required after :
+    def from_asp_file(filename:str):
+                              ^ (bad-whitespace)
+W:173, 0: Bad indentation. Found 17 spaces, expected 16 (bad-indentation)
+W:175, 0: Bad indentation. Found 17 spaces, expected 16 (bad-indentation)
+W:177, 0: Bad indentation. Found 13 spaces, expected 12 (bad-indentation)
+C:186, 0: Exactly one space required after :
+def atoms_from_aspstr(aspcode:str) -> iter:
+                             ^ (bad-whitespace)
+C:197, 0: Exactly one space required after :
+def split(atom:str) -> ASPAtom or None:
+              ^ (bad-whitespace)
+C:276, 0: Exactly one space required after :
+def name_args_to_str(name:str, args:iter, end:str='.') -> str:
+                         ^ (bad-whitespace)
+C:276, 0: Exactly one space required after :
+def name_args_to_str(name:str, args:iter, end:str='.') -> str:
+                                   ^ (bad-whitespace)
+C:276, 0: Exactly one space required after :
+def name_args_to_str(name:str, args:iter, end:str='.') -> str:
+                                             ^ (bad-whitespace)
+C: 29, 0: Missing class docstring (missing-docstring)
+C: 32, 4: Missing method docstring (missing-docstring)
+C: 80, 4: Missing method docstring (missing-docstring)
+C: 84, 4: Missing method docstring (missing-docstring)
+C: 92, 4: Missing method docstring (missing-docstring)
+W:128, 8: Redefining name 'arg' from outer scope (line 226) (redefined-outer-name)
+W: 11, 0: Unused import itertools (unused-import)
+************* Module powergrasp.cli
+C: 30, 0: Exactly one space required after :
+def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
+                                                           ^ (bad-whitespace)
+C: 64, 0: Exactly one space required after :
+def normalized(arg:str) -> str:
+                  ^ (bad-whitespace)
+C: 74, 0: Exactly one space required after :
+def loglevel(level:str) -> str:
+                  ^ (bad-whitespace)
+C: 84, 0: Exactly one space required after :
+def thread_number(nbt:int) -> int:
+                     ^ (bad-whitespace)
+C: 97, 0: Exactly one space required after :
+def existant_file(filepath:str) -> str:
+                          ^ (bad-whitespace)
+C:104, 0: Exactly one space required after :
+def writable_file(filepath:str) -> str:
+                          ^ (bad-whitespace)
+C:115, 0: Exactly one space required after :
+def output_format(format:str) -> str:
+                        ^ (bad-whitespace)
+C:182, 0: Line too long (134/100) (line-too-long)
+C:192, 0: Line too long (138/100) (line-too-long)
+W: 30, 0: Dangerous default value {} as argument (dangerous-default-value)
+C:107,36: Invalid variable name "fd" (invalid-name)
+W:107,36: Unused variable 'fd' (unused-variable)
+W:115,18: Redefining built-in 'format' (redefined-builtin)
+E:119,12: Not enough arguments for format string (too-few-format-args)
+E:120,34: Too many positional arguments for method call (too-many-function-args)
+W: 21, 0: Unused solving imported from powergrasp (unused-import)
+************* Module powergrasp.commons
+C: 21, 0: Exactly one space required before assignment
+BUBBLE_FORMAT_ID   = 'bbl'
+                   ^ (bad-whitespace)
+C: 24, 0: Exactly one space required before assignment
+DIR_SOURCES     = ''  # sources are inside the package
+                ^ (bad-whitespace)
+C: 25, 0: Exactly one space required before assignment
+DIR_DATA        = 'data/'
+                ^ (bad-whitespace)
+C: 26, 0: Exactly one space required before assignment
+DIR_TEST_CASES  = 'tests/'
+                ^ (bad-whitespace)
+C: 27, 0: Exactly one space required before assignment
+DIR_LOGS        = 'logs/'
+                ^ (bad-whitespace)
+C: 35, 0: Exactly one space required before assignment
+LOGGER_NAME       = PACKAGE_NAME
+                  ^ (bad-whitespace)
+C: 36, 0: Exactly one space required before assignment
+DEFAULT_LOG_FILE  = access_packaged_file(DIR_LOGS + LOGGER_NAME + '.log')
+                  ^ (bad-whitespace)
+C: 52, 0: Exactly one space required before assignment
+ASP_SRC_POSTPRO   = __asp_file('postprocessing')
+                  ^ (bad-whitespace)
+C: 55, 0: Exactly one space required before assignment
+ASP_SRC_EXTRACT   = __asp_file('extract')
+                  ^ (bad-whitespace)
+C: 58, 0: Exactly one space required before assignment
+ASP_SRC_FINDCC   = __asp_file('findbestclique')
+                 ^ (bad-whitespace)
+C: 59, 0: Exactly one space required before assignment
+ASP_SRC_FINDBC   = __asp_file('findbestbiclique')
+                 ^ (bad-whitespace)
+C: 62, 0: Exactly one space required before assignment
+ASP_SRC_PRIORITY       = __asp_file('by_priority')
+                       ^ (bad-whitespace)
+C: 65, 0: Exactly one space required before assignment
+ASP_SRC_SCORING     = __asp_file('scoring_powergraph')
+                    ^ (bad-whitespace)
+C: 69, 0: Exactly one space required before assignment
+ASP_ARG_CC   = 'cc'
+             ^ (bad-whitespace)
+C:117, 0: Exactly one space required after :
+def quoted(value:str, by='"'):
+                ^ (bad-whitespace)
+C:175, 0: Exactly one space required after :
+def network_name(input_file:str) -> str:
+                           ^ (bad-whitespace)
+C:291, 0: Wrong continued indentation (add 1 space).
+                        + "can't be written because of a permission error."
+                        ^| (bad-continuation)
+C:292, 0: Wrong continued indentation (add 1 space).
+                        + "No logs will be saved in file.")
+                        ^| (bad-continuation)
+C:305, 0: Exactly one space required after :
+def log_level_code(level:str) -> int:
+                        ^ (bad-whitespace)
+C:  9, 0: Multiple imports on one line (logging, logging.config) (multiple-imports)
+C: 32, 0: Invalid constant name "access_packaged_file" (invalid-name)
+C:117, 0: Invalid argument name "by" (invalid-name)
+W: 12, 0: Unused import sys (unused-import)
+W: 16, 0: Unused PACKAGE_VERSION imported from powergrasp.info (unused-import)
+C: 12, 0: standard import "import sys" comes before "import pkg_resources" (wrong-import-order)
+C: 13, 0: standard import "import os" comes before "import pkg_resources" (wrong-import-order)
+C: 14, 0: standard import "from functools import partial" comes before "import pkg_resources" (wrong-import-order)
+************* Module powergrasp.plotting
+W: 72, 0: Anomalous backslash in string: '\#'. String constant might be missing an r prefix. (anomalous-backslash-in-string)
+R: 36, 0: Too many arguments (6/5) (too-many-arguments)
+R: 36, 0: Too many local variables (23/15) (too-many-locals)
+C: 59, 4: Invalid variable name "e" (invalid-name)
+E: 61,25: Undefined variable 'statistics_filename' (undefined-variable)
+C: 65, 4: Invalid variable name "TIME" (invalid-name)
+C: 66,17: More than one statement on a single line (multiple-statements)
+C: 84, 4: Invalid variable name "gx" (invalid-name)
+W: 59, 4: Unused variable 'e' (unused-variable)
+W: 76, 8: Unused variable 'data_size' (unused-variable)
+W: 48, 4: Unused variable 'savefig' (unused-variable)
+W: 36,20: Unused argument 'title' (unused-argument)
+W: 14, 4: Unused import matplotlib (unused-import)
+W: 15, 4: Unused import pandas (unused-import)
+W: 16, 4: Unused import numpy (unused-import)
+************* Module powergrasp.connected_component
+C: 27, 0: Exactly one space required after :
+    def __init__(self, cc_id:str, cc_nb:int, node_number:int, edge_number:int, atoms:str,
+                            ^ (bad-whitespace)
+C: 27, 0: Exactly one space required after :
+    def __init__(self, cc_id:str, cc_nb:int, node_number:int, edge_number:int, atoms:str,
+                                       ^ (bad-whitespace)
+C: 27, 0: Exactly one space required after :
+    def __init__(self, cc_id:str, cc_nb:int, node_number:int, edge_number:int, atoms:str,
+                                                        ^ (bad-whitespace)
+C: 27, 0: Exactly one space required after :
+    def __init__(self, cc_id:str, cc_nb:int, node_number:int, edge_number:int, atoms:str,
+                                                                         ^ (bad-whitespace)
+C: 27, 0: Exactly one space required after :
+    def __init__(self, cc_id:str, cc_nb:int, node_number:int, edge_number:int, atoms:str,
+                                                                                    ^ (bad-whitespace)
+C: 28, 0: Exactly one space required after :
+                 observers:iter, config:dict, minimal_score:int=2):
+                          ^ (bad-whitespace)
+C: 28, 0: Exactly one space required after :
+                 observers:iter, config:dict, minimal_score:int=2):
+                                       ^ (bad-whitespace)
+C: 28, 0: Exactly one space required after :
+                 observers:iter, config:dict, minimal_score:int=2):
+                                                           ^ (bad-whitespace)
+C: 79, 0: Exactly one space required after :
+    def search_motif(self, motif:motif.Motif, alt=None, constraints:str='',
+                                ^ (bad-whitespace)
+C: 79, 0: Exactly one space required after :
+    def search_motif(self, motif:motif.Motif, alt=None, constraints:str='',
+                                                                   ^ (bad-whitespace)
+C: 80, 0: Exactly one space required after :
+                     best_motif:callable=motif.comparer.by_score):
+                               ^ (bad-whitespace)
+C:113, 0: Exactly one space required after :
+    def search_biclique(self, alt=None, constraints:str=''):
+                                                   ^ (bad-whitespace)
+C:119, 0: Exactly one space required after :
+    def search_clique(self, alt=None, constraints:str=''):
+                                                 ^ (bad-whitespace)
+C:126, 0: Exactly one space required after :
+    def compress(self, found:'FoundMotif', new_best_score:int=None):
+                            ^ (bad-whitespace)
+C:126, 0: Exactly one space required after :
+    def compress(self, found:'FoundMotif', new_best_score:int=None):
+                                                         ^ (bad-whitespace)
+C:146, 0: Line too long (104/100) (line-too-long)
+C:147, 0: Line too long (104/100) (line-too-long)
+R: 19, 0: Too many instance attributes (13/7) (too-many-instance-attributes)
+R: 27, 4: Too many arguments (9/5) (too-many-arguments)
+W: 27,45: Unused argument 'node_number' (unused-argument)
+C: 57, 8: Missing function docstring (missing-docstring)
+W: 63,32: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+W: 67,32: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+E: 67,32: Too many arguments for format string (too-many-format-args)
+W: 79,27: Redefining name 'motif' from outer scope (line 10) (redefined-outer-name)
+W: 79,56: Unused argument 'constraints' (unused-argument)
+E:117,15: Undefined variable 'search_motif' (undefined-variable)
+E:117,28: Undefined variable 'Motif' (undefined-variable)
+R:113, 4: Method could be a function (no-self-use)
+E:123,15: Undefined variable 'search_motif' (undefined-variable)
+E:123,28: Undefined variable 'Motif' (undefined-variable)
+R:119, 4: Method could be a function (no-self-use)
+C:170, 4: Missing method docstring (missing-docstring)
+************* Module powergrasp.statistics
+C: 30, 0: Line too long (101/100) (line-too-long)
+C: 40, 0: Line too long (102/100) (line-too-long)
+C: 56, 0: Exactly one space required before assignment
+COLORS   = ('black', 'green', 'blue', 'red')
+         ^ (bad-whitespace)
+C: 57, 0: Exactly one space required before assignment
+LABELS   = (
+         ^ (bad-whitespace)
+C:155, 0: Exactly one space required after :
+    def on_final_edge_count_generated(self, nb_edge:int):
+                                                   ^ (bad-whitespace)
+C:158, 0: Exactly one space required after :
+    def on_final_remain_edge_count_generated(self, nb_edge:int):
+                                                          ^ (bad-whitespace)
+C:242, 0: Exactly one space required before assignment
+        header  = 'network'
+                ^ (bad-whitespace)
+C:245, 0: Exactly one space required before assignment
+            header  += ' & ' + field
+                    ^^ (bad-whitespace)
+C:247, 0: Exactly one space required before assignment
+        header  += '\\\\'
+                ^^ (bad-whitespace)
+C: 91,12: Invalid variable name "e" (invalid-name)
+W: 91,12: Unused variable 'e' (unused-variable)
+C:113, 4: Missing method docstring (missing-docstring)
+C:119, 4: Missing method docstring (missing-docstring)
+W:181,27: Redefining built-in 'format' (redefined-builtin)
+W:209,29: Redefining built-in 'format' (redefined-builtin)
+C:216,56: Invalid variable name "fd" (invalid-name)
+E:217,12: Undefined variable 'f' (undefined-variable)
+E:217,20: Instance of 'DataExtractor' has no 'output' member (no-member)
+W:216,56: Unused variable 'fd' (unused-variable)
+W:153, 8: Attribute 'configs' defined outside __init__ (attribute-defined-outside-init)
+W:232,21: Redefining built-in 'format' (redefined-builtin)
+W: 20, 0: Unused Signals imported from powergrasp.observers (unused-import)
+************* Module powergrasp.utils
+C: 19, 0: Exactly one space required before assignment
+LATTICE_FILENAME   = 'powergrasp/data/lattice'  # extension is added by graphviz
+                   ^ (bad-whitespace)
+C: 30, 0: Exactly one space required after :
+def density(nb_node:int, nb_edge:int) -> float:
+                   ^ (bad-whitespace)
+C: 30, 0: Exactly one space required after :
+def density(nb_node:int, nb_edge:int) -> float:
+                                ^ (bad-whitespace)
+C:113, 0: No space allowed before :
+    def int2node(i) : return '"n' + str(i+1) + '"'
+                    ^ (bad-whitespace)
+W:115, 0: Bad indentation. Found 12 spaces, expected 8 (bad-indentation)
+C:121, 0: Exactly one space required after :
+def make_tree(nb_node, filename, nb_child=lambda:2):
+                                                ^ (bad-whitespace)
+C:124, 0: Exactly one space required before assignment
+    carac   = (chr(_) for _ in range(ord('a'), ord('z')+1))
+            ^ (bad-whitespace)
+C:126, 0: Exactly one space required before assignment
+    label   = (''.join(c)
+            ^ (bad-whitespace)
+C:128, 0: Wrong hanging indentation before block.
+                carac, repeat=nb_cars), nb_node
+                ^  |   | (bad-continuation)
+C:129, 0: Wrong continued indentation (add 25 spaces).
+               ))
+               ^                        | (bad-continuation)
+C: 23, 0: Missing function docstring (missing-docstring)
+C: 56, 8: Invalid variable name "x" (invalid-name)
+C: 56,11: Invalid variable name "y" (invalid-name)
+C: 57, 8: Invalid variable name "ux" (invalid-name)
+C: 57,12: Invalid variable name "uy" (invalid-name)
+C: 58, 8: Invalid variable name "ux" (invalid-name)
+C: 59, 8: Invalid variable name "uy" (invalid-name)
+W: 55, 8: Unused variable 'atom' (unused-variable)
+C: 64, 0: Missing function docstring (missing-docstring)
+C: 83,42: Invalid variable name "fd" (invalid-name)
+W: 77,19: Unused argument 'asp_file_integrity' (unused-argument)
+C:101,48: Invalid variable name "fd" (invalid-name)
+W: 99,15: Unused argument 'graph' (unused-argument)
+C:113, 4: Missing function docstring (missing-docstring)
+C:113,22: More than one statement on a single line (multiple-statements)
+C:114,32: Invalid variable name "fd" (invalid-name)
+W:115,12: Expression "[fd.write((((('edge(') + (int2node(idx))) + (',')) + (int2node(linked))) + (').\n')) for idx in range(nb_node) for linked in range((idx) + (1), nb_node)]" is assigned to nothing (expression-not-assigned)
+C:123, 4: Invalid variable name "UNWANTED_IDS" (invalid-name)
+C:131, 4: Missing function docstring (missing-docstring)
+C:134, 4: Invalid argument name "n" (invalid-name)
+C:134, 4: Invalid argument name "m" (invalid-name)
+C:134, 4: Missing function docstring (missing-docstring)
+C:137,32: Invalid variable name "fd" (invalid-name)
+************* Module powergrasp.converter.inconverter
+C: 45, 0: Exactly one space required after :
+def converter_for(extension:str) -> callable:
+                           ^ (bad-whitespace)
+C: 56, 0: Exactly one space required after :
+def edge_generator(edges_from:callable):
+                             ^ (bad-whitespace)
+C: 64, 0: Exactly one space required after :
+    def wrapper(infile:str, outfile:str=None):
+                      ^ (bad-whitespace)
+C: 64, 0: Exactly one space required after :
+    def wrapper(infile:str, outfile:str=None):
+                                   ^ (bad-whitespace)
+C: 81, 0: Exactly one space required after :
+def from_lp(infile:str, outfile:str=None):
+                  ^ (bad-whitespace)
+C: 81, 0: Exactly one space required after :
+def from_lp(infile:str, outfile:str=None):
+                               ^ (bad-whitespace)
+C: 89, 0: Exactly one space required after :
+def from_gml(infile:str) -> iter:
+                   ^ (bad-whitespace)
+C:102, 0: Wrong continued indentation (add 16 spaces).
+        ' use GML as input format.')
+        ^               | (bad-continuation)
+C:107, 0: Exactly one space required after :
+def from_graphml(infile:str) -> iter:
+                       ^ (bad-whitespace)
+C:126, 0: Exactly one space required after :
+def from_sbml(infile:str) -> iter:
+                    ^ (bad-whitespace)
+C:148, 0: Exactly one space required before assignment
+    level    = document.getLevel()
+             ^ (bad-whitespace)
+C:149, 0: Exactly one space required before assignment
+    version  = document.getVersion()
+             ^ (bad-whitespace)
+C:150, 0: Exactly one space required before assignment
+    model    = document.getModel()
+             ^ (bad-whitespace)
+C:162, 0: Unnecessary parens after 'if' keyword (superfluous-parens)
+C:163, 0: No space allowed before bracket
+        LOGGER.error('libsbml: No model found in file ' + filename + '.' )
+                                                                         ^ (bad-whitespace)
+C:174, 0: Exactly one space required before assignment
+        products  = (species_name[p.getSpecies()] for p in reaction.getListOfProducts() )
+                  ^ (bad-whitespace)
+C:174, 0: No space allowed before bracket
+        products  = (species_name[p.getSpecies()] for p in reaction.getListOfProducts() )
+                                                                                        ^ (bad-whitespace)
+C: 67,12: Invalid variable name "fd" (invalid-name)
+C: 69,12: Invalid variable name "fd" (invalid-name)
+E:147,24: Undefined variable 'filename' (undefined-variable)
+E:163,58: Undefined variable 'filename' (undefined-variable)
+E:169,63: Undefined variable 'NAME_PREFIX' (undefined-variable)
+E:173,41: Undefined variable 'NAME_PREFIX' (undefined-variable)
+W:126,14: Unused argument 'infile' (unused-argument)
+W: 23, 0: Unused import re (unused-import)
+************* Module powergrasp.converter.bblwriter
+C: 35, 0: Exactly one space required before assignment
+logger         = commons.logger()
+               ^ (bad-whitespace)
+C: 40, 0: Exactly one space required after :
+def to_bubble_value(value:str) -> str:
+                         ^ (bad-whitespace)
+C: 81, 0: Exactly one space required after :
+    def __init__(self, filedesc:'file'):
+                               ^ (bad-whitespace)
+C: 87, 0: Exactly one space required after :
+    def write_atoms(self, atoms:str):
+                               ^ (bad-whitespace)
+C:138, 0: Exactly one space required before assignment
+        self.atoms      = ''
+                        ^ (bad-whitespace)
+C:139, 0: Exactly one space required before assignment
+        self.nodes      = set()
+                        ^ (bad-whitespace)
+C:140, 0: Exactly one space required before assignment
+        self.pwnds      = set()
+                        ^ (bad-whitespace)
+C:141, 0: Exactly one space required before assignment
+        self.cliques    = set()
+                        ^ (bad-whitespace)
+C:145, 0: Exactly one space required before assignment
+        self.contains   = defaultdict(set)
+                        ^ (bad-whitespace)
+C:147, 0: Exactly one space required before assignment
+        self.tops       = set()
+                        ^ (bad-whitespace)
+C:149, 0: Exactly one space required before assignment
+        self.trivials   = set()
+                        ^ (bad-whitespace)
+C:151, 0: Exactly one space required before assignment
+        self.edges      = defaultdict(set)
+                        ^ (bad-whitespace)
+C:152, 0: Exactly one space required before assignment
+        self.belongs    = dict()
+                        ^ (bad-whitespace)
+C:195, 0: Line too long (101/100) (line-too-long)
+C:196, 0: Line too long (101/100) (line-too-long)
+C:210, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:228, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:240, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:246, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:247, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:248, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:248, 0: Exactly one space required after comma
+            assert(powernode(cc,step,num_set) not in self.trivials)
+                               ^ (bad-whitespace)
+C:248, 0: Exactly one space required after comma
+            assert(powernode(cc,step,num_set) not in self.trivials)
+                                    ^ (bad-whitespace)
+C:249, 0: Exactly one space required after comma
+            self.trivials.add(powernode(cc,step,num_set))
+                                          ^ (bad-whitespace)
+C:249, 0: Exactly one space required after comma
+            self.trivials.add(powernode(cc,step,num_set))
+                                               ^ (bad-whitespace)
+C:250, 0: Exactly one space required after comma
+            logger.debug('TRIVIAL:' + powernode(cc,step,num_set))
+                                                  ^ (bad-whitespace)
+C:250, 0: Exactly one space required after comma
+            logger.debug('TRIVIAL:' + powernode(cc,step,num_set))
+                                                       ^ (bad-whitespace)
+C:255, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:256, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:259, 0: Unnecessary parens after 'not' keyword (superfluous-parens)
+C:273, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:274, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:275, 0: Unnecessary parens after 'assert' keyword (superfluous-parens)
+C:291, 0: Exactly one space required after comma
+            self.tops.add(powernode(cc,step,num_set))
+                                      ^ (bad-whitespace)
+C:291, 0: Exactly one space required after comma
+            self.tops.add(powernode(cc,step,num_set))
+                                           ^ (bad-whitespace)
+C:298, 0: Wrong hanging indentation (add 4 spaces).
+        # NODEs
+        ^   | (bad-continuation)
+C:300, 0: Wrong hanging indentation (add 4 spaces).
+        # SETs
+        ^   | (bad-continuation)
+C:308, 0: Wrong hanging indentation (add 4 spaces).
+        # INs
+        ^   | (bad-continuation)
+C:315, 0: Wrong hanging indentation (add 4 spaces).
+        # EDGEs
+        ^   | (bad-continuation)
+C: 35, 0: Invalid constant name "logger" (invalid-name)
+C: 42, 4: Invalid variable name "INCOMPLIANT_BUBBLE_CHARS" (invalid-name)
+C: 49, 0: Invalid argument name "cc" (invalid-name)
+C: 83, 8: Invalid attribute name "fd" (invalid-name)
+R: 61, 0: Too many instance attributes (10/7) (too-many-instance-attributes)
+R:201, 4: Too many local variables (33/15) (too-many-locals)
+C:209,12: Invalid variable name "cc" (invalid-name)
+C:215,12: Invalid variable name "a" (invalid-name)
+C:215,15: Invalid variable name "b" (invalid-name)
+C:224,16: Invalid variable name "cc" (invalid-name)
+C:224,20: Invalid variable name "k1" (invalid-name)
+C:224,24: Invalid variable name "t1" (invalid-name)
+C:224,28: Invalid variable name "k2" (invalid-name)
+C:224,32: Invalid variable name "t2" (invalid-name)
+C:225,16: Invalid variable name "a" (invalid-name)
+C:226,16: Invalid variable name "b" (invalid-name)
+C:229,16: Invalid variable name "cc" (invalid-name)
+C:229,23: Invalid variable name "t" (invalid-name)
+C:231,20: Invalid variable name "a" (invalid-name)
+C:232,20: Invalid variable name "b" (invalid-name)
+C:234,20: Invalid variable name "a" (invalid-name)
+C:235,20: Invalid variable name "b" (invalid-name)
+C:245,12: Invalid variable name "cc" (invalid-name)
+C:272,12: Invalid variable name "cc" (invalid-name)
+C:290,12: Invalid variable name "cc" (invalid-name)
+W:204, 9: Unused variable 'powernodes' (unused-variable)
+R:201, 4: Too many branches (14/12) (too-many-branches)
+R:201, 4: Too many statements (59/50) (too-many-statements)
+************* Module powergrasp.converter.__init__
+C: 18, 0: Exactly one space required after :
+def convert(is_input:bool, infile:str, outfile:str=None,
+                    ^ (bad-whitespace)
+C: 18, 0: Exactly one space required after :
+def convert(is_input:bool, infile:str, outfile:str=None,
+                                 ^ (bad-whitespace)
+C: 18, 0: Exactly one space required after :
+def convert(is_input:bool, infile:str, outfile:str=None,
+                                              ^ (bad-whitespace)
+C: 19, 0: Exactly one space required after :
+            format:str=None, oriented:bool=False) -> str:
+                  ^ (bad-whitespace)
+C: 19, 0: Exactly one space required after :
+            format:str=None, oriented:bool=False) -> str:
+                                     ^ (bad-whitespace)
+C: 43, 0: Exactly one space required after :
+def to_asp_file(input_filename:str, format:str=None) -> str:
+                              ^ (bad-whitespace)
+C: 43, 0: Exactly one space required after :
+def to_asp_file(input_filename:str, format:str=None) -> str:
+                                          ^ (bad-whitespace)
+C: 57, 0: Exactly one space required after :
+def bbl_to_output(bubblefile:str, outfile:str, format:str=None,
+                            ^ (bad-whitespace)
+C: 57, 0: Exactly one space required after :
+def bbl_to_output(bubblefile:str, outfile:str, format:str=None,
+                                         ^ (bad-whitespace)
+C: 57, 0: Exactly one space required after :
+def bbl_to_output(bubblefile:str, outfile:str, format:str=None,
+                                                     ^ (bad-whitespace)
+C: 58, 0: Exactly one space required after :
+                  oriented:bool=False) -> str:
+                          ^ (bad-whitespace)
+************* Module powergrasp.converter
+W: 19,12: Redefining built-in 'format' (redefined-builtin)
+W: 43,36: Redefining built-in 'format' (redefined-builtin)
+W: 57,47: Redefining built-in 'format' (redefined-builtin)
+************* Module powergrasp.converter.output_converter
+C: 16, 0: Exactly one space required before assignment
+REGEX_PWRNS    = re.compile(r"^powernode\(([^,]+),([^,]+),([^,]+),(.+)\)$")
+               ^ (bad-whitespace)
+C: 17, 0: Exactly one space required before assignment
+REGEX_TRIVIAL  = re.compile(r"^trivial\(([^,]+),([^,]+),([^,]+)\)$")
+               ^ (bad-whitespace)
+C: 18, 0: Exactly one space required before assignment
+REGEX_CLIQUE   = re.compile(r"^clique\(([^,]+),([^,]+)\)$")
+               ^ (bad-whitespace)
+C: 19, 0: Exactly one space required before assignment
+REGEX_EDGES    = re.compile(r"^edge\(([^,]+),([^\)]+)\)$")
+               ^ (bad-whitespace)
+C: 22, 0: Line too long (102/100) (line-too-long)
+C: 33, 0: Wrong continued indentation (remove 1 space).
+                for a in match
+               |^ (bad-continuation)
+C: 68, 0: Exactly one space required after :
+    def convert(self, atoms:str):
+                           ^ (bad-whitespace)
+C: 85, 0: Exactly one space required after :
+    def _convert(self, atoms:str) -> str:
+                            ^ (bad-whitespace)
+C: 14, 0: Invalid constant name "logger" (invalid-name)
+R: 85, 4: Method could be a function (no-self-use)
+R: 95, 4: Method could be a function (no-self-use)
+R:107, 4: Method could be a function (no-self-use)
+C: 10, 0: standard import "import itertools" comes before "import powergrasp.commons as commons" (wrong-import-order)
+C: 11, 0: standard import "import re" comes before "import powergrasp.commons as commons" (wrong-import-order)
+************* Module powergrasp.converter.outconverter
+C: 29, 0: Exactly one space required after :
+def converter_for(extension:str) -> callable:
+                           ^ (bad-whitespace)
+C: 40, 0: Exactly one space required after :
+def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                     ^ (bad-whitespace)
+C: 40, 0: Exactly one space required after :
+def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                                  ^ (bad-whitespace)
+C: 40, 0: Exactly one space required after :
+def to_bbl(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                                                ^ (bad-whitespace)
+C: 41, 0: Exactly one space required after :
+           oriented:bool=False):
+                   ^ (bad-whitespace)
+C: 50, 0: Exactly one space required after :
+def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                     ^ (bad-whitespace)
+C: 50, 0: Exactly one space required after :
+def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                                  ^ (bad-whitespace)
+C: 50, 0: Exactly one space required after :
+def to_dot(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                                                ^ (bad-whitespace)
+C: 51, 0: Exactly one space required after :
+           oriented:bool=False):
+                   ^ (bad-whitespace)
+C: 60, 0: Exactly one space required after :
+def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                      ^ (bad-whitespace)
+C: 60, 0: Exactly one space required after :
+def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                                   ^ (bad-whitespace)
+C: 60, 0: Exactly one space required after :
+def to_gexf(bubblefile:str, outfile:str, validate:bool=VALIDATE_BUBBLE,
+                                                 ^ (bad-whitespace)
+C: 61, 0: Exactly one space required after :
+            oriented:bool=False):
+                    ^ (bad-whitespace)
+C: 70, 0: Exactly one space required after :
+def validate_bubble(bubblefile:str):
+                              ^ (bad-whitespace)
+W: 41,11: Unused argument 'oriented' (unused-argument)
+************* Module powergrasp.observers.time
+C: 62, 0: Line too long (101/100) (line-too-long)
+W: 28, 4: Dangerous default value [] as argument (dangerous-default-value)
+C: 47, 4: Missing method docstring (missing-docstring)
+C: 49,39: More than one statement on a single line (multiple-statements)
+C: 79, 4: Missing method docstring (missing-docstring)
+C: 85, 4: Missing method docstring (missing-docstring)
+C: 91, 4: Missing method docstring (missing-docstring)
+W:123, 4: Dangerous default value [] as argument (dangerous-default-value)
+C:130, 4: Missing method docstring (missing-docstring)
+C:134, 4: Missing method docstring (missing-docstring)
+C:138, 4: Missing method docstring (missing-docstring)
+C:141, 4: Missing method docstring (missing-docstring)
+C:145, 4: Missing method docstring (missing-docstring)
+C:149, 4: Missing method docstring (missing-docstring)
+W:149,19: Unused argument 'property_name' (unused-argument)
+C: 10, 0: external import "from powergrasp import commons" comes before "from .observer import CompressionObserver, Signals, Priorities" (wrong-import-order)
+************* Module powergrasp.observers.builders
+W: 73, 0: TODO make this a config option (fixme)
+W: 76, 0: TODO make this a config option (fixme)
+C: 20, 0: Exactly one space required after :
+def most(infile:str, outfile:str) -> ObserverBatch:
+               ^ (bad-whitespace)
+C: 20, 0: Exactly one space required after :
+def most(infile:str, outfile:str) -> ObserverBatch:
+                            ^ (bad-whitespace)
+C: 34, 0: Exactly one space required after :
+def built_from(cfg:config.Configuration) -> ObserverBatch:
+                  ^ (bad-whitespace)
+E: 67,38: Undefined variable 'LatticeDrawer' (undefined-variable)
+E: 67,52: Undefined variable 'draw_lattice' (undefined-variable)
+W: 76, 4: Using a conditional statement with a constant value (using-constant-test)
+R: 50, 8: Redefinition of time_counter type from powergrasp.observers.time.TimeCounter to powergrasp.observers.time.NullTimeCounter (redefined-variable-type)
+W:  4, 0: Unused import inspect (unused-import)
+W:  8, 0: Unused solving imported from powergrasp (unused-import)
+W:  9, 0: Unused converter imported from powergrasp (unused-import)
+W: 11, 0: Unused import CompressionObserver (unused-import)
+W: 11, 0: Unused import PerCCOutputWriter (unused-import)
+W: 11, 0: Unused import Signals (unused-import)
+W: 11, 0: Unused import ClusterWriter (unused-import)
+************* Module powergrasp.observers
+C:  1, 0: Missing module docstring (missing-docstring)
+************* Module powergrasp.observers.output
+C: 26, 0: Exactly one space required after :
+    def __init__(self, outfile_template:str):
+                                       ^ (bad-whitespace)
+C: 31, 0: Exactly one space required after :
+    def write(self, powernodes:iter, poweredge:iter):
+                              ^ (bad-whitespace)
+C: 31, 0: Exactly one space required after :
+    def write(self, powernodes:iter, poweredge:iter):
+                                              ^ (bad-whitespace)
+C: 69, 0: Exactly one space required after :
+    def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
+                                                         ^ (bad-whitespace)
+C:113, 0: Exactly one space required after :
+    def __init__(self, outfile:str=None, outformat:str=None, oriented:bool=False):
+                              ^ (bad-whitespace)
+C:113, 0: Exactly one space required after :
+    def __init__(self, outfile:str=None, outformat:str=None, oriented:bool=False):
+                                                  ^ (bad-whitespace)
+C:113, 0: Exactly one space required after :
+    def __init__(self, outfile:str=None, outformat:str=None, oriented:bool=False):
+                                                                     ^ (bad-whitespace)
+C:128, 0: Line too long (114/100) (line-too-long)
+C:130, 0: Exactly one space required after :
+    def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
+                                                         ^ (bad-whitespace)
+C:191, 0: Exactly one space required after :
+    def format_deduced_from(output_file:str, output_format:str=None):
+                                       ^ (bad-whitespace)
+C:191, 0: Exactly one space required after :
+    def format_deduced_from(output_file:str, output_format:str=None):
+                                                          ^ (bad-whitespace)
+C:214, 0: Exactly one space required after :
+    def __init__(self, outfile_template:str, outformat:str='bbl',
+                                       ^ (bad-whitespace)
+C:214, 0: Exactly one space required after :
+    def __init__(self, outfile_template:str, outformat:str='bbl',
+                                                      ^ (bad-whitespace)
+C:215, 0: Exactly one space required after :
+                 oriented:bool=False):
+                         ^ (bad-whitespace)
+C:231, 0: Exactly one space required after :
+    def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
+                                                         ^ (bad-whitespace)
+W: 55,20: Unused variable 'atoms' (unused-variable)
+W: 69,45: Unused argument 'remain_edges' (unused-argument)
+C:144,12: Invalid attribute name "fd" (invalid-name)
+C:121, 8: Invalid variable name "SIGNAL_MODEL_ATOMS" (invalid-name)
+W:127,25: Unused variable 'cc_atoms' (unused-variable)
+C:153, 4: Missing method docstring (missing-docstring)
+W:199,31: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+W:149, 8: Attribute 'writer' defined outside __init__ (attribute-defined-outside-init)
+W:144,12: Attribute 'fd' defined outside __init__ (attribute-defined-outside-init)
+W:147,12: Attribute 'fd' defined outside __init__ (attribute-defined-outside-init)
+W:224,20: Unused variable 'atoms' (unused-variable)
+C:235, 4: Missing method docstring (missing-docstring)
+C:235,26: More than one statement on a single line (multiple-statements)
+W:225, 8: Attribute 'writer' defined outside __init__ (attribute-defined-outside-init)
+C:259,45: Invalid variable name "fd" (invalid-name)
+C:261,40: Invalid variable name "fd" (invalid-name)
+C:275, 4: Missing method docstring (missing-docstring)
+C:277,45: Invalid variable name "fd" (invalid-name)
+C:283, 4: Missing method docstring (missing-docstring)
+W: 14, 0: Unused Signals imported from observer (unused-import)
+C: 15, 0: external import "from powergrasp import commons" comes before "from .observer import CompressionObserver, Signals, Priorities" (wrong-import-order)
+C: 16, 0: external import "from powergrasp import converter" comes before "from .observer import CompressionObserver, Signals, Priorities" (wrong-import-order)
+C: 17, 0: external import "from powergrasp import utils" comes before "from .observer import CompressionObserver, Signals, Priorities" (wrong-import-order)
+************* Module powergrasp.observers.debug
+C: 17, 0: Exactly one space required before assignment
+    TEMPLATE       = "Signal {} received {} times, with type(s) {}."
+                   ^ (bad-whitespace)
+C: 22, 0: Exactly one space required after :
+    def __init__(self, loglevel:str='INFO'):
+                               ^ (bad-whitespace)
+C: 39, 0: Line too long (102/100) (line-too-long)
+C: 26, 4: Missing method docstring (missing-docstring)
+W: 38,42: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+W: 44,38: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+W:  4, 0: Unused import logging (unused-import)
+W:  5, 0: Unused defaultdict imported from collections (unused-import)
+C:  8, 0: external import "from powergrasp import commons" comes before "from .observer import CompressionObserver, Signals" (wrong-import-order)
+************* Module powergrasp.observers.counters
+C: 18, 0: Exactly one space required after :
+    def on_cc_count_generated(self, nb_cc:int):
+                                         ^ (bad-whitespace)
+C: 21, 0: Exactly one space required after :
+    def on_connected_component_stopped(self, atoms:'AtomsModel'):
+                                                  ^ (bad-whitespace)
+C: 36, 4: Missing method docstring (missing-docstring)
+C: 40, 4: Missing method docstring (missing-docstring)
+W: 31, 8: Attribute 'cc_num' defined outside __init__ (attribute-defined-outside-init)
+W: 31,21: Attribute 'cc_name' defined outside __init__ (attribute-defined-outside-init)
+C: 79, 4: Missing method docstring (missing-docstring)
+W:  5, 0: Unused SIGNAL_MOTIF imported from observer (unused-import)
+W:  5, 0: Unused Signals imported from observer (unused-import)
+C:  6, 0: external import "from powergrasp import commons" comes before "from .observer import CompressionObserver, Signals, SIGNAL_MOTIF" (wrong-import-order)
+************* Module powergrasp.observers.observer
+C: 12, 0: Exactly one space required before assignment
+SIGNAL_STARTED   = '_started'
+                 ^ (bad-whitespace)
+C: 13, 0: Exactly one space required before assignment
+SIGNAL_STOPPED   = '_stopped'
+                 ^ (bad-whitespace)
+C: 15, 0: Exactly one space required before assignment
+SIGNAL_MOTIF     = '_motif'
+                 ^ (bad-whitespace)
+C: 20, 0: Exactly one space required before assignment
+    StepStarted               = 'step_started'
+                              ^ (bad-whitespace)
+C: 21, 0: Exactly one space required before assignment
+    StepStopped               = 'step_stopped'
+                              ^ (bad-whitespace)
+C: 22, 0: Exactly one space required before assignment
+    CompressionStarted        = 'compression_started'
+                              ^ (bad-whitespace)
+C: 23, 0: Exactly one space required before assignment
+    CompressionStopped        = 'compression_stopped'
+                              ^ (bad-whitespace)
+C: 26, 0: Exactly one space required before assignment
+    ExtractionStarted         = 'extraction_started'
+                              ^ (bad-whitespace)
+C: 27, 0: Exactly one space required before assignment
+    ExtractionStopped         = 'extraction_stopped'
+                              ^ (bad-whitespace)
+C: 29, 0: Exactly one space required before assignment
+    StepFinalized             = 'step_finalized'         # send after the StepStopped signal
+                              ^ (bad-whitespace)
+C: 30, 0: Exactly one space required before assignment
+    CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
+                              ^ (bad-whitespace)
+C: 32, 0: Exactly one space required before assignment
+    ModelFound                = 'model_found'  # associated with the motif class
+                              ^ (bad-whitespace)
+C: 33, 0: Exactly one space required before assignment
+    FinalEdgeCountGenerated   = 'final_edge_count_generated'
+                              ^ (bad-whitespace)
+C: 35, 0: Exactly one space required before assignment
+    CCCountGenerated          = 'cc_count_generated'
+                              ^ (bad-whitespace)
+C: 36, 0: Exactly one space required before assignment
+    StepDataGenerated         = 'step_data_generated'
+                              ^ (bad-whitespace)
+C: 37, 0: Exactly one space required before assignment
+    ASPConfigUpdated          = 'asp_config_updated'
+                              ^ (bad-whitespace)
+C: 43, 0: Exactly one space required around assignment
+    High    =  80
+            ^ (bad-whitespace)
+C: 44, 0: Exactly one space required around assignment
+    Medium  =  50
+            ^ (bad-whitespace)
+C: 45, 0: Exactly one space required around assignment
+    Small   =  20
+            ^ (bad-whitespace)
+C: 46, 0: Exactly one space required after assignment
+    Minimal =   0
+            ^ (bad-whitespace)
+C: 97, 0: Exactly one space required after :
+    def on_cc_count_generated(self, nb_cc:int):  pass
+                                         ^ (bad-whitespace)
+C: 97, 0: Exactly one space required after :
+    def on_cc_count_generated(self, nb_cc:int):  pass
+                                              ^ (bad-whitespace)
+C: 98, 0: Exactly one space required after :
+    def on_final_edge_count_generated(self, nb_edge:int): pass
+                                                   ^ (bad-whitespace)
+C: 99, 0: Exactly one space required after :
+    def on_final_remain_edge_count_generated(self, nb_edge:int): pass
+                                                          ^ (bad-whitespace)
+C:112, 0: Trailing whitespace (trailing-whitespace)
+C:118, 0: Exactly one space required after :
+    def __init__(self, observers:iter, configuration):
+                                ^ (bad-whitespace)
+C: 18, 0: Missing class docstring (missing-docstring)
+C: 41, 0: Missing class docstring (missing-docstring)
+E: 76,12: Instance of 'CompressionObserver' has no 'on_signals' member (no-member)
+W: 83,16: Expression "method() if payload is None else method(payload)" is assigned to nothing (expression-not-assigned)
+C: 85, 4: Missing method docstring (missing-docstring)
+C: 85,31: More than one statement on a single line (multiple-statements)
+C: 86, 4: Missing method docstring (missing-docstring)
+C: 86,31: More than one statement on a single line (multiple-statements)
+C: 87, 4: Missing method docstring (missing-docstring)
+C: 87,33: More than one statement on a single line (multiple-statements)
+C: 88, 4: Missing method docstring (missing-docstring)
+C: 88,38: More than one statement on a single line (multiple-statements)
+C: 89, 4: Missing method docstring (missing-docstring)
+C: 89,47: More than one statement on a single line (multiple-statements)
+C: 90, 4: Missing method docstring (missing-docstring)
+C: 90,55: More than one statement on a single line (multiple-statements)
+C: 91, 4: Missing method docstring (missing-docstring)
+C: 91,53: More than one statement on a single line (multiple-statements)
+C: 92, 4: Missing method docstring (missing-docstring)
+C: 92,37: More than one statement on a single line (multiple-statements)
+C: 93, 4: Missing method docstring (missing-docstring)
+C: 93,37: More than one statement on a single line (multiple-statements)
+C: 94, 4: Missing method docstring (missing-docstring)
+C: 94,38: More than one statement on a single line (multiple-statements)
+C: 95, 4: Missing method docstring (missing-docstring)
+C: 95,38: More than one statement on a single line (multiple-statements)
+C: 96, 4: Missing method docstring (missing-docstring)
+C: 96,40: More than one statement on a single line (multiple-statements)
+C: 97, 4: Missing method docstring (missing-docstring)
+C: 97,49: More than one statement on a single line (multiple-statements)
+C: 98, 4: Missing method docstring (missing-docstring)
+C: 98,58: More than one statement on a single line (multiple-statements)
+C: 99, 4: Invalid method name "on_final_remain_edge_count_generated" (invalid-name)
+C: 99, 4: Missing method docstring (missing-docstring)
+C: 99,65: More than one statement on a single line (multiple-statements)
+C:100, 4: Missing method docstring (missing-docstring)
+C:100,46: More than one statement on a single line (multiple-statements)
+C:104, 4: Missing method docstring (missing-docstring)
+C:124, 4: Missing method docstring (missing-docstring)
+C:128, 4: Missing method docstring (missing-docstring)
+C:134, 4: Missing method docstring (missing-docstring)
+E:163, 8: Instance of 'tuple' has no 'extend' member (no-member)
+W:156, 8: Unused variable 'whole' (unused-variable)
+W:  8, 0: Unused utils imported from powergrasp (unused-import)
+************* Module powergrasp.test.test_unambiguous_compression
+R: 42, 4: Method could be a function (no-self-use)
+C: 50,34: Invalid variable name "fd" (invalid-name)
+C: 71, 4: Missing method docstring (missing-docstring)
+E: 71, 4: An attribute defined in powergrasp.test.test_unambiguous_compression line 26 hides this method (method-hidden)
+************* Module powergrasp.test.test_config
+C: 11, 0: Missing class docstring (missing-docstring)
+C: 13, 4: Missing method docstring (missing-docstring)
+E: 15,25: Instance of 'Configuration' has no 'infile' member (no-member)
+E: 17,25: Instance of 'Configuration' has no 'network_name' member (no-member)
+E: 18,25: Instance of 'Configuration' has no 'graph_file' member (no-member)
+C: 21, 4: Missing method docstring (missing-docstring)
+W: 23,12: Unused variable 'cfg' (unused-variable)
+C: 26, 4: Missing method docstring (missing-docstring)
+E: 29,25: Instance of 'Configuration' has no 'infile' member (no-member)
+E: 32,25: Instance of 'Configuration' has no 'network_name' member (no-member)
+E: 33,25: Instance of 'Configuration' has no 'graph_file' member (no-member)
+E: 34,28: Instance of 'Configuration' has no 'network_name' member (no-member)
+E: 34,47: Instance of 'Configuration' has no 'network_name' member (no-member)
+W:  7, 0: Unused config imported from powergrasp (unused-import)
+************* Module powergrasp.test.test_statistical_compression
+C:121, 0: Trailing newlines (trailing-newlines)
+R: 24, 0: Too many arguments (7/5) (too-many-arguments)
+W: 30,20: Using deprecated method getargvalues() (deprecated-method)
+W: 24,24: Unused argument 'init_edge' (unused-argument)
+W: 24,46: Unused argument 'genr_pwed' (unused-argument)
+W: 24,57: Unused argument 'genr_pwnd' (unused-argument)
+W: 25,24: Unused argument 'conv_rate' (unused-argument)
+W: 24,35: Unused argument 'finl_edge' (unused-argument)
+W: 25,35: Unused argument 'edge_rdct' (unused-argument)
+W: 25,46: Unused argument 'comp_rtio' (unused-argument)
+C: 78, 4: Missing method docstring (missing-docstring)
+R: 78, 4: Method could be a function (no-self-use)
+C:114, 4: Missing method docstring (missing-docstring)
+E:114, 4: An attribute defined in powergrasp.test.test_statistical_compression line 71 hides this method (method-hidden)
+W: 10, 0: Unused import powergrasp (unused-import)
+W: 14, 0: Unused observers imported from powergrasp (unused-import)
+************* Module powergrasp.test.test_hpf
+R: 36, 4: Method could be a function (no-self-use)
+C: 44,34: Invalid variable name "fd" (invalid-name)
+C: 67, 4: Missing method docstring (missing-docstring)
+E: 67, 4: An attribute defined in powergrasp.test.test_hpf line 29 hides this method (method-hidden)
+W: 11, 0: Unused solving imported from powergrasp (unused-import)
+************* Module powergrasp.test.test_atomsmodel
+C:  1, 0: Missing module docstring (missing-docstring)
+C:  8, 0: Missing class docstring (missing-docstring)
+C: 10, 4: Missing method docstring (missing-docstring)
+W: 15,12: Statement seems to have no effect (pointless-statement)
+W: 14,46: Unused variable 'ctxt' (unused-variable)
+C: 17, 4: Missing method docstring (missing-docstring)
+C: 24, 0: Missing class docstring (missing-docstring)
+C: 26, 4: Missing method docstring (missing-docstring)
+C: 34, 0: Missing class docstring (missing-docstring)
+C: 36, 4: Missing method docstring (missing-docstring)
+C: 57, 4: Missing method docstring (missing-docstring)
+C: 73, 4: Missing method docstring (missing-docstring)
+************* Module powergrasp.test.test_observers
+C: 35, 0: Exactly one space required after :
+    def compare_priorities(self, observers, expected_priorities:int):
+                                                               ^ (bad-whitespace)
+C:  1, 0: Missing module docstring (missing-docstring)
+C: 12, 0: Missing class docstring (missing-docstring)
+C: 25, 4: Missing method docstring (missing-docstring)
+C: 29, 4: Missing method docstring (missing-docstring)
+C: 33, 0: Missing class docstring (missing-docstring)
+W: 35,33: Redefining name 'observers' from outer scope (line 5) (redefined-outer-name)
+C: 42,17: Invalid variable name "p" (invalid-name)
+C: 46, 4: Missing method docstring (missing-docstring)
+C: 68, 0: Missing class docstring (missing-docstring)
+C: 70, 4: Missing method docstring (missing-docstring)
+C: 82, 4: Missing method docstring (missing-docstring)
+C: 88,17: Invalid variable name "cc" (invalid-name)
+************* Module powergrasp.test.test_oriented_compression
+R: 38, 4: Method could be a function (no-self-use)
+C: 46,34: Invalid variable name "fd" (invalid-name)
+C: 69, 4: Missing method docstring (missing-docstring)
+E: 69, 4: An attribute defined in powergrasp.test.test_oriented_compression line 28 hides this method (method-hidden)
+W: 10, 0: Unused solving imported from powergrasp (unused-import)
+************* Module powergrasp.recipes
+C:  1, 0: Missing module docstring (missing-docstring)
+W:  1, 0: Wildcard import powergraph (wildcard-import)
+************* Module powergrasp.recipes.powergraph
+C:  8, 0: Exactly one space required after :
+def oriented_powergraph(infile:str=None, outfile:str=None, *, cfg=None,
+                              ^ (bad-whitespace)
+C:  8, 0: Exactly one space required after :
+def oriented_powergraph(infile:str=None, outfile:str=None, *, cfg=None,
+                                                ^ (bad-whitespace)
+C:  9, 0: Exactly one space required after :
+                        observers:ObserverBatch=None):
+                                 ^ (bad-whitespace)
+C: 32, 0: Exactly one space required after :
+def high_priority_first(infile:str=None, outfile:str=None, *, cfg=None,
+                              ^ (bad-whitespace)
+C: 32, 0: Exactly one space required after :
+def high_priority_first(infile:str=None, outfile:str=None, *, cfg=None,
+                                                ^ (bad-whitespace)
+C: 33, 0: Exactly one space required after :
+                        observers:ObserverBatch=None):
+                                 ^ (bad-whitespace)
+C: 50, 0: Exactly one space required after :
+def powergraph(infile:str=None, outfile:str=None, *, cfg=None,
+                     ^ (bad-whitespace)
+C: 50, 0: Exactly one space required after :
+def powergraph(infile:str=None, outfile:str=None, *, cfg=None,
+                                       ^ (bad-whitespace)
+C: 51, 0: Exactly one space required after :
+               observers:ObserverBatch=None):
+                        ^ (bad-whitespace)
+C: 66, 0: Exactly one space required after :
+def profiling(inputfile:str, per_cc=False) -> '?':
+                       ^ (bad-whitespace)
+C: 77, 0: Exactly one space required after :
+def bipartite_powergraph(inputfile:str, outputfile:str=None,
+                                  ^ (bad-whitespace)
+C: 77, 0: Exactly one space required after :
+def bipartite_powergraph(inputfile:str, outputfile:str=None,
+                                                  ^ (bad-whitespace)
+C: 85, 0: Exactly one space required after :
+def powergraph_template(cfg, observers:ObserverBatch=None):
+                                      ^ (bad-whitespace)
+E: 43,20: Class 'Configuration' has no 'fields_for_prioritized_degree' member (no-member)
+E: 69,12: Class 'Graph' has no 'from_file' member (no-member)
+C: 71,12: Invalid variable name "cc" (invalid-name)
+W: 71,12: Unused variable 'cc' (unused-variable)
+C: 77, 0: Missing function docstring (missing-docstring)
+W: 80, 4: Unreachable code (unreachable)
+E: 80,11: Unexpected keyword argument 'motifs' in function call (unexpected-keyword-arg)
+E: 80,11: Argument 'observers' passed by position and keyword in function call (redundant-keyword-arg)
+E: 81,54: No value for argument 'infile' in function call (no-value-for-parameter)
+E: 81,54: No value for argument 'outfile' in function call (no-value-for-parameter)
+E: 82,39: Undefined variable 'motif' (undefined-variable)
+C: 94,12: Invalid variable name "cc" (invalid-name)
+************* Module powergrasp.motif.comparer
+C:  9, 0: Exactly one space required after :
+def by_score(ma:FoundMotif, mb:FoundMotif):
+               ^ (bad-whitespace)
+C:  9, 0: Exactly one space required after :
+def by_score(ma:FoundMotif, mb:FoundMotif):
+                              ^ (bad-whitespace)
+C:  9, 0: Invalid argument name "ma" (invalid-name)
+C:  9, 0: Invalid argument name "mb" (invalid-name)
+************* Module powergrasp.motif.motif
+C: 50, 0: Exactly one space required after :
+    def __init__(self, name:str, files, clasp_options='', gringo_options='',
+                           ^ (bad-whitespace)
+C: 52, 0: Exactly one space required after :
+                 addons:iter=None):
+                       ^ (bad-whitespace)
+C: 62, 0: Exactly one space required after :
+    def search(self, input_atoms:'AtomsModel', score_min:int, score_max:int,
+                                ^ (bad-whitespace)
+C: 62, 0: Exactly one space required after :
+    def search(self, input_atoms:'AtomsModel', score_min:int, score_max:int,
+                                                        ^ (bad-whitespace)
+C: 62, 0: Exactly one space required after :
+    def search(self, input_atoms:'AtomsModel', score_min:int, score_max:int,
+                                                                       ^ (bad-whitespace)
+C: 63, 0: Exactly one space required after :
+               cc:str, step:int):
+                 ^ (bad-whitespace)
+C: 63, 0: Exactly one space required after :
+               cc:str, step:int):
+                           ^ (bad-whitespace)
+C:113, 0: Exactly one space required after :
+    def _enriched_input_atoms(self, graph:AtomsModel) -> 'AtomsModel':
+                                         ^ (bad-whitespace)
+C:117, 0: Exactly one space required after :
+    def _addons_enriched_input_atoms(self, graph:AtomsModel) -> 'AtomsModel':
+                                                ^ (bad-whitespace)
+C:125, 0: Exactly one space required after :
+    def _supplementary_constants(self, atoms:'AtomsModel') -> dict:
+                                            ^ (bad-whitespace)
+C:129, 0: Exactly one space required after :
+    def _addons_supplementary_constants(self, atoms:'AtomsModel') -> dict:
+                                                   ^ (bad-whitespace)
+C:137, 0: Exactly one space required after :
+    def _score_from_cover(self, edge_cover:int) -> int:
+                                          ^ (bad-whitespace)
+C:149, 0: Exactly one space required after :
+    def compress(self, motif:'AtomsModel', graph:'AtomsModel'):
+                            ^ (bad-whitespace)
+C:149, 0: Exactly one space required after :
+    def compress(self, motif:'AtomsModel', graph:'AtomsModel'):
+                                                ^ (bad-whitespace)
+C:170, 0: Line too long (103/100) (line-too-long)
+C:197, 0: Exactly one space required after :
+    def covered_edges_in_found(self, model:'AtomsModel'):
+                                          ^ (bad-whitespace)
+W: 50, 4: Dangerous default value solving.ASP_FILES_MOTIF_SEARCH (builtins.list) as argument (dangerous-default-value)
+R: 50, 4: Too many arguments (7/5) (too-many-arguments)
+C: 62, 4: Invalid argument name "cc" (invalid-name)
+R: 62, 4: Too many arguments (6/5) (too-many-arguments)
+C: 78,34: More than one statement on a single line (multiple-statements)
+R:113, 4: Method could be a function (no-self-use)
+W:125,39: Unused argument 'atoms' (unused-argument)
+R:125, 4: Method could be a function (no-self-use)
+R:137, 4: Method could be a function (no-self-use)
+W:163,16: Access to a protected member _payload of a client class (protected-access)
+W:166,16: Access to a protected member _payload of a client class (protected-access)
+E:177,34: No value for argument 'model' in staticmethod call (no-value-for-parameter)
+W:181,31: Use % formatting in logging functions and pass the % parameters as arguments (logging-format-interpolation)
+W:197, 4: Static method with 'self' as first argument (bad-staticmethod-argument)
+************* Module powergrasp.motif.addon
+C: 31, 0: Exactly one space required after :
+def addon_degree(model:AtomsModel, include_node_degrees:bool=False,
+                      ^ (bad-whitespace)
+C: 31, 0: Exactly one space required after :
+def addon_degree(model:AtomsModel, include_node_degrees:bool=False,
+                                                       ^ (bad-whitespace)
+C: 32, 0: Exactly one space required after :
+                 include_max_node_degrees:bool=False):
+                                         ^ (bad-whitespace)
+C: 34,66: More than one statement on a single line (multiple-statements)
+E: 38,22: Undefined variable 'itertools' (undefined-variable)
+E: 42, 7: Undefined variable 'self' (undefined-variable)
+R: 38, 4: Redefinition of degrees type from collections.defaultdict to collections.Counter (redefined-variable-type)
+C: 53, 0: Invalid constant name "ByDegree" (invalid-name)
+C: 58, 0: Invalid constant name "ByFuzzyDegree" (invalid-name)
+************* Module powergrasp.motif
+C:  1, 0: Missing module docstring (missing-docstring)
+W:  1, 0: Wildcard import addon (wildcard-import)
+W:  2, 0: Wildcard import motif (wildcard-import)
+W:  3, 0: Wildcard import comparer (wildcard-import)
+W:  4, 0: Wildcard import basic_motifs (wildcard-import)
+W:  5, 0: Wildcard import oriented_motifs (wildcard-import)
+************* Module powergrasp.motif.basic_motifs
+C: 25, 0: Exactly one space required after :
+    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
+                              ^ (bad-whitespace)
+C: 27, 0: Exactly one space required after :
+                 addons:iter=None):
+                       ^ (bad-whitespace)
+C: 31, 0: Exactly one space required after :
+    def covered_edges_in_found(self, model:'AtomsModel'):
+                                          ^ (bad-whitespace)
+C: 57, 0: Exactly one space required after :
+    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
+                              ^ (bad-whitespace)
+C: 59, 0: Exactly one space required after :
+                 additional_files:iter=[], addons:iter=None):
+                                 ^ (bad-whitespace)
+C: 59, 0: Exactly one space required after :
+                 additional_files:iter=[], addons:iter=None):
+                                                 ^ (bad-whitespace)
+C: 64, 0: Exactly one space required after :
+    def covered_edges_in_found(self, model:'AtomsModel'):
+                                          ^ (bad-whitespace)
+C: 79, 0: Exactly one space required after comma
+        assert len(first),  "The first set of the biclique is empty"
+                         ^ (bad-whitespace)
+W: 31, 4: Arguments number differs from overridden 'covered_edges_in_found' method (arguments-differ)
+C: 35,12: Invalid variable name "cc" (invalid-name)
+W: 34,12: Unused variable 'name' (unused-variable)
+W: 35,12: Unused variable 'cc' (unused-variable)
+W: 35,16: Unused variable 'step' (unused-variable)
+W: 57, 4: Dangerous default value [] as argument (dangerous-default-value)
+R: 57, 4: Too many arguments (6/5) (too-many-arguments)
+W: 64, 4: Arguments number differs from overridden 'covered_edges_in_found' method (arguments-differ)
+C: 68,12: Invalid variable name "cc" (invalid-name)
+W: 68,12: Unused variable 'cc' (unused-variable)
+W: 67,12: Unused variable 'name' (unused-variable)
+W: 68,16: Unused variable 'step' (unused-variable)
+W:  7, 0: Unused Counter imported from collections (unused-import)
+W:  7, 0: Unused defaultdict imported from collections (unused-import)
+W:  9, 0: Unused atoms imported from powergrasp (unused-import)
+************* Module powergrasp.motif.oriented_motifs
+C: 31, 0: Exactly one space required after :
+    def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
+                              ^ (bad-whitespace)
+C: 33, 0: Exactly one space required after :
+                 addons:iter=None):
+                       ^ (bad-whitespace)
+C: 37, 0: Exactly one space required after :
+    def covered_edges_in_found(self, model:atoms.AtomsModel):
+                                          ^ (bad-whitespace)
+C: 50, 0: Exactly one space required after comma
+        assert len(source),  "The source set of the biclique is empty"
+                          ^ (bad-whitespace)
+C: 51, 0: No space allowed after bracket
+        yield from tuple( itertools.product(source, target))
+                        ^ (bad-whitespace)
+W: 37, 4: Arguments number differs from overridden 'covered_edges_in_found' method (arguments-differ)
+C: 41,12: Invalid variable name "cc" (invalid-name)
+W: 41,12: Unused variable 'cc' (unused-variable)
+W: 40,12: Unused variable 'name' (unused-variable)
+W: 41,16: Unused variable 'step' (unused-variable)
+W: 10, 0: Unused Counter imported from collections (unused-import)
+W: 10, 0: Unused defaultdict imported from collections (unused-import)
+R:  1, 0: Cyclic import (powergrasp.cli -> powergrasp.config) (cyclic-import)
+R:  1, 0: Cyclic import (powergrasp -> powergrasp.graph -> powergrasp.config) (cyclic-import)
+R:  1, 0: Similar lines in 2 files
+==powergrasp.test.test_hpf:31
+==powergrasp.test.test_oriented_compression:33
+            'empty.lp'                : '',
+        }
+
+
+    def unified_bubble(self, bubble_lines):
+        """Return the set of comparable lines found in given bubble lines"""
+        # filter out comments and blank lines
+        return set(line.strip() for line in bubble_lines
+                   if not line.startswith('#') and len(line.strip()) > 0)
+
+    def unified_bubble_from_file(self, bubble_file):
+        """Return the set of comparable lines found in given bubble file"""
+        with open(bubble_file) as fd:
+            return self.unified_bubble(fd)
+
+    def assert_equality(self, input_filename, expected_bubble):
+        """call assertEqual to compare given bubble and bubble generated by
+        compressing given graph."""
+        # create the temp file to be write by the compression
+        tmp = tempfile.NamedTemporaryFile('w', delete=False)
+        tmp.close()
+        # launch the compression itself, then compare result with expected
+        with self.subTest(filename=input_filename): (duplicate-code)
+R:  1, 0: Similar lines in 2 files
+==powergrasp.test.test_hpf:55
+==powergrasp.test.test_unambiguous_compression:59
+                infile=input_filename,
+                outfile=tmp.name,
+                outformat='bbl',
+                loglevel='CRITICAL',
+            )
+            recipes.powergraph(cfg=cfg)
+            expected = self.unified_bubble(expected_bubble)
+            found = self.unified_bubble_from_file(tmp.name)
+            self.assertEqual(expected, found)
+
+
+    def test_cases(self):
+        for filename, expected in self.test_cases.items():
+            self.assert_equality(
+                commons.test_case(filename),
+                expected.split('\n')
+            )
+
+ (duplicate-code)
+R:  1, 0: Similar lines in 3 files
+==powergrasp.test.test_hpf:32
+==powergrasp.test.test_oriented_compression:34
+==powergrasp.test.test_unambiguous_compression:38
+        }
+
+
+    def unified_bubble(self, bubble_lines):
+        """Return the set of comparable lines found in given bubble lines"""
+        # filter out comments and blank lines
+        return set(line.strip() for line in bubble_lines
+                   if not line.startswith('#') and len(line.strip()) > 0)
+
+    def unified_bubble_from_file(self, bubble_file):
+        """Return the set of comparable lines found in given bubble file"""
+        with open(bubble_file) as fd:
+            return self.unified_bubble(fd)
+
+    def assert_equality(self, input_filename, expected_bubble):
+        """call assertEqual to compare given bubble and bubble generated by
+        compressing given graph.""" (duplicate-code)
+R:  1, 0: Similar lines in 3 files
+==powergrasp.test.test_hpf:61
+==powergrasp.test.test_oriented_compression:63
+==powergrasp.test.test_unambiguous_compression:65
+            expected = self.unified_bubble(expected_bubble)
+            found = self.unified_bubble_from_file(tmp.name)
+            self.assertEqual(expected, found)
+
+
+    def test_cases(self):
+        for filename, expected in self.test_cases.items():
+            self.assert_equality(
+                commons.test_case(filename),
+                expected.split('\n')
+            )
+
+ (duplicate-code)
+R:  1, 0: Similar lines in 2 files
+==powergrasp.test.test_hpf:5
+==powergrasp.test.test_oriented_compression:4
+import unittest
+import tempfile
+
+from powergrasp import commons
+from powergrasp import recipes
+from powergrasp import solving
+from powergrasp import config
+
+ (duplicate-code)
+R:  1, 0: Similar lines in 2 files
+==powergrasp.motif.basic_motifs:5
+==powergrasp.motif.oriented_motifs:8
+import itertools
+from collections import defaultdict, Counter
+
+from powergrasp import atoms
+from powergrasp import commons
+from powergrasp import solving (duplicate-code)
+R:  1, 0: Similar lines in 2 files
+==powergrasp.test.test_statistical_compression:88
+==powergrasp.test.test_unambiguous_compression:57
+        with self.subTest(filename=input_filename):
+            cfg = config.Configuration(
+                infile=input_filename,
+                outfile=tmp.name,
+                outformat='bbl',
+                loglevel='CRITICAL', (duplicate-code)
+R:  1, 0: Similar lines in 3 files
+==powergrasp.test.test_hpf:55
+==powergrasp.test.test_oriented_compression:57
+==powergrasp.test.test_unambiguous_compression:59
+                infile=input_filename,
+                outfile=tmp.name,
+                outformat='bbl',
+                loglevel='CRITICAL',
+            ) (duplicate-code)
+
+
+Report
+======
+2166 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |41     |41         |=          |87.80       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |39     |39         |=          |74.36       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |233    |233        |=          |70.39       |0.43     |
++---------+-------+-----------+-----------+------------+---------+
+|function |86     |86         |=          |89.53       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    bubbletools (powergrasp.converter.outconverter)
+    concepts (powergrasp.utils)
+    libsbml (powergrasp.converter.inconverter)
+    matplotlib (powergrasp.plotting)
+      \-pyplot (powergrasp.plotting)
+    networkx (powergrasp.converter.inconverter)
+    numpy (powergrasp.plotting)
+    pandas (powergrasp.plotting)
+    pkg_resources (powergrasp.commons)
+    powergrasp (powergrasp.recipes.powergraph,powergrasp.config,powergrasp.test.test_statistical_compression)
+      \-atoms (powergrasp.utils,powergrasp.motif.oriented_motifs,powergrasp.test.test_atomsmodel,powergrasp.motif.motif,powergrasp.connected_component,powergrasp.motif.addon,powergrasp.solving,powergrasp.test.test_observers,powergrasp.motif.basic_motifs)
+      \-cli (powergrasp.config)
+      \-commons (powergrasp.test.test_unambiguous_compression,powergrasp.converter,powergrasp.observers.output,powergrasp.config,powergrasp.converter.output_converter,powergrasp.test.test_hpf,powergrasp.cli,powergrasp.converter.outconverter,powergrasp.observers.debug,powergrasp.motif.oriented_motifs,powergrasp.observers.time,powergrasp.test.test_oriented_compression,powergrasp.motif.basic_motifs,powergrasp.plotting,powergrasp.observers.counters,powergrasp.motif.motif,powergrasp.motif.addon,powergrasp.converter.bblwriter,powergrasp.converter.inconverter,powergrasp.test.test_statistical_compression,powergrasp.statistics,powergrasp.utils,powergrasp.connected_component,powergrasp.observers.observer,powergrasp.solving,powergrasp.observers.builders)
+      \-config (powergrasp.test.test_unambiguous_compression,powergrasp.test.test_hpf,powergrasp.graph,powergrasp.__main__,powergrasp.test.test_oriented_compression,powergrasp.test.test_config,powergrasp.observers.builders,powergrasp,powergrasp.cli,powergrasp.test.test_statistical_compression)
+      \-connected_component (powergrasp.graph)
+      \-converter (powergrasp.config,powergrasp.cli,powergrasp.observers.builders,powergrasp.observers.output)
+      | \-bblwriter (powergrasp.converter)
+      | \-inconverter (powergrasp.converter)
+      | \-outconverter (powergrasp.converter)
+      \-graph (powergrasp)
+      \-info (powergrasp,powergrasp.commons,powergrasp.converter.bblwriter)
+      \-motif (powergrasp.test.test_observers,powergrasp.connected_component,powergrasp.config,powergrasp.motif.comparer,powergrasp,powergrasp.cli)
+      | \-addon (powergrasp)
+      | \-motif (powergrasp.motif.oriented_motifs,powergrasp.motif.basic_motifs)
+      \-observers (powergrasp.statistics,powergrasp.recipes.powergraph,powergrasp.graph,powergrasp.connected_component,powergrasp.test.test_observers,powergrasp.observers.builders,powergrasp,powergrasp.test.test_statistical_compression)
+      | \-observer (powergrasp.observers.time,powergrasp.observers.counters,powergrasp.observers.output,powergrasp.observers.debug)
+      \-plotting (powergrasp,powergrasp.__main__)
+      \-recipes (powergrasp.test.test_unambiguous_compression,powergrasp.__main__,powergrasp.test.test_oriented_compression,powergrasp.test.test_hpf,powergrasp,powergrasp.test.test_statistical_compression)
+      \-solving (powergrasp.statistics,powergrasp.test.test_hpf,powergrasp.graph,powergrasp.utils,powergrasp.motif.oriented_motifs,powergrasp.motif.motif,powergrasp.config,powergrasp.test.test_oriented_compression,powergrasp.converter.bblwriter,powergrasp.observers.builders,powergrasp.cli,powergrasp.motif.basic_motifs)
+      \-statistics (powergrasp.test.test_statistical_compression,powergrasp.observers.builders,powergrasp.plotting)
+      \-utils (powergrasp.connected_component,powergrasp.observers.observer,powergrasp.observers.output)
+    pyasp 
+      \-asp (powergrasp.atoms,powergrasp.solving)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |3105   |57.83 |3105     |=          |
++----------+-------+------+---------+-----------+
+|docstring |1250   |23.28 |1250     |=          |
++----------+-------+------+---------+-----------+
+|comment   |212    |3.95  |212      |=          |
++----------+-------+------+---------+-----------+
+|empty     |802    |14.94 |802      |=          |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |133   |133      |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |2.516 |2.516    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |485    |485      |=          |
++-----------+-------+---------+-----------+
+|refactor   |38     |39       |-1.00      |
++-----------+-------+---------+-----------+
+|warning    |138    |138      |=          |
++-----------+-------+---------+-----------+
+|error      |72     |72       |=          |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++---------------------------------------------+------+--------+---------+-----------+
+|module                                       |error |warning |refactor |convention |
++=============================================+======+========+=========+===========+
+|powergrasp.config                            |34.72 |4.35    |2.63     |1.44       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_config                  |11.11 |1.45    |0.00     |0.82       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.recipes.powergraph                |9.72  |1.45    |0.00     |3.30       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.connected_component               |6.94  |3.62    |10.53    |3.92       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.__main__                          |6.94  |0.00    |0.00     |0.21       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.converter.inconverter             |5.56  |1.45    |0.00     |3.92       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.builders                |2.78  |7.25    |2.63     |0.62       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.statistics                        |2.78  |5.07    |0.00     |2.68       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.solving                           |2.78  |4.35    |0.00     |1.86       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.cli                               |2.78  |2.90    |0.00     |2.06       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.observer                |2.78  |2.17    |0.00     |13.40      |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.motif.addon                       |2.78  |0.00    |2.63     |1.24       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_statistical_compression |1.39  |7.25    |5.26     |0.62       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.plotting                          |1.39  |5.80    |5.26     |0.82       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.motif.motif                       |1.39  |4.35    |13.16    |3.71       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_oriented_compression    |1.39  |0.72    |2.63     |0.41       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_hpf                     |1.39  |0.72    |2.63     |0.41       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_unambiguous_compression |1.39  |0.00    |2.63     |0.41       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.motif.basic_motifs                |0.00  |8.70    |2.63     |2.06       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.output                  |0.00  |7.25    |0.00     |5.77       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.motif.oriented_motifs             |0.00  |4.35    |26.32    |1.24       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.utils                             |0.00  |3.62    |0.00     |5.77       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.atoms                             |0.00  |3.62    |0.00     |4.12       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.motif.__init__                    |0.00  |3.62    |0.00     |0.21       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.counters                |0.00  |2.90    |0.00     |1.24       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.debug                   |0.00  |2.90    |0.00     |1.03       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.time                    |0.00  |2.17    |0.00     |2.68       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.converter.__init__                |0.00  |2.17    |0.00     |2.27       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.commons                           |0.00  |1.45    |0.00     |5.15       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_atomsmodel              |0.00  |1.45    |0.00     |2.06       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.converter.bblwriter               |0.00  |0.72    |10.53    |12.78      |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.converter.outconverter            |0.00  |0.72    |0.00     |2.89       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.test.test_observers               |0.00  |0.72    |0.00     |2.47       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.recipes.__init__                  |0.00  |0.72    |0.00     |0.21       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.converter.output_converter        |0.00  |0.00    |7.89     |2.27       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.graph                             |0.00  |0.00    |2.63     |0.82       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.info                              |0.00  |0.00    |0.00     |1.86       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.motif.comparer                    |0.00  |0.00    |0.00     |0.82       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp.observers.__init__                |0.00  |0.00    |0.00     |0.21       |
++---------------------------------------------+------+--------+---------+-----------+
+|powergrasp                                   |0.00  |0.00    |0.00     |0.21       |
++---------------------------------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++--------------------------------+------------+
+|message id                      |occurrences |
++================================+============+
+|bad-whitespace                  |242         |
++--------------------------------+------------+
+|missing-docstring               |92          |
++--------------------------------+------------+
+|invalid-name                    |74          |
++--------------------------------+------------+
+|no-member                       |40          |
++--------------------------------+------------+
+|unused-import                   |35          |
++--------------------------------+------------+
+|unused-variable                 |24          |
++--------------------------------+------------+
+|multiple-statements             |22          |
++--------------------------------+------------+
+|unused-argument                 |17          |
++--------------------------------+------------+
+|undefined-variable              |16          |
++--------------------------------+------------+
+|line-too-long                   |16          |
++--------------------------------+------------+
+|no-self-use                     |14          |
++--------------------------------+------------+
+|superfluous-parens              |13          |
++--------------------------------+------------+
+|wrong-import-order              |11          |
++--------------------------------+------------+
+|logging-format-interpolation    |10          |
++--------------------------------+------------+
+|bad-continuation                |10          |
++--------------------------------+------------+
+|dangerous-default-value         |9           |
++--------------------------------+------------+
+|duplicate-code                  |8           |
++--------------------------------+------------+
+|redefined-builtin               |7           |
++--------------------------------+------------+
+|attribute-defined-outside-init  |7           |
++--------------------------------+------------+
+|wildcard-import                 |6           |
++--------------------------------+------------+
+|too-many-arguments              |6           |
++--------------------------------+------------+
+|no-value-for-parameter          |4           |
++--------------------------------+------------+
+|method-hidden                   |4           |
++--------------------------------+------------+
+|bad-indentation                 |4           |
++--------------------------------+------------+
+|redefined-outer-name            |3           |
++--------------------------------+------------+
+|expression-not-assigned         |3           |
++--------------------------------+------------+
+|arguments-differ                |3           |
++--------------------------------+------------+
+|access-member-before-definition |3           |
++--------------------------------+------------+
+|wrong-import-position           |2           |
++--------------------------------+------------+
+|too-many-locals                 |2           |
++--------------------------------+------------+
+|too-many-instance-attributes    |2           |
++--------------------------------+------------+
+|redefined-variable-type         |2           |
++--------------------------------+------------+
+|protected-access                |2           |
++--------------------------------+------------+
+|fixme                           |2           |
++--------------------------------+------------+
+|cyclic-import                   |2           |
++--------------------------------+------------+
+|using-constant-test             |1           |
++--------------------------------+------------+
+|unreachable                     |1           |
++--------------------------------+------------+
+|unexpected-keyword-arg          |1           |
++--------------------------------+------------+
+|trailing-whitespace             |1           |
++--------------------------------+------------+
+|trailing-newlines               |1           |
++--------------------------------+------------+
+|too-many-statements             |1           |
++--------------------------------+------------+
+|too-many-function-args          |1           |
++--------------------------------+------------+
+|too-many-format-args            |1           |
++--------------------------------+------------+
+|too-many-branches               |1           |
++--------------------------------+------------+
+|too-few-format-args             |1           |
++--------------------------------+------------+
+|redundant-keyword-arg           |1           |
++--------------------------------+------------+
+|pointless-statement             |1           |
++--------------------------------+------------+
+|multiple-imports                |1           |
++--------------------------------+------------+
+|deprecated-method               |1           |
++--------------------------------+------------+
+|bad-staticmethod-argument       |1           |
++--------------------------------+------------+
+|anomalous-backslash-in-string   |1           |
++--------------------------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 5.29/10 (previous run: 5.28/10, +0.00)
+
