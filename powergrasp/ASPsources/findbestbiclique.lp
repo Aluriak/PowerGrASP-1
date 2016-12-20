@@ -35,13 +35,13 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 0 { newconcept(cc,k,1,X): membercc(X), Min<X } max_set_size :- minobj(cc,k,Min).
 
 % Choice of elements in set 2, using nb_node if available
-1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<=Y } max_set_size :- minobj(cc,k,Min).
+1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<Y } max_set_size :- minobj(cc,k,Min).
 
 % An element in a set can't be in the other set.
 :- newconcept(cc,k,1,X) ; newconcept(cc,k,2,X).
 
 % A node can't be in a set if not linked to a node of other set
-:- membercc(X) ; newconcept(cc,k,3-T,X) ; newconcept(cc,k,T,Y) ; not inter(X,Y).
+:- newconcept(cc,k,1,X) ; newconcept(cc,k,2,Y) ; not inter(X,Y).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
