@@ -40,6 +40,7 @@ The followings modules and subpackages compose the PowerGrASP source code.
 - *graph*: implementation of the Graph class, main API object.
 - *info*: informations on the package itself.
 - *motif*: subpackage defining the motifs to search during compression.
+- *addon*: provides a simple way to extend behavior of concept search.
 - *observers*: implementations of various compression observers, with different roles.
 - *plotting*: routines for plotting the statistics data.
 - *recipes*: subpackage exposing high-level recipes, including Power Graph compression.
@@ -161,6 +162,27 @@ and (3) easy and straighforward implementation of other converters.
 
 Both [input](powergrasp/converter/inconverter.py) and [output](powergrasp/converter/outconverter.py) converters
 are documented toward their extensions with other convertion methods.
+
+
+## Motifs and Addons
+These two objects are not necessary for basic usage of the module in client code,
+but advanced design of search heuristic will probably handle them.
+
+### Motifs: encapsulation of search methods
+Motifs are the description of concepts to found in the graph. Consequently they provides two treatments:
+how to search them (mainly by providing the associated ASP code source), and how to compress them
+(by computing which edges in the graphs are covered by the found concept).
+
+[Basic motifs](powergrasp/motif/basic_motifs.py) are Biclique and Clique. Oriented Biclique is described in its [own submodule](powergrasp/motif/oriented_motifs.py).
+
+### Addons: slight variations made easy
+Addons can be plugged to Motifs, in order to modify the behavior of the search.
+An addon is basically a set of ASP source code (for instance, [by_priority](powergrasp/ASPsources/by_priority)),
+and two functions allowing to enrith the set of atoms to be grounded with the graph data, and to add constants.
+
+Restriction of concepts like *must involve the node of maximal degree in the graph* can easily be described using the Addon system.
+This particular example is shown in the [addon module](powergrasp/motif/addon.py).
+
 
 
 ## Observers
