@@ -51,6 +51,8 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
         parsed_cli.update(config.Configuration.fields_for_oriented_graph())
     elif method == 'HPF':
         parsed_cli.update(config.Configuration.fields_for_high_priority_first())
+    elif method == 'FHPF':
+        parsed_cli.update(config.Configuration.fields_for_high_priority_first(fuzzy=True))
     else:
         assert method == 'powergraph'
     cli_args = {
@@ -181,6 +183,11 @@ def cli_parser() -> argparse.ArgumentParser:
     # prioritized degree powergraph recipe
     parser_hpf = subs.add_parser('HPF', description='Run a Powergraph compression where nodes of higher degree are compressed first.')
     _populate_compression_parser(parser_hpf)
+
+
+    # fuzzy prioritized degree powergraph recipe
+    parser_fhpf = subs.add_parser('FHPF', description='Run a Powergraph compression where nodes of higher degree are compressed first (fuzzy).')
+    _populate_compression_parser(parser_fhpf)
 
 
     # oriented powergraph recipe

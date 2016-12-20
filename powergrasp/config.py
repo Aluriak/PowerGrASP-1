@@ -233,14 +233,16 @@ class Configuration(metaclass=meta_config):
 
 
     @staticmethod
-    def fields_for_high_priority_first(**kwargs) -> dict:
+    def fields_for_high_priority_first(fuzzy:bool=False, **kwargs) -> dict:
         """Return a minimal dict of fields and values allowing
         to treat graphs with a prioritization of some nodes.
 
+        fuzzy -- do a fuzzy prioritization instead of a systematic one.
         kwargs -- supplementary fields to provide. Will override default data.
 
         """
-        MOTIFS = [motif.Biclique(addons=[addon.ByDegree])]
+        degree_addon = addon.ByFuzzyDegree if fuzzy else addon.ByDegree
+        MOTIFS = [motif.Biclique(addons=[degree_addon])]
         fields = {
             'motifs': tuple(MOTIFS),
         }
