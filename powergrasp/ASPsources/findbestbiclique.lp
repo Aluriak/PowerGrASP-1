@@ -27,12 +27,15 @@
 inter(X,Y):- edge(X,Y).
 inter(X,Y):- inter(Y,X).
 
+% X and Y share a neighbor.
+linked2(X,Y):- inter(X,Z) ; inter(Y,Z) ; X<Y.
+
 % Choice of the minimum of the concept
 1{minobj(cc,k,X): membercc(X)}1.
 
 % Choice of elements in set 1
 newconcept(cc,k,1,X):- minobj(cc,k,X).
-0 { newconcept(cc,k,1,X): membercc(X), Min<X } max_set_size :- minobj(cc,k,Min).
+0 { newconcept(cc,k,1,X): linked2(Min,X) } max_set_size :- minobj(cc,k,Min).
 
 % Choice of elements in set 2, using nb_node if available
 1 { newconcept(cc,k,2,Y): inter(Min,Y), Min<Y } max_set_size :- minobj(cc,k,Min).
