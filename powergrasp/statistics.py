@@ -28,6 +28,7 @@ LOGGER = commons.logger()
 # numbers
 INIT_EDGE = 'initial_edge_count'     # number of edges in the input graph
 FINL_EDGE = 'remain_edge_count'      # number of edges not compressed since the compression beginning
+INIT_NODE = 'node_count'             # number of nodes in the input graph
 GENR_PWED = 'poweredge_count'        # number of poweredges created since the beginning
 GENR_PWND = 'powernode_count'        # number of powernodes created since the beginning
 COMP_EDGE = 'compressed_edge_count'  # number of compressed edge since the beginning
@@ -42,7 +43,7 @@ FILE_WRTR = 'file_writer'      # CSV writer on the output CSV file, or None if n
 
 # All fields that are useful at the end of the compression are put here
 PRINTABLE_FIELD = (
-    INIT_EDGE, GENR_PWED, GENR_PWND, CONV_RATE,
+    INIT_EDGE, INIT_NODE, GENR_PWED, GENR_PWND, CONV_RATE,
     EDGE_RDCT, COMP_RTIO, FINL_EDGE, COMP_EDGE
 )
 
@@ -100,6 +101,7 @@ class DataExtractor(observers.CompressionObserver, dict):
         dict.__init__(self, {
             NETW_NAME: network_name,
             INIT_EDGE: 0,
+            INIT_NODE: 0,
             FINL_EDGE: 0,
             GENR_PWED: 0,
             GENR_PWND: 0,
@@ -114,6 +116,10 @@ class DataExtractor(observers.CompressionObserver, dict):
         if self.time_counter:
             return self.time_counter.compression_time
         return 0.
+
+    @property
+    def node_count(self):
+        return self[INIT_NODE]
 
     @property
     def extraction_time(self):
@@ -152,6 +158,9 @@ class DataExtractor(observers.CompressionObserver, dict):
         assert all(isinstance(cfg, ASPConfig) for cfg in payload)
         self.configs = tuple(payload)
 
+    def on_node_count_generated(self, nb_node:int):
+        self[INIT_NODE] = int(nb_node)
+
     def on_final_edge_count_generated(self, nb_edge:int):
         self[INIT_EDGE] = int(nb_edge)
 
@@ -184,6 +193,7 @@ class DataExtractor(observers.CompressionObserver, dict):
         format can be one of available format. Default is raw text.
         """
         assert self[INIT_EDGE] is not None
+        assert self[INIT_NODE] is not None
         assert self[FINL_EDGE] is not None
         assert self[GENR_PWND] is not None
         assert self[GENR_PWED] is not None

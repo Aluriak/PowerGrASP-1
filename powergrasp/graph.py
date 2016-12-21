@@ -93,10 +93,12 @@ class Graph:
         cc_gen = solving.all_models_from('', aspfiles=[self.config.graph_file],
                                          aspconfig=self.config.extract_config)
         total_cc_nb = None
+        total_node_nb = 0
         for cc_nb, model in enumerate(cc_gen):
             if cc_nb == 0:  # first iteration
                 self.observers.signal(Signals.ExtractionStopped)
             atom_counts = model.counts
+            total_node_nb += sum(1 for _ in model.get_args('membercc'))
             cc_id = model.get_only('cc').only_arg
             if not total_cc_nb:
                 total_cc_nb = int(model.get_only('nb_cc').only_arg)
@@ -114,6 +116,7 @@ class Graph:
             )
             self._ccs.append(cc_object)
             yield cc_object
+        self.observers.signal(node_count_generated=total_node_nb)
 
 
     @property

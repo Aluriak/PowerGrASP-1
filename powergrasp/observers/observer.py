@@ -30,6 +30,7 @@ class Signals(Enum):
     CompressionFinalized      = 'compression_finalized'  # send after the CompressionStopped signal
     # Data signals
     ModelFound                = 'model_found'  # associated with the motif class
+    NodeCountGenerated        = 'node_count_generated'
     FinalEdgeCountGenerated   = 'final_edge_count_generated'
     FinalRemainEdgeCountGenerated = 'final_remain_edge_count_generated'
     CCCountGenerated          = 'cc_count_generated'
@@ -95,6 +96,7 @@ class CompressionObserver:
     def on_compression_stopped(self): pass
     def on_compression_finalized(self): pass
     def on_cc_count_generated(self, nb_cc:int):  pass
+    def on_node_count_generated(self, nb_node:int): pass
     def on_final_edge_count_generated(self, nb_edge:int): pass
     def on_final_remain_edge_count_generated(self, nb_edge:int): pass
     def on_asp_config_updated(self, payload): pass
