@@ -4,6 +4,7 @@ Definition of the plotting method.
 """
 from powergrasp import commons
 from powergrasp import statistics
+from powergrasp.statistics import MEASURES
 
 # Logger
 LOGGER = commons.logger()
@@ -20,8 +21,6 @@ except ImportError:
 
 
 # Data for plotting
-MEASURES = (statistics.GENR_TIME, statistics.COMP_EDGE,
-            statistics.GENR_PWED, statistics.GENR_PWND)
 COLORS = ('black', 'green', 'blue', 'red')
 LABELS = (
     'time per step',
