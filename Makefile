@@ -159,6 +159,8 @@ redef:
 	$(COMMAND) "$(TESTS)redefedge.lp"
 reduclique:
 	$(COMMAND) "$(TESTS)clique_reduction.lp"
+rna_mi_m:
+	$(COMMAND) "$(TESTS)miRNA_mRNA.lp"
 rna_pi_lnc:
 	$(COMMAND) "$(TESTS)piRNA_lncRNA.lp"
 rna_pi_msg:
