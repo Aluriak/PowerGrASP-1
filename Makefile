@@ -109,6 +109,8 @@ chloro:
 	$(COMMAND) "$(TESTS)CHLOROPHYLL-SYN.sbml"
 disjoint:
 	$(COMMAND) "$(TESTS)disjoint.lp"
+diacli:
+	$(COMMAND) "$(TESTS)diacli.lp"
 diam:
 	$(COMMAND) "$(TESTS)diamond.lp"
 ddiam:
@@ -127,6 +129,8 @@ lattice:
 	$(COMMAND) "$(TESTS)lattice.lp"
 matrixdb:
 	$(COMMAND) "$(TESTS)matrixdb_network.lp"
+partition:
+	$(COMMAND) "$(TESTS)partition.lp"
 onedge:
 	$(COMMAND) "$(TESTS)one_edge.lp"
 or_double_edge:

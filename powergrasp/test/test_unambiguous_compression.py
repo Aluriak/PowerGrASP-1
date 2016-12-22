@@ -24,10 +24,12 @@ class TestUnambiguousCompression(unittest.TestCase):
 
     def setUp(self):
         self.test_cases = {
+            'diacli.lp'                      : RESULT_DIACLI,
             'double_biclique_unambiguous.lp' : RESULT_DDIAMUN,
             'bipartite.lp'                   : RESULT_BIP,
             'testblocks.lp'                  : RESULT_BLO,
             'perfectfit.lp'                  : RESULT_PFC,
+            'partition.lp'                   : RESULT_PARTITION,
             'clique.lp'                      : RESULT_CLIQUE,
             'star.lp'                        : RESULT_STAR,
             'concomp.lp'                     : RESULT_CC,
@@ -76,7 +78,73 @@ class TestUnambiguousCompression(unittest.TestCase):
             )
 
 
+
+
 # Expected results of tested cases
+RESULT_DIACLI = """
+NODE\tl
+NODE\tm
+NODE\tb
+NODE\td
+NODE\tc
+NODE\tr
+NODE\tp
+NODE\tf
+NODE\to
+NODE\tn
+NODE\te
+NODE\tj
+NODE\tg
+NODE\ta
+NODE\tq
+IN\tm\tPWRN-a-4-2
+IN\tn\tPWRN-a-4-2
+IN\tPWRN-a-3-2\tPWRN-a-2-2
+IN\tb\tPWRN-a-2-2
+IN\tc\tPWRN-a-2-2
+IN\te\tPWRN-a-2-2
+IN\tl\tPWRN-a-4-1
+IN\tp\tPWRN-a-4-1
+IN\tPWRN-a-4-2\tPWRN-a-3-1
+IN\to\tPWRN-a-3-2
+IN\tq\tPWRN-a-3-2
+IN\tr\tPWRN-a-1-1
+IN\tf\tPWRN-a-1-1
+IN\tj\tPWRN-a-1-1
+IN\tPWRN-a-4-1\tPWRN-a-1-1
+IN\tg\tPWRN-a-1-1
+IN\td\tPWRN-a-2-1
+IN\ta\tPWRN-a-2-1
+EDGE\tm\tn\t1.0
+EDGE\tb\tc\t1.0
+EDGE\tPWRN-a-4-1\tPWRN-a-4-2\t1.0
+EDGE\tPWRN-a-3-1\tPWRN-a-3-2\t1.0
+EDGE\tPWRN-a-1-1\tPWRN-a-1-1\t1.0
+EDGE\tPWRN-a-2-1\tPWRN-a-2-2\t1.0
+"""
+
+RESULT_PARTITION = """
+NODE\tc
+NODE\tg
+NODE\te
+NODE\td
+NODE\ta
+NODE\th
+NODE\tf
+NODE\tb
+IN\tc\tPWRN-a-2-1
+IN\td\tPWRN-a-2-1
+IN\tg\tPWRN-a-2-2
+IN\th\tPWRN-a-2-2
+IN\ta\tPWRN-a-1-1
+IN\tb\tPWRN-a-1-1
+IN\te\tPWRN-a-1-2
+IN\tPWRN-a-2-2\tPWRN-a-1-2
+IN\tf\tPWRN-a-1-2
+EDGE\tPWRN-a-2-1\tPWRN-a-2-2\t1.0
+EDGE\tPWRN-a-1-1\tPWRN-a-1-2\t1.0
+"""
+
 RESULT_DDIAMUN = """
 NODE\td2
 NODE\th
