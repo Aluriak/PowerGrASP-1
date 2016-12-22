@@ -139,3 +139,64 @@ def make_tree(nb_node, filename, nb_child=lambda:2):
             for child in childs():
                 fd.write(edge(node, child))
                 nodes.append(child)
+
+
+def asp_ordered(one, two) -> ('one', 'two') or ('two', 'one'):
+    """Return given ASP values, ordered with the smaller at first position
+
+    In ASP, natural order is used for integers,
+    and lexicographical one for strings and litterals.
+    Moreover, an integer is always smaller than a litteral, which is always
+    smaller than a string.
+
+    >>> asp_ordered(1, 2)
+    (1, 2)
+    >>> asp_ordered(11, 100)
+    (11, 100)
+    >>> asp_ordered('1','2')
+    ('1', '2')
+    >>> asp_ordered('2','1')
+    ('1', '2')
+    >>> asp_ordered('"1"','2')
+    ('2', '"1"')
+    >>> asp_ordered('"1"','a')
+    ('a', '"1"')
+    >>> asp_ordered('"1"','"2"')
+    ('"1"', '"2"')
+    >>> asp_ordered('"b"','"a"')
+    ('"a"', '"b"')
+    >>> asp_ordered('"bc"','"b"')
+    ('"b"', '"bc"')
+    >>> asp_ordered('bc','b')
+    ('b', 'bc')
+    >>> asp_ordered('11','100')
+    ('11', '100')
+
+    """
+    TYPES = int, 'litteral', str  # sorted by increasing ASP order
+    type = {}
+    for elem in (one, two):
+        if isinstance(elem, str) and elem.isnumeric():
+            elem_type = int
+        elif isinstance(elem, int):
+            elem_type = int
+        else:
+            if elem.startswith('"'):
+                assert elem.endswith('"')
+                elem_type = str
+            else:
+                elem_type = 'litteral'
+        type[elem] = elem_type
+
+    # print('TYPES:', type)
+    order = {e: TYPES.index(t) for e, t in type.items()}
+    if order[one] < order[two]:  # ex: one is int, two is litteral
+        return one, two
+    elif order[one] > order[two]:  # ex: one is str, two is int
+        return two, one
+    elif order[one] == order[two] and type[one] is int:  # both are integers
+        return (one, two) if int(one) < int(two) else (two, one)
+    elif order[one] == order[two]:  # both are the same (non integer)
+        return (one, two) if one < two else (two, one)
+    else:
+        assert False, "it's impossible to reach here"
