@@ -36,6 +36,7 @@ CONV_RATE = 'conversion_rate'        # computed conversion rate
 EDGE_RDCT = 'edge_reduction'         # computed edge reduction
 COMP_RTIO = 'compression_ratio'      # computed compression ratio
 GENR_TIME = 'gentime'                # generation time for last iteration
+DENSITY   = 'global density'         # density of the full graph
 # general
 NETW_NAME = 'network_name'     # name of the input graph (name of the file containing input data)
 FILE_DESC = 'file_descriptor'  # file descriptor of the output CSV file, or None if no output expected
@@ -44,7 +45,7 @@ FILE_WRTR = 'file_writer'      # CSV writer on the output CSV file, or None if n
 # All fields that are useful at the end of the compression are put here
 PRINTABLE_FIELD = (
     INIT_EDGE, INIT_NODE, GENR_PWED, GENR_PWND, CONV_RATE,
-    EDGE_RDCT, COMP_RTIO, FINL_EDGE, COMP_EDGE
+    EDGE_RDCT, COMP_RTIO, FINL_EDGE, COMP_EDGE, DENSITY,
 )
 
 
@@ -206,8 +207,8 @@ class DataExtractor(observers.CompressionObserver, dict):
         self[COMP_RTIO] = compression_ratio(
             self[INIT_EDGE], self[FINL_EDGE], self[GENR_PWED]
         )
+        self[DENSITY] = density(self[INIT_EDGE], self[INIT_NODE])
         return _formatted(dict(self), format)
-
 
     def finalize(self):
         """Close files"""
@@ -263,6 +264,15 @@ def _formatted(data, format):
 
 
 # DATA COMPUTATION
+def density(nb_edge:int, nb_node:int) -> float or str:
+    """Compute the density of a graph with given number of node and edge"""
+    try:
+        ret = nb_edge / (nb_node * (nb_node - 1) / 2)
+        assert 0.0 <= ret <= 1.0
+    except ZeroDivisionError:
+        return 'no node'
+    return ret
+
 def conversion_rate(initial_edge, final_edge, poweredge, powernode):
     """Compute conversion rate"""
     try:
