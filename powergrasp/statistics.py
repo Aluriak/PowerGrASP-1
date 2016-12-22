@@ -47,22 +47,13 @@ PRINTABLE_FIELD = (
     INIT_EDGE, INIT_NODE, GENR_PWED, GENR_PWND, CONV_RATE,
     EDGE_RDCT, COMP_RTIO, FINL_EDGE, COMP_EDGE, DENSITY,
 )
+# Fields written in the output CSV file for each step
+MEASURES = (GENR_TIME, COMP_EDGE, GENR_PWED, GENR_PWND)
 
 
 # Output formats
 FORMAT_TEX = 'tex'
 FORMAT_RAW = 'txt'
-
-# Data for plotting
-MEASURES = (GENR_TIME, COMP_EDGE, GENR_PWED, GENR_PWND)
-COLORS   = ('black', 'green', 'blue', 'red')
-LABELS   = (
-    'time per step',
-    'remaining edges',
-    'generated poweredge',
-    'generated powernode',
-)
-
 
 class DataExtractor(observers.CompressionObserver, dict):
     """
