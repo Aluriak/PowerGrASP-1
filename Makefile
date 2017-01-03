@@ -191,6 +191,8 @@ tiso:
 	$(COMMAND) "$(TESTS)tiso_1.0.sbml"
 uml:
 	$(COMMAND) "$(TESTS)uml.lp"
+unclique:
+	$(COMMAND) "$(TESTS)unclique.lp"
 uvg:
 	$(COMMAND) "$(TESTS)umlsvg.lp"
 gml:
