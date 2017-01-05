@@ -12,4 +12,4 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Maximize the full concept priority as a sum of involved nodes priorities.
-#maximize{P@1,X: newconcept(cc,k,_,X), priority(X,P)}.
+#maximize{P@2,X: newconcept(cc,k,_,X), priority(X,P)}.
