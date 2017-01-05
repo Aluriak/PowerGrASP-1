@@ -49,9 +49,16 @@ class TestAtomsModel(unittest.TestCase):
             self.assertIn(name, ('a', 'p'))
             self.assertIn(list(args), (['1'], ['2'], []))
 
+        self.assertSetEqual(set(model.get_unique_args('a')), {'1', '2'})
+
         b_name, b_args = model.get_only('b')
         self.assertEqual(b_name, 'b')
         self.assertSequenceEqual(b_args, ('"ah?bon."', '5'))
+
+
+    def test_builder_graph(self):
+        model = AtomsModel.from_({1: (2, 3)})
+        self.assertSetEqual(set(model.get_args('edge')), {(1, 2), (1, 3)})
 
 
     def test_builder_cons(self):
@@ -63,6 +70,8 @@ class TestAtomsModel(unittest.TestCase):
         self.assertSequenceEqual(args, ('1', '"fgh"'))
 
         self.assertEqual(model.get_unique_only_arg('a'), 1)
+        self.assertSetEqual(set(model.get_unique_args('a')), {1})
+        self.assertSetEqual(set(model.get_unique_args('p')), {'1', '2'})
 
         p_atoms = model.get('p')
         for name, args in p_atoms:

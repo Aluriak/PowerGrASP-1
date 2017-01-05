@@ -117,6 +117,15 @@ class AtomsModel:
         assert len(args) > 0, "given predicate name doesn't exists"
         return ASPAtom(atom_name, next(iter(args)))
 
+    def get_unique_args(self, atom_name:str) -> iter('arg value'):
+        """Return the unique argument of the all atoms having given
+        predicate name.
+
+        """
+        args = tuple(self._payload[atom_name])
+        assert all(len(arg) == 1 for arg in args), "predicate {} expose multiple arguments.".format(atom_name)
+        yield from (arg[0] for arg in args)
+
     def get_unique_only_arg(self, atom_name:str) -> 'arg value':
         """Return the unique argument of the unique atom having given
         predicate name.
@@ -173,8 +182,19 @@ class AtomsModel:
                  return AtomsModel.from_asp_file(source)
             else:
                  return AtomsModel.from_asp_string(source)
+        elif isinstance(source, dict):  # could be a dict
+             return AtomsModel.from_graph_dict(source)
         else:  # should be a pyasp termset
              return AtomsModel.from_pyasp_termset(source)
+
+    @staticmethod
+    def from_graph_dict(graph:dict):
+        """Input dict is a graph"""
+        return AtomsModel(
+            ('edge', [node, succ])
+            for node, succs in graph.items()
+            for succ in succs
+        )
 
     def __str__(self):
         """ASP compliant representation"""
