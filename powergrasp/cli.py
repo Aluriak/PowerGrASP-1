@@ -53,6 +53,8 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
         parsed_cli.update(config.Configuration.fields_for_high_priority_first())
     elif method == 'FHPF':
         parsed_cli.update(config.Configuration.fields_for_high_priority_first(fuzzy=True))
+    elif method == 'K2HPF':
+        parsed_cli.update(config.Configuration.fields_for_knode_hpf())
     else:
         assert method == 'powergraph'
     cli_args = {
@@ -187,6 +189,11 @@ def cli_parser() -> argparse.ArgumentParser:
 
     # fuzzy prioritized degree powergraph recipe
     parser_fhpf = subs.add_parser('FHPF', description='Run a Powergraph compression where nodes of higher degree are compressed first (fuzzy).')
+    _populate_compression_parser(parser_fhpf)
+
+
+    # fuzzy prioritized degree powergraph recipe
+    parser_fhpf = subs.add_parser('K2HPF', description='Run a Powergraph compression where k-nodes of higher degree are compressed first.')
     _populate_compression_parser(parser_fhpf)
 
 

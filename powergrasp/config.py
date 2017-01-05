@@ -252,6 +252,23 @@ class Configuration(metaclass=meta_config):
 
 
     @staticmethod
+    def fields_for_knode_hpf(**kwargs) -> dict:
+        """Return a minimal dict of fields and values allowing
+        to treat graphs with a prioritization of some k-nodes.
+
+        kwargs -- supplementary fields to provide. Will override default data.
+
+        """
+        MOTIFS = [motif.Biclique(addons=[addon.ByKNodesDegree])]
+        fields = {
+            'motifs': tuple(MOTIFS),
+        }
+        _fields_verification(fields, kwargs)
+        fields.update(kwargs)
+        return fields
+
+
+    @staticmethod
     def fields_for_oriented_graph(**kwargs) -> dict:
         """Return a minimal dict of fields and values allowing
         to treat oriented graphs.
