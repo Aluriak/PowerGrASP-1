@@ -8,12 +8,15 @@ CYTOSCAPE=~/bin/cytoscape-2.8.3/cytoscape.sh
 TARGET=powergrasp/__main__.py
 TESTS=powergrasp/tests/
 DATA=powergrasp/data/
+STATFILE=$(DATA)statistics.csv
+PLOTFILE=$(DATA)statistics.png
 
 TIMERS=--timers
-STATFILE=--stats-file=$(DATA)statistics.csv
-#PLOTFILE=--plot-file=$(DATA)statistics.png
-#PLOT=--plot-stats
-#OUTPUT=--outformat="bbl"
+STATFILE_OPT=--stats-file=$(STATFILE)
+# PLOTFILE_OPT=--plot-file=$(PLOTFILE)
+# PLOT=--plot-stats
+# OUTPUT=--outformat="bbl"
+# FOUT=--outfile="todel/output_{}.bbl"
 FOUT=--outfile="$(DATA)output.bbl"
 # FOUT=--outfile="$(DATA)output.dot"
 # FOUT=--outfile="$(DATA)output.gexf"
@@ -24,11 +27,11 @@ LOGLEVEL=--loglevel=info
 #INTERACTIVE=--interactive
 CCCOUNT=--count-cc
 MODELCOUNT=--count-model
-#PROFILING=--profiling
+# PROFILING=--profiling
 SIGNAL_PROFILER=--signal-profile
-#THREAD=--thread=0
-#PRE=--show-pre
-#LATTICE=--draw_lattice=$(DATA)
+# THREAD=--thread=0
+# PRE=--show-pre
+# LATTICE=--draw_lattice=$(DATA)
 
 COMPRESSION_METHOD=powergraph
 # COMPRESSION_METHOD=OEM
@@ -45,7 +48,7 @@ powerlattice:
 	evince $(DATA)powerlattice.pdf
 
 
-ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE) $(STATFILE) $(TIMERS) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING) $(LATTICE)
+ALL_OUTPUTS=$(OUTPUT) $(PLOTFILE_OPT) $(STATFILE_OPT) $(TIMERS) $(PLOT) $(AGGRESSIVE) $(LOGLEVEL) $(FOUT) $(PROFILING) $(LATTICE)
 ARGS=$(MODELCOUNT) $(CCCOUNT) $(INTERACTIVE) $(LBOUND) $(NOTHREADING) $(THREAD) $(PRE) $(SIGNAL_PROFILER)
 COMMAND=$(PYTHON) $(COMPRESSION_METHOD) $(ARGS) $(ALL_OUTPUTS)
 
@@ -205,7 +208,7 @@ troll_file:
 
 
 plot:
-	$(PYTHON) --plot-stats $(STATFILE)
+	$(PYTHON) --plot-stats --stats-file=$(STATFILE)
 
 
 unittest:
