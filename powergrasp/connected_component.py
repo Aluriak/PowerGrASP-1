@@ -6,6 +6,9 @@ See recipes submodule in order to get usage examples.
 """
 
 
+import itertools
+from collections import Counter
+
 from powergrasp import utils
 from powergrasp import motif
 from powergrasp import commons
@@ -97,9 +100,19 @@ class ConnectedComponent:
                                                                self.name,
                                                                self._atoms,
                                                                self.density))
+        if self.step == 1:  # on first search
+            # compute maximal degree (which is the minimal score reachable)
+            edges = frozenset(frozenset(args) for _, args in self._atoms.get('edge'))
+            degrees = Counter(itertools.chain.from_iterable(edges))
+            if degrees.values():
+                minimal_score = max(degrees.values())
+            else:
+                minimal_score = self.score_min
+        else:
+            minimal_score = self.score_min
         found_motif = motif.search(
             input_atoms=self._atoms,
-            score_min=self.score_min,
+            score_min=minimal_score,
             score_max=self.score_max,
             step=self.step,
             cc=self.name,
