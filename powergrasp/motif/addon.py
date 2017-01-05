@@ -77,7 +77,6 @@ def addon_degree(model:AtomsModel, include_node_degrees:bool=False,
     """Add degrees and maximal degrees atoms to input model"""
     if not include_node_degrees and not include_max_node_degrees: return model
     # computation of degrees
-    degrees = defaultdict(int)
     edges = frozenset(frozenset(args) for _, args in model.get('edge'))
     degrees = Counter(itertools.chain.from_iterable(edges))
     if include_node_degrees:
