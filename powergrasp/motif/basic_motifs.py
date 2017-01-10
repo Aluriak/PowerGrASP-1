@@ -6,6 +6,7 @@
 import itertools
 from collections import defaultdict, Counter
 
+from powergrasp import utils
 from powergrasp import atoms
 from powergrasp import commons
 from powergrasp import solving
@@ -77,7 +78,7 @@ class Biclique(Motif):
         # print('SETS:', first, secnd)
         assert len(secnd), "The second set of the biclique is empty"
         assert len(first),  "The first set of the biclique is empty"
-        yield from (((f, s) if f < s else (s, f))
+        yield from (utils.asp_ordered(f, s)
                     for f, s in itertools.product(first, secnd))
 
     @staticmethod

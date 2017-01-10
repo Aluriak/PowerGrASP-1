@@ -147,6 +147,8 @@ or_overlap:
 	$(COMMAND) "$(TESTS)oriented_overlap.lp"
 or_simple:
 	$(COMMAND) "$(TESTS)oriented_simple.lp"
+order:
+	$(COMMAND) "$(TESTS)order.lp"
 pfc:
 	$(COMMAND) "$(TESTS)perfectfit.lp"
 phos:

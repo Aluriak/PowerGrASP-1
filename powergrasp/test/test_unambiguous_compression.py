@@ -34,6 +34,7 @@ class TestUnambiguousCompression(unittest.TestCase):
             'star.lp'                        : RESULT_STAR,
             'concomp.lp'                     : RESULT_CC,
             'ecoli_2896-53.gml'              : RESULT_ECOLI,
+            'order.lp'                       : RESULT_ORDER,
             'test.graphml'                   : RESULT_GRAPHML,
             'one_edge.lp'                    : RESULT_ONEDGE,
             'test.gml'                       : RESULT_TESTGML,
@@ -402,6 +403,19 @@ EDGE\tPWRN-b-1-1\tPWRN-b-1-1\t1.0
 EDGE\tm\tv\t1.0
 EDGE\tc\tf\t1.0
 EDGE\tb\tPWRN-b-2-2\t1.0
+"""
+
+RESULT_ORDER = """
+NODE\t4
+NODE\ta
+NODE\t6
+NODE\t5
+IN\t4\tPWRN-4-1-1
+IN\ta\tPWRN-4-1-1
+IN\t6\tPWRN-4-1-1
+IN\t5\tPWRN-4-1-1
+EDGE\ta\ta\t1.0
+EDGE\tPWRN-4-1-1\t10\t1.0
 """
 
 RESULT_GRAPHML = """
