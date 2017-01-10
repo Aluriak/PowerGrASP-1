@@ -133,6 +133,8 @@ lattice:
 	$(COMMAND) "$(TESTS)lattice.lp"
 matrixdb:
 	$(COMMAND) "$(TESTS)matrixdb_network.lp"
+matrixdb_maincc:
+	$(COMMAND) "$(TESTS)matrixdb_network_maincc.lp"
 partition:
 	$(COMMAND) "$(TESTS)partition.lp"
 onedge:
