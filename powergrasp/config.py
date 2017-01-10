@@ -88,7 +88,9 @@ class Configuration(metaclass=meta_config):
 
     """
 
-    def __init__(self, default=FIELDS, **kwargs):
+    def __init__(self, default=None, **kwargs):
+        if default is None:
+            default = FIELDS
         kwargs = {k: v for k, v in kwargs.items() if v is not None}
         # payload is the aggregation of default values,
         #  given default (dict or Configuration object) and given kwargs,

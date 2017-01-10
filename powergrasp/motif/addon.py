@@ -29,7 +29,7 @@ Addon = namedtuple('Addon', 'files add_atoms add_constants')
 Addon.__new__.__defaults__ = (), lambda m: m, lambda _: {}
 
 
-def addon_knodes_degree(model:AtomsModel, k:int=2):
+def addon_knodes_degree(model:AtomsModel, k:int=2, max_per_set_only:bool=False):
     """Add maximal degrees atoms to input model.
 
     A maximal node is a node that share the maximal number of common neigbors
@@ -40,6 +40,9 @@ def addon_knodes_degree(model:AtomsModel, k:int=2):
     N common neighbors with another node, with N the maximal size of a biclique
     implying two elements in one set. Of the two nodes, only those with maximal
     degree is kept. (both in case of equality)
+
+    if max_per_set_only is False, then all nodes involved in a maximal n-uplet
+    are added to the max priority nodes, not only the ones of maximal degree.
 
     """
     # get the complete graph as a dict {pred: {succs}}
@@ -64,10 +67,13 @@ def addon_knodes_degree(model:AtomsModel, k:int=2):
         # Compute the maximal degree for all nodes in k-uplet
         # Add nodes of maximal degree to max_nodes for each node in 
         for k_uplet in k_uplets:
-            degrees = {node: len(graph[node]) for node in k_uplet}
-            maximal_degree = max(degrees.values(), default=-1)
-            max_nodes |= {node for node, degree in degrees.items()
-                          if degree == maximal_degree}
+            if max_per_set_only:
+                degrees = {node: len(graph[node]) for node in k_uplet}
+                maximal_degree = max(degrees.values(), default=-1)
+                max_nodes |= {node for node, degree in degrees.items()
+                              if degree == maximal_degree}
+            else:
+                max_nodes |= k_uplet
     model.set_args('max_priority', ((node,) for node in max_nodes))
     return model
 

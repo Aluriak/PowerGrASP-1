@@ -58,7 +58,7 @@ class TestAddonKnodeDegree(unittest.TestCase):
         self.assertSetEqual(set(max_nodes), expected)
 
     def test_k3(self):
-        enriched_model = addon_knodes_degree(new_model(), k=3)
+        enriched_model = addon_knodes_degree(new_model(), k=3, max_per_set_only=True)
         max_nodes = tuple(enriched_model.get_unique_args('max_priority'))
         expected = {'a', 'f', 'b', 'c', 'fgh1', 'fgh2', 'bc1', 'bc2', 'bc3'}
         self.assertEqual(len(max_nodes), len(set(max_nodes)))  # no doublon
