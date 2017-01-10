@@ -171,6 +171,8 @@ rna_pi_msg:
 	$(COMMAND) "$(TESTS)piRNA_mRNA.lp"
 sbind:
 	$(COMMAND) "$(TESTS)structural_binding.lp"
+sbind_maincc:
+	$(COMMAND) "$(TESTS)structural_binding_maincc.lp"
 simple:
 	$(COMMAND) "$(TESTS)simple.lp"
 single:
