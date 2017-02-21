@@ -6,13 +6,13 @@
 % revised version:  08/07/2015   L. Bourneuf
 %
 % Constants:
-%       - cc: treated connected component. (cc/1 gives existing cc)
-%       -  k: current step of treatment (first step is 1)
-%       - upperbound: the maximal reachable cover
-%       - max_set_size: the maximal reachable size of a set
+%       - cc: treated connected component. (cc/1 gives existing cc).
+%       -  k: current step of treatment (first step is 1).
+%       - upperbound: the maximal reachable cover.
+%       - max_set_size: the maximal reachable size of a set.
 % Input:
 %       - inter(X,Y): there exist an edge linking X and Y in cc.
-%       - edge(X,Y): there exist a edge linking X and Y in cc. (X<Y)
+%       - edge(X,Y): there exist a edge linking X and Y in cc (X<Y).
 %       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
