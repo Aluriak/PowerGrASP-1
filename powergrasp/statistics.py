@@ -259,7 +259,10 @@ def density(nb_edge:int, nb_node:int) -> float or str:
     """Compute the density of a graph with given number of node and edge"""
     try:
         ret = nb_edge / (nb_node * (nb_node - 1) / 2)
-        assert 0.0 <= ret <= 1.0
+        if not 0.0 <= ret <= 1.0:
+            LOGGER.warning("Density is non-valid ({}). If your graph is directed,"
+                           " density can be greater than 1, causing this problem."
+                           "".format(ret))
     except ZeroDivisionError:
         return 'no node'
     return ret
