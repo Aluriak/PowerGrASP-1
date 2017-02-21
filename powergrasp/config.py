@@ -288,6 +288,24 @@ class Configuration(metaclass=meta_config):
         return fields
 
 
+    @staticmethod
+    def fields_for_naive_dichotomic_search(**kwargs) -> dict:
+        """Return a minimal dict of fields and values allowing
+        to use theorem.
+
+        kwargs -- supplementary fields to provide. Will override default data.
+
+        """
+        MOTIFS = [motif.Biclique(addons=[addon.TheoremNaiveImplem]),
+                  motif.Clique(addons=[addon.TheoremNaiveImplem])]
+        fields = {
+            'motifs': MOTIFS,
+        }
+        _fields_verification(fields, kwargs)
+        fields.update(kwargs)
+        return fields
+
+
 def _fields_verification(fields:dict, provided:dict):
     """Logs warning if a field in provided is in fields"""
     for field in fields:
