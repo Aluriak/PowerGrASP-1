@@ -28,8 +28,9 @@ class TestUnambiguousCompression(unittest.TestCase):
             'double_biclique_unambiguous.lp' : RESULT_DDIAMUN,
             'bipartite.lp'                   : RESULT_BIP,
             'testblocks.lp'                  : RESULT_BLO,
-            'perfectfit.lp'                  : RESULT_PFC,
             'partition.lp'                   : RESULT_PARTITION,
+            'perfectfit.lp'                  : RESULT_PFC,
+            'prio_deg.lp'                    : RESULT_PRIODEG,
             'clique.lp'                      : RESULT_CLIQUE,
             'star.lp'                        : RESULT_STAR,
             'concomp.lp'                     : RESULT_CC,
@@ -60,6 +61,7 @@ class TestUnambiguousCompression(unittest.TestCase):
         tmp = tempfile.NamedTemporaryFile('w', delete=False)
         tmp.close()
         with self.subTest(filename=input_filename):
+            print('TEST CASE:', input_filename)
             cfg = config.Configuration(
                 infile=input_filename,
                 outfile=tmp.name,
@@ -298,6 +300,28 @@ IN\tc\tPWRN-a-1-2
 IN\td\tPWRN-a-1-2
 IN\te\tPWRN-a-1-2
 EDGE\ta\tPWRN-a-1-2\t1.0
+"""
+
+RESULT_PRIODEG = """
+NODE\tc
+NODE\te
+NODE\tf
+NODE\td
+NODE\th
+NODE\tg
+NODE\tb
+NODE\ta
+IN\tg\tPWRN-a-2-1
+IN\tf\tPWRN-a-2-1
+IN\th\tPWRN-a-2-1
+IN\tc\tPWRN-a-1-1
+IN\tb\tPWRN-a-1-1
+IN\ta\tPWRN-a-1-1
+IN\te\tPWRN-a-1-2
+IN\td\tPWRN-a-1-2
+EDGE\tPWRN-a-2-1\ts\t1.0
+EDGE\tPWRN-a-1-1\tPWRN-a-1-2\t1.0
+EDGE\ta\ts\t1.0
 """
 
 RESULT_PFC = """
