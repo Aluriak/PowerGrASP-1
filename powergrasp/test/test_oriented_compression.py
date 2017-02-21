@@ -54,6 +54,7 @@ class TestOrientedUnambiguousCompression(unittest.TestCase):
         tmp.close()
         # launch the compression itself, then compare result with expected
         with self.subTest(filename=input_filename):
+            print('TEST CASE:', input_filename)
             cfg = config.Configuration.fields_for_oriented_graph(
                 infile=input_filename,
                 outfile=tmp.name,
@@ -93,8 +94,10 @@ EDGE\tb\tPWRN-a-3-2\t1.0
 EDGE\tPWRN-a-1-1\tPWRN-a-1-2\t1.0
 EDGE\tg\tPWRN-a-2-2\t1.0
 """
+
 RESULT_CLIQUE = """
 """
+
 RESULT_LATTICE = """
 NODE\tf
 NODE\ti
