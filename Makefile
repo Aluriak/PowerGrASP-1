@@ -153,6 +153,8 @@ pfc:
 	$(COMMAND) "$(TESTS)perfectfit.lp"
 phos:
 	$(COMMAND) "$(TESTS)phosphatase.lp"
+play:
+	$(COMMAND) "$(TESTS)play.lp"
 priodeg:
 	$(COMMAND) "$(TESTS)prio_deg.lp"
 priodeg_str:
