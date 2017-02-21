@@ -105,15 +105,16 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
         constants = '-c ' + constants
     gringo_options = constants + ' ' + aspconfig.gringo_options
     # print('ASPCONFIG NAME:', aspconfig)
+    # print('CONSTANTS:', constants)
     # print('OPTIONS:', gringo_options)
     # print('OPTIONS:', aspconfig.clasp_options)
+    # print('FILES:', aspfiles)
 
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=aspconfig.clasp_options)
-    # print('FILES:', aspfiles)
     # print('ATOMS:', str(base_atoms))
-    answers = solver.run(aspfiles, additionalProgramText=base_atoms,
+    answers = solver.run(programs=aspfiles, additionalProgramText=base_atoms,
                          collapseAtoms=not parsed)
     # if len(answers) > 0:
         # for idx, answer in enumerate(answers):
