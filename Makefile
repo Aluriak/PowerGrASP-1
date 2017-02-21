@@ -139,6 +139,8 @@ partition:
 	$(COMMAND) "$(TESTS)partition.lp"
 onedge:
 	$(COMMAND) "$(TESTS)one_edge.lp"
+or_clique:
+	$(COMMAND) "$(TESTS)oriented_clique.lp"
 or_double_edge:
 	$(COMMAND) "$(TESTS)oriented_double_edge.lp"
 or_lattice:
