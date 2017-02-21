@@ -225,7 +225,7 @@ unittest:
 	python3 -m unittest discover -v
 t: pytest
 pytest:
-	pytest powergrasp --doctest-module --failed-first
+	pytest powergrasp --doctest-module --failed-first -v
 te: pytest_exit
 pytest_exit:
 	pytest powergrasp --doctest-module --failed-first --exitfirst
