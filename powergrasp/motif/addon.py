@@ -22,7 +22,11 @@ from functools import partial
 from collections import defaultdict, namedtuple, Counter
 
 from powergrasp import commons
+from powergrasp import solving
 from powergrasp.atoms import AtomsModel
+
+
+LOGGER = commons.logger()
 
 
 Addon = namedtuple('Addon', 'files add_atoms add_constants')
@@ -99,6 +103,38 @@ def addon_degree(model:AtomsModel, include_node_degrees:bool=False,
     return model
 
 
+def addon_naive_dichotomic_search(model:AtomsModel, time_limit:int=3):
+    """Search for stable, then inject stable/2 atoms in model"""
+    # avoid computation of an existing stable
+    already_have_stable = 'stable' in model.counts
+    if already_have_stable: return model
+    # search for stable
+    LOGGER.info('ADDON(NDS): Search for stable in {}s.'.format(time_limit))
+    solver_config = solving.ASPConfig(
+        'naive dichotomic search',
+        [commons.ASP_SRC_STABLE_SEARCH],
+        clasp_options='--time-limit={}'.format(time_limit)
+    )
+    stable_model = solving.model_from(
+        base_atoms=str(model),
+        aspconfig=solver_config,
+    )
+    if stable_model is None:
+        LOGGER.info('STABLE SEARCH: no stable found')
+        stable = ()
+    else:
+        stable = frozenset(stable_model.get('stable'))
+        LOGGER.info("STABLE SEARCH: {} nodes".format(len(stable)))
+        LOGGER.debug("STABLE SEARCH: " + str(stable))
+        print(stable)
+
+    # update and return model
+    # print('LRYSNM:', model.counts)
+    model.set_args('stable', (a.args for a in stable))
+    # print('YCCLYH:', model.counts)
+    return model
+
+
 ByDegree = Addon(
     [commons.ASP_SRC_PRIORITY],
     partial(addon_degree, include_max_node_degrees=True),
@@ -112,4 +148,9 @@ ByFuzzyDegree = Addon(
 ByKNodesDegree = Addon(
     [commons.ASP_SRC_PRIORITY],
     partial(addon_knodes_degree, k=2),
+)
+
+TheoremNaiveImplem = Addon(
+    [commons.ASP_SRC_STABLE_CONSTRAINT],
+    partial(addon_naive_dichotomic_search, time_limit=10),
 )

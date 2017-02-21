@@ -55,6 +55,8 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
         parsed_cli.update(config.Configuration.fields_for_high_priority_first(fuzzy=True))
     elif method == 'K2HPF':
         parsed_cli.update(config.Configuration.fields_for_knode_hpf())
+    elif method == 'NDS':
+        parsed_cli.update(config.Configuration.fields_for_naive_dichotomic_search())
     else:
         assert method == 'powergraph'
     cli_args = {
@@ -205,6 +207,11 @@ def cli_parser() -> argparse.ArgumentParser:
     # OEM recipe
     parser_oem = subs.add_parser('OEM', description='Run a Powergraph compression that minimize the amount of outgoing edges per module.')
     _populate_compression_parser(parser_oem)
+
+
+    # powergraph using Naive Dichotomic Search
+    parser_dns = subs.add_parser('NDS', description='Run an oriented Powergraph compression, using naively bipartite stable to limit search space.')
+    _populate_compression_parser(parser_dns)
 
 
 
