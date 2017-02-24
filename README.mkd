@@ -37,8 +37,7 @@ Or can be embedded in any python program:
 Some other recipes are implemented, including oriented graph compression, and alternative scoring methods.
 
 
-## Help & Details
-### General overview
+## General overview
 The compression is configurable through command line arguments or compress function parameters.
 Used ASP source code can be changed, interactive mode can be set,… Please look at help and docstring:
 
@@ -51,10 +50,10 @@ Used ASP source code can be changed, interactive mode can be set,… Please look
 
 
 
-### I/O
+## I/O
 NB: Create another output or input format support is possible by implement a new Converter class (see *powergrasp/converter/*).
 
-#### Input file
+### Input file
 PowerGrASP doesn't generate logging for pleasure : it actually perform a treatment on input data, if provided.
 The supported input file formats are currently :
 - ASP: atoms edge/2, with edge(X,Y) describing a link between nodes X and Y.
@@ -67,9 +66,9 @@ Some of these are simple and used for unit testing. Take a look to [ddiam](power
 
 Other formats will be supported in the future.
 
-#### Output
+### Output
 
-##### Bubble formatted file
+#### Bubble formatted file
 The output of PowerGrASP is a *Bubble* formatted file. This file can be used to get a visualization of the compressed graph.
 The format *Bubble* is an endemic format designed by Royer et Al for power graph describing.
 
@@ -94,8 +93,11 @@ This tool allow to print a bubble file without Cytoscape usage, with something l
 Add *&>/dev/null* to prevent any logging output.
 
 
+##### Bubbletools
+[This python lib](https://github.com/Aluriak/bubble-tools) could help to generate any type of output from bubble files. It provides some examples, like [GEXF](https://gephi.org/gexf/format/) for [Gephi](https://gephi.org/) (that [stops to handle it](https://github.com/gephi/graphstore/pull/128) since last release). It is used by PowerGrASP itself to convert bubble output to another formats.
 
-### Standard output management
+
+## Standard output management
 By default, PowerGrASP generates lots of outputs in stdout, essentially for debugging and compression tracking.
 With the option *loglevel*, its possible to control this behavior:
 
@@ -116,7 +118,7 @@ Available levels comes from logging API:
 Please note that some options (notabily *count-models* and *count-cc*) are completely independant of this logging management, as they work with the standard output.
 
 
-### Statistics
+## Statistics
 The compression compute some statistics about itself, and generate the final results
 at the end of the compression in the standard output.
 With some arguments, you can also show a colored graphic :
@@ -128,7 +130,7 @@ Instead of show it, powergrasp can save it in png (note that the *--plot-stats* 
     python3 -m powergrasp --graph-data=tests/proteome_yeast_2.lp --stats-file=data/statistics.csv --plot-file=data/statistics.png
 
 
-### Answer Set Programming
+## Answer Set Programming
 ASP is a declarative and logic language, designed for the treatment of combinatorial problems (like graph compression).
 The implementation used in this project is the [*Potsdam Answer Set Solving Collection*](http://potassco.sourceforge.net/index.html).
 
@@ -136,7 +138,7 @@ All ASP source codes necessary for the PowerGrASP program can be found in *power
 
 
 
-### Interests & References
+## Interests & References
 
 The [Power Graph approach for graph compression](https://en.wikipedia.org/wiki/Power_graph_analysis) allows a lossless compression with an emphasis on biological meaning.
 In fact, formal concepts used by Power Graph analysis have a sens in biology, especially in the case of proteomes.
