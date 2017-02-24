@@ -288,6 +288,25 @@ class Configuration(metaclass=meta_config):
         return fields
 
 
+    @staticmethod
+    def fields_for_dds(**kwargs) -> dict:
+        """Return a minimal dict of fields and values allowing
+        to treat graphs using the dichotomic search optimization.
+
+        kwargs -- supplementary fields to provide. Will override default data.
+
+        """
+        motifs = (
+            motif.Biclique(search=commons.ASP_SRC_FINDBCDS),
+        )
+        fields = {
+            'motifs': motifs,
+        }
+        _fields_verification(fields, kwargs)
+        fields.update(kwargs)
+        return fields
+
+
 def _fields_verification(fields:dict, provided:dict):
     """Logs warning if a field in provided is in fields"""
     for field in fields:
