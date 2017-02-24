@@ -57,9 +57,10 @@ class Biclique(Motif):
 
     def __init__(self, scoring:str=ASP_SRC_SCORING, gringo_options='',
                  clasp_options=solving.ASP_DEFAULT_CLASP_OPTION,
-                 additional_files:iter=[], addons:iter=None):
+                 additional_files:iter=[], addons:iter=None,
+                 search:str=ASP_SRC_FINDBC):
         super().__init__('biclique',
-                         [ASP_SRC_FINDBC, scoring] + list(additional_files),
+                         [search, scoring] + list(additional_files),
                          clasp_options, gringo_options, addons=addons)
 
     def covered_edges_in_found(self, model:'AtomsModel'):
