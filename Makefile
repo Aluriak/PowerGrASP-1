@@ -203,6 +203,8 @@ triv:
 	$(COMMAND) "$(TESTS)trivial.lp"
 tiso:
 	$(COMMAND) "$(TESTS)tiso_1.0.sbml"
+toy10_scc_dag:
+	$(COMMAND) "$(TESTS)toy10_scc_dag.lp"
 uml:
 	$(COMMAND) "$(TESTS)uml.lp"
 unclique:
