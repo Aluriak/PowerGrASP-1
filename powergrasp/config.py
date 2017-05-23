@@ -297,10 +297,10 @@ class Configuration(metaclass=meta_config):
 
         """
         motifs = (
-            motif.Biclique(search=commons.ASP_SRC_FINDBCDS),
+            
         )
         fields = {
-            'motifs': motifs,
+            'motifs': (motif.DichoSearchBiclique(),),
         }
         _fields_verification(fields, kwargs)
         fields.update(kwargs)

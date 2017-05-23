@@ -62,6 +62,7 @@ ASP_SRC_FINDBCDS = __asp_file('findbestbiclique_dichosearch')
 # Addons
 ASP_SRC_PRIORITY       = __asp_file('by_priority')
 ASP_SRC_FUZZY_PRIORITY = __asp_file('by_fuzzy_priority')
+ASP_SRC_STABLE_SEARCH  = __asp_file('stable_search')
 # Scoring
 ASP_SRC_SCORING     = __asp_file('scoring_powergraph')
 ASP_SRC_SCORING_OEM = __asp_file('scoring_oem')

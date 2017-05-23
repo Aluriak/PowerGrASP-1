@@ -72,7 +72,7 @@ class ASPConfig:
         return ASPConfig('inclusion', list(aspfiles))
 
 
-def all_models_from(base_atoms, aspfiles=None, aspargs=None,
+def all_models_from(base_atoms:str, aspfiles=None, aspargs=None,
                     aspconfig=None, parsed=True):
     """Compute all models from ASP source code in aspfiles, with aspargs
     given as grounding arguments and base_atoms given as input atoms.
@@ -85,6 +85,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     yield -- Atoms instance, containing atoms produced by solving
 
     """
+    assert isinstance(base_atoms, str)
     aspfiles = aspfiles or []
     aspargs = aspargs or {}
     aspconfig = aspconfig or ASPConfig('unamed config')
@@ -104,16 +105,24 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     if len(aspargs) > 0:  # must begin by a -c for announce the first constant
         constants = '-c ' + constants
     gringo_options = constants + ' ' + aspconfig.gringo_options
-    # print('ASPCONFIG NAME:', aspconfig)
-    # print('CONSTANTS:', constants)
-    # print('OPTIONS:', gringo_options)
-    # print('OPTIONS:', aspconfig.clasp_options)
-    # print('FILES:', aspfiles)
+    print('ASPCONFIG NAME:', aspconfig)
+    print('GOPTIONS:', gringo_options)
+    print('COPTIONS:', aspconfig.clasp_options)
+    print('FILES:', aspfiles)
 
     #  create solver and ground base and program in a single ground call.
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=aspconfig.clasp_options)
-    # print('ATOMS:', str(base_atoms))
+    OUT_ADD_ATOMS = 'additional_atoms.lp'
+    OUT_COMMAND = 'solver_command'
+    with open(OUT_COMMAND, 'w') as fd:
+        command = 'clingo -n 0 {} {} {} {}'.format(gringo_options, aspconfig.clasp_options, OUT_ADD_ATOMS, ' '.join(aspfiles))
+        command = 'gringo {} {} {} | clasp {}'.format(gringo_options, OUT_ADD_ATOMS, ' '.join(aspfiles), aspconfig.clasp_options)
+        fd.write(command)
+    with open(OUT_ADD_ATOMS, 'w') as fd:
+        fd.write(base_atoms)
+    # print('ADDITIONAL ATOMS:', base_atoms)
+    print('SIMULATED COMMAND:', command)
     answers = solver.run(programs=aspfiles, additionalProgramText=base_atoms,
                          collapseAtoms=not parsed)
     # if len(answers) > 0:

@@ -6,7 +6,7 @@
 from . import FoundMotif
 
 
-def by_score(ma:FoundMotif, mb:FoundMotif):
+def by_score(ma:FoundMotif, mb:FoundMotif) -> FoundMotif:
     """Return model that have the greater score, or ma on equality"""
     if not isinstance(ma, FoundMotif) and ma is not None:
         print('ASSERT:', ma, type(ma), FoundMotif)
