@@ -91,6 +91,8 @@ blo:
 	$(COMMAND) "$(TESTS)testblocks.lp"
 bollo:
 	$(COMMAND) "$(TESTS)bollobas.lp"
+bolloten:
+	$(COMMAND) "$(TESTS)bollobas_10.lp"
 cdiam:
 	$(COMMAND) "$(TESTS)double_biclique_and_clique.lp"
 chr:
@@ -217,6 +219,8 @@ troll_format:
 	$(COMMAND) "$(TESTS)notsupportedformat.troll"
 troll_file:
 	$(COMMAND) "$(TESTS)thisfiledoesnt.exists"
+n8d:
+	$(COMMAND) "$(TESTS)graph_n8_d0.7.lp"
 
 
 plot:
