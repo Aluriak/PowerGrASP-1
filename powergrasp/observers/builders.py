@@ -10,8 +10,8 @@ from powergrasp import converter
 from powergrasp import statistics
 from . import (ObserverBatch, CompressionObserver, OutputWriter, TimeCounter,
                Signals, ObjectCounter, ConnectedComponentsCounter,
-               InteractiveCompression, SignalProfiler,
-               NullTimeCounter, TimeComparator)
+               InteractiveCompression, SignalProfiler, ClusterWriter,
+               NullTimeCounter, TimeComparator, PerCCOutputWriter)
 
 
 LOGGER = commons.logger()

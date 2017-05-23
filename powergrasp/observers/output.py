@@ -5,9 +5,11 @@ Definition of various output-related compression observers.
 
 import os
 import sys
+import csv
 import tempfile
 import statistics
 from functools import partial
+from collections import defaultdict
 
 from .observer  import CompressionObserver, Signals, Priorities
 from powergrasp import commons
@@ -16,6 +18,59 @@ from powergrasp import utils
 
 
 LOGGER = commons.logger()
+
+
+class ClusterWriter(CompressionObserver):
+    """Write clusters in a DSV format"""
+
+    def __init__(self, outfile_template:str):
+        self.outfile_template = str(outfile_template)
+        self.outfile = None  # file descriptor
+        assert '{}' in self.outfile_template, "outfile must be a template"
+
+    def write(self, powernodes:iter, poweredge:iter):
+        """Write given information into CSV format"""
+        writer = csv.writer(self.outfile, delimiter='\t')
+        parts = defaultdict(set)
+        for _, _, part, node in powernodes:
+            parts[int(part)].add(node)
+        poweredge = tuple(poweredge)
+        assert len(poweredge) == 1
+        if len(parts) == 1:  # star case or clique case
+            if len(poweredge[0]) == 4:  # star case
+                _, _, star_part, star = poweredge[0]
+                parts[3-int(star_part)] = [star]
+            else:  # clique case
+                _, _, part1, _, part2 = poweredge[0]
+                assert part1 == part2, "clique poweredge link two different set"
+                parts[3-int(part1)] = ['(clique)']
+
+        writer.writerow([
+            ';'.join(parts[1]),
+            ';'.join(parts[2]),
+        ])
+
+
+    def on_connected_component_started(self, payload):
+        _, cc_name, atoms, _ = payload
+        if self.outfile:
+            raise ValueError("CC start signal sent before CC end signal")
+        filename = self.outfile_template.format(cc_name.strip("").replace(' ', ''))
+        self.outfile = open(filename, 'w')
+
+    def on_model_found(self, motif):
+        # give new powernodes, clique and poweredges to converter
+        self.write(
+            (a.args for a in motif.model.get('powernode')),
+            (a.args for a in motif.model.get('poweredge')),
+        )
+
+
+    def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
+        if not self.outfile:
+            raise ValueError("CC end signal sent before CC start signal")
+        self.outfile.close()
+        self.outfile = None
 
 
 class InteractiveCompression(CompressionObserver):
@@ -141,11 +196,50 @@ class OutputWriter(CompressionObserver):
                 # infer from file extension
                 output_format = os.path.splitext(output_file)[1].lstrip('.')
             except (IndexError, AttributeError):
-                LOGGER.WARNING("Given outfile ({}) will be written in"
+                LOGGER.warning("Given outfile ({}) will be written in"
                                " bubble format because of unknow"
                                " extension.".format(output_file))
                 output_format = converter.DEFAULT_OUTPUT_FORMAT  # use BBL
         return output_format
+
+
+class PerCCOutputWriter(CompressionObserver):
+    """Manage the output bubble file, and assure its conversion
+    into expected output format.
+
+    Works per CC.
+
+    """
+
+    def __init__(self, outfile_template:str, outformat:str='bbl',
+                 oriented:bool=False):
+        self.outfile_template = str(outfile_template)
+        self.writer_cons = partial(OutputWriter, outformat=outformat, oriented=oriented)
+        assert '{}' in self.outfile_template
+
+    def on_model_found(self, motif):
+        self.writer.on_model_found(motif)
+
+    def on_connected_component_started(self, payload):
+        _, cc_name, atoms, _ = payload
+        self.writer = self.writer_cons(
+            self.outfile_template.format(cc_name.replace(' ', '')),
+        )
+        self.writer.init_writer()
+        self.writer.on_connected_component_started(payload)
+
+    def on_connected_component_stopped(self, remain_edges:'AtomsModel'):
+        self.writer.on_connected_component_stopped(remain_edges)
+        self.writer.finalized()
+
+    def comment(self, _): pass
+
+    # def on_compression_started(self):
+        # pass  # nothing to do
+
+    # def on_compression_stopped(self):
+        # pass  # nothing to do
+
 
 
 class TimeComparator(CompressionObserver):
