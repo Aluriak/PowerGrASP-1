@@ -176,13 +176,21 @@ class Motif(solving.ASPConfig):
         # All covered edges should be in the graph
         covered_edges = frozenset(self.covered_edges_in_found(motif))
         graph_edges = frozenset(graph.get_args('edge'))
+        unvalid_edge = set()
         for covered_edge in covered_edges:
             if covered_edge not in graph_edges:
                 LOGGER.warning("Edge ({},{}) declared as covered by motif {} "
-                               "doesn't exists in the graph".format(*covered_edge, self))
+                               "doesn't exists in the graph. This problem "
+                               "usually appears on undirected graphs involving"
+                               "nodes ordered non-lexicographically, "
+                               "like numbers.".format(*covered_edge, self))
+                unvalid_edge.add(covered_edge)
         # Update the graph model
+        nb_edge = len(set(graph.get_args('edge')))
         graph.set_args('edge', (edge for edge in graph.get_args('edge')
                                 if edge not in covered_edges))
+        nb_edge_new = len(set(graph.get_args('edge')))
+        assert nb_edge_new == nb_edge - len(covered_edges) + len(unvalid_edge)
         # remove all unnecessary nodes from the graph
         #  a node that is implyied in no edge can't be member of any set.
         #  it is therefore a time waste to give it to the heuristic.
@@ -193,7 +201,6 @@ class Motif(solving.ASPConfig):
         return dict(data)
 
 
-    @staticmethod
     def covered_edges_in_found(self, model:'AtomsModel'):
         """Yield edges covered by given ASP model"""
         raise NotImplementedError("This method should be overwritten by subclasses.")
