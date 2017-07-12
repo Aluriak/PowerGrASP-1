@@ -100,10 +100,9 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     assert len(set(aspfiles)) == len(aspfiles), "Given list of aspfiles contains doublons: " + str(aspfiles)
 
     # define the command line options for gringo and clasp
-    constants = ' -c '.join(str(k)+'='+str(v) for k,v in aspargs.items())
-    if len(aspargs) > 0:  # must begin by a -c for announce the first constant
-        constants = '-c ' + constants
-    gringo_options = constants + ' ' + aspconfig.gringo_options
+    constants_def = ''.join('#const {}={}.'.format(name, value)
+                            for name, value in aspargs.items())
+    gringo_options = aspconfig.gringo_options
     # print('ASPCONFIG NAME:', aspconfig)
     # print('CONSTANTS:', constants)
     # print('OPTIONS:', gringo_options)
@@ -114,7 +113,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     solver = asp.Gringo4Clasp(gringo_options=gringo_options,
                               clasp_options=aspconfig.clasp_options)
     # print('ATOMS:', str(base_atoms))
-    answers = solver.run(programs=aspfiles, additionalProgramText=base_atoms,
+    answers = solver.run(programs=aspfiles, additionalProgramText=constants_def + base_atoms,
                          collapseAtoms=not parsed)
     # if len(answers) > 0:
         # for idx, answer in enumerate(answers):
