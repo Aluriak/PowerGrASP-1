@@ -55,8 +55,10 @@ def parse(parameters={}, args=sys.argv[1:], default_options:dict=None) -> dict:
         parsed_cli.update(config.Configuration.fields_for_high_priority_first(fuzzy=True))
     elif method == 'K2HPF':
         parsed_cli.update(config.Configuration.fields_for_knode_hpf())
-    else:
-        assert method == 'powergraph'
+    elif method == 'powergraph':
+        pass  # default one
+    else:  # if not given, then use powergraph
+        method = 'powergraph'
     cli_args = {
         normalized(arg): value
         for arg, value in parsed_cli.items()
