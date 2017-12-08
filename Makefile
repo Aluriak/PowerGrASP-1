@@ -91,6 +91,8 @@ blo:
 	$(COMMAND) "$(TESTS)testblocks.lp"
 bollo:
 	$(COMMAND) "$(TESTS)bollobas.lp"
+bollosix:
+	$(COMMAND) "$(TESTS)bollobas_6.lp"
 bolloten:
 	$(COMMAND) "$(TESTS)bollobas_10.lp"
 cdiam:
@@ -151,6 +153,10 @@ or_overlap:
 	$(COMMAND) "$(TESTS)oriented_overlap.lp"
 or_simple:
 	$(COMMAND) "$(TESTS)oriented_simple.lp"
+or_amb:
+	$(COMMAND) "$(TESTS)oriented_ambiguous.lp"
+lexorder:
+	$(COMMAND) "$(TESTS)lexicographically_unordered.lp"
 order:
 	$(COMMAND) "$(TESTS)order.lp"
 pfc:
@@ -191,6 +197,8 @@ ssn:
 	$(COMMAND) "$(TESTS)ssn.lp"
 star:
 	$(COMMAND) "$(TESTS)star.lp"
+string_with_comma:
+	$(COMMAND) "$(TESTS)string_with_comma.lp"
 testgml:
 	$(COMMAND) "$(TESTS)test.gml"
 testgraphml:
