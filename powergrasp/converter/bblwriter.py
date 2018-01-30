@@ -24,6 +24,7 @@ Comments are marked by '#' character.
 The Cytoscape plugin CyOoG is able to read and print that format.
 
 """
+import re
 import itertools
 from collections import defaultdict
 
@@ -35,15 +36,12 @@ from powergrasp import solving
 logger         = commons.logger()
 GRINGO_OPTIONS = '--warn=no-atom-undefined'
 GRINGO_OPTIONS = ''
+UNCOMPLIANT_BUBBLE_CHARS = re.compile(r'[^a-zA-Z0-9_-]')
 
 
 def to_bubble_value(value:str) -> str:
-    """Return input value with quotes if they are necessary"""
-    INCOMPLIANT_BUBBLE_CHARS = ' ?#\t\n'
-    if any(char in value for char in INCOMPLIANT_BUBBLE_CHARS):
-        return commons.quoted(value)
-    else:
-        return ''.join(c for c in value if c not in '"')
+    """Return input value with quotes and antislashes if they are necessary"""
+    return UNCOMPLIANT_BUBBLE_CHARS.sub('', value)
 
 
 def powernode(cc, step, num_set):
