@@ -39,6 +39,7 @@ class TestUnambiguousCompression(unittest.TestCase):
             'test.graphml'                   : RESULT_GRAPHML,
             'unclique.lp'                    : RESULT_UNCLIQUE,
             'one_edge.lp'                    : RESULT_ONEDGE,
+            'horrible_data.lp'               : RESULT_HORRIBLE_DATA,
             'test.gml'                       : RESULT_TESTGML,
             'empty.lp'                       : '',
         }
@@ -514,4 +515,14 @@ EDGE\tPWRN-b-1-1\tPWRN-b-1-1\t1.0
 EDGE\tm\tv\t1.0
 EDGE\tl\tp\t1.0
 EDGE\tl\tPWRN-b-3-2\t1.0
+"""
+
+RESULT_HORRIBLE_DATA = """
+EDGE\t"$PYTHONPATH"\t"[a,b]"\t1.0
+NODE\t"'echo coucou'"
+NODE\t"\"echo coucou\""
+IN\t"'echo coucou'"\tPWRN-"\"echo coucou\""-1-1
+IN\t"\"echo coucou\""\tPWRN-"\"echo coucou\""-1-1
+EDGE\tPWRN-"\"echo coucou\""-1-1\t[a]\t1.0
+EDGE\t"\"echo coucou\""\t[a]\t1.0
 """
