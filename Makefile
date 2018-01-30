@@ -131,6 +131,8 @@ empty:
 	$(COMMAND) "$(TESTS)empty.lp"
 glasses:
 	$(COMMAND) "$(TESTS)glasses.lp"
+horrible_data:
+	$(COMMAND) "$(TESTS)horrible_data.lp"
 inc:
 	$(COMMAND) "$(TESTS)inclusions.lp"
 lattice:
