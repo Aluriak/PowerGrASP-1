@@ -114,6 +114,20 @@ def to_asp_value(value) -> str:
     return quoted(value)
 
 
+def escaped(value:str, by='\\', escapable:set=set('"$[]{}*+-/\\')):
+    """
+
+    >>> escaped('a')
+    'a'
+    >>> escaped('"i')
+    '\\\\"i'
+    >>> escaped('"i', by='a')
+    'a"i'
+
+    """
+    return ''.join((by+c) if c in escapable else c for c in value)
+
+
 def quoted(value:str, by='"'):
     """
 
