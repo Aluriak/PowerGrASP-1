@@ -115,7 +115,7 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     answers = clyngor.solve(aspfiles, inline=constants_def + base_atoms,
                             options=gringo_options + aspconfig.clasp_options,
                             stats=False, nb_model=None).int_not_parsed.careful_parsing
-    print('COMMAND:', answers.command)
+    # print('COMMAND:', answers.command)
     if not parsed:
         answers = answers.atom_as_string
     yield from (atoms.AtomsModel.from_pyasp_termset(answer) for answer in answers)
