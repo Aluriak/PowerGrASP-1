@@ -86,62 +86,66 @@ class TestUnambiguousCompression(unittest.TestCase):
 
 # Expected results of tested cases
 RESULT_DIACLI = """
-NODE\tl
-NODE\tm
-NODE\tb
-NODE\td
-NODE\tc
-NODE\tr
-NODE\tp
-NODE\tf
-NODE\to
-NODE\tn
-NODE\te
-NODE\tj
-NODE\tg
-NODE\ta
-NODE\tq
-IN\tm\tPWRN-a-4-2
-IN\tn\tPWRN-a-4-2
-IN\tPWRN-a-3-2\tPWRN-a-2-2
-IN\tb\tPWRN-a-2-2
-IN\tc\tPWRN-a-2-2
-IN\te\tPWRN-a-2-2
-IN\tl\tPWRN-a-4-1
-IN\tp\tPWRN-a-4-1
-IN\tPWRN-a-4-2\tPWRN-a-3-1
-IN\to\tPWRN-a-3-2
-IN\tq\tPWRN-a-3-2
-IN\tr\tPWRN-a-1-1
-IN\tf\tPWRN-a-1-1
-IN\tj\tPWRN-a-1-1
-IN\tPWRN-a-4-1\tPWRN-a-1-1
-IN\tg\tPWRN-a-1-1
-IN\td\tPWRN-a-2-1
-IN\ta\tPWRN-a-2-1
-EDGE\tm\tn\t1.0
-EDGE\tb\tc\t1.0
-EDGE\tPWRN-a-4-1\tPWRN-a-4-2\t1.0
-EDGE\tPWRN-a-3-1\tPWRN-a-3-2\t1.0
-EDGE\tPWRN-a-1-1\tPWRN-a-1-1\t1.0
-EDGE\tPWRN-a-2-1\tPWRN-a-2-2\t1.0
+NODE	n
+NODE	r
+NODE	p
+NODE	q
+NODE	e
+NODE	b
+NODE	m
+NODE	a
+NODE	o
+NODE	c
+NODE	j
+NODE	d
+NODE	g
+NODE	l
+NODE	s
+NODE	f
+IN	l	PWRN-a-3-1
+IN	s	PWRN-a-3-1
+IN	p	PWRN-a-3-1
+IN	q	PWRN-a-4-2
+IN	o	PWRN-a-4-2
+IN	m	PWRN-a-4-1
+IN	n	PWRN-a-4-1
+IN	g	PWRN-a-1-1
+IN	PWRN-a-3-1	PWRN-a-1-1
+IN	r	PWRN-a-1-1
+IN	j	PWRN-a-1-1
+IN	f	PWRN-a-1-1
+IN	PWRN-a-4-1	PWRN-a-3-2
+IN	a	PWRN-a-2-1
+IN	d	PWRN-a-2-1
+IN	e	PWRN-a-2-2
+IN	b	PWRN-a-2-2
+IN	PWRN-a-4-2	PWRN-a-2-2
+IN	c	PWRN-a-2-2
+EDGE	PWRN-a-3-1	PWRN-a-3-2	1.0
+EDGE	PWRN-a-1-1	PWRN-a-1-1	1.0
+EDGE	PWRN-a-4-1	PWRN-a-4-2	1.0
+EDGE	b	c	1.0
+EDGE	PWRN-a-2-1	PWRN-a-2-2	1.0
+EDGE	m	n	1.0
 """
 
 RESULT_PARTITION = """
-NODE\tc
-NODE\tg
-NODE\te
-NODE\td
 NODE\ta
-NODE\th
-NODE\tf
 NODE\tb
+NODE\tc
+NODE\td
+NODE\te
+NODE\tf
+NODE\tg
+NODE\th
+NODE\ti
 IN\tc\tPWRN-a-2-1
 IN\td\tPWRN-a-2-1
 IN\tg\tPWRN-a-2-2
 IN\th\tPWRN-a-2-2
 IN\ta\tPWRN-a-1-1
 IN\tb\tPWRN-a-1-1
+IN\ti\tPWRN-a-1-1
 IN\te\tPWRN-a-1-2
 IN\tPWRN-a-2-2\tPWRN-a-1-2
 IN\tf\tPWRN-a-1-2
