@@ -13,7 +13,7 @@ from collections import deque, Counter
 
 from powergrasp import commons
 from powergrasp import atoms
-from pyasp import asp
+import clyngor
 
 
 LOGGER = commons.logger()
@@ -108,19 +108,16 @@ def all_models_from(base_atoms, aspfiles=None, aspargs=None,
     # print('OPTIONS:', gringo_options)
     # print('OPTIONS:', aspconfig.clasp_options)
     # print('FILES:', aspfiles)
+    answers = clyngor.solve((), inline='a.')
+    atom = next(iter(next(answers)))
+    assert atom == ('a', ())
 
-    #  create solver and ground base and program in a single ground call.
-    solver = asp.Gringo4Clasp(gringo_options=gringo_options,
-                              clasp_options=aspconfig.clasp_options)
-    # print('ATOMS:', str(base_atoms))
-    answers = solver.run(programs=aspfiles, additionalProgramText=constants_def + base_atoms,
-                         collapseAtoms=not parsed)
-    # if len(answers) > 0:
-        # for idx, answer in enumerate(answers):
-            # print('ANSWER ' + str(idx) + ':', answer)
-        # print('ALL ANSWERS GAVE')
-    # else:
-        # print('NO MODEL FOUND !')
+    answers = clyngor.solve(aspfiles, inline=constants_def + base_atoms,
+                            options=gringo_options + aspconfig.clasp_options,
+                            stats=False, nb_model=None).int_not_parsed.careful_parsing
+    print('COMMAND:', answers.command)
+    if not parsed:
+        answers = answers.atom_as_string
     yield from (atoms.AtomsModel.from_pyasp_termset(answer) for answer in answers)
 
 

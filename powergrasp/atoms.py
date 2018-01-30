@@ -161,8 +161,8 @@ class AtomsModel:
     def from_pyasp_termset(termset):
         """Build an AtomsModel instance from an iterable of pyasp Term"""
         inrepr = defaultdict(set)
-        for atom in termset:
-            inrepr[atom.predicate].add(tuple(atom.args()))
+        for predicate, args in termset:
+            inrepr[predicate].add(args)
         return AtomsModel(inrepr)
 
     @staticmethod
