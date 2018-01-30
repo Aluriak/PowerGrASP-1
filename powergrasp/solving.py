@@ -11,6 +11,7 @@ from collections import deque, Counter, namedtuple
 from powergrasp import commons
 from powergrasp import atoms
 from pyasp import asp
+import clyngor
 
 
 LOGGER = commons.logger()
