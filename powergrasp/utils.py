@@ -171,6 +171,24 @@ def asp_ordered(one, two) -> ('one', 'two') or ('two', 'one'):
     ('b', 'bc')
     >>> asp_ordered('11','100')
     ('11', '100')
+    >>> asp_ordered('[a]','a')
+    ('[a]', 'a')
+    >>> asp_ordered('a','[a]')
+    ('[a]', 'a')
+    >>> asp_ordered('a','[b]')
+    ('[b]', 'a')
+    >>> asp_ordered('[b]','[a]')
+    ('[a]', '[b]')
+    >>> asp_ordered('[b]','[a]') == asp_ordered('[a]','[b]')
+    True
+    >>> asp_ordered('"\"echo coucou\""','"[a]"')
+    ('"\"echo coucou\""', '"[a]"')
+    >>> asp_ordered('"[a]"', '"\"echo coucou\""')
+    ('"\"echo coucou\""', '"[a]"')
+    >>> asp_ordered('"a"','"[a]"')
+    ('"[a]"', '"a"')
+    >>> asp_ordered('"b"','"[a]"')
+    ('"[a]"', '"b"')
 
     """
     TYPES = int, 'litteral', str  # sorted by increasing ASP order
