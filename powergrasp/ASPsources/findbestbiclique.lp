@@ -4,6 +4,7 @@
 % initial version:  09/12/2014   J. Nicolas
 % revised version:  29/04/2015   L. Bourneuf
 % revised version:  08/07/2015   L. Bourneuf
+% revised version:  26/03/2018   J. Nicolas
 %
 % Constants:
 %       - cc: treated connected component. (cc/1 gives existing cc).
@@ -16,7 +17,7 @@
 %       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
-%       - star(cc,k,T): concept is a star, set T is the singleton.
+%       - star(cc,k,T): set T of concept is a singleton.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -51,6 +52,8 @@ newconcept(cc,k,1,X):- minobj(cc,k,X).
 %%%%%% CONCEPT PROPERTIES %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % a star is a biclique with one powernode composed of only one node
-%star(cc,k,T):- 1 { newconcept(cc,k,T,X): weight(X,1) } 1 ; T=1..2.
+%%star(cc,k,T):- 1 { newconcept(cc,k,T,X): weight(X,1) } 1 ; T=1..2.
 star(cc,k,T):- 1 { newconcept(cc,k,T,X) } 1 ; T=1..2.
-:- star(cc,k,3-T) ; star(cc,k,T) ; T=1..2. % link between two nodes will not be treated as a interesting case
+
+%Do not accept single edges
+:- star(cc,k,1) ; star(cc,k,2). 

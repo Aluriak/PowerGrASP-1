@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Perform post-processing of the data at each steps.
-%  its not a stand alone program, but a set of rules that needs to be grounded with
-%  find best clique and find best biclique program
+%  its not a standalone program, but a set of rules that needs to be grounded with
+%  programs find best clique and find best biclique program
 %  the post processing consist of rules shared by cliques and bicliques,
 %  like parent block or include block rules, and the associated constraints.
 %
@@ -10,6 +10,7 @@
 %  The maximal lowerbound optimization of concept score is performed by postprocessing.
 %
 % initial version:  09/07/2014   L. Bourneuf
+% revised version:  26/03/2018   J. Nicolas
 %
 % Constants:
 %       - cc: treated connected component. (cc/1 gives existing cc)
@@ -75,7 +76,7 @@ include_block(k,p(cc,k,T),C):- parent_block(B,T) ;
                             newconcept(cc,k,T,E) ; L<k ;
                             include_block(k-1,B,C).
 %    - all blocks that aren't in P are kept "as is" for next step
-include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
+include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),_) ; L<k ;
                        0 { block(k-1,p(cc,L,U),E) : newconcept(cc,k,T,E) } 0 ;
                        %0 { e(E): newconcept(cc,k,T,E) , block(k-1,p(cc,L,U),E) } 0 ;
                        include_block(k-1,B,C) ;
@@ -83,8 +84,8 @@ include_block(k,B,C):- C=p(cc,L,U) ; block(k-1,p(cc,L,U),Anonymous) ; L<k ;
 
 % debug: newconcept T fit perfectly with the powernode cc,L,U
 perfectfit(T,p(cc,L,U)):- 0 {block(k-1,p(cc,L,U),X) : not newconcept(cc,k,T,X) } 0 ;
-                          block(k-1,p(cc,L,U),Anonymous) ; not star(cc,k,T) ; T=1..2 ; L<k.
-
+                          block(k-1,p(cc,L,U),_) ; not star(cc,k,T) ; T=1..2 ; L<k.
+is_perfectfit(cc,k):- perfectfit(_,_).
 
 % nodes covered by a powernode are set in the associated block
 block(k,p(cc,k,1),X):- newconcept(cc,k,1,X) ; not star(cc,k,1).
@@ -96,13 +97,6 @@ block(k,P,X):- newconcept(cc,k,T,X) ; star(cc,k,T) ; block(k-1,P,X) ; T=1..2.
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%% EDGE COVER %%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Edge cover is computed as the number of edges replaced by the poweredge.
-%  the score is defined as the upperbound (maximal edge cover) minus edge cover.
-%  bigger is the edge cover, smaller is the score.
-%  solver's job is to minimize the score, thus maximize the edge cover.
 
 % clique: create an edge to powernode itself / don't need to create two powernodes
 poweredge(p(cc,k,1),p(cc,k,1)):- clique(cc,k).
@@ -111,12 +105,19 @@ poweredge(p(cc,k,3-T),      X):- star(cc,k,T) ; newconcept(cc,k,T,X).
 % in all other cases: create a poweredge between the two newconcepts
 poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 
+poweredge_count(1).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%% RESULTS %%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+special_node(1):- clique(cc,k).
+special_node(T):- star(cc,k,T).
+special_node(T):- perfectfit(T,_).
+powernode_count(2):- not special_node(1)   ; not special_node(2).
+powernode_count(1):- not special_node(3-T) ;     special_node(T) ; T=1..2.
+powernode_count(0):-     special_node(1)   ;     special_node(2).
 
 #show.
 
@@ -132,10 +133,11 @@ poweredge(p(cc,k,1),p(cc,k,2)):- not clique(cc,k) ; not star(cc,k,T): T=1..2.
 #show include_block(k,B,C): include_block(k,B,C).
 
 % statistics
-#show powernode_count(1): clique(cc,k).
-#show powernode_count(2-S-P): not clique(cc,k) , S={star(cc,k,_)}, P={perfectfit(_,_)}.
-#show poweredge_count(K): K={poweredge(_,_)}.
-#show score(upperbound-S): score(S).  % the outside consider that the edge cover is the score
+#show powernode_count/1.
+#show poweredge_count/1.
+%%#show powernode_count(2-P): not clique(cc,k) , not star(cc,k,1), not star(cc,k,2), P={perfectfit(_,_)}.
+%%#show poweredge_count(K): K={poweredge(_,_)}.
+#show score/1.  % the outside consider that the edge cover is the score
 
 % debug output
 %#show clique/2.
