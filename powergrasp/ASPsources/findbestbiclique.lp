@@ -16,7 +16,7 @@
 %       - membercc(Y): Y is a member of cc.
 % Output:
 %       - newconcept(cc,k,T,X): X is the member of the set T in the concept cc at step k.
-%       - star(cc,k,T): set T of concept is a star.
+%       - star(cc,k,T): concept is a star, set T is the singleton.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
