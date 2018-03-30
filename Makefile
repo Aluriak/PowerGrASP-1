@@ -131,6 +131,14 @@ empty:
 	$(COMMAND) "$(TESTS)empty.lp"
 glasses:
 	$(COMMAND) "$(TESTS)glasses.lp"
+hanging_bio:
+	$(COMMAND) "$(TESTS)hanging-bio.lp"
+hanging_bio_cc0:
+	$(COMMAND) "$(TESTS)hanging-bio-cc0.lp"
+hanging_bio_notree:
+	$(COMMAND) "$(TESTS)hanging-bio-notree.lp"
+hanging_bio_notree_cc0:
+	$(COMMAND) "$(TESTS)hanging-bio-notree-cc0.lp"
 horrible_data:
 	$(COMMAND) "$(TESTS)horrible_data.lp"
 inc:
@@ -223,6 +231,8 @@ unclique:
 	$(COMMAND) "$(TESTS)unclique.lp"
 uvg:
 	$(COMMAND) "$(TESTS)umlsvg.lp"
+variable_name:
+	$(COMMAND) "$(TESTS)variable-name.gml"
 gml:
 	$(COMMAND) "$(TESTS)gml_test.gml"
 troll_format:
