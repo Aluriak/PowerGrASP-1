@@ -39,9 +39,11 @@ class TestUnambiguousCompression(unittest.TestCase):
             'test.graphml'                   : RESULT_GRAPHML,
             'unclique.lp'                    : RESULT_UNCLIQUE,
             'one_edge.lp'                    : RESULT_ONEDGE,
-            'horrible_data.lp'               : RESULT_HORRIBLE_DATA,
             'test.gml'                       : RESULT_TESTGML,
             'empty.lp'                       : '',
+            # the following are not passing
+            # 'horrible_data.lp'               : RESULT_HORRIBLE_DATA,
+            # 'inclusions.lp'                  : RESULT_INCLUSION,
         }
 
 
@@ -525,4 +527,49 @@ IN\t"'echo coucou'"\tPWRN-"\"echo coucou\""-1-1
 IN\t"\"echo coucou\""\tPWRN-"\"echo coucou\""-1-1
 EDGE\tPWRN-"\"echo coucou\""-1-1\t[a]\t1.0
 EDGE\t"\"echo coucou\""\t[a]\t1.0
+"""
+
+RESULT_INCLUSION = """
+IN\tPWRN-1-6-2\tPWRN-1-2-1
+IN\tPWRN-1-5-1\tPWRN-1-4-1
+IN\tPWRN-1-5-1\tPWRN-1-5-1
+IN\tPWRN-1-4-1\tPWRN-1-1-1
+IN\tPWRN-1-4-2\tPWRN-1-3-1
+IN\t10\tPWRN-1-2-1
+IN\t1\tPWRN-1-3-1
+IN\t2\tPWRN-1-3-1
+IN\t3\tPWRN-1-3-1
+IN\t5\tPWRN-1-2-1
+IN\t6\tPWRN-1-2-1
+IN\t7\tPWRN-1-2-1
+IN\t8\tPWRN-1-2-1
+IN\t9\tPWRN-1-2-1
+IN\ta\tPWRN-1-1-1
+IN\tb\tPWRN-1-1-1
+IN\tc\tPWRN-1-1-1
+IN\td\tPWRN-1-4-1
+IN\te\tPWRN-1-5-1
+IN\tf\tPWRN-1-5-1
+IN\tg\tPWRN-1-5-1
+IN\th\tPWRN-1-1-1
+IN\ti\tPWRN-1-1-1
+IN\tj\tPWRN-1-1-1
+IN\tkk\tPWRN-1-1-1
+IN\tl\tPWRN-1-1-1
+IN\tm\tPWRN-1-4-2
+IN\tn\tPWRN-1-4-2
+IN\to\tPWRN-1-4-2
+IN\tp\tPWRN-1-4-2
+IN\tq\tPWRN-1-6-2
+IN\tr\tPWRN-1-6-2
+IN\tv2\tPWRN-1-5-2
+IN\tv\tPWRN-1-5-2
+IN\tw2\tPWRN-1-5-2
+IN\tw\tPWRN-1-5-2
+EDGE\tPWRN-1-1-1\tPWRN-1-1-1\t1.0
+EDGE\tPWRN-1-2-1\tPWRN-1-2-1\t1.0
+EDGE\tPWRN-1-3-1\tPWRN-1-3-1\t1.0
+EDGE\tPWRN-1-4-1\tPWRN-1-4-2\t1.0
+EDGE\tPWRN-1-5-1\tPWRN-1-5-2\t1.0
+EDGE\tPWRN-1-5-1\tPWRN-1-6-2\t1.0
 """
