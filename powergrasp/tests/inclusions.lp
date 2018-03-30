@@ -1,5 +1,5 @@
 
-edge((a;b;c;d;e;f;g;h;i;j;k;l),(a;b;c;d;e;f;g;h;i;k;l)).
+edge((a;b;c;d;e;f;g;h;i;j;kk;l),(a;b;c;d;e;f;g;h;i;kk;l)).
 edge((d;e;f;g),(m;n;o;p)).
 edge((e;f;g),(q;r)).
 edge((f;g),(v;w)).
