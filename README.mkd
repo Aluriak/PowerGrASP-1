@@ -1,4 +1,7 @@
 # PowerGrASP
+__This repository is inactive, source of the powergrasp package *until version 0.7.0*. For 0.8.0 and higher, see [the currently active repository](https://github.com/aluriak/powergrasp).__
+
+
 The Python [Powergraph analysis](https://en.wikipedia.org/wiki/Power_graph_analysis) tool,
 based on [Answer Set Programming](https://en.wikipedia.org/wiki/Answer_set_programming) solving and formal concept analysis.
 
